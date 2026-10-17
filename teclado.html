@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Teclado e Foco — Tab, tabindex e foco visível | Guia HTML</title>
+<meta name="description" content="Teclado e foco em HTML para quem nunca fez um site: navegar com Tab, Shift+Tab, Enter e Espaço, o que recebe foco sozinho, a ordem do Tab, tabindex 0, -1 e positivo, o falso botão feito de div, o contorno de foco, o link Pular para o conteúdo, autofocus e inert, com as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Teclado e Foco</span></h1>
+
+<p class="intro">Muita gente usa a internet <strong>sem mouse</strong>: quem tem tremor nas mãos, quem não enxerga e usa um leitor de tela, quem quebrou o braço, quem simplesmente acha o teclado mais rápido. Essas pessoas andam pela página com a tecla <kbd>Tab</kbd>. Nesta aula você vai ver por onde o <kbd>Tab</kbd> passa, por que ele às vezes pula um "botão" que parece normal, e como o atributo <code>tabindex</code> muda esse caminho — para o bem e para o mal.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <strong>foco</strong> e quais teclas movem e usam o foco.</li>
+  <li>Quais elementos recebem foco sozinhos (e quais não recebem).</li>
+  <li>Por que a ordem do <kbd>Tab</kbd> é a ordem do código.</li>
+  <li>Os três jeitos de usar o <code>tabindex</code>: <code>0</code>, <code>-1</code> e um número positivo (que você deve evitar).</li>
+  <li>Por que um "botão" feito de <code>&lt;div&gt;</code> não funciona no teclado, e o que o <code>&lt;button&gt;</code> dá de graça.</li>
+  <li>O contorno de foco, o link "Pular para o conteúdo", o <code>autofocus</code> e o <code>inert</code>.</li>
+  <li>Os erros reais do validador W3C, e os erros que ele <strong>não</strong> vê.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, versão 26.10.12) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. O resultado de cada exemplo é desenhado pelo seu próprio navegador: clique dentro do quadro <strong>Resultado</strong> e use o <kbd>Tab</kbd> de verdade.</p>
+
+<hr>
+
+<h2>A ideia: o "você está aqui" da página</h2>
+<p>Pense no painel de senhas de um banco. Só um guichê está chamando por vez, e uma luz mostra qual é. Na página, o elemento que está "chamando" é o que tem o <strong>foco</strong>: é ele que vai receber o que você digitar ou a tecla que você apertar. O navegador desenha um contorno em volta dele, o <strong>contorno de foco</strong>, para você saber onde está.</p>
+
+<p>Com o mouse, você aponta e clica onde quiser. Com o teclado, você anda <strong>em fila</strong>, de um elemento para o próximo. Estas são as teclas que todo navegador entende:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tecla</th><th>O que faz</th></tr>
+<tr><td><kbd>Tab</kbd></td><td>Leva o foco para o <strong>próximo</strong> elemento da fila.</td></tr>
+<tr><td><kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Volta para o elemento <strong>anterior</strong>.</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>Segue um link ou aperta um botão.</td></tr>
+<tr><td><kbd>Espaço</kbd></td><td>Aperta um botão, marca uma caixa de seleção (<em>checkbox</em>). Fora de um campo, rola a página para baixo.</td></tr>
+<tr><td>Setas</td><td>Andam entre as opções de um grupo de <em>radio</em> e de um <code>&lt;select&gt;</code>; rolam a página.</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>Fecha uma lista aberta, um <code>&lt;dialog&gt;</code> ou um <em>popover</em>.</td></tr>
+</table>
+</div>
+
+<div class="note">
+<strong>No Mac, com o Safari</strong>
+<p>No Safari, o <kbd>Tab</kbd> sozinho pula os links e para só nos campos e botões. Para ele passar também pelos links, use <kbd>Option</kbd>+<kbd>Tab</kbd> ou ligue a opção de destacar cada item com o Tab nos ajustes avançados do Safari. No Chrome, no Firefox e no Edge, o <kbd>Tab</kbd> passa por tudo.</p>
+</div>
+
+<hr>
+
+<h2>1. O que recebe foco sozinho</h2>
+<p>A boa notícia: você não precisa fazer nada para a maior parte da página funcionar no teclado. Os elementos <strong>interativos</strong> do HTML já entram na fila do <kbd>Tab</kbd>:</p>
+
+<pre class="file" data-file="foco.html" data-resultado>&lt;p&gt;Veja a &lt;a href="receitas.html"&gt;lista de receitas&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+  &lt;label for="busca"&gt;Buscar:&lt;/label&gt;
+  &lt;input id="busca" type="search"&gt;
+  &lt;button type="button"&gt;Buscar&lt;/button&gt;
+&lt;/p&gt;
+&lt;p&gt;Este parágrafo não recebe foco.&lt;/p&gt;
+&lt;details&gt;
+  &lt;summary&gt;Dica da Ana&lt;/summary&gt;
+  &lt;p&gt;Peneire a farinha.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+
+<p>Clique no texto "Este parágrafo" do Resultado (o clique num texto não dá foco a ele, mas marca o ponto de partida) e aperte <kbd>Shift</kbd>+<kbd>Tab</kbd> e <kbd>Tab</kbd> algumas vezes. O foco passa por <strong>quatro</strong> paradas: o link, o campo de busca, o botão e o resumo do <code>&lt;details&gt;</code>. Com o foco no "Dica da Ana", aperte <kbd>Enter</kbd> ou <kbd>Espaço</kbd>: a dica abre, sem mouse. Os parágrafos e o <code>&lt;label&gt;</code> ficaram de fora, e isso está certo: eles só têm texto, não há o que "usar" neles.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Entra na fila do Tab?</th></tr>
+<tr><td><code>&lt;a href="…"&gt;</code></td><td>Sim. <strong>Sem</strong> o <code>href</code>, não: um <code>&lt;a&gt;</code> sem endereço não é link.</td></tr>
+<tr><td><code>&lt;button&gt;</code></td><td>Sim, a não ser que tenha <code>disabled</code> (desativado).</td></tr>
+<tr><td><code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code></td><td>Sim, a não ser que tenham <code>disabled</code>. O <code>&lt;input type="hidden"&gt;</code> nunca: ele é invisível.</td></tr>
+<tr><td><code>&lt;summary&gt;</code> (o título de um <code>&lt;details&gt;</code>)</td><td>Sim.</td></tr>
+<tr><td><code>&lt;audio controls&gt;</code>, <code>&lt;video controls&gt;</code></td><td>Sim: os botões de tocar e pausar.</td></tr>
+<tr><td><code>&lt;iframe&gt;</code></td><td>Sim: o foco entra na página de dentro.</td></tr>
+<tr><td><code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;div&gt;</code>, <code>&lt;span&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;li&gt;</code>…</td><td>Não. São conteúdo, não controles.</td></tr>
+</table>
+</div>
+
+<div class="tip">
+<strong>Leitor de tela não depende do Tab</strong>
+<p>Uma dúvida comum: "se o título não recebe foco, como a pessoa cega lê o título?". O leitor de tela tem atalhos próprios para andar por títulos, parágrafos e listas, sem mover o foco do Tab (aula <a href="leitores-tela.html">Leitores de Tela</a>). Por isso <strong>não</strong> coloque <code>tabindex</code> em texto para "ajudar": a pessoa que usa só o teclado passaria por dezenas de paradas inúteis.</p>
+</div>
+
+<hr>
+
+<h2>2. A ordem do Tab é a ordem do código</h2>
+<p>O <kbd>Tab</kbd> segue a ordem em que os elementos aparecem no <strong>arquivo</strong>, de cima para baixo. No exemplo acima, o link vem antes do campo porque foi escrito antes. Isso tem duas consequências:</p>
+<ul>
+  <li>Escreva o HTML na ordem em que a página deve ser lida: cabeçalho, menu, conteúdo, rodapé (aula <a href="semantica.html">HTML Semântico</a>). Se o código está em ordem, o teclado está em ordem.</li>
+  <li>O CSS pode <strong>desenhar</strong> os elementos em outra posição (pôr o menu à direita, inverter uma lista). O Tab não liga para o desenho: ele continua na ordem do código, e o foco parece "pular" pela tela. Quer aprender mais? (futuro Guia CSS.)</li>
+</ul>
+
+<hr>
+
+<h2>3. O atributo <code>tabindex</code></h2>
+<p>O <code>tabindex</code> ("índice de tabulação", a posição na fila do Tab) muda quem entra na fila e em que lugar. Ele aceita um número inteiro, e cada faixa de número faz uma coisa bem diferente:</p>
+
+<dl class="anatomy">
+  <dt>tabindex="0"</dt><dd>"Entre na fila, no lugar normal." O elemento passa a receber foco pelo Tab, na ordem do código, como se fosse um botão. Use em casos raros, quando um elemento que não é interativo <strong>precisa</strong> ser alcançado pelo teclado.</dd>
+  <dt>tabindex="-1"</dt><dd>"Pode receber foco, mas fora da fila." O Tab passa direto, mas um link para o <code>id</code> dele ou um comando de JavaScript (<code>.focus()</code>) consegue pôr o foco ali. Serve para levar o foco a um aviso, ao título de uma janela que abriu.</dd>
+  <dt>tabindex="1", "2", "3"…</dt><dd>"Fure a fila." Os elementos com número positivo vêm <strong>antes de todos os outros</strong>, em ordem crescente, e só depois vem o resto da página. Quase sempre isso bagunça tudo. <strong>Evite.</strong></dd>
+</dl>
+
+<h3><code>tabindex="0"</code>: uma caixa que rola</h3>
+<p>Um caso de verdade para o <code>tabindex="0"</code>: uma caixa com <strong>barra de rolagem</strong>. Quem usa mouse rola com a rodinha. Quem usa teclado precisa pôr o foco na caixa para rolar com as setas, e uma <code>&lt;div&gt;</code> comum não recebe foco. Repare também no <code>role</code> e no <code>aria-label</code>: como a caixa vai receber foco, o leitor de tela precisa de um nome para anunciar (aula <a href="aria.html">ARIA</a>).</p>
+
+<pre class="file" data-file="rolagem.html" data-resultado>&lt;div tabindex="0" role="region" aria-label="Ingredientes" style="height: 5em; overflow: auto; border: 1px solid gray;"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;1 xícara de óleo&lt;/li&gt;
+    &lt;li&gt;2 xícaras de açúcar&lt;/li&gt;
+    &lt;li&gt;2 xícaras de farinha&lt;/li&gt;
+    &lt;li&gt;1 colher de fermento&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>tabindex="0"</dt><dd>Põe a caixa na fila do Tab. Com o foco nela, as setas rolam a lista.</dd>
+  <dt>role="region" aria-label="Ingredientes"</dt><dd>Diz ao leitor de tela que isto é uma "região" chamada "Ingredientes". Sem um nome, ele anunciaria só "grupo" ou nada.</dd>
+  <dt>style="height: 5em; overflow: auto; …"</dt><dd>CSS só para criar a rolagem: altura de 5 linhas e "role quando não couber" (aula <a href="atributo-style.html">O Atributo style</a>).</dd>
+</dl>
+
+<p>Clique no Resultado, fora da caixa, e aperte <kbd>Tab</kbd> até a caixa ganhar o contorno. Agora a seta para baixo rola os ingredientes. Alguns navegadores (o Firefox, por exemplo) já põem sozinhos na fila uma caixa que rola; com o <code>tabindex="0"</code>, ela funciona em todos.</p>
+
+<h3><code>tabindex="-1"</code>: foco só quando você manda</h3>
+<p>Aqui o botão "Adicionar ao carrinho" mostra um aviso e leva o foco até ele com <code>.focus()</code>, para que quem usa leitor de tela ouça o aviso na hora. O aviso tem <code>tabindex="-1"</code>: sem isso, o <code>.focus()</code> não funcionaria numa <code>&lt;p&gt;</code>. E como o número é negativo, o aviso não vira mais uma parada do Tab. O JavaScript é só para o exemplo (aula <a href="script.html">O Elemento script</a>).</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> clique no botão e veja o contorno de foco no aviso. Depois aperte <kbd>Tab</kbd> e <kbd>Shift</kbd>+<kbd>Tab</kbd>: o aviso fica fora da fila. Apague o <code>tabindex="-1"</code>, clique de novo e veja o que muda (o aviso aparece, mas o foco fica no botão).</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Bolo de cenoura — R$ 35&lt;/p&gt;
+&lt;button type="button" id="comprar"&gt;Adicionar ao carrinho&lt;/button&gt;
+&lt;p id="aviso" tabindex="-1" hidden&gt;Bolo adicionado ao carrinho!&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const aviso = document.getElementById("aviso");
+document.getElementById("comprar").addEventListener("click", function () {
+  aviso.hidden = false;
+  aviso.focus();
+  console.log("foco em:", document.activeElement.id);
+});
+</pre>
+</div>
+
+<h3>Número positivo: a fila furada</h3>
+<p>A Ana montou um formulário e, achando que ajudava, numerou a ordem do Tab. Depois ela trocou dois campos de lugar no código e esqueceu de renumerar:</p>
+
+<div class="tryhtml" data-goal="nsel:input=3,nsel:[tabindex]=0">
+<p class="try-task"><strong>Missão:</strong> clique antes do primeiro campo e ande com <kbd>Tab</kbd>: a ordem fica Telefone, Nome, E-mail — e o link do rodapé, sem número, só no fim. <strong>Apague</strong> os três <code>tabindex</code> para o Tab seguir a ordem do código: Nome, E-mail, Telefone.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;label for="nome"&gt;Nome&lt;/label&gt; &lt;input id="nome" tabindex="2"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="email"&gt;E-mail&lt;/label&gt; &lt;input id="email" type="email" tabindex="3"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="tel"&gt;Telefone&lt;/label&gt; &lt;input id="tel" type="tel" tabindex="1"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="privacidade.html"&gt;Como usamos seus dados&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;&lt;label for="nome"&gt;Nome&lt;/label&gt; &lt;input id="nome"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="email"&gt;E-mail&lt;/label&gt; &lt;input id="email" type="email"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="tel"&gt;Telefone&lt;/label&gt; &lt;input id="tel" type="tel"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="privacidade.html"&gt;Como usamos seus dados&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<p>Em uma página de verdade, o problema é pior: os campos com número vêm antes do <strong>menu, do logotipo e de todo o resto</strong>. A pessoa abre a página, aperta Tab e cai no meio do formulário, sem saber como chegou ali. E o validador não reclama de <code>tabindex="1"</code>: o número é válido, só é uma má ideia. A regra é simples: se a ordem está errada, <strong>mude a ordem do código</strong>, e não o <code>tabindex</code>.</p>
+
+<hr>
+
+<h2>4. O falso botão: <code>&lt;div&gt;</code> no lugar de <code>&lt;button&gt;</code></h2>
+<p>Este é o erro de teclado mais comum na internet. Alguém quer um botão bonito, pega uma <code>&lt;div&gt;</code>, pinta com CSS e liga um clique com JavaScript. Com o mouse, funciona. Com o teclado, o "botão" <strong>não existe</strong>: a <code>&lt;div&gt;</code> não entra na fila do Tab, e mesmo que entrasse, o <kbd>Enter</kbd> e o <kbd>Espaço</kbd> não fariam nada.</p>
+
+<div class="tryhtml" data-goal="sel:button#comprar,attr:#comprar[type]=button,nsel:div#comprar=0">
+<p class="try-task"><strong>Missão:</strong> clique no "Comprar" com o mouse: o console mostra a mensagem. Agora tente chegar nele com <kbd>Tab</kbd>: não dá. Troque a <code>&lt;div&gt;</code> por um <code>&lt;button type="button"&gt;</code> (mantenha o <code>id="comprar"</code>) e teste de novo com <kbd>Tab</kbd> e <kbd>Enter</kbd>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Bolo de cenoura — R$ 35&lt;/p&gt;
+&lt;div id="comprar" class="botao"&gt;Comprar&lt;/div&gt;
+&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="estilo.css">.botao {
+  display: inline-block;
+  padding: 6px 14px;
+  background: darkorange;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+}
+</pre>
+<pre class="script" data-file="script.js">document.getElementById("comprar").addEventListener("click", function () {
+  console.log("Bolo no carrinho!");
+});
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Bolo de cenoura — R$ 35&lt;/p&gt;
+&lt;button type="button" id="comprar" class="botao"&gt;Comprar&lt;/button&gt;
+&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+</div>
+
+<p>Você não mudou uma linha do JavaScript, e o botão passou a funcionar com <kbd>Enter</kbd> e com <kbd>Espaço</kbd>. É que o navegador transforma essas teclas num "clique" quando o foco está num <code>&lt;button&gt;</code>. Veja tudo o que o <code>&lt;button&gt;</code> traz de graça e a <code>&lt;div&gt;</code> não:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O que a pessoa precisa</th><th><code>&lt;button&gt;</code></th><th><code>&lt;div&gt;</code> com clique</th></tr>
+<tr><td>Chegar com o Tab</td><td>Sim</td><td>Não (precisaria de <code>tabindex="0"</code>)</td></tr>
+<tr><td>Apertar com <kbd>Enter</kbd> e <kbd>Espaço</kbd></td><td>Sim</td><td>Não (precisaria de mais JavaScript para cada tecla)</td></tr>
+<tr><td>Ouvir "botão" no leitor de tela</td><td>Sim</td><td>Não (precisaria de <code>role="button"</code>)</td></tr>
+<tr><td>Ficar desativado com <code>disabled</code></td><td>Sim</td><td>Não</td></tr>
+<tr><td>Funcionar dentro de um formulário</td><td>Sim (aula <a href="botoes.html">Botões</a>)</td><td>Não</td></tr>
+</table>
+</div>
+
+<p>Dá para "consertar" a <code>&lt;div&gt;</code> com <code>tabindex="0"</code>, <code>role="button"</code> e um script para as teclas, mas é muito trabalho para imitar mal uma coisa que já existe. A primeira regra do ARIA é justamente essa: <strong>se existe um elemento HTML que faz o que você quer, use-o</strong> (aula <a href="aria.html">ARIA</a>).</p>
+
+<h3>Link ou botão?</h3>
+<p>Os dois recebem foco, mas não são a mesma coisa, e o teclado mostra a diferença: o link funciona só com <kbd>Enter</kbd>; o botão, com <kbd>Enter</kbd> e com <kbd>Espaço</kbd>. Escolha pelo que acontece:</p>
+<ul>
+  <li><strong>Vai para outro lugar</strong> (outra página, outra parte da página): <code>&lt;a href="…"&gt;</code>.</li>
+  <li><strong>Faz alguma coisa</strong> aqui (abrir um menu, pôr no carrinho, enviar): <code>&lt;button&gt;</code>.</li>
+</ul>
+
+<hr>
+
+<h2>5. Mostrar onde o foco está</h2>
+<p>O contorno de foco é a única pista de onde a pessoa está. Cada navegador desenha o seu, e ele aparece quando você usa o teclado. Um erro antigo e ainda muito comum é apagar esse contorno com CSS porque alguém achou feio:</p>
+
+<pre class="file" data-file="estilo.css">/* NÃO FAÇA ISSO: o foco fica invisível */
+button:focus {
+  outline: none;
+}
+</pre>
+
+<p>Com isso, quem usa teclado aperta Tab e não vê mais nada mudar na tela, como digitar com os olhos fechados. Se quiser um contorno diferente, <strong>troque</strong> em vez de apagar, com o seletor <code>:focus-visible</code> ("foco visível"), que vale só quando o navegador acha que o contorno é necessário (no teclado, e não a cada clique do mouse):</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> clique no Resultado e use <kbd>Tab</kbd> para passar pelos dois botões: o primeiro tem o contorno do navegador; o segundo, o contorno grosso da Ana. Clique no segundo com o mouse: o contorno grosso não aparece, porque o clique não é "foco visível". Depois troque <code>3px</code> por <code>6px</code> no <code>estilo.css</code>.</p>
+<pre class="script" data-file="index.html">&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;button type="button"&gt;Contorno do navegador&lt;/button&gt;
+&lt;button type="button" class="ana"&gt;Contorno da Ana&lt;/button&gt;
+</pre>
+<pre class="script" data-file="estilo.css">.ana:focus-visible {
+  outline: 3px solid darkorange;
+  outline-offset: 3px;
+}
+</pre>
+</div>
+
+<p>O CSS é só um gostinho; o assunto de verdade é do (futuro Guia CSS). O que importa aqui: o contorno pode mudar de cor e de forma, mas <strong>nunca pode sumir</strong>.</p>
+
+<hr>
+
+<h2>6. Pular para o conteúdo</h2>
+<p>Num site com menu grande, quem usa teclado precisa apertar Tab dez, vinte vezes em <strong>toda</strong> página, só para passar pelo menu e chegar ao texto. A solução é um link logo no começo da página que pula direto para o conteúdo principal. É uma <a href="ancoras.html">âncora</a> comum:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;a href="#conteudo"&gt;Pular para o conteúdo&lt;/a&gt;
+&lt;nav aria-label="Menu"&gt;
+  &lt;a href="index.html"&gt;Início&lt;/a&gt;
+  &lt;a href="bolos.html"&gt;Bolos&lt;/a&gt;
+  &lt;a href="tortas.html"&gt;Tortas&lt;/a&gt;
+  &lt;a href="paes.html"&gt;Pães&lt;/a&gt;
+  &lt;a href="contato.html"&gt;Contato&lt;/a&gt;
+&lt;/nav&gt;
+&lt;main id="conteudo"&gt;
+  &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+  &lt;p&gt;Veja também a &lt;a href="cobertura.html"&gt;cobertura de chocolate&lt;/a&gt;.&lt;/p&gt;
+&lt;/main&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;a href="#conteudo"&gt;</dt><dd>O primeiro link da página. O <code>#</code> quer dizer "um lugar nesta mesma página", o elemento com <code>id="conteudo"</code>.</dd>
+  <dt>&lt;main id="conteudo"&gt;</dt><dd>O destino: o conteúdo principal (aula <a href="main.html">main</a>).</dd>
+</dl>
+
+<p>No Resultado, clique antes do primeiro link, aperte <kbd>Tab</kbd> (o foco vai para "Pular para o conteúdo") e <kbd>Enter</kbd>. Agora aperte <kbd>Tab</kbd> de novo: o foco vai direto para o link "cobertura de chocolate", sem passar pelos cinco links do menu. O navegador lembra que você pulou para o <code>&lt;main&gt;</code> e continua a fila dali.</p>
+
+<div class="tip">
+<strong>Link escondido até receber foco</strong>
+<p>Muitos sites deixam o "Pular para o conteúdo" invisível e só o mostram quando ele recebe foco, com CSS. Assim ele não atrapalha quem usa mouse e aparece para quem usa teclado. O importante é que ele continue sendo o <strong>primeiro</strong> link do código. Não use <code>hidden</code> nem <code>display: none</code> nele: um elemento escondido assim sai da fila do Tab.</p>
+</div>
+
+<hr>
+
+<h2>7. <code>autofocus</code> e <code>inert</code></h2>
+
+<h3><code>autofocus</code>: começar com o foco num campo</h3>
+<p>O atributo <code>autofocus</code> ("foco automático") põe o foco num elemento assim que a página abre. Faz sentido numa página cujo único objetivo é aquele campo, como a página de busca:</p>
+
+<pre class="file" data-file="busca.html">&lt;label for="q"&gt;Buscar receitas&lt;/label&gt;
+&lt;input id="q" type="search" autofocus&gt;
+</pre>
+
+<p>Use com cuidado. O foco automático "teletransporta" a pessoa: quem usa leitor de tela começa no meio da página e perde o título e o menu, e no celular o teclado da tela pode abrir sozinho. Só pode haver <strong>um</strong> <code>autofocus</code> por página; com dois, o validador reclama (veja em <a href="#errado">Quando dá errado</a>).</p>
+
+<h3><code>inert</code>: desligar um pedaço da página</h3>
+<p>O atributo <code>inert</code> ("inerte", parado) desliga um pedaço inteiro da página: nada lá dentro recebe foco, nem clique, e o leitor de tela também ignora. É útil quando uma janela está aberta por cima e o fundo não deve ser usado. (O <code>&lt;dialog&gt;</code> aberto com <code>showModal()</code> já faz isso sozinho com o resto da página; aula <a href="dialog.html">dialog</a>.)</p>
+
+<pre class="file" data-file="inert.html" data-resultado>&lt;div inert&gt;
+  &lt;p&gt;&lt;a href="bolos.html"&gt;Bolos&lt;/a&gt; (inerte)&lt;/p&gt;
+  &lt;p&gt;&lt;button type="button"&gt;Comprar&lt;/button&gt; (inerte)&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;a href="tortas.html"&gt;Tortas&lt;/a&gt; (normal)&lt;/p&gt;
+</pre>
+
+<p>No Resultado, o Tab passa só pelo link "Tortas". O link "Bolos" e o botão "Comprar" continuam aparecendo, mas não aceitam clique nem foco.</p>
+
+<hr>
+
+<h2>Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th></tr>
+<tr><td>um botão ou um link que funcione no teclado</td><td><code>&lt;button&gt;</code> ou <code>&lt;a href&gt;</code>. Nada de <code>tabindex</code>.</td></tr>
+<tr><td>mudar a ordem do Tab</td><td>Mude a ordem do <strong>código</strong>. Nunca um <code>tabindex</code> positivo.</td></tr>
+<tr><td>que uma caixa que rola seja alcançada pelo teclado</td><td><code>tabindex="0"</code>, com <code>role</code> e <code>aria-label</code>.</td></tr>
+<tr><td>levar o foco por script para um aviso ou um título</td><td><code>tabindex="-1"</code> e <code>.focus()</code>.</td></tr>
+<tr><td>poupar o menu de quem usa teclado</td><td>O link "Pular para o conteúdo".</td></tr>
+<tr><td>um contorno de foco com a cara do site</td><td><code>:focus-visible</code> no CSS. Nunca <code>outline: none</code> sem trocar por outro.</td></tr>
+<tr><td>desligar um pedaço da página por um tempo</td><td><code>inert</code>.</td></tr>
+</table>
+</div>
+
+<div class="note">
+<strong>E o <code>accesskey</code>?</strong>
+<p>O atributo <code>accesskey</code> cria um atalho de teclado (<code>accesskey="b"</code> para a busca, por exemplo). Ele é válido, mas pouco usado: a combinação de teclas muda de navegador para navegador (<kbd>Alt</kbd>, <kbd>Alt</kbd>+<kbd>Shift</kbd>, <kbd>Ctrl</kbd>+<kbd>Option</kbd>…), ninguém sabe que o atalho existe, e ele pode brigar com os atalhos do leitor de tela. Prefira um bom "Pular para o conteúdo" e uma página bem organizada.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O validador pega os erros de <strong>escrita</strong> do <code>tabindex</code> e de aninhamento. Veja primeiro os que ele pega, com páginas completas, e depois os que ele não pega.</p>
+
+<div class="cenario">
+<strong><code>Bad value “abc” for attribute “tabindex”</code></strong>
+<p>O <code>tabindex</code> só aceita um número inteiro. A Ana escreveu um nome no lugar:</p>
+<pre class="file" data-file="cartao.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Cartão&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div tabindex="primeiro"&gt;Bolo de cenoura&lt;/div&gt;
+&lt;button tabindex=""&gt;Comprar&lt;/button&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu cartao.html
+"file:/home/ana/site/cartao.html":8.1-8.25: error: Bad value “primeiro” for attribute “tabindex” on element “div”: Expected a minus sign or a digit but saw “p” instead.
+"file:/home/ana/site/cartao.html":9.1-9.20: error: Bad value “” for attribute “tabindex” on element “button”: The empty string is not a valid integer.
+$ echo $?
+1</pre>
+<p><strong>O que o navegador faz:</strong> ignora o valor estranho, como se o <code>tabindex</code> não existisse. A <code>&lt;div&gt;</code> continua fora da fila e o botão continua na fila normal.</p>
+<p><strong>O que o validador diz:</strong> "valor ruim para o atributo <code>tabindex</code>": esperava um sinal de menos ou um algarismo e encontrou a letra <code>p</code>. Na linha 9, "a string vazia não é um inteiro válido".</p>
+<p><strong>Como consertar:</strong> use <code>0</code> ou <code>-1</code>, ou apague o atributo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>The element “button” must not appear as a descendant of the “a” element.</code></strong>
+<p>Um botão dentro de um link, para "fazer o botão levar a outra página":</p>
+<pre class="file" data-file="loja.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Loja&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;a href="carrinho.html"&gt;&lt;button&gt;Ver carrinho&lt;/button&gt;&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu loja.html
+"file:/home/ana/site/loja.html":8.25-8.32: error: The element “button” must not appear as a descendant of the “a” element.</pre>
+<p><strong>O que o navegador faz:</strong> mostra um botão que leva ao carrinho com o mouse, mas o Tab para <strong>duas vezes</strong> no mesmo lugar (uma no link, outra no botão), e cada navegador decide de um jeito o que o <kbd>Espaço</kbd> faz ali.</p>
+<p><strong>O que o validador diz:</strong> "o elemento <code>button</code> não pode aparecer dentro do elemento <code>a</code>". Nada interativo pode ficar dentro de outra coisa interativa.</p>
+<p><strong>Como consertar:</strong> vai para outra página? Então é um link: <code>&lt;a href="carrinho.html"&gt;Ver carrinho&lt;/a&gt;</code>. Se quiser que ele pareça um botão, isso é trabalho do CSS.</p>
+</div>
+
+<div class="cenario">
+<strong><code>There must not be two elements with the same "nearest ancestor autofocus scoping root element" that both have the “autofocus” attribute specified.</code></strong>
+<p>Dois campos com <code>autofocus</code>:</p>
+<pre class="file" data-file="login.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Entrar&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;&lt;label for="usuario"&gt;Usuário&lt;/label&gt; &lt;input id="usuario" autofocus&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="senha"&gt;Senha&lt;/label&gt; &lt;input id="senha" type="password" autofocus&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu login.html
+"file:/home/ana/site/login.html":9.37-9.80: error: There must not be two elements with the same "nearest ancestor autofocus scoping root element" that both have the “autofocus” attribute specified.</pre>
+<p><strong>O que o navegador faz:</strong> dá o foco só ao <strong>primeiro</strong> e ignora o segundo.</p>
+<p><strong>O que o validador diz:</strong> a frase comprida quer dizer "não pode haver dois elementos com <code>autofocus</code> na mesma página". (A "raiz de escopo" é a página inteira, ou um <code>&lt;dialog&gt;</code> ou um <em>popover</em> que estejam em volta do campo: cada janela pode ter o seu.)</p>
+<p><strong>Como consertar:</strong> deixe um <code>autofocus</code> só, ou nenhum.</p>
+</div>
+
+<h3>O que o validador não vê</h3>
+<p>Estes três passam no validador sem nenhuma mensagem, e mesmo assim deixam a página ruim ou impossível de usar no teclado:</p>
+
+<pre class="file" data-file="silencio.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Silêncio&lt;/title&gt;
+&lt;style&gt;button:focus { outline: none; }&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;&lt;label for="nome"&gt;Nome&lt;/label&gt; &lt;input id="nome" tabindex="1"&gt;&lt;/p&gt;
+&lt;div class="botao" onclick="comprar()"&gt;Comprar&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu --verbose silencio.html
+silencio.html            « só o nome: nenhum erro, nenhum aviso
+$ echo $?
+0</pre>
+
+<div class="cenario">
+<strong>O validador não testa o teclado</strong>
+<ul>
+  <li><code>tabindex="1"</code>: válido, mas fura a fila.</li>
+  <li><code>&lt;div onclick&gt;</code>: válido, mas não funciona no teclado.</li>
+  <li><code>outline: none</code>: CSS válido, mas apaga o foco.</li>
+</ul>
+<p><strong>Como achar:</strong> o teste é você. Ponha o mouse de lado e use a página só com <kbd>Tab</kbd>, <kbd>Shift</kbd>+<kbd>Tab</kbd>, <kbd>Enter</kbd>, <kbd>Espaço</kbd> e as setas. Você sempre vê onde está o foco? Chega em tudo que dá para clicar? A ordem faz sentido? Esse teste leva dois minutos e acha o que nenhuma ferramenta acha.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>tabindex="0"</code></td><td>Põe o elemento na fila do Tab, na ordem do código</td></tr>
+<tr><td><code>tabindex="-1"</code></td><td>Pode receber foco por link ou <code>.focus()</code>, mas fica fora da fila</td></tr>
+<tr><td><code>tabindex="1"</code> (ou maior)</td><td>Fura a fila: vem antes de todo o resto. Evite</td></tr>
+<tr><td><code>autofocus</code></td><td>Foco automático ao abrir a página (um só por página)</td></tr>
+<tr><td><code>inert</code></td><td>Desliga foco, clique e leitor de tela em todo o pedaço</td></tr>
+<tr><td><code>disabled</code></td><td>Desativa um botão ou campo, que sai da fila do Tab</td></tr>
+<tr><td><code>accesskey="x"</code></td><td>Atalho de teclado (pouco usado)</td></tr>
+<tr><td><code>&lt;a href="#conteudo"&gt;</code></td><td>"Pular para o conteúdo": o primeiro link da página</td></tr>
+<tr><td><code>:focus-visible</code> (CSS)</td><td>Estilo do contorno quando o foco precisa aparecer</td></tr>
+<tr><td><code>elemento.focus()</code> (JS)</td><td>Leva o foco ao elemento</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Entrar na fila</h3>
+<p>Complete para que esta caixa que rola possa ser alcançada pelo Tab, na ordem normal:</p>
+<div class="ex-code">&lt;div role="region" aria-label="Lista" tabindex="<input data-answer="0" aria-label="valor do tabindex">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Foco só por script</h3>
+<p>Complete para que o aviso possa receber <code>.focus()</code>, mas sem virar uma parada do Tab:</p>
+<div class="ex-code">&lt;p id="aviso" tabindex="<input data-answer="-1" aria-label="valor do tabindex">"&gt;Salvo!&lt;/p&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Uma página tem um menu com 5 links e, mais abaixo, um campo com <code>tabindex="1"</code>. Onde o foco vai no primeiro Tab?</p>
+<label><input type="radio" name="q3"> No primeiro link do menu</label>
+<label><input type="radio" name="q3"> No último link do menu</label>
+<label><input type="radio" name="q3"> No campo com <code>tabindex="1"</code></label>
+<label><input type="radio" name="q3"> Em lugar nenhum: o validador recusa a página</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Por que <code>&lt;div onclick="comprar()"&gt;Comprar&lt;/div&gt;</code> é um problema?</p>
+<label><input type="radio" name="q4"> O validador dá erro</label>
+<label><input type="radio" name="q4"> Não recebe foco pelo Tab nem responde a Enter e Espaço</label>
+<label><input type="radio" name="q4"> O clique do mouse não funciona</label>
+<label><input type="radio" name="q4"> Não é problema</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. A Ana achou o contorno de foco feio. O que ela deve fazer?</p>
+<label><input type="radio" name="q5"> <code>outline: none</code></label>
+<label><input type="radio" name="q5"> Pôr <code>tabindex="-1"</code> nos botões</label>
+<label><input type="radio" name="q5"> Usar <code>inert</code> nos botões</label>
+<label><input type="radio" name="q5"> Trocar o contorno por outro com <code>:focus-visible</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Qual destes <strong>não</strong> entra na fila do Tab?</p>
+<label><input type="radio" name="q6"> <code>&lt;a&gt;Receitas&lt;/a&gt;</code> (sem <code>href</code>)</label>
+<label><input type="radio" name="q6"> <code>&lt;button&gt;Ok&lt;/button&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;summary&gt;Dica&lt;/summary&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;input type="search"&gt;</code></label>
+</div>
+
+<h3>Missão final: a página da Ana, sem mouse</h3>
+
+<div class="tryhtml" data-goal="sel:a[href='#conteudo'],sel:main#conteudo,sel:button#comprar,nsel:div#comprar=0,nsel:[tabindex]=0">
+<p class="try-task"><strong>Missão:</strong> esta página tem três problemas de teclado. (1) Crie um link "Pular para o conteúdo" logo no começo, apontando para <code>#conteudo</code>, e dê <code>id="conteudo"</code> ao <code>&lt;main&gt;</code>. (2) Troque o falso botão <code>&lt;div id="comprar"&gt;</code> por um <code>&lt;button type="button" id="comprar"&gt;</code>. (3) Apague o <code>tabindex</code> positivo da busca. Teste com <kbd>Tab</kbd> e <kbd>Enter</kbd>.</p>
+<pre class="script" data-file="index.html">&lt;nav aria-label="Menu"&gt;
+  &lt;a href="index.html"&gt;Início&lt;/a&gt;
+  &lt;a href="bolos.html"&gt;Bolos&lt;/a&gt;
+  &lt;a href="tortas.html"&gt;Tortas&lt;/a&gt;
+  &lt;label for="q"&gt;Buscar&lt;/label&gt;
+  &lt;input id="q" type="search" tabindex="1"&gt;
+&lt;/nav&gt;
+&lt;main&gt;
+  &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+  &lt;p&gt;R$ 35, com cobertura de chocolate.&lt;/p&gt;
+  &lt;div id="comprar"&gt;Comprar&lt;/div&gt;
+&lt;/main&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">document.getElementById("comprar").addEventListener("click", function () {
+  console.log("Bolo no carrinho!");
+});
+</pre>
+<pre class="solucao" data-file="index.html">&lt;a href="#conteudo"&gt;Pular para o conteúdo&lt;/a&gt;
+&lt;nav aria-label="Menu"&gt;
+  &lt;a href="index.html"&gt;Início&lt;/a&gt;
+  &lt;a href="bolos.html"&gt;Bolos&lt;/a&gt;
+  &lt;a href="tortas.html"&gt;Tortas&lt;/a&gt;
+  &lt;label for="q"&gt;Buscar&lt;/label&gt;
+  &lt;input id="q" type="search"&gt;
+&lt;/nav&gt;
+&lt;main id="conteudo"&gt;
+  &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+  &lt;p&gt;R$ 35, com cobertura de chocolate.&lt;/p&gt;
+  &lt;button type="button" id="comprar"&gt;Comprar&lt;/button&gt;
+&lt;/main&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+</div>
+
+<p>Repare que nenhum dos três consertos precisou de <code>tabindex</code>. Na maioria das páginas, o melhor <code>tabindex</code> é o que você não escreveu: HTML com os elementos certos, na ordem certa, já funciona no teclado.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <strong>foco</strong> é o "você está aqui" da página. <kbd>Tab</kbd> e <kbd>Shift</kbd>+<kbd>Tab</kbd> andam pela fila; <kbd>Enter</kbd> e <kbd>Espaço</kbd> usam o elemento.</li>
+  <li>Links com <code>href</code>, botões, campos, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code> e <code>&lt;summary&gt;</code> entram na fila sozinhos. Texto não entra, e não deve entrar.</li>
+  <li>A ordem do Tab é a ordem do código. Para mudar a ordem, mude o código.</li>
+  <li><code>tabindex="0"</code> põe na fila; <code>tabindex="-1"</code> permite foco por script, fora da fila; número positivo fura a fila e deve ser evitado.</li>
+  <li>Use <code>&lt;button&gt;</code> para ações e <code>&lt;a href&gt;</code> para ir a outro lugar. Uma <code>&lt;div&gt;</code> com clique não funciona no teclado.</li>
+  <li>Nunca apague o contorno de foco; troque-o com <code>:focus-visible</code>. Ofereça um "Pular para o conteúdo". Use <code>autofocus</code> com moderação (um só) e <code>inert</code> para desligar um pedaço da página.</li>
+  <li>O validador pega <code>tabindex</code> mal escrito, botão dentro de link e dois <code>autofocus</code>, mas não testa o teclado: esse teste é seu, sem mouse.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
