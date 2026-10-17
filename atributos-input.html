@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML placeholder, value, autocomplete, readonly, disabled e autofocus | Guia HTML</title>
+<meta name="description" content="Atributos dos campos de formulário em HTML para quem nunca fez um site: value (o valor inicial), placeholder (a dica que some), readonly × disabled (o que é enviado e o que não é), autofocus e autocomplete com os nomes certos, com o resultado real no seu navegador, as mensagens reais do validador W3C e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">placeholder, value, autocomplete…</span></h1>
+
+<p class="intro">Um campo de formulário pode vir vazio, já preenchido, com uma dica cinza dentro, travado, apagado, com o cursor piscando nele, ou pronto para o navegador completar com o seu e-mail. Cada uma dessas coisas é um atributo do <code>&lt;input&gt;</code>: <code>value</code>, <code>placeholder</code>, <code>readonly</code>, <code>disabled</code>, <code>autofocus</code> e <code>autocomplete</code>. Eles parecem detalhes, mas mudam o que é enviado, o que a pessoa consegue fazer e quanto ela precisa digitar. Nesta aula você vai conhecer os seis, um por vez, e os enganos mais comuns com cada um.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li><code>value</code>: o valor que o campo já traz quando a página abre.</li>
+  <li><code>placeholder</code>: a dica que some quando a pessoa digita (e por que ela não substitui o <code>&lt;label&gt;</code>).</li>
+  <li><code>readonly</code> e <code>disabled</code>: dois jeitos de travar um campo, e a diferença que importa: um é enviado, o outro não.</li>
+  <li><code>autofocus</code>: o cursor já no campo quando a página abre.</li>
+  <li><code>autocomplete</code>: como ajudar o navegador a preencher nome, e-mail, CEP e senha.</li>
+  <li>Os erros mais comuns e as mensagens reais do validador W3C.</li>
+</ul>
+</div>
+
+<p>Você vai precisar de <a href="input.html">O Elemento input</a>, <a href="label.html">label</a> e <a href="validacao.html">Validação</a>. Os exemplos com o resultado embaixo são desenhados pelo <strong>seu</strong> navegador. Os comportamentos ("é enviado", "não recebe o foco") foram conferidos no <strong>Chromium 155</strong>, e as validações com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: a ficha de papel da padaria</h2>
+<p>Pense na ficha de encomenda impressa da padaria da Ana:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na ficha de papel</th><th>No HTML</th></tr>
+<tr><td>A cidade já vem impressa, "São Paulo", mas a cliente pode riscar e escrever outra</td><td><code>value</code></td></tr>
+<tr><td>Um exemplo em letra clarinha dentro da linha: "ex.: (11) 98765-4321"</td><td><code>placeholder</code></td></tr>
+<tr><td>O número do pedido, carimbado: dá para ler e copiar, não dá para mudar, e vai junto com a ficha</td><td><code>readonly</code></td></tr>
+<tr><td>O campo "cupom", riscado com um X: nem se preenche, nem vale</td><td><code>disabled</code></td></tr>
+<tr><td>A atendente aponta: "comece por aqui"</td><td><code>autofocus</code></td></tr>
+<tr><td>A cliente tem um carimbo com o próprio endereço e só carimba</td><td><code>autocomplete</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. <code>value</code>: o valor inicial</h2>
+<p>O <code>value</code> ("valor") é o texto que o campo já traz quando a página abre. A pessoa pode apagar e escrever outro:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="cidade"&gt;Cidade:&lt;/label&gt;
+&lt;input type="text" id="cidade" name="cidade" value="São Paulo"&gt;
+&lt;label for="qtd"&gt;Quantidade:&lt;/label&gt;
+&lt;input type="number" id="qtd" name="qtd" value="1"&gt;
+</pre>
+
+<ul>
+  <li>Se a pessoa não mexer, o <code>value</code> é enviado como está: <code>cidade=São Paulo</code>.</li>
+  <li>Se ela mudar, vai o que ela escreveu. O atributo no HTML não muda: ele continua sendo o valor <strong>inicial</strong>, e é para ele que o botão <code>reset</code> volta (aula <a href="botoes.html">Botões</a>).</li>
+  <li>O <code>value</code> tem de estar no formato do tipo. Num <code>type="date"</code>, é sempre <code>ano-mês-dia</code>: <code>value="2026-10-20"</code>, mesmo que o navegador mostre a data como 20/10/2026. Num <code>type="number"</code>, é um número escrito com ponto: <code>value="2.5"</code>.</li>
+</ul>
+
+<p>Nas caixas de marcar e nos rádios, o <code>value</code> tem outro papel: é o que vai no envio quando o item está marcado (aula <a href="checkbox-radio.html">checkbox e radio</a>). Nos botões, é o valor do botão clicado.</p>
+
+<hr>
+
+<h2>2. <code>placeholder</code>: a dica que some</h2>
+<p>O <code>placeholder</code> (de <em>place</em> = "lugar" e <em>holder</em> = "que segura": "o que segura o lugar") é um texto clarinho dentro do campo vazio. Ele some assim que a pessoa começa a digitar:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="tel"&gt;Telefone:&lt;/label&gt;
+&lt;input type="tel" id="tel" name="tel" placeholder="ex.: (11) 98765-4321"&gt;
+</pre>
+
+<p>Digite um número no resultado: o exemplo desaparece. Apague tudo: ele volta.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>value="…"</code></th><th><code>placeholder="…"</code></th></tr>
+<tr><td>Cor do texto</td><td>normal</td><td>mais clara (cinza, na maioria dos navegadores)</td></tr>
+<tr><td>Quando a pessoa digita</td><td>o texto fica, e ela escreve junto ou apaga</td><td>some sozinho</td></tr>
+<tr><td>É enviado?</td><td><strong>sim</strong></td><td><strong>não</strong>: o campo vazio é enviado vazio</td></tr>
+<tr><td>Para que serve</td><td>uma resposta provável</td><td>um exemplo do formato</td></tr>
+</table>
+</div>
+
+<p>No Chromium 155, um campo vazio com <code>placeholder="Seu nome"</code> foi enviado como <code>nome=</code>, sem nada depois do <code>=</code>. Se você precisa de um valor de verdade, use <code>value</code>.</p>
+
+<div class="warning">
+<strong>O <code>placeholder</code> não é um rótulo</strong>
+<p>É muito comum ver formulários só com <code>placeholder</code>, sem <code>&lt;label&gt;</code>: fica mais "limpo". E o validador W3C não reclama: um <code>&lt;input placeholder="Seu nome"&gt;</code> sem rótulo passa sem nenhuma mensagem. Mas:</p>
+<ul>
+  <li>assim que a pessoa digita, a dica some, e ela não lembra mais o que o campo pedia (a cliente está no terceiro campo e esqueceu se o segundo era telefone ou CPF);</li>
+  <li>o texto clarinho é difícil de ler para muita gente;</li>
+  <li>parece já preenchido, e tem gente que pula o campo.</li>
+</ul>
+<p>A regra do guia: <strong>todo campo tem um <code>&lt;label&gt;</code></strong>, e o <code>placeholder</code>, se houver, só dá um exemplo.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:label[for=nome],sel:label[for=email],sel:input#nome[name=nome],sel:input#email[name=email],attr:input#email[placeholder]=ex.: ana@example.com">
+<p class="try-task"><strong>Missão:</strong> este formulário usa o <code>placeholder</code> como rótulo. Dê a cada campo um <code>&lt;label&gt;</code> de verdade ("Nome:" e "E-mail:"), ligado pelo <code>id</code>. Tire o <code>placeholder</code> do nome e troque o do e-mail por um exemplo: <code>ex.: ana@example.com</code>.</p>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;input type="text" name="nome" placeholder="Nome"&gt;
+  &lt;input type="email" name="email" placeholder="E-mail"&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;label for="nome"&gt;Nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome"&gt;
+  &lt;label for="email"&gt;E-mail:&lt;/label&gt;
+  &lt;input type="email" id="email" name="email" placeholder="ex.: ana@example.com"&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Travar um campo: <code>readonly</code> × <code>disabled</code></h2>
+<p>Os dois são atributos booleanos, e os dois impedem a pessoa de mudar o campo. A diferença está no que acontece com o campo no resto do formulário:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form&gt;
+  &lt;p&gt;
+    &lt;label for="pedido"&gt;Número do pedido:&lt;/label&gt;
+    &lt;input type="text" id="pedido" name="pedido" value="P-0042" readonly&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="cupom"&gt;Cupom de desconto:&lt;/label&gt;
+    &lt;input type="text" id="cupom" name="cupom" value="BOLO10" disabled&gt;
+  &lt;/p&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Teste os dois no resultado. No número do pedido, você consegue clicar, selecionar o texto e copiar, mas não consegue mudar. No cupom, nada: ele aparece apagado, o clique não faz nada e o <kbd>Tab</kbd> passa direto por ele.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>readonly</code> ("só leitura")</th><th><code>disabled</code> ("desabilitado")</th></tr>
+<tr><td>A pessoa muda o valor?</td><td>não</td><td>não</td></tr>
+<tr><td>Aparência</td><td>quase igual a um campo normal</td><td>apagada</td></tr>
+<tr><td>Recebe o foco (<kbd>Tab</kbd>, clique)?</td><td><strong>sim</strong>: dá para selecionar e copiar</td><td><strong>não</strong></td></tr>
+<tr><td>É enviado?</td><td><strong>sim</strong></td><td><strong>não</strong></td></tr>
+<tr><td>Passa pela validação (<code>required</code>…)?</td><td>não</td><td>não</td></tr>
+<tr><td>Onde funciona</td><td>campos de texto, número, data, senha e <code>&lt;textarea&gt;</code></td><td>todo campo, <code>&lt;select&gt;</code>, <code>&lt;button&gt;</code> e <code>&lt;fieldset&gt;</code></td></tr>
+</table>
+</div>
+
+<p>Tudo isso foi conferido no Chromium 155. Num formulário com os dois campos acima, os dados enviados foram só <code>pedido=P-0042</code>: o cupom desligado ficou de fora. O foco foi para o número do pedido e <strong>não</strong> foi para o cupom. E um campo <code>readonly required</code> vazio não impediu o envio: o navegador não valida um campo que a pessoa não pode mudar.</p>
+
+<dl class="anatomy">
+  <dt>Quando usar <code>readonly</code></dt><dd>Um valor que a pessoa precisa <strong>ver</strong> e que tem de <strong>ir junto</strong>, mas que ela não deve mudar: o número do pedido, o total calculado.</dd>
+  <dt>Quando usar <code>disabled</code></dt><dd>Algo que <strong>não vale agora</strong>: o cupom de uma promoção que acabou, os campos de entrega quando a cliente escolheu retirar na loja. Normalmente, um script liga o campo de novo quando ele passa a valer (o grupo inteiro pode ser desligado com <code>&lt;fieldset disabled&gt;</code>, aula <a href="fieldset.html">fieldset e legend</a>).</dd>
+</dl>
+
+<div class="warning">
+<strong><code>readonly</code> não é segurança</strong>
+<p>O <code>readonly</code> impede a mudança <strong>na tela</strong>. No F12, qualquer um apaga o atributo e troca <code>P-0042</code> por outro número. Quem recebe o pedido nunca deve confiar num valor só porque ele estava travado (aula <a href="validacao.html">Validação</a>, seção 8).</p>
+</div>
+
+<hr>
+
+<h2>4. <code>autofocus</code>: o cursor já no lugar</h2>
+<p>O atributo booleano <code>autofocus</code> ("foco automático") põe o cursor no campo assim que a página abre, como na página de um buscador, em que você já pode sair digitando:</p>
+
+<pre class="file" data-file="busca.html">&lt;form action="busca.html"&gt;
+  &lt;label for="q"&gt;Buscar receita:&lt;/label&gt;
+  &lt;input type="search" id="q" name="q" autofocus&gt;
+  &lt;button type="submit"&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Esse exemplo não tem quadro de resultado de propósito: o <code>autofocus</code> age quando a página <strong>abre</strong>, e esta página já abriu faz tempo. Na missão abaixo você vai vê-lo funcionar.</p>
+
+<ul>
+  <li><strong>Só um por página.</strong> O validador recusa dois (veja em <a href="#errado">Quando dá errado</a>), e faria sentido: o cursor só pode estar num lugar.</li>
+  <li><strong>Use pouco.</strong> Quem usa leitor de tela é levado direto para o campo e perde tudo o que vinha antes dele (o título, a explicação). No celular, o teclado abre sozinho e cobre a página. O <code>autofocus</code> combina com páginas cuja única tarefa é aquele campo: uma busca, um login.</li>
+</ul>
+
+<div class="tryhtml" data-goal="sel:input#q[autofocus],nsel:[autofocus]=1">
+<p class="try-task"><strong>Missão:</strong> ponha o <code>autofocus</code> no campo de busca. Depois clique no botão ↻ do quadro, que recarrega a página: o cursor deve aparecer piscando no campo, pronto para digitar.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;form&gt;
+  &lt;label for="q"&gt;Buscar receita:&lt;/label&gt;
+  &lt;input type="search" id="q" name="q"&gt;
+  &lt;button type="submit"&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;form&gt;
+  &lt;label for="q"&gt;Buscar receita:&lt;/label&gt;
+  &lt;input type="search" id="q" name="q" autofocus&gt;
+  &lt;button type="submit"&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. <code>autocomplete</code>: ajudar o navegador a preencher</h2>
+<p>Os navegadores guardam o seu nome, e-mail, endereço e senhas, e oferecem esses dados quando você chega num formulário. Para acertar <strong>qual</strong> dado vai em qual campo, eles tentam adivinhar pelo <code>name</code>, pelo rótulo… e às vezes erram. O atributo <code>autocomplete</code> ("completar automaticamente") diz com todas as letras o que cada campo pede:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome completo:&lt;/label&gt;
+     &lt;input type="text" id="nome" name="nome" autocomplete="name"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt;
+     &lt;input type="email" id="email" name="email" autocomplete="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Telefone:&lt;/label&gt;
+     &lt;input type="tel" id="tel" name="tel" autocomplete="tel"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="cep"&gt;CEP:&lt;/label&gt;
+     &lt;input type="text" id="cep" name="cep" autocomplete="postal-code"&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Clique no campo do nome: se o seu navegador tiver um nome guardado, ele oferece. Repare que o <code>name</code> do campo pode ser qualquer um (<code>nome</code>, em português); quem diz ao navegador o que o campo é, é o <code>autocomplete</code>, com palavras de uma lista fixa, em inglês.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Valor</th><th>O campo pede…</th></tr>
+<tr><td><code>name</code></td><td>o nome completo</td></tr>
+<tr><td><code>given-name</code> / <code>family-name</code></td><td>o primeiro nome / o sobrenome</td></tr>
+<tr><td><code>email</code></td><td>o e-mail</td></tr>
+<tr><td><code>tel</code></td><td>o telefone completo</td></tr>
+<tr><td><code>street-address</code></td><td>o endereço (rua, número, complemento)</td></tr>
+<tr><td><code>postal-code</code></td><td>o CEP</td></tr>
+<tr><td><code>address-level2</code></td><td>a cidade</td></tr>
+<tr><td><code>bday</code></td><td>a data de nascimento</td></tr>
+<tr><td><code>username</code></td><td>o nome de usuário de um login</td></tr>
+<tr><td><code>current-password</code></td><td>a senha atual (num login)</td></tr>
+<tr><td><code>new-password</code></td><td>uma senha nova (no cadastro); muitos navegadores sugerem uma senha forte</td></tr>
+<tr><td><code>one-time-code</code></td><td>o código que chega por SMS ou aplicativo</td></tr>
+<tr><td><code>off</code></td><td>"não ofereça dados guardados"</td></tr>
+</table>
+</div>
+
+<p>O <code>autocomplete</code> é também uma questão de <strong>acessibilidade</strong>: para quem tem dificuldade de digitar ou de lembrar dados, um formulário que se preenche sozinho faz muita diferença. As diretrizes de acessibilidade (WCAG) pedem que os campos com dados da própria pessoa digam o que são (aula <a href="formularios-acessiveis.html">Formulários Acessíveis</a>).</p>
+
+<div class="note">
+<strong>O <code>autocomplete="off"</code> nem sempre é obedecido</strong>
+<p>Ele pede ao navegador para não oferecer dados guardados, e serve para campos em que sugestões atrapalham (o código de um cupom, por exemplo). Mas os navegadores podem ignorá-lo em campos de login e senha, para que as pessoas continuem podendo usar o gerenciador de senhas. Não use <code>off</code> para "proteger" nada.</p>
+</div>
+
+<hr>
+
+<h2>Formas diferentes: qual usar?</h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th></tr>
+<tr><td>dizer o que o campo pede</td><td><code>&lt;label&gt;</code> (sempre)</td></tr>
+<tr><td>mostrar um exemplo do formato</td><td><code>placeholder</code>, ou um texto ao lado do campo</td></tr>
+<tr><td>sugerir uma resposta provável, que vai no envio</td><td><code>value</code></td></tr>
+<tr><td>mostrar um valor que vai junto, sem deixar mudar</td><td><code>readonly</code></td></tr>
+<tr><td>um campo que não vale agora e não vai no envio</td><td><code>disabled</code></td></tr>
+<tr><td>só mostrar um valor, que não precisa ser enviado</td><td>um texto comum (<code>&lt;p&gt;Pedido: P-0042&lt;/p&gt;</code>), e não um campo</td></tr>
+<tr><td>começar com o cursor no campo</td><td><code>autofocus</code>, em páginas de uma tarefa só</td></tr>
+<tr><td>que o navegador preencha dados da pessoa</td><td><code>autocomplete</code> com o valor certo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos desta seção são páginas completas com o mesmo começo de 7 linhas (<code>&lt;!DOCTYPE html&gt;</code> até <code>&lt;body&gt;</code>, como em <a href="estrutura.html">Estrutura de uma Página</a>). O código mostrado começa na <strong>linha 8</strong>.</p>
+
+<div class="cenario">
+<strong>Um <code>placeholder</code> numa caixa de marcar</strong>
+<pre class="file" data-file="dica.html">&lt;input type="text" name="nome" placeholder="Seu nome"&gt;
+&lt;label&gt;&lt;input type="checkbox" name="v" placeholder="sim"&gt; Vela&lt;/label&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dica.html
+"file:/home/ana/site/dica.html":9.8-9.57: error: Attribute “placeholder” is only allowed when the input type is “email”, “number”, “password”, “search”, “tel”, “text”, or “url”.</pre>
+<p><strong>O que significa:</strong> "o atributo <code>placeholder</code> só é permitido quando o tipo é <code>email</code>, <code>number</code>, <code>password</code>, <code>search</code>, <code>tel</code>, <code>text</code> ou <code>url</code>". Uma caixa de marcar não tem onde escrever, então não tem onde mostrar a dica.</p>
+<p>E repare na linha 8: um campo com <code>placeholder</code> e <strong>sem</strong> <code>&lt;label&gt;</code>. O validador não disse nada. O problema dela é de uso, e não de escrita (seção 2).</p>
+<p><strong>Como consertar:</strong> tire o <code>placeholder</code> da caixa; o texto dela vai no <code>&lt;label&gt;</code>. E dê um <code>&lt;label&gt;</code> ao campo do nome.</p>
+</div>
+
+<div class="cenario">
+<strong><code>readonly</code> num <code>select</code> ou numa caixa de marcar</strong>
+<pre class="file" data-file="travado.html">&lt;label for="s"&gt;Sabor:&lt;/label&gt;
+&lt;select id="s" name="s" readonly&gt;&lt;option&gt;a&lt;/option&gt;&lt;/select&gt;
+&lt;label&gt;&lt;input type="checkbox" name="v" readonly&gt; Vela&lt;/label&gt;
+&lt;label for="t"&gt;Texto:&lt;/label&gt;
+&lt;textarea id="t" name="t" readonly&gt;&lt;/textarea&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu travado.html
+"file:/home/ana/site/travado.html":9.1-9.33: error: Attribute “readonly” not allowed on element “select” at this point.
+"file:/home/ana/site/travado.html":10.8-10.48: error: Attribute “readonly” is only allowed when the input type is “date”, “datetime-local”, “email”, “month”, “number”, “password”, “search”, “tel”, “text”, “time”, “url”, or “week”.</pre>
+<p><strong>O que significa:</strong> o <code>readonly</code> não é permitido no <code>select</code>, e no <code>input</code> só vale para os tipos em que se <strong>digita</strong>. No <code>&lt;textarea&gt;</code> (linha 12) ele é permitido, e o validador não reclamou.</p>
+<p><strong>O que o navegador faz:</strong> ignora o atributo. A lista e a caixa continuam mudando normalmente: o "travado" não trava nada.</p>
+<p><strong>Como consertar:</strong> se o valor não pode mudar, mostre-o como texto comum. Se ele precisa ir no envio, use um campo de texto <code>readonly</code> com o valor. E, se é algo que não vale agora, use <code>disabled</code>, que funciona em todos.</p>
+</div>
+
+<div class="cenario">
+<strong>Dois <code>autofocus</code></strong>
+<pre class="file" data-file="foco.html">&lt;label for="b"&gt;Busca:&lt;/label&gt;
+&lt;input type="search" id="b" name="b" autofocus&gt;
+&lt;label for="n"&gt;Nome:&lt;/label&gt;
+&lt;input type="text" id="n" name="n" autofocus&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu foco.html
+"file:/home/ana/site/foco.html":11.1-11.45: error: There must not be two elements with the same "nearest ancestor autofocus scoping root element" that both have the “autofocus” attribute specified.</pre>
+<p><strong>O que significa:</strong> "não pode haver dois elementos com <code>autofocus</code> no mesmo 'escopo de foco automático'". O nome é complicado; na prática, o escopo é a página (ou um <code>&lt;dialog&gt;</code>, que tem o seu próprio, aula <a href="dialog.html">dialog</a>). A linha 11 é o segundo <code>autofocus</code>.</p>
+<p><strong>O que o navegador faz:</strong> o foco vai para o primeiro, e o segundo é ignorado.</p>
+<p><strong>Como consertar:</strong> escolha um. Na dúvida, nenhum.</p>
+</div>
+
+<div class="cenario">
+<strong>Um valor de <code>autocomplete</code> inventado</strong>
+<pre class="file" data-file="completar.html">&lt;label for="n"&gt;Nome:&lt;/label&gt;
+&lt;input type="text" id="n" name="n" autocomplete="nome"&gt;
+&lt;label for="e"&gt;E-mail:&lt;/label&gt;
+&lt;input type="email" id="e" name="e" autocomplete="email"&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu completar.html
+"file:/home/ana/site/completar.html":9.1-9.55: error: Bad value “nome” for attribute “autocomplete” on element “input”: The string “nome” is not a valid autofill field name.</pre>
+<p><strong>O que significa:</strong> "valor ruim, <code>nome</code>, para o <code>autocomplete</code>: não é um nome de campo de preenchimento automático válido". Os valores são palavras fixas, em inglês, como as da tabela da seção 5. O <code>email</code> da linha 11 está certo.</p>
+<p><strong>Como consertar:</strong> <code>autocomplete="name"</code>. Na dúvida, confira na tabela; o validador pega todo valor inventado.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>value</code> fora do formato do tipo</strong>
+<pre class="file" data-file="formato.html">&lt;label for="q"&gt;Quantidade:&lt;/label&gt;
+&lt;input type="number" id="q" name="q" value="dois"&gt;
+&lt;label for="d"&gt;Data:&lt;/label&gt;
+&lt;input type="date" id="d" name="d" value="20/10/2026"&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu formato.html
+"file:/home/ana/site/formato.html":9.1-9.50: error: Bad value “dois” for attribute “value” on element “input”: Expected a minus sign or a digit but saw “d” instead.
+"file:/home/ana/site/formato.html":11.1-11.54: error: Bad value “20/10/2026” for attribute “value” on element “input”: The literal did not satisfy the date format.</pre>
+<p><strong>O que significa:</strong> o primeiro erro diz "esperava um sinal de menos ou um algarismo, mas encontrou <code>d</code>"; o segundo, "o texto não está no formato de data". O formato de data do HTML é sempre <code>2026-10-20</code>, qualquer que seja a língua do navegador.</p>
+<p><strong>O que o navegador faz:</strong> joga o valor fora. No Chromium 155, os dois campos abriram <strong>vazios</strong> e foram enviados vazios (<code>q=&amp;d=</code>).</p>
+<p><strong>Como consertar:</strong> <code>value="2"</code> e <code>value="2026-10-20"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>readonly="false"</code></strong>
+<pre class="file" data-file="booleano.html">&lt;label for="n"&gt;Nome:&lt;/label&gt;
+&lt;input type="text" id="n" name="n" disabled="disabled" readonly="false"&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu booleano.html
+"file:/home/ana/site/booleano.html":9.1-9.72: error: Bad value “false” for attribute “readonly” on element “input”.</pre>
+<p><strong>O que significa:</strong> como em todo atributo booleano, o <code>false</code> não vale: o campo continua <code>readonly</code>. Já o <code>disabled="disabled"</code> é aceito: repetir o nome do atributo é uma das três formas válidas (as outras são <code>disabled</code> e <code>disabled=""</code>).</p>
+<p><strong>Como consertar:</strong> para um campo que pode ser mudado, <strong>apague</strong> o <code>readonly</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>O que faz</th><th>É enviado?</th></tr>
+<tr><td><code>value="…"</code></td><td>valor inicial; volta com o <code>reset</code></td><td>sim (ou o que a pessoa escreveu)</td></tr>
+<tr><td><code>placeholder="…"</code></td><td>dica clarinha que some ao digitar; não substitui o <code>label</code></td><td>não</td></tr>
+<tr><td><code>readonly</code></td><td>não deixa mudar; recebe foco; não é validado</td><td>sim</td></tr>
+<tr><td><code>disabled</code></td><td>desliga: não muda, não recebe foco, não é validado</td><td>não</td></tr>
+<tr><td><code>autofocus</code></td><td>foco no campo quando a página abre; um por página</td><td>(não muda o envio)</td></tr>
+<tr><td><code>autocomplete="…"</code></td><td>diz ao navegador que dado preencher (<code>name</code>, <code>email</code>, <code>tel</code>, <code>postal-code</code>, <code>new-password</code>…) ou <code>off</code></td><td>(não muda o envio)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A dica</h3>
+<p>Complete para mostrar um exemplo clarinho dentro do campo:</p>
+<div class="ex-code">&lt;input type="tel" id="tel" name="tel" <input data-answer="placeholder" aria-label="atributo">="ex.: (11) 98765-4321"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O e-mail</h3>
+<p>Complete para o navegador saber que o campo pede o e-mail da pessoa:</p>
+<div class="ex-code">&lt;input type="email" id="email" name="contato" autocomplete="<input data-answer="email" aria-label="valor">"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. O total do pedido precisa aparecer, ir junto no envio e não pode ser mudado pela cliente na tela. Qual atributo?</p>
+<label><input type="radio" name="q3"> <code>disabled</code></label>
+<label><input type="radio" name="q3"> <code>readonly</code></label>
+<label><input type="radio" name="q3"> <code>placeholder</code></label>
+<label><input type="radio" name="q3"> <code>autocomplete="off"</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. Um campo <code>name="cidade"</code> tem <code>placeholder="São Paulo"</code> e ninguém digita nada nele. O que é enviado?</p>
+<label><input type="radio" name="q4"> <code>cidade=São Paulo</code></label>
+<label><input type="radio" name="q4"> nada: o campo fica de fora</label>
+<label><input type="radio" name="q4"> <code>cidade=placeholder</code></label>
+<label><input type="radio" name="q4"> <code>cidade=</code> (vazio)</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Quantos <code>autofocus</code> uma página pode ter (fora de um <code>dialog</code>)?</p>
+<label><input type="radio" name="q5"> Um</label>
+<label><input type="radio" name="q5"> Um por formulário</label>
+<label><input type="radio" name="q5"> Quantos quiser</label>
+<label><input type="radio" name="q5"> Nenhum: o atributo é obsoleto</label>
+</div>
+
+<h3>Missão final: confirmar o pedido</h3>
+
+<div class="tryhtml" data-goal="sel:#pedido[readonly][value='P-0042'][name=pedido],nsel:#pedido[disabled]=0,attr:#nome[autocomplete]=name,attr:#email[autocomplete]=email,sel:#email[placeholder],attr:#cep[autocomplete]=postal-code,sel:#cupom[disabled],nsel:input:not([id])=0,nsel:label[for]=5">
+<p class="try-task"><strong>Missão:</strong> arrume a tela de confirmação da Ana:</p>
+<ul class="try-task">
+  <li>o número do pedido (<code>P-0042</code>) aparece, vai no envio e não pode ser mudado;</li>
+  <li>nome, e-mail e CEP com o <code>autocomplete</code> certo; o e-mail com um <code>placeholder</code> de exemplo;</li>
+  <li>o cupom está desligado (a promoção acabou);</li>
+  <li>todo campo com <code>id</code> e o seu <code>&lt;label for&gt;</code>.</li>
+</ul>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;Pedido: &lt;input type="text" name="pedido"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;input type="text" name="nome" placeholder="Nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;input type="email" name="email" placeholder="E-mail"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;input type="text" name="cep" placeholder="CEP"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;input type="text" name="cupom" placeholder="Cupom"&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Confirmar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;&lt;label for="pedido"&gt;Pedido:&lt;/label&gt;
+     &lt;input type="text" id="pedido" name="pedido" value="P-0042" readonly&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt;
+     &lt;input type="text" id="nome" name="nome" autocomplete="name"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt;
+     &lt;input type="email" id="email" name="email" autocomplete="email" placeholder="ex.: ana@example.com"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="cep"&gt;CEP:&lt;/label&gt;
+     &lt;input type="text" id="cep" name="cep" autocomplete="postal-code"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="cupom"&gt;Cupom:&lt;/label&gt;
+     &lt;input type="text" id="cupom" name="cupom" disabled&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Confirmar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>Clique em <strong>Confirmar</strong> com a solução: na página "Formulário enviado" do editor, o <code>pedido</code> aparece e o <code>cupom</code> não.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>value</code>: valor inicial, enviado se a pessoa não mudar; precisa estar no formato do tipo (data = <code>2026-10-20</code>), senão o navegador o joga fora.</li>
+  <li><code>placeholder</code>: exemplo clarinho que some ao digitar; não é enviado e <strong>não substitui o <code>&lt;label&gt;</code></strong> (o validador não avisa).</li>
+  <li><code>readonly</code>: não muda, mas recebe foco e <strong>é enviado</strong>. <code>disabled</code>: não muda, não recebe foco e <strong>não é enviado</strong>. Nenhum dos dois é validado, e nenhum é segurança.</li>
+  <li><code>autofocus</code>: cursor no campo ao abrir a página; um por página, e com moderação.</li>
+  <li><code>autocomplete</code>: diz ao navegador que dado preencher, com palavras fixas (<code>name</code>, <code>email</code>, <code>tel</code>, <code>postal-code</code>, <code>current-password</code>…). Ajuda todo mundo, e mais ainda quem tem dificuldade de digitar.</li>
+  <li>Atributo booleano com <code>="false"</code> continua ligado: para desligar, apague o atributo.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
