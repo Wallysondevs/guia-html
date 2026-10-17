@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML srcset e sizes — imagens responsivas | Guia HTML</title>
+<meta name="description" content="Imagens responsivas para quem nunca fez um site: o atributo srcset com 1x e 2x para telas de alta densidade, com 400w, 800w e 1200w junto com sizes para telas de larguras diferentes, qual arquivo um Chromium de verdade escolheu em cada tela e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Imagens Responsivas</span></h1>
+
+<p class="intro">A foto do bolo no site da Ana tem 1200 pixels de largura, para ficar bonita no computador. Mas a tia dela abre o site num celular simples, com o pacote de dados acabando, e baixa os mesmos 42 KB para uma tela que só precisava de 10. Com uma foto pequena, o celular fica feliz e o computador mostra um bolo borrado. O atributo <code>srcset</code> ("conjunto de fontes") resolve isso: você oferece <strong>vários tamanhos</strong> da mesma foto, e o navegador de cada pessoa escolhe o que serve para a tela dela.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Por que uma foto só não serve bem a todas as telas, e o que é uma tela de <strong>alta densidade</strong> ("2x").</li>
+  <li><code>srcset</code> com <code>1x</code> e <code>2x</code>: para imagens que têm sempre o mesmo tamanho na tela, como um logotipo.</li>
+  <li><code>srcset</code> com <code>400w</code>, <code>800w</code>, <code>1200w</code> + <code>sizes</code>: para fotos que mudam de tamanho com a tela.</li>
+  <li>Qual arquivo um navegador de verdade escolheu em cada tela (medido num Chromium).</li>
+  <li>Como conferir a escolha no F12.</li>
+  <li>Os erros reais do validador: <code>sizes</code> que falta, <code>px</code> no lugar de <code>w</code>, vírgula esquecida.</li>
+</ul>
+</div>
+
+<p>Antes, veja <a href="imagens-tamanho.html">Largura e Altura</a> (o <code>width</code>, o <code>height</code> e o <code>max-width: 100%</code>) e <a href="formatos-imagem.html">Formatos</a>. As fotos dos exemplos são as do guia: o mesmo bolo em <code>bolo-400.jpg</code> (400 × 300, 10 KB), <code>bolo-800.jpg</code> (800 × 600, 25 KB) e <code>bolo-1200.jpg</code> (1200 × 900, 42 KB). As mensagens do validador saíram do <code>vnu</code> na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/responsivas</code>.</p>
+
+<hr>
+
+<h2>A ideia: o garçom e os tamanhos de pizza</h2>
+<p>Numa pizzaria, o cardápio oferece a mesma pizza em broto, média e grande. O cliente não precisa saber de fornos: diz quantas pessoas vão comer, e o garçom traz o tamanho que serve. Ninguém pede pizza grande para uma pessoa só.</p>
+
+<p>No <code>srcset</code>, você é a pizzaria: lista os tamanhos da mesma foto. O navegador é o garçom: ele sabe coisas que você não sabe quando escreve o HTML, como a largura da janela e a densidade da tela de quem está do outro lado. Com isso, ele escolhe e baixa <strong>um</strong> arquivo só.</p>
+
+<h3>Telas de alta densidade</h3>
+<p>A aula <a href="imagens-tamanho.html">Largura e Altura</a> contou que o <code>width</code> é medido em "pixels do CSS". Num computador comum, 1 pixel do CSS é 1 pontinho da tela. Na maioria dos celulares, é 2 ou 3 pontinhos (telas "2x" e "3x", as famosas telas Retina). Uma imagem de 200 pixels mostrada com <code>width="200"</code> numa tela 2x é esticada para 400 pontinhos e fica levemente borrada. Para ficar nítida, a tela 2x precisa de um arquivo com o <strong>dobro</strong> de pixels.</p>
+
+<hr>
+
+<h2>1. <code>srcset</code> com <code>1x</code> e <code>2x</code></h2>
+<p>O logotipo da lojinha aparece sempre com 200 × 80, em qualquer tela. O guia tem dois arquivos dele: <code>logo-lojinha-200.png</code> (200 × 80) e <code>logo-lojinha-400.png</code> (400 × 160, o dobro):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;img src="assets/midia/logo-lojinha-200.png"
+     srcset="assets/midia/logo-lojinha-200.png 1x, assets/midia/logo-lojinha-400.png 2x"
+     alt="Lojinha da Ana" width="200" height="80"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>src="…-200.png"</dt><dd>O arquivo "de sempre". Navegadores muito antigos, que não conhecem o <code>srcset</code>, usam este. É obrigatório.</dd>
+  <dt>srcset="</dt><dd>A lista de opções, separadas por <strong>vírgula</strong>. Cada opção é um endereço, um espaço e um <strong>descritor</strong>.</dd>
+  <dt>…-200.png 1x,</dt><dd>"Para telas 1x (densidade normal), use este."</dd>
+  <dt>…-400.png 2x"</dt><dd>"Para telas 2x (ou mais), use este, com o dobro de pixels."</dd>
+  <dt>width="200" height="80"</dt><dd>O tamanho na tela é sempre 200 × 80, seja qual for o arquivo escolhido. O <code>srcset</code> só muda a <strong>nitidez</strong>.</dd>
+</dl>
+
+<p>O código foi quebrado em três linhas para caber na tela: dentro de uma tag, quebras de linha entre atributos valem como espaços. O que o seu navegador escolheu depende da sua tela. Num Chromium de verdade (o 155, o mesmo que confere as missões do guia), simulando várias telas, a escolha foi:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Janela</th><th>Densidade</th><th>Arquivo escolhido</th><th>Tamanho na tela</th></tr>
+<tr><td>1280 px (computador)</td><td>1x</td><td><code>logo-lojinha-200.png</code></td><td>200 px</td></tr>
+<tr><td>800 px</td><td>1x</td><td><code>logo-lojinha-200.png</code></td><td>200 px</td></tr>
+<tr><td>800 px</td><td>2x</td><td><code>logo-lojinha-400.png</code></td><td>200 px</td></tr>
+<tr><td>360 px (celular)</td><td>2x</td><td><code>logo-lojinha-400.png</code></td><td>200 px</td></tr>
+<tr><td>360 px (celular)</td><td>3x</td><td><code>logo-lojinha-400.png</code></td><td>200 px (não há um "3x"; usou o maior)</td></tr>
+</table>
+</div>
+
+<p>Repare que a largura da janela não importou: só a densidade. É para isso que servem o <code>1x</code> e o <code>2x</code>: imagens de <strong>tamanho fixo</strong>, como logotipos, ícones e avatares. (Para logotipos, um SVG resolve sem <code>srcset</code>, porque é nítido em qualquer densidade: aula <a href="formatos-imagem.html">Formatos</a>. O <code>srcset</code> com <code>x</code> é para quando você só tem PNG, JPG ou WebP.)</p>
+
+<div class="tryhtml" data-goal="sel:img[srcset],src:srcset=&quot;[^&quot;]*avatar-ana-96\.png\s+1x,src:srcset=&quot;[^&quot;]*avatar-ana-192\.png\s+2x,attr:img[src]=assets/midia/avatar-ana-96.png,attr:img[width]=96">
+<p class="try-task"><strong>Missão:</strong> o avatar da Ana aparece com 96 × 96. O guia tem o arquivo de 96 (<code>assets/midia/avatar-ana-96.png</code>) e um com o dobro, 192 (<code>assets/midia/avatar-ana-192.png</code>). Acrescente um <code>srcset</code> que ofereça o de 96 para telas <code>1x</code> e o de 192 para telas <code>2x</code>. Mantenha o <code>src</code> e o tamanho.</p>
+<pre class="script" data-file="index.html">&lt;img src="assets/midia/avatar-ana-96.png" alt="Ana" width="96" height="96"&gt;
+&lt;p&gt;Oi! Eu sou a Ana, e faço bolos desde 2020.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;img src="assets/midia/avatar-ana-96.png"
+     srcset="assets/midia/avatar-ana-96.png 1x, assets/midia/avatar-ana-192.png 2x"
+     alt="Ana" width="96" height="96"&gt;
+&lt;p&gt;Oi! Eu sou a Ana, e faço bolos desde 2020.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. <code>srcset</code> com <code>w</code> + <code>sizes</code></h2>
+<p>A foto do bolo é diferente do logotipo: ela <strong>muda de tamanho</strong> com a tela (com o <code>max-width: 100%</code> da aula <a href="imagens-tamanho.html">Largura e Altura</a>, ela ocupa a largura toda no celular). Aqui o <code>1x</code>/<code>2x</code> não basta: o navegador precisa saber a <strong>largura</strong> de cada arquivo e o <strong>tamanho</strong> em que a foto vai aparecer. São dois atributos:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;img src="assets/midia/bolo-800.jpg"
+     srcset="assets/midia/bolo-400.jpg 400w,
+             assets/midia/bolo-800.jpg 800w,
+             assets/midia/bolo-1200.jpg 1200w"
+     sizes="(max-width: 600px) 100vw, 600px"
+     alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+     style="width: 100%; max-width: 600px; height: auto"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>srcset="… 400w, … 800w, … 1200w"</dt><dd>A lista de tamanhos. O <code>w</code> vem de <em>width</em>: <code>400w</code> quer dizer "este arquivo tem 400 pixels de largura" (o tamanho <strong>real</strong> do arquivo, aquele que o <code>file</code> mostra). Pode quebrar a lista em várias linhas, como aqui.</dd>
+  <dt>sizes="(max-width: 600px) 100vw, 600px"</dt><dd>Em que tamanho a foto vai <strong>aparecer</strong>. Lê-se: "se a janela tiver até 600 px de largura, a foto ocupa 100% da largura da janela; senão, ocupa 600 px". O <code>vw</code> (de <em>viewport width</em>, "largura da janela") é uma porcentagem da janela: <code>100vw</code> é a janela inteira, <code>50vw</code> é metade.</dd>
+  <dt>src="…-800.jpg"</dt><dd>O plano B, para navegadores sem <code>srcset</code>.</dd>
+  <dt>width="800" height="600"</dt><dd>A proporção, para reservar o espaço e evitar o pulo (aula <a href="imagens-tamanho.html#pulo">Largura e Altura</a>).</dd>
+  <dt>style="…"</dt><dd>Um pouco de CSS para a foto ocupar a largura disponível até 600 px, como o <code>sizes</code> promete (o CSS tem guia próprio; aula <a href="atributo-style.html">O Atributo style</a>).</dd>
+</dl>
+
+<h3>A conta que o navegador faz</h3>
+<ol class="passo">
+  <li>Lê o <code>sizes</code> e descobre o tamanho na tela. Janela de 360 px: a condição <code>(max-width: 600px)</code> vale, então a foto terá <code>100vw</code> = 360 px.</li>
+  <li>Multiplica pela densidade. Tela 2x: 360 × 2 = 720 pontinhos.</li>
+  <li>Procura no <code>srcset</code> o menor arquivo que cubra isso: 400 não basta, 800 basta. Baixa o <code>bolo-800.jpg</code>.</li>
+</ol>
+
+<p>E foi isso mesmo que o Chromium 155 fez com este código:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Janela</th><th>Densidade</th><th>Tamanho na tela (<code>sizes</code>)</th><th>Pontinhos necessários</th><th>Arquivo escolhido</th></tr>
+<tr><td>1280 px</td><td>1x</td><td>600 px</td><td>600</td><td><code>bolo-800.jpg</code> (25 KB)</td></tr>
+<tr><td>1280 px</td><td>2x</td><td>600 px</td><td>1200</td><td><code>bolo-1200.jpg</code> (42 KB)</td></tr>
+<tr><td>800 px</td><td>1x</td><td>600 px</td><td>600</td><td><code>bolo-800.jpg</code></td></tr>
+<tr><td>400 px</td><td>1x</td><td>400 px</td><td>400</td><td><code>bolo-400.jpg</code> (10 KB)</td></tr>
+<tr><td>360 px</td><td>2x</td><td>360 px</td><td>720</td><td><code>bolo-800.jpg</code></td></tr>
+<tr><td>360 px</td><td>3x</td><td>360 px</td><td>1080</td><td><code>bolo-1200.jpg</code></td></tr>
+</table>
+</div>
+
+<p>Cada tela recebeu o que precisava: o computador comum baixou 25 KB em vez de 42, o celular simples (400 px, 1x) baixou 10 KB, e as telas de alta densidade receberam o arquivo grande, que fica nítido nelas.</p>
+
+<div class="warning">
+<strong>O navegador tem a palavra final</strong>
+<p>A conta acima é a regra geral, mas o padrão HTML deixa o navegador escolher. Um exemplo que o Chromium mostrou: com a janela em 1280 px, ele baixou o <code>bolo-1200.jpg</code> (num teste com <code>sizes="100vw"</code>); depois, com a janela encolhida para 360 px, ele <strong>continuou</strong> com o arquivo de 1200, que já estava baixado, em vez de baixar um menor. O padrão também permite que o navegador prefira um arquivo menor quando a internet está lenta ou a pessoa pediu economia de dados. Por isso, nunca use o <code>srcset</code> para mostrar imagens <strong>diferentes</strong>: todos os arquivos da lista devem ser a mesma foto em tamanhos diferentes. Para fotos diferentes em telas diferentes, existe o <code>&lt;picture&gt;</code> (aula <a href="picture.html">O Elemento picture</a>).</p>
+</div>
+
+<h3>O <code>sizes</code>, por dentro</h3>
+<p>O <code>sizes</code> é uma lista de pares "condição tamanho", separados por vírgula, e um tamanho final sem condição. O navegador usa o <strong>primeiro</strong> par cuja condição vale; se nenhuma vale, usa o último tamanho:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>sizes</code></th><th>Quer dizer</th></tr>
+<tr><td><code>100vw</code></td><td>a foto ocupa sempre a janela inteira</td></tr>
+<tr><td><code>(max-width: 600px) 100vw, 600px</code></td><td>até 600 px de janela, a janela inteira; depois, 600 px fixos (uma coluna de texto)</td></tr>
+<tr><td><code>(max-width: 700px) 100vw, 50vw</code></td><td>no celular, a janela inteira; em telas maiores, metade (duas fotos lado a lado)</td></tr>
+<tr><td><code>(max-width: 700px) 90vw, (max-width: 1200px) 45vw, 30vw</code></td><td>uma, duas ou três colunas, conforme a tela</td></tr>
+</table>
+</div>
+
+<p>Não precisa acertar no pixel: o <code>sizes</code> é uma <strong>estimativa</strong> para o navegador escolher o arquivo. Quem decide o tamanho de verdade na tela é o CSS. Mas uma estimativa muito errada desperdiça internet, como mostra a seção 3.</p>
+
+<div class="tryhtml" data-goal="sel:img[srcset][sizes],src:bolo-400\.jpg\s+400w,src:bolo-800\.jpg\s+800w,src:bolo-1200\.jpg\s+1200w,src:sizes=&quot;\s*100vw\s*&quot;,attr:img[src]=assets/midia/bolo-800.jpg">
+<p class="try-task"><strong>Missão:</strong> esta foto ocupa sempre a largura toda do quadro. Acrescente um <code>srcset</code> com os três arquivos do bolo (<code>bolo-400.jpg</code>, <code>bolo-800.jpg</code> e <code>bolo-1200.jpg</code>, todos em <code>assets/midia/</code>, com os descritores <code>400w</code>, <code>800w</code> e <code>1200w</code>) e um <code>sizes</code> que diga "a janela inteira": <code>100vw</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg"
+     alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+     style="width: 100%; height: auto"&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg"
+     srcset="assets/midia/bolo-400.jpg 400w, assets/midia/bolo-800.jpg 800w, assets/midia/bolo-1200.jpg 1200w"
+     sizes="100vw"
+     alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+     style="width: 100%; height: auto"&gt;
+</pre>
+</div>
+
+<p>Qual arquivo o seu navegador escolheu aqui? Depende da largura do quadro (que é a "janela" da caixa) e da sua tela. A próxima seção mostra como ver.</p>
+
+<hr>
+
+<h2>3. Como conferir a escolha</h2>
+<p>A tela não diz qual arquivo veio: as três versões do bolo são a mesma foto. Para ver, use as Ferramentas do Desenvolvedor (F12, aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>):</p>
+<ol class="passo">
+  <li>Abra a aba de rede (<em>Network</em>) e marque a opção que desativa o cache (senão o navegador reaproveita o arquivo já baixado, como no aviso acima).</li>
+  <li>Recarregue a página. Na lista de pedidos, procure <code>bolo-</code>: aparece <strong>um</strong> só arquivo do bolo, o escolhido, com o tamanho que foi baixado.</li>
+  <li>Use o modo de dispositivo (o ícone de celular e tablet, no canto das ferramentas) para escolher a largura e a densidade da tela, e recarregue de novo.</li>
+</ol>
+
+<h3>O que acontece sem o <code>sizes</code>?</h3>
+<p>A Ana esqueceu o <code>sizes</code> numa foto que aparece pequena, com <code>width="400"</code>. Sem <code>sizes</code>, o navegador supõe que a foto ocupa <strong>a janela inteira</strong> (<code>100vw</code>). O Chromium 155, numa janela de 1280 px e tela 1x, baixou o <code>bolo-1200.jpg</code> (42 KB) para mostrar uma foto de 400 px, que o <code>bolo-400.jpg</code> (10 KB) resolvia. Mais de 4 vezes o necessário. O validador avisa:</p>
+
+<pre class="term" data-cwd="~/responsivas">$ vnu sem-sizes.html
+"file:/home/ana/responsivas/sem-sizes.html":8.1-8.138: error: When the “srcset” attribute has any image candidate string with a width descriptor, the “sizes” attribute must also be specified.</pre>
+
+<p>"Quando o <code>srcset</code> tem alguma opção com descritor de largura (<code>w</code>), o atributo <code>sizes</code> também tem de ser escrito."</p>
+
+<div class="note">
+<strong>Novidade: <code>sizes="auto"</code></strong>
+<p>Para imagens com carregamento preguiçoso (<code>loading="lazy"</code>, aula <a href="lazy-loading.html">Carregamento Preguiçoso</a>), o HTML ganhou <code>sizes="auto"</code>: o navegador espera o CSS desenhar a página e mede sozinho o tamanho da foto. O validador aceita <code>sizes="auto"</code> só junto com <code>loading="lazy"</code>; sem ele, o erro é <code>The “sizes” attribute value starting with “auto” is only valid for lazy-loaded images. Add “loading="lazy"” to this element.</code> Nem todo navegador entende o <code>auto</code> ainda; os que não entendem usam <code>100vw</code>.</p>
+</div>
+
+<hr>
+
+<h2>4. Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>Imagem de tamanho fixo na tela (logotipo, ícone, avatar) em PNG/JPG/WebP</td><td><code>srcset</code> com <code>1x</code> e <code>2x</code></td></tr>
+<tr><td>Logotipo ou ícone que existe em SVG</td><td>só o SVG, sem <code>srcset</code></td></tr>
+<tr><td>Foto que muda de tamanho com a tela</td><td><code>srcset</code> com <code>w</code> + <code>sizes</code></td></tr>
+<tr><td>Foto pequena, igual em todas as telas, que já é leve</td><td>um <code>&lt;img&gt;</code> simples basta</td></tr>
+<tr><td>Recorte diferente no celular (foto quadrada) ou formato novo com plano B (AVIF + JPG)</td><td><code>&lt;picture&gt;</code> (próxima aula)</td></tr>
+</table>
+</div>
+
+<p>Quantos tamanhos? Três costumam bastar: um para celular (uns 400 a 600 px), um médio (800 a 1000) e um grande (1200 a 1600). Os arquivos você mesmo prepara, num editor de imagens ou no Squoosh (aula <a href="formatos-imagem.html">Formatos</a>): o navegador não cria tamanhos novos, só escolhe entre os que você oferece.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: When the “srcset” attribute has any image candidate string with a width descriptor, the “sizes” attribute must also be specified.</code></strong>
+<p><strong>O que significa:</strong> há <code>w</code> no <code>srcset</code> e falta o <code>sizes</code> (seção 3). Sem ele, o navegador supõe a janela inteira e baixa arquivos grandes demais.</p>
+<p><strong>Como consertar:</strong> escreva o <code>sizes</code> com o tamanho em que a foto aparece. Se ela ocupa mesmo a janela toda, <code>sizes="100vw"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: The “sizes” attribute must only be specified if the “srcset” attribute is also specified.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>&lt;img src="bolo-800.jpg" sizes="100vw" …&gt;</code>: um <code>sizes</code> sem lista de arquivos para escolher.</p>
+<pre class="term" data-cwd="~/responsivas">$ vnu so-sizes.html
+"file:/home/ana/responsivas/so-sizes.html":8.1-8.85: error: The “sizes” attribute must only be specified if the “srcset” attribute is also specified.</pre>
+<p><strong>Como consertar:</strong> acrescente o <code>srcset</code> ou apague o <code>sizes</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “bolo-400.jpg 400px, bolo-800.jpg 800px” for attribute “srcset”…: Expected width descriptor but found “400px”</code></strong>
+<p><strong>O que aconteceu:</strong> a Ana escreveu <code>px</code> (do CSS) no lugar de <code>w</code>:</p>
+<pre class="term" data-cwd="~/responsivas">$ vnu px.html
+"file:/home/ana/responsivas/px.html":8.1-8.133: error: Bad value “bolo-400.jpg 400px, bolo-800.jpg 800px” for attribute “srcset” on element “img”: Expected width descriptor but found “400px” at “…-400.jpg 400px,”. (When the “sizes” attribute is present, all image candidate strings must specify a width.)</pre>
+<p>"Esperava um descritor de largura, mas encontrou <code>400px</code>. (Quando o <code>sizes</code> está presente, todas as opções têm de dizer a largura.)" O navegador descarta as opções que não entende e fica com o <code>src</code>.</p>
+<p><strong>Como consertar:</strong> no <code>srcset</code>, <code>400w</code>; no <code>sizes</code>, unidades do CSS (<code>px</code>, <code>vw</code>, <code>em</code>…).</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “600” for attribute “sizes” on element “img”: Expected units … but found no units at “600”.</code></strong>
+<p><strong>O que aconteceu:</strong> o contrário: no <code>sizes</code>, o número ficou sem unidade (<code>sizes="600"</code>).</p>
+<pre class="term" data-cwd="~/responsivas">$ vnu sizes-sem-unidade.html
+"file:/home/ana/responsivas/sizes-sem-unidade.html":8.1-8.129: error: Bad value “600” for attribute “sizes” on element “img”: Expected units (one of “em”, “ex”, “ch”, “rem”, “cap”, “ic”, “vw”, “svw”, “lvw”, “dvw”, “vh”, “svh”, “lvh”, “dvh”, “vi”, “svi”, “lvi”, “dvi”, “vb”, “svb”, “lvb”, “dvb”, “vmin”, “svmin”, “lvmin”, “dvmin”, “vmax”, “svmax”, “lvmax”, “dvmax”, “cm”, “mm”, “q”, “in”, “pc”, “pt”, “px”) but found no units at “600”.</pre>
+<p>A lista enorme são todas as unidades que o CSS aceita. Na prática, você vai usar <code>px</code> e <code>vw</code>.</p>
+<p><strong>Como consertar:</strong> <code>sizes="600px"</code>. Resumindo a confusão: <code>width</code> do <code>&lt;img&gt;</code> = número puro; <code>srcset</code> = número + <code>w</code> (ou <code>x</code>); <code>sizes</code> = número + unidade do CSS.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: … Expected width descriptor but found “2x” …</code> (misturar <code>w</code> e <code>x</code>)</strong>
+<pre class="term" data-cwd="~/responsivas">$ vnu mistura.html
+"file:/home/ana/responsivas/mistura.html":8.1-8.130: error: Bad value “bolo-400.jpg 400w, bolo-1200.jpg 2x” for attribute “srcset” on element “img”: Expected width descriptor but found “2x” at “…olo-1200.jpg 2x”. (When the “sizes” attribute is present, all image candidate strings must specify a width.)</pre>
+<p><strong>O que significa:</strong> um <code>srcset</code> usa um tipo de descritor só: todos <code>x</code> (seção 1) ou todos <code>w</code> (seção 2).</p>
+<p><strong>Como consertar:</strong> escolha um. Para fotos, <code>w</code> + <code>sizes</code> já cobre as telas 2x sozinho (é a conta da densidade).</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: … Expected single descriptor but found extraneous descriptor “bolo-800.jpg” …</code> (vírgula esquecida)</strong>
+<pre class="term" data-cwd="~/responsivas">$ vnu sem-virgula.html
+"file:/home/ana/responsivas/sem-virgula.html":8.1-8.130: error: Bad value “bolo-400.jpg 400w bolo-800.jpg 800w” for attribute “srcset” on element “img”: Expected single descriptor but found extraneous descriptor “bolo-800.jpg” at “…w bolo-800.jpg ”.</pre>
+<p>"Esperava um descritor só, mas encontrou um a mais: <code>bolo-800.jpg</code>." Sem a vírgula, o navegador acha que <code>bolo-800.jpg</code> é mais um descritor da primeira opção.</p>
+<p><strong>Como consertar:</strong> vírgula entre as opções: <code>bolo-400.jpg 400w, bolo-800.jpg 800w</code>. (Por causa disso, nomes de arquivo com vírgula dão problema no <code>srcset</code>: mais um motivo para usar só letras, números e hífen.)</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: … Width for image “bolo-800.jpg” is identical to width for image “bolo-400.jpg”.</code></strong>
+<pre class="term" data-cwd="~/responsivas">$ vnu duplo.html
+"file:/home/ana/responsivas/duplo.html":8.1-8.131: error: Bad value “bolo-400.jpg 400w, bolo-800.jpg 400w” for attribute “srcset” on element “img”: Width for image “bolo-800.jpg” is identical to width for image “bolo-400.jpg”.</pre>
+<p><strong>O que significa:</strong> duas opções com o mesmo <code>w</code>, depois de copiar e colar. O navegador não tem como escolher entre elas.</p>
+<p><strong>Como consertar:</strong> o <code>w</code> é a largura <strong>real</strong> de cada arquivo. Confira com <code>file</code> (aula <a href="formatos-imagem.html">Formatos</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>Sem erro no validador, mas o <code>w</code> mente</strong>
+<p><strong>O que aconteceu:</strong> <code>bolo-400.jpg 1200w</code>: o validador não abre o arquivo, então não sabe que ele tem 400 pixels. O navegador acredita no <code>w</code> e manda a foto pequena para telas grandes, que ficam borradas.</p>
+<p><strong>Como consertar:</strong> o <code>w</code> de cada arquivo tem de ser a largura que o <code>file</code> mostra.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>srcset="a.png 1x, b.png 2x"</code></td><td>Escolhe pela densidade da tela; para imagens de tamanho fixo</td></tr>
+<tr><td><code>srcset="p.jpg 400w, m.jpg 800w, g.jpg 1200w"</code></td><td>Diz a largura real de cada arquivo</td></tr>
+<tr><td><code>sizes="100vw"</code></td><td>A foto ocupa a janela inteira</td></tr>
+<tr><td><code>sizes="(max-width: 600px) 100vw, 600px"</code></td><td>Até 600 px de janela, a janela inteira; depois, 600 px</td></tr>
+<tr><td><code>src="…"</code></td><td>Obrigatório: o plano B para navegadores sem <code>srcset</code></td></tr>
+<tr><td><code>sizes="auto"</code> + <code>loading="lazy"</code></td><td>O navegador mede o tamanho sozinho (novidade)</td></tr>
+<tr><td>A conta</td><td>tamanho na tela (<code>sizes</code>) × densidade → o menor arquivo que cobre</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O descritor de densidade</h3>
+<p>Complete para o arquivo de 400 × 160 ser usado nas telas de densidade dupla:</p>
+<div class="ex-code">srcset="logo-200.png 1x, logo-400.png <input data-answer="2x" aria-label="descritor">"</div>
+</div>
+
+<div class="exercise">
+<h3>2. O descritor de largura</h3>
+<p>O arquivo <code>bolo-1200.jpg</code> tem 1200 × 900. Complete o descritor:</p>
+<div class="ex-code">srcset="bolo-400.jpg 400w, bolo-1200.jpg <input data-answer="1200w" aria-label="descritor">"</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Com <code>sizes="100vw"</code>, numa janela de 400 px com tela 2x, e as opções 400w, 800w e 1200w, qual arquivo a regra geral escolhe?</p>
+<label><input type="radio" name="q3"> o de 400w, porque a janela tem 400 px</label>
+<label><input type="radio" name="q3"> o de 1200w, o maior</label>
+<label><input type="radio" name="q3"> o de 800w: 400 × 2 = 800 pontinhos</label>
+<label><input type="radio" name="q3"> nenhum: fica com o <code>src</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">4. Para que serve o <code>sizes</code>?</p>
+<label><input type="radio" name="q4"> Para dizer ao navegador em que tamanho a foto vai aparecer, antes do CSS ser aplicado, para ele escolher o arquivo</label>
+<label><input type="radio" name="q4"> Para mudar o tamanho da foto na tela</label>
+<label><input type="radio" name="q4"> Para dizer a largura de cada arquivo</label>
+<label><input type="radio" name="q4"> Para escolher o formato (JPG, WebP)</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Posso usar o <code>srcset</code> para mostrar uma foto do bolo inteiro no computador e de uma fatia no celular?</p>
+<label><input type="radio" name="q5"> Sim, é para isso que ele existe</label>
+<label><input type="radio" name="q5"> Não: o navegador pode escolher qualquer opção (e reaproveitar a que já baixou); para fotos diferentes, use o <code>&lt;picture&gt;</code></label>
+<label><input type="radio" name="q5"> Sim, desde que use <code>x</code></label>
+<label><input type="radio" name="q5"> Só no Safari</label>
+</div>
+
+<h3>Missão final: conserte a foto da receita</h3>
+
+<div class="tryhtml" data-goal="sel:img[srcset][sizes],nsrc:srcset=&quot;[^&quot;]*\d+px,src:bolo-400\.jpg\s+400w,src:bolo-800\.jpg\s+800w,src:bolo-1200\.jpg\s+1200w,src:sizes=&quot;\(max-width:\s*600px\)\s*100vw\s*\,\s*600px&quot;,attr:img[src]=assets/midia/bolo-800.jpg">
+<p class="try-task"><strong>Missão:</strong> o validador encontrou três problemas nesta foto: os descritores do <code>srcset</code> estão em <code>px</code> (devem ser <code>w</code>), falta o <code>sizes</code> e falta o <code>src</code>. A foto aparece numa coluna: até 600 px de janela ocupa a janela inteira; depois, 600 px. Conserte os três (o <code>src</code> é o <code>bolo-800.jpg</code>).</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img srcset="assets/midia/bolo-400.jpg 400px, assets/midia/bolo-800.jpg 800px, assets/midia/bolo-1200.jpg 1200px"
+     alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+     style="width: 100%; max-width: 600px; height: auto"&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg"
+     srcset="assets/midia/bolo-400.jpg 400w, assets/midia/bolo-800.jpg 800w, assets/midia/bolo-1200.jpg 1200w"
+     sizes="(max-width: 600px) 100vw, 600px"
+     alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+     style="width: 100%; max-width: 600px; height: auto"&gt;
+</pre>
+</div>
+
+<p>Repare que o <code>src</code> não é obrigatório para o validador quando há <code>srcset</code> (o código sem ele é aceito), mas o guia sempre escreve: é o plano B para navegadores e programas antigos, que não conhecem o <code>srcset</code>.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Uma foto só não serve a todas as telas: grande demais desperdiça internet no celular; pequena demais borra no computador e nas telas 2x e 3x.</li>
+  <li><code>srcset="a.png 1x, b.png 2x"</code>: para imagens de tamanho fixo. O navegador escolhe pela densidade da tela.</li>
+  <li><code>srcset="… 400w, … 800w, … 1200w"</code> + <code>sizes</code>: para fotos que mudam de tamanho. O <code>w</code> é a largura real do arquivo; o <code>sizes</code> diz o tamanho na tela (<code>100vw</code>, <code>(max-width: 600px) 100vw, 600px</code>).</li>
+  <li>A conta: tamanho na tela × densidade → o menor arquivo que cobre. O Chromium mandou 10 KB ao celular 1x, 25 KB ao computador e 42 KB às telas 3x. Mas o navegador tem a palavra final (e reaproveita o que já baixou).</li>
+  <li>Todos os arquivos do <code>srcset</code> são a mesma foto. Mantenha o <code>src</code>, o <code>width</code>, o <code>height</code> e o <code>alt</code>.</li>
+  <li>O validador pega: <code>sizes</code> faltando ou sozinho, <code>px</code> no <code>srcset</code>, número sem unidade no <code>sizes</code>, <code>w</code> e <code>x</code> misturados, vírgula esquecida e larguras repetidas.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
