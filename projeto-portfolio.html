@@ -1,0 +1,1244 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Projeto Portfólio — um site de várias páginas ligadas, com um CSS só | Guia HTML</title>
+<meta name="description" content="Projeto passo a passo: o portfólio da Ana, um site de três páginas (index.html, sobre.html e contato.html) ligadas por um menu, com um arquivo estilo.css para todas e aria-current na página atual. Quatro versões com missões em abas, o servidor local python3 -m http.server, o erro da letra maiúscula que só aparece no servidor e a validação com vnu --also-check-css.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>Projeto <span class="hl">Portfólio</span></h1>
+
+<p class="intro">Até aqui, cada projeto era uma página só. Um site de verdade tem várias: a Ana quer um portfólio com a página inicial (os bolos que já fez), uma página sobre ela e uma de contato. As três se ligam por um menu e usam o <strong>mesmo arquivo de CSS</strong>. Neste projeto você aprende a pensar em <strong>arquivos e pastas</strong>: como uma página encontra a outra, por que um nome com letra maiúscula funciona no seu computador e quebra quando o site é publicado, e como testar tudo num servidor local antes de publicar.</p>
+
+<div class="note">
+<strong>Você vai praticar</strong>
+<ul>
+  <li>Ligar páginas com <a href="caminhos.html">caminhos relativos</a> (<code>href="sobre.html"</code>) e repetir o menu em todas (<a href="links.html">Links</a>, <a href="nav.html">nav</a>).</li>
+  <li>Organizar os arquivos de um site numa pasta (<a href="organizar-arquivos.html">Organizar os Arquivos</a>).</li>
+  <li>Ligar um arquivo de CSS a todas as páginas com <code>&lt;link&gt;</code> (<a href="ligar-css.html">Ligar CSS</a>).</li>
+  <li>Marcar a página atual no menu com <code>aria-current="page"</code> (<a href="aria.html">ARIA</a>).</li>
+  <li>Testar o site num servidor local e validar todas as páginas e o CSS de uma vez (<a href="servidor-local.html">Servidor Local</a>, <a href="validar.html">Validar</a>).</li>
+</ul>
+</div>
+
+<hr>
+
+<h2 id="construir">O que vamos construir</h2>
+<p>O site pronto. No editor abaixo, cada arquivo é uma aba, e os links do menu funcionam: clique em "Sobre" e em "Contato" no resultado para passear pelas páginas. Repare que o menu e as cores são iguais nas três: todas usam o mesmo <code>estilo.css</code>.</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html" aria-current="page"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolos que contam histórias&lt;/h1&gt;
+    &lt;p&gt;Sou a Ana, confeiteira. Aqui estão alguns dos bolos que já fiz.&lt;/p&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+      &lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate, o mais pedido.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Sobre — Ana Costa, confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html" aria-current="page"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+    &lt;p&gt;&lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;&lt;/p&gt;
+    &lt;p&gt;Aprendi a fazer bolos com a minha avó e transformei a receita de família num negócio: a Lojinha da Ana.&lt;/p&gt;
+    &lt;h2&gt;Cursos&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Confeitaria, Escola Técnica Doce Saber (2021)&lt;/li&gt;
+      &lt;li&gt;Bolos decorados (2023)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="contato.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Contato — Ana Costa, confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html" aria-current="page"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Contato&lt;/h1&gt;
+    &lt;p&gt;Encomendas com pelo menos três dias de antecedência.&lt;/p&gt;
+    &lt;address&gt;
+      &lt;p&gt;E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Telefone: &lt;a href="tel:+5511900000000"&gt;(11) 90000-0000&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Rua das Flores, perto da Praça da Árvore&lt;/p&gt;
+    &lt;/address&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/mapa-400.png" alt="Mapa do bairro: a Lojinha da Ana fica na Rua das Flores, entre a Avenida Central e a Praça da Árvore" width="400" height="250"&gt;
+      &lt;figcaption&gt;Como chegar.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="estilo.css">body {
+  font-family: sans-serif;
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 0 1em;
+}
+
+h1 {
+  color: #b5541c;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 1em;
+}
+
+nav a[aria-current="page"] {
+  font-weight: bold;
+  text-decoration: none;
+}
+</pre>
+</div>
+
+<p>No computador da Ana, é uma pasta com quatro arquivos e a pasta das imagens:</p>
+
+<pre class="term" data-cwd="~/sites/portfolio">$ tree
+.
+├── assets
+│   └── midia
+│       ├── avatar-ana-96.jpg
+│       ├── bolo-400.jpg
+│       ├── logo-lojinha-200.png
+│       └── mapa-400.png
+├── contato.html
+├── estilo.css
+├── index.html
+└── sobre.html
+
+3 directories, 8 files</pre>
+
+<ol class="passo">
+  <li><a href="#versao1">A página inicial e o menu</a> (links entre páginas).</li>
+  <li><a href="#versao2">A segunda página</a> (<code>sobre.html</code>, o mesmo menu).</li>
+  <li><a href="#versao3">Um CSS para todas as páginas</a> (<code>estilo.css</code> e <code>&lt;link&gt;</code>).</li>
+  <li><a href="#versao4">A página de contato e a página atual no menu</a> (<code>contato.html</code>, <code>aria-current</code>).</li>
+</ol>
+
+<h3>Antes de começar</h3>
+<p>Você precisa ter visto <a href="links.html">Links</a>, <a href="caminhos.html">Caminhos Relativos e Absolutos</a> e <a href="ligar-css.html">Ligar CSS</a>. A pasta do projeto:</p>
+
+<pre class="term">$ mkdir -p sites/portfolio/assets/midia
+$ cd sites/portfolio</pre>
+
+<hr>
+
+<h2 id="versao1">Versão 1 · A página inicial e o menu</h2>
+<p>A primeira página de um site se chama <code>index.html</code>: é o arquivo que o servidor entrega quando alguém digita só o endereço da pasta (veja <a href="organizar-arquivos.html">Organizar os Arquivos</a>). No topo, o logo e o menu, com um link para cada página do site. As outras páginas ainda não existem; o menu já aponta para elas.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Confeitaria artesanal&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolos que contam histórias&lt;/h1&gt;
+    &lt;p&gt;Sou a Ana, confeiteira. Aqui estão alguns dos bolos que já fiz.&lt;/p&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+      &lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate, o mais pedido.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;a href="sobre.html"&gt;</dt><dd>Um <a href="caminhos.html">caminho relativo</a>: "o arquivo <code>sobre.html</code> na <strong>mesma pasta</strong> desta página". Funciona no seu computador, no servidor local e no site publicado, sem mudar nada.</dd>
+  <dt>&lt;a href="index.html"&gt;Início&lt;/a&gt;</dt><dd>Um link para a própria página inicial. Nesta página não serve para muita coisa, mas o menu é o mesmo em todas as páginas, e nas outras ele leva de volta ao início.</dd>
+  <dt>&lt;nav&gt; &lt;ul&gt;</dt><dd>O menu é uma lista de links dentro de um <code>nav</code> (veja <a href="nav.html">nav</a>). O leitor de tela anuncia "navegação, lista, 3 itens".</dd>
+  <dt>&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana"&gt;</dt><dd>O logo é uma imagem com texto; o <code>alt</code> é o próprio texto do logo.</dd>
+</dl>
+
+<p>Clique em "Sobre" no resultado acima: como <code>sobre.html</code> ainda não existe, o editor mostra uma página de "não encontrado". No seu computador, o navegador mostraria uma página de erro de arquivo não encontrado. Na versão 2, a página passa a existir.</p>
+
+<div class="cenario">
+<strong>"Sobre.html" com S maiúsculo: funciona no computador, quebra no servidor</strong>
+<p>A Ana salvou o arquivo como <code>sobre.html</code>, mas no menu escreveu <code>href="Sobre.html"</code>. Ela testou no notebook dela (com Windows) e funcionou. Depois de publicar, o link deu erro. O que aconteceu? Muitos computadores com Windows ou macOS não diferenciam maiúsculas de minúsculas nos nomes de arquivo; os servidores (quase sempre Linux, como o do GitHub Pages) diferenciam: para eles, <code>Sobre.html</code> e <code>sobre.html</code> são dois arquivos diferentes. Um servidor local, na máquina da Ana com Linux, mostra o problema antes de publicar:</p>
+<pre class="term" data-cwd="~/sites/portfolio">$ python3 -m http.server &amp;
+[1] 4
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+$ curl -sI http://localhost:8000/sobre.html | head -n 1
+127.0.0.1 - - [17/Oct/2026 16:11:13] "HEAD /sobre.html HTTP/1.1" 200 -
+HTTP/1.0 200 OK                                « o arquivo existe
+$ curl -sI http://localhost:8000/Sobre.html | head -n 1
+127.0.0.1 - - [17/Oct/2026 16:11:13] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 16:11:13] "HEAD /Sobre.html HTTP/1.1" 404 -
+HTTP/1.0 404 File not found                    « com S maiúsculo, não
+$ kill %1                                      « desliga o servidor</pre>
+<dl class="anatomy">
+  <dt>python3 -m http.server &amp;</dt><dd>Liga um servidor de arquivos na pasta atual, na porta 8000 (veja <a href="servidor-local.html">Servidor Local</a>). O <code>&amp;</code> o deixa rodando "nos bastidores", para o terminal continuar livre.</dd>
+  <dt>curl -sI http://localhost:8000/sobre.html</dt><dd>Pede o arquivo ao servidor e mostra só o cabeçalho da resposta (<code>-I</code>), sem a barra de progresso (<code>-s</code>). No navegador, seria abrir o mesmo endereço.</dd>
+  <dt>| head -n 1</dt><dd>Mostra só a primeira linha da resposta: o código. <code>200 OK</code> = achou; <code>404 File not found</code> = não achou.</dd>
+  <dt>127.0.0.1 - - […] "HEAD /Sobre.html HTTP/1.1" 404 -</dt><dd>O registro do próprio servidor: quem pediu, o quê e o que ele respondeu.</dd>
+</dl>
+<p>O validador também não ajuda aqui: <code>Sobre.html</code> é um endereço válido. <strong>Como consertar:</strong> nomes de arquivo sempre em minúsculas, sem acento e sem espaço (<code>sobre.html</code>, <code>contato.html</code>), e os <code>href</code> copiados exatamente iguais.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:header nav a=3,sel:nav a[href='index.html'],sel:nav a[href='sobre.html'],sel:nav a[href='contato.html']">
+<p class="try-task"><strong>Missão (versão 1):</strong> o cabeçalho só tem o logo. Logo abaixo dele, ainda dentro do <code>&lt;header&gt;</code>, crie o menu: um <code>&lt;nav&gt;</code> com uma lista de três links, <code>Início</code> (<code>index.html</code>), <code>Sobre</code> (<code>sobre.html</code>) e <code>Contato</code> (<code>contato.html</code>).</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Confeitaria artesanal&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolos que contam histórias&lt;/h1&gt;
+    &lt;p&gt;Sou a Ana, confeiteira. Aqui estão alguns dos bolos que já fiz.&lt;/p&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+      &lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate, o mais pedido.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Confeitaria artesanal&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolos que contam histórias&lt;/h1&gt;
+    &lt;p&gt;Sou a Ana, confeiteira. Aqui estão alguns dos bolos que já fiz.&lt;/p&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+      &lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate, o mais pedido.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao2">Versão 2 · A segunda página</h2>
+<p>A página "Sobre" é um arquivo novo, <code>sobre.html</code>, na mesma pasta. Ela tem o esqueleto completo (cada página é um documento independente), o mesmo cabeçalho com o mesmo menu, o mesmo rodapé e um <code>main</code> com o conteúdo próprio. E um <code>title</code> próprio: cada aba do navegador diz em que página a pessoa está.</p>
+
+<pre class="file" data-file="sobre.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Sobre — Ana Costa, confeitaria artesanal&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+    &lt;p&gt;&lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;&lt;/p&gt;
+    &lt;p&gt;Aprendi a fazer bolos com a minha avó e transformei a receita de família num negócio: a Lojinha da Ana.&lt;/p&gt;
+    &lt;h2&gt;Cursos&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Confeitaria, Escola Técnica Doce Saber (2021)&lt;/li&gt;
+      &lt;li&gt;Bolos decorados (2023)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Parte</th><th>Igual em todas as páginas?</th></tr>
+<tr><td><code>&lt;head&gt;</code> (charset, viewport)</td><td>Sim</td></tr>
+<tr><td><code>&lt;title&gt;</code></td><td><strong>Não</strong>: "Sobre — Ana Costa…", "Contato — Ana Costa…"</td></tr>
+<tr><td><code>&lt;header&gt;</code> com o logo e o menu</td><td>Sim</td></tr>
+<tr><td><code>&lt;main&gt;</code> com o <code>h1</code></td><td><strong>Não</strong>: é o conteúdo de cada página</td></tr>
+<tr><td><code>&lt;footer&gt;</code></td><td>Sim</td></tr>
+</table>
+</div>
+
+<div class="tip">
+<strong>Copiar o menu em cada página?</strong>
+<p>Sim: o HTML não tem um jeito de "incluir" um pedaço de outro arquivo. Num site de três páginas, copiar é o mais simples. Sites grandes usam programas que montam as páginas a partir de um modelo (os "geradores de sites estáticos"), mas o resultado final é o mesmo: cada página com o seu menu completo.</p>
+</div>
+
+<div class="warning">
+<strong>Nada de <code>href="/sobre.html"</code></strong>
+<p>Com a barra no começo, o caminho passa a ser contado a partir da <strong>raiz do servidor</strong>, e não da pasta da página. No GitHub Pages, um projeto fica em <code>https://seu-usuario.github.io/portfolio/</code>, e <code>/sobre.html</code> vai procurar em <code>https://seu-usuario.github.io/sobre.html</code>, fora do seu site. No seu computador, aberto com dois cliques, procura na raiz do disco. Use caminhos relativos (veja <a href="caminhos.html">Caminhos</a>).</p>
+</div>
+
+<div class="tryhtml" data-goal="texto:h1=Sobre a Ana,nsel:header nav a=3,sel:nav a[href='index.html']">
+<p class="try-task"><strong>Missão (versão 2):</strong> a aba <code>sobre.html</code> está sem menu. Copie o <code>&lt;nav&gt;</code> da aba <code>index.html</code> para dentro do <code>&lt;header&gt;</code> de <code>sobre.html</code>, logo depois do logo. Depois, clique em "Início" no resultado para ir à página inicial e em "Sobre" para voltar.</p>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Sobre — Ana Costa, confeitaria artesanal&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+    &lt;p&gt;&lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;&lt;/p&gt;
+    &lt;p&gt;Aprendi a fazer bolos com a minha avó e transformei a receita de família num negócio: a Lojinha da Ana.&lt;/p&gt;
+    &lt;h2&gt;Cursos&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Confeitaria, Escola Técnica Doce Saber (2021)&lt;/li&gt;
+      &lt;li&gt;Bolos decorados (2023)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Confeitaria artesanal&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolos que contam histórias&lt;/h1&gt;
+    &lt;p&gt;Sou a Ana, confeiteira. Aqui estão alguns dos bolos que já fiz.&lt;/p&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+      &lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate, o mais pedido.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Sobre — Ana Costa, confeitaria artesanal&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+    &lt;p&gt;&lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;&lt;/p&gt;
+    &lt;p&gt;Aprendi a fazer bolos com a minha avó e transformei a receita de família num negócio: a Lojinha da Ana.&lt;/p&gt;
+    &lt;h2&gt;Cursos&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Confeitaria, Escola Técnica Doce Saber (2021)&lt;/li&gt;
+      &lt;li&gt;Bolos decorados (2023)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao3">Versão 3 · Um CSS para todas as páginas</h2>
+<p>A Ana quer o título em laranja, o texto numa coluna confortável e o menu em linha. Se escrevesse o CSS num <code>&lt;style&gt;</code> em cada página, teria de mudar três arquivos a cada ajuste. Em vez disso, o CSS vai num arquivo próprio, <code>estilo.css</code>, e cada página o "chama" com um <code>&lt;link&gt;</code> no <code>head</code>. É como o uniforme de uma loja: muda o uniforme, mudam todos os funcionários.</p>
+
+<pre class="file" data-file="estilo.css">body {
+  font-family: sans-serif;
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 0 1em;
+}
+
+h1 {
+  color: #b5541c;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 1em;
+}
+
+nav a[aria-current="page"] {
+  font-weight: bold;
+  text-decoration: none;
+}
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;link rel="stylesheet" href="estilo.css"&gt;</dt><dd>No <code>head</code> de cada página. <code>rel="stylesheet"</code> ("folha de estilo") diz o que o arquivo é; <code>href</code>, onde ele está: mais um caminho relativo.</dd>
+  <dt>body { max-width: 40em; margin: 0 auto; }</dt><dd>O texto numa coluna de cerca de 40 letras de largura, no meio da tela.</dd>
+  <dt>nav ul { list-style: none; display: flex; }</dt><dd>Tira as bolinhas da lista do menu e põe os itens lado a lado. A lista continua sendo lista para o leitor de tela; só o visual mudou.</dd>
+</dl>
+
+<p>O CSS é assunto de outro guia (quer aprender mais? futuro Guia CSS). Aqui, o que importa é o <code>&lt;link&gt;</code>: uma linha de HTML que liga um arquivo ao outro.</p>
+
+<div class="cenario">
+<strong>O CSS numa pasta que não existe</strong>
+<p>A Ana viu em outro site o costume de guardar o CSS numa pasta <code>css</code> e escreveu <code>&lt;link rel="stylesheet" href="css/estilo.css"&gt;</code>, mas deixou o arquivo na pasta principal. A página aparece <strong>sem estilo nenhum</strong>, com o visual padrão do navegador, e o validador não reclama (o endereço é válido). No editor do guia, o console embaixo do quadro avisa que não conseguiu carregar o arquivo. No terminal:</p>
+<pre class="term" data-cwd="~/sites/portfolio">$ ls css/estilo.css
+ls: não foi possível acessar 'css/estilo.css': Arquivo ou diretório inexistente</pre>
+<p><strong>Como consertar:</strong> o <code>href</code> tem de seguir o caminho real do arquivo. Ou o <code>&lt;link&gt;</code> aponta para <code>estilo.css</code>, ou o arquivo vai para dentro de uma pasta <code>css</code> (e então todas as páginas usam <code>css/estilo.css</code>). No F12, a aba de rede mostra os arquivos que deram erro (veja <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>).</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:link[rel=stylesheet][href]=estilo.css,css:h1{color}=rgb(181, 84, 28)">
+<p class="try-task"><strong>Missão (versão 3):</strong> a aba <code>sobre.html</code> já tem o <code>&lt;link&gt;</code>; a <code>index.html</code>, ainda não. No <code>head</code> de <code>index.html</code>, depois do <code>title</code>, acrescente <code>&lt;link rel="stylesheet" href="estilo.css"&gt;</code>. O título deve ficar laranja. Depois, mude a cor no <code>estilo.css</code> e veja as duas páginas mudarem.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Confeitaria artesanal&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolos que contam histórias&lt;/h1&gt;
+    &lt;p&gt;Sou a Ana, confeiteira. Aqui estão alguns dos bolos que já fiz.&lt;/p&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+      &lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate, o mais pedido.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Sobre — Ana Costa, confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+    &lt;p&gt;&lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;&lt;/p&gt;
+    &lt;p&gt;Aprendi a fazer bolos com a minha avó e transformei a receita de família num negócio: a Lojinha da Ana.&lt;/p&gt;
+    &lt;h2&gt;Cursos&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Confeitaria, Escola Técnica Doce Saber (2021)&lt;/li&gt;
+      &lt;li&gt;Bolos decorados (2023)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="estilo.css">body {
+  font-family: sans-serif;
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 0 1em;
+}
+
+h1 {
+  color: #b5541c;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 1em;
+}
+
+nav a[aria-current="page"] {
+  font-weight: bold;
+  text-decoration: none;
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolos que contam histórias&lt;/h1&gt;
+    &lt;p&gt;Sou a Ana, confeiteira. Aqui estão alguns dos bolos que já fiz.&lt;/p&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+      &lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate, o mais pedido.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao4">Versão 4 · A página de contato e a página atual no menu</h2>
+<p>A última página, <code>contato.html</code>, tem o e-mail, o telefone e um mapa do bairro. E um detalhe que faz diferença: em cada página, o link do menu que leva à <strong>própria</strong> página ganha <code>aria-current="page"</code>, "esta é a página atual". O leitor de tela anuncia "página atual", e o CSS deixa esse link em negrito e sem sublinhado, para quem enxerga também saber onde está.</p>
+
+<pre class="file" data-file="contato.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Contato — Ana Costa, confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html" aria-current="page"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Contato&lt;/h1&gt;
+    &lt;p&gt;Encomendas com pelo menos três dias de antecedência.&lt;/p&gt;
+    &lt;address&gt;
+      &lt;p&gt;E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Telefone: &lt;a href="tel:+5511900000000"&gt;(11) 90000-0000&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Rua das Flores, perto da Praça da Árvore&lt;/p&gt;
+    &lt;/address&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/mapa-400.png" alt="Mapa do bairro: a Lojinha da Ana fica na Rua das Flores, entre a Avenida Central e a Praça da Árvore" width="400" height="250"&gt;
+      &lt;figcaption&gt;Como chegar.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Para ver a página desenhada, com o CSS, volte ao <em>Experimente</em> de <a href="#construir">O que vamos construir</a> e clique em "Contato" no resultado: as quatro abas estão lá.</p>
+
+<dl class="anatomy">
+  <dt>&lt;a href="contato.html" aria-current="page"&gt;</dt><dd>Só na página <code>contato.html</code>. Em <code>index.html</code>, o <code>aria-current</code> vai no "Início"; em <code>sobre.html</code>, no "Sobre". É a única diferença entre os três menus.</dd>
+  <dt>nav a[aria-current="page"] { font-weight: bold; }</dt><dd>No <code>estilo.css</code>: o CSS usa o mesmo atributo para destacar o link. Uma marcação, dois públicos.</dd>
+  <dt>&lt;address&gt;</dt><dd>As informações de contato de quem é dono da página (veja <a href="endereco.html">Endereço</a>).</dd>
+  <dt>&lt;img src="assets/midia/mapa-400.png" alt="Mapa do bairro: …"&gt;</dt><dd>Um mapa como imagem. O <code>alt</code> diz o que o mapa ensina (onde a loja fica), e não "mapa".</dd>
+</dl>
+
+<div class="tryhtml" data-goal="attr:nav a[href='index.html'][aria-current]=page,src:href=&quot;sobre\.html&quot;[^&gt;]*aria-current=&quot;page&quot;|aria-current=&quot;page&quot;[^&gt;]*href=&quot;sobre\.html&quot;,src:href=&quot;contato\.html&quot;[^&gt;]*aria-current=&quot;page&quot;|aria-current=&quot;page&quot;[^&gt;]*href=&quot;contato\.html&quot;">
+<p class="try-task"><strong>Missão (versão 4):</strong> marque a página atual nos três menus: em <code>index.html</code>, ponha <code>aria-current="page"</code> no link "Início"; em <code>sobre.html</code>, no link "Sobre"; em <code>contato.html</code>, no link "Contato". Depois, passeie pelas páginas no resultado e veja o destaque mudar de lugar.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolos que contam histórias&lt;/h1&gt;
+    &lt;p&gt;Sou a Ana, confeiteira. Aqui estão alguns dos bolos que já fiz.&lt;/p&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+      &lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate, o mais pedido.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Sobre — Ana Costa, confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+    &lt;p&gt;&lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;&lt;/p&gt;
+    &lt;p&gt;Aprendi a fazer bolos com a minha avó e transformei a receita de família num negócio: a Lojinha da Ana.&lt;/p&gt;
+    &lt;h2&gt;Cursos&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Confeitaria, Escola Técnica Doce Saber (2021)&lt;/li&gt;
+      &lt;li&gt;Bolos decorados (2023)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="contato.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Contato — Ana Costa, confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Contato&lt;/h1&gt;
+    &lt;p&gt;Encomendas com pelo menos três dias de antecedência.&lt;/p&gt;
+    &lt;address&gt;
+      &lt;p&gt;E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Telefone: &lt;a href="tel:+5511900000000"&gt;(11) 90000-0000&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Rua das Flores, perto da Praça da Árvore&lt;/p&gt;
+    &lt;/address&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/mapa-400.png" alt="Mapa do bairro: a Lojinha da Ana fica na Rua das Flores, entre a Avenida Central e a Praça da Árvore" width="400" height="250"&gt;
+      &lt;figcaption&gt;Como chegar.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="estilo.css">body {
+  font-family: sans-serif;
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 0 1em;
+}
+
+h1 {
+  color: #b5541c;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 1em;
+}
+
+nav a[aria-current="page"] {
+  font-weight: bold;
+  text-decoration: none;
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html" aria-current="page"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolos que contam histórias&lt;/h1&gt;
+    &lt;p&gt;Sou a Ana, confeiteira. Aqui estão alguns dos bolos que já fiz.&lt;/p&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+      &lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate, o mais pedido.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Sobre — Ana Costa, confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html" aria-current="page"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+    &lt;p&gt;&lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;&lt;/p&gt;
+    &lt;p&gt;Aprendi a fazer bolos com a minha avó e transformei a receita de família num negócio: a Lojinha da Ana.&lt;/p&gt;
+    &lt;h2&gt;Cursos&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Confeitaria, Escola Técnica Doce Saber (2021)&lt;/li&gt;
+      &lt;li&gt;Bolos decorados (2023)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="contato.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Contato — Ana Costa, confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html" aria-current="page"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Contato&lt;/h1&gt;
+    &lt;p&gt;Encomendas com pelo menos três dias de antecedência.&lt;/p&gt;
+    &lt;address&gt;
+      &lt;p&gt;E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Telefone: &lt;a href="tel:+5511900000000"&gt;(11) 90000-0000&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Rua das Flores, perto da Praça da Árvore&lt;/p&gt;
+    &lt;/address&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/mapa-400.png" alt="Mapa do bairro: a Lojinha da Ana fica na Rua das Flores, entre a Avenida Central e a Praça da Árvore" width="400" height="250"&gt;
+      &lt;figcaption&gt;Como chegar.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>O site completo</h2>
+<p>Os quatro arquivos da versão final. Salve-os na pasta <code>sites/portfolio</code>, com as imagens em <code>assets/midia</code> (a árvore está em <a href="#construir">O que vamos construir</a>):</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html" aria-current="page"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolos que contam histórias&lt;/h1&gt;
+    &lt;p&gt;Sou a Ana, confeiteira. Aqui estão alguns dos bolos que já fiz.&lt;/p&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+      &lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate, o mais pedido.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="file" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Sobre — Ana Costa, confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html" aria-current="page"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+    &lt;p&gt;&lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;&lt;/p&gt;
+    &lt;p&gt;Aprendi a fazer bolos com a minha avó e transformei a receita de família num negócio: a Lojinha da Ana.&lt;/p&gt;
+    &lt;h2&gt;Cursos&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Confeitaria, Escola Técnica Doce Saber (2021)&lt;/li&gt;
+      &lt;li&gt;Bolos decorados (2023)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="file" data-file="contato.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Contato — Ana Costa, confeitaria artesanal&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="contato.html" aria-current="page"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Contato&lt;/h1&gt;
+    &lt;p&gt;Encomendas com pelo menos três dias de antecedência.&lt;/p&gt;
+    &lt;address&gt;
+      &lt;p&gt;E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Telefone: &lt;a href="tel:+5511900000000"&gt;(11) 90000-0000&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Rua das Flores, perto da Praça da Árvore&lt;/p&gt;
+    &lt;/address&gt;
+    &lt;figure&gt;
+      &lt;img src="assets/midia/mapa-400.png" alt="Mapa do bairro: a Lojinha da Ana fica na Rua das Flores, entre a Avenida Central e a Praça da Árvore" width="400" height="250"&gt;
+      &lt;figcaption&gt;Como chegar.&lt;/figcaption&gt;
+    &lt;/figure&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="file" data-file="estilo.css">body {
+  font-family: sans-serif;
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 0 1em;
+}
+
+h1 {
+  color: #b5541c;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 1em;
+}
+
+nav a[aria-current="page"] {
+  font-weight: bold;
+  text-decoration: none;
+}
+</pre>
+
+<h3>Validando no laboratório</h3>
+<p>Num site de várias páginas, valide todas de uma vez. Com <code>--also-check-css</code>, o <code>vnu</code> confere também o CSS:</p>
+
+<pre class="term" data-cwd="~/sites/portfolio">$ vnu --verbose --also-check-css *.html estilo.css
+contato.html
+index.html
+sobre.html
+estilo.css
+$ echo $?
+0</pre>
+
+<dl class="anatomy">
+  <dt>--also-check-css</dt><dd>"Confira também o CSS": sem essa opção, o <code>vnu</code> pula os arquivos <code>.css</code>.</dd>
+  <dt>*.html</dt><dd>Todos os arquivos terminados em <code>.html</code> da pasta (o terminal troca o <code>*</code> pelos nomes).</dd>
+  <dt>estilo.css</dt><dd>O CSS, que o <code>*.html</code> não pega.</dd>
+</dl>
+
+<p>Depois, o teste de verdade: ligue o servidor local, abra <code>http://localhost:8000</code> no navegador e clique em todos os links, de todas as páginas. Se tudo funcionar ali, vai funcionar no GitHub Pages (veja <a href="publicar.html">Publicar no GitHub Pages</a>).</p>
+
+<hr>
+
+<h2>Desafios extras</h2>
+<ol>
+  <li><strong>Uma página de galeria.</strong> Crie <code>bolos.html</code> com três <code>figure</code>, ponha o link no menu das <strong>quatro</strong> páginas e confira com o servidor local.</li>
+  <li><strong>Organizar em pastas.</strong> Mova o <code>estilo.css</code> para uma pasta <code>css</code> e conserte o <code>&lt;link&gt;</code> das três páginas. Teste com o servidor (veja <a href="organizar-arquivos.html">Organizar os Arquivos</a>).</li>
+  <li><strong>Ícone da aba.</strong> Ponha o ícone <code>assets/midia/favicon.svg</code> nas três páginas (veja <a href="favicon.html">Ícone da Aba</a>).</li>
+  <li><strong>Uma página 404.</strong> O GitHub Pages mostra o seu <code>404.html</code>, se ele existir, quando alguém erra o endereço. Crie um, com o menu e um link para o início.</li>
+  <li><strong>Publicar.</strong> Siga <a href="publicar.html">Publicar no GitHub Pages</a> e mande o link para alguém abrir no celular.</li>
+</ol>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">1. A página <code>index.html</code> e a <code>sobre.html</code> estão na mesma pasta. Qual link vai de uma para a outra?</p>
+<label><input type="radio" name="q1"> <code>&lt;a href="/sobre.html"&gt;</code></label>
+<label><input type="radio" name="q1"> <code>&lt;a href="sobre.html"&gt;</code></label>
+<label><input type="radio" name="q1"> <code>&lt;a href="C:\sites\sobre.html"&gt;</code></label>
+<label><input type="radio" name="q1"> <code>&lt;a href="#sobre"&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">2. O link <code>href="Sobre.html"</code> funcionou no Windows da Ana, mas deu 404 no site publicado. Por quê?</p>
+<label><input type="radio" name="q2"> O GitHub Pages não aceita links.</label>
+<label><input type="radio" name="q2"> Faltou o <code>&lt;!DOCTYPE html&gt;</code>.</label>
+<label><input type="radio" name="q2"> O validador bloqueou o link.</label>
+<label><input type="radio" name="q2"> O arquivo se chama <code>sobre.html</code>, e o servidor diferencia maiúsculas de minúsculas.</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">3. Por que o CSS vai num arquivo <code>estilo.css</code> separado?</p>
+<label><input type="radio" name="q3"> Para todas as páginas usarem o mesmo estilo, que se muda num lugar só.</label>
+<label><input type="radio" name="q3"> Porque o HTML não aceita <code>&lt;style&gt;</code>.</label>
+<label><input type="radio" name="q3"> Para o validador não conferir o CSS.</label>
+<label><input type="radio" name="q3"> Porque o navegador só lê CSS de arquivos <code>.css</code>.</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Em <code>sobre.html</code>, qual link do menu leva <code>aria-current="page"</code>?</p>
+<label><input type="radio" name="q4"> Todos.</label>
+<label><input type="radio" name="q4"> "Início", porque é o primeiro.</label>
+<label><input type="radio" name="q4"> "Sobre", porque é a página atual.</label>
+<label><input type="radio" name="q4"> Nenhum: <code>aria-current</code> só vai no <code>index.html</code>.</label>
+</div>
+
+<div class="exercise">
+<p>5. Complete a linha que liga o arquivo de CSS à página:</p>
+<div class="ex-code">&lt;link rel="<input data-answer="stylesheet" aria-label="valor do rel" size="11">" href="estilo.css"&gt;</div>
+</div>
+
+<div class="exercise">
+<p>6. Complete o comando que liga o servidor local na pasta atual:</p>
+<div class="ex-code">python3 -m <input data-answer="http.server" aria-label="módulo" size="12"></div>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Um site é uma pasta: <code>index.html</code> é a página inicial, e cada página é um arquivo com o esqueleto completo e o seu próprio <code>title</code>.</li>
+  <li>As páginas se ligam com caminhos relativos (<code>href="sobre.html"</code>); nunca com <code>/</code> no começo nem com o caminho do seu disco.</li>
+  <li>Nomes de arquivo em minúsculas, sem acento e sem espaço: o servidor diferencia <code>Sobre.html</code> de <code>sobre.html</code>.</li>
+  <li>Um <code>estilo.css</code>, ligado a todas as páginas com <code>&lt;link rel="stylesheet" href="estilo.css"&gt;</code>.</li>
+  <li><code>aria-current="page"</code> marca, no menu, a página em que a pessoa está.</li>
+  <li>Teste com <code>python3 -m http.server</code> e valide tudo com <code>vnu --verbose --also-check-css *.html estilo.css</code>.</li>
+</ul>
+<p>Próximo projeto: <a href="projeto-produto.html">Página de Produto</a>.</p>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
