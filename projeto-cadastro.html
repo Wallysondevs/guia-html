@@ -1,0 +1,1476 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Projeto Formulário de Cadastro — label, tipos, fieldset e validação | Guia HTML</title>
+<meta name="description" content="Projeto passo a passo: o cadastro de clientes da lojinha da Ana, um formulário HTML completo e acessível. label ligado a cada campo, name e id, tipos certos (email, tel, date, password), autocomplete, select, fieldset e legend, radio, checkbox, textarea, required, minlength, pattern e dicas com aria-describedby. Quatro versões com missões, o que o editor mostra ao enviar e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>Projeto <span class="hl">Formulário de Cadastro</span></h1>
+
+<p class="intro">A lojinha de doces da Ana cresceu, e ela quer uma lista de clientes: para avisar das novidades e para ter o endereço de entrega de cada um. Neste projeto você monta o <strong>formulário de cadastro</strong> completo: cada campo com o seu nome, o tipo certo de campo para cada informação, grupos que organizam a página e a conferência dos dados antes de enviar. E tudo <strong>acessível</strong>: quem usa leitor de tela, só o teclado ou o celular consegue se cadastrar sem adivinhar nada.</p>
+
+<div class="note">
+<strong>Você vai praticar</strong>
+<ul>
+  <li>Montar um formulário com <code>form</code>, <code>input</code> e <code>button</code> (<a href="formularios.html">Formulários</a>, <a href="input.html">input</a>, <a href="botoes.html">Botões</a>).</li>
+  <li>Ligar cada campo ao seu nome com <code>label</code>, <code>for</code> e <code>id</code> (<a href="label.html">label</a>).</li>
+  <li>Escolher o tipo certo: <code>email</code>, <code>tel</code>, <code>date</code>, <code>password</code> (<a href="tipos-input.html">Tipos de input</a>) e o <code>autocomplete</code> (<a href="atributos-input.html">placeholder, value, autocomplete…</a>).</li>
+  <li>Usar <code>select</code>, <code>radio</code>, <code>checkbox</code> e <code>textarea</code> (<a href="select.html">select</a>, <a href="checkbox-radio.html">checkbox e radio</a>, <a href="textarea.html">textarea</a>).</li>
+  <li>Agrupar com <code>fieldset</code> e <code>legend</code> (<a href="fieldset.html">fieldset</a>).</li>
+  <li>Conferir os dados com <code>required</code>, <code>minlength</code> e <code>pattern</code>, com dicas que o leitor de tela também lê (<a href="validacao.html">Validação</a>, <a href="formularios-acessiveis.html">Formulários Acessíveis</a>).</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>O que vamos construir</h2>
+<p>O formulário pronto, desenhado pelo seu navegador. Ele funciona: clique em <strong>Cadastrar</strong> sem preencher nada e veja o navegador parar no primeiro campo obrigatório. Depois preencha tudo e clique de novo. Num site publicado, os dados iriam para o servidor da lojinha; o editor do guia não tem servidor, então mostra uma página "Formulário enviado" com o que <strong>seria</strong> enviado.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha. Os campos marcados com "(obrigatório)" precisam ser preenchidos.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Dados pessoais&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="nome"&gt;Nome completo (obrigatório)&lt;/label&gt;
+        &lt;input type="text" id="nome" name="nome" autocomplete="name" required&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="email"&gt;E-mail (obrigatório)&lt;/label&gt;
+        &lt;input type="email" id="email" name="email" autocomplete="email" required&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="celular"&gt;Celular&lt;/label&gt;
+        &lt;input type="tel" id="celular" name="celular" autocomplete="tel" aria-describedby="dica-celular"&gt;
+        &lt;small id="dica-celular"&gt;Com DDD. Exemplo: 11 90000-0000.&lt;/small&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+        &lt;input type="date" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="senha"&gt;Crie uma senha (obrigatório)&lt;/label&gt;
+        &lt;input type="password" id="senha" name="senha" autocomplete="new-password" required minlength="8" aria-describedby="dica-senha"&gt;
+        &lt;small id="dica-senha"&gt;Pelo menos 8 caracteres.&lt;/small&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Endereço de entrega&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="cep"&gt;CEP (obrigatório)&lt;/label&gt;
+        &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code" required pattern="[0-9]{5}-?[0-9]{3}" aria-describedby="dica-cep"&gt;
+        &lt;small id="dica-cep"&gt;8 números, com ou sem traço. Exemplo: 01234-567.&lt;/small&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="cidade"&gt;Cidade&lt;/label&gt;
+        &lt;input type="text" id="cidade" name="cidade" autocomplete="address-level2"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="estado"&gt;Estado&lt;/label&gt;
+        &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+          &lt;option value=""&gt;Escolha…&lt;/option&gt;
+          &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+          &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+          &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+          &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+          &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Preferências&lt;/legend&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Como prefere receber as novidades?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-email" name="contato" value="email" checked&gt;
+          &lt;label for="por-email"&gt;Por e-mail&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-mensagem" name="contato" value="mensagem"&gt;
+          &lt;label for="por-mensagem"&gt;Por mensagem no celular&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="nao-quero" name="contato" value="nenhum"&gt;
+          &lt;label for="nao-quero"&gt;Não quero receber&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Do que você mais gosta?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-bolos" name="interesse" value="bolos"&gt;
+          &lt;label for="gosta-bolos"&gt;Bolos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-doces" name="interesse" value="doces"&gt;
+          &lt;label for="gosta-doces"&gt;Docinhos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-salgados" name="interesse" value="salgados"&gt;
+          &lt;label for="gosta-salgados"&gt;Salgados&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;p&gt;
+        &lt;label for="restricoes"&gt;Tem alguma alergia ou restrição alimentar?&lt;/label&gt;&lt;br&gt;
+        &lt;textarea id="restricoes" name="restricoes" rows="3" cols="40"&gt;&lt;/textarea&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;p&gt;
+      &lt;input type="checkbox" id="termos" name="termos" value="sim" required&gt;
+      &lt;label for="termos"&gt;Concordo que a lojinha guarde os meus dados para entregas e novidades (obrigatório)&lt;/label&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<ol class="passo">
+  <li><a href="#versao1">O formulário mínimo</a> (<code>form</code>, <code>label</code>, <code>input</code>, <code>button</code>).</li>
+  <li><a href="#versao2">O tipo certo para cada dado</a> (<code>tel</code>, <code>date</code>, <code>password</code>, <code>select</code> e <code>autocomplete</code>).</li>
+  <li><a href="#versao3">Grupos e escolhas</a> (<code>fieldset</code>, <code>radio</code>, <code>checkbox</code>, <code>textarea</code>).</li>
+  <li><a href="#versao4">Conferir antes de enviar</a> (<code>required</code>, <code>minlength</code>, <code>pattern</code> e as dicas).</li>
+</ol>
+
+<h3>Antes de começar</h3>
+<p>Você precisa ter visto <a href="formularios.html">Formulários</a>, <a href="label.html">label</a> e <a href="tipos-input.html">Tipos de input</a>; para as versões 3 e 4, <a href="checkbox-radio.html">checkbox e radio</a>, <a href="fieldset.html">fieldset</a> e <a href="validacao.html">Validação</a>. A pasta do projeto:</p>
+
+<pre class="term">$ mkdir -p sites/cadastro
+$ cd sites/cadastro</pre>
+
+<hr>
+
+<h2 id="versao1">Versão 1 · O formulário mínimo</h2>
+<p>Pense numa ficha de papel na loja: cada linha tem um rótulo impresso ("Nome:") e um espaço para escrever. No HTML, o rótulo é o <code>label</code>, o espaço é o <code>input</code>, e a ficha inteira é o <code>form</code>. Começamos com dois campos e o botão.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;p&gt;
+      &lt;label for="nome"&gt;Nome completo&lt;/label&gt;
+      &lt;input type="text" id="nome" name="nome"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="email"&gt;E-mail&lt;/label&gt;
+      &lt;input type="email" id="email" name="email"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;form action="…" method="post"&gt;</dt><dd>O formulário. <code>action</code> é o endereço do programa que <strong>recebe</strong> os dados no servidor (aqui, um endereço de exemplo); <code>method="post"</code> manda os dados no corpo da mensagem, e não no endereço, como se deve fazer com dados pessoais (veja <a href="enviar-formulario.html">Enviar: GET e POST</a>).</dd>
+  <dt>&lt;label for="nome"&gt;</dt><dd>O rótulo. O <code>for</code> diz <strong>de qual campo</strong> ele é: o campo com <code>id="nome"</code>.</dd>
+  <dt>&lt;input type="text" id="nome" name="nome"&gt;</dt><dd>O campo. O <code>id</code> é o "RG" do campo dentro da página (o <code>label</code> usa). O <code>name</code> é o nome com que o dado é <strong>enviado</strong> (o servidor usa). Podem ser iguais, e quase sempre são.</dd>
+  <dt>type="email"</dt><dd>Um campo de e-mail: o celular mostra um teclado com <code>@</code>, e o navegador confere se parece um e-mail antes de enviar.</dd>
+  <dt>&lt;button type="submit"&gt;</dt><dd>O botão que envia o formulário.</dd>
+  <dt>&lt;p&gt; … &lt;/p&gt;</dt><dd>Cada par rótulo + campo num parágrafo, para cada um ficar na sua linha (<code>label</code> e <code>input</code> ficam lado a lado; veja <a href="bloco-inline.html">Bloco × Em Linha</a>).</dd>
+</dl>
+
+<p>O <code>label</code> ligado ao campo faz duas coisas. Clique na palavra "Nome completo" no resultado acima: o cursor vai para o campo, e a área de clique fica maior (no celular, isso ajuda muito). E o leitor de tela, ao entrar no campo, lê "Nome completo": a pessoa sabe o que digitar.</p>
+
+<div class="cenario">
+<strong>O <code>for</code> não bate com o <code>id</code></strong>
+<p>A Ana digitou <code>&lt;label for="nomes"&gt;</code>, mas o campo é <code>id="nome"</code>. Na tela, tudo igual. Mas clicar no rótulo não faz mais nada, e o leitor de tela anuncia só "editar texto", sem dizer qual. O validador acusa:</p>
+<pre class="term" data-cwd="~/sites/cadastro">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/cadastro/index.html":14.7-14.25: error: The value of the “for” attribute of the “label” element must be the ID of a non-hidden form control.</pre>
+<p>"O valor do atributo <code>for</code> do <code>label</code> tem de ser o <code>id</code> de um campo de formulário visível." <strong>Como consertar:</strong> o <code>for</code> e o <code>id</code> escritos exatamente iguais (maiúsculas contam).</p>
+</div>
+
+<div class="cenario">
+<strong>Campo sem <code>name</code>: o dado não vai</strong>
+<p>Neste formulário, os dois campos estão sem <code>name</code>. O validador <strong>não</strong> reclama (um campo sem <code>name</code> é permitido; às vezes é de propósito). Preencha os campos e clique em <strong>Cadastrar</strong>:</p>
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;p&gt;
+      &lt;label for="nome"&gt;Nome completo&lt;/label&gt;
+      &lt;input type="text" id="nome"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="email"&gt;E-mail&lt;/label&gt;
+      &lt;input type="email" id="email"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>O editor mostra que nenhum campo foi enviado: o navegador só manda os campos que têm <code>name</code>. A Ana receberia um cadastro vazio. <strong>Como consertar:</strong> todo campo que deve ser enviado precisa de <code>name</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:label[for=email],attr:input#email[type]=email,attr:input#email[name]=email">
+<p class="try-task"><strong>Missão (versão 1):</strong> falta o e-mail. Entre o nome e o botão, acrescente um parágrafo com <code>&lt;label for="email"&gt;E-mail&lt;/label&gt;</code> e um campo <code>type="email"</code> com <code>id="email"</code> e <code>name="email"</code>. Depois, clique no rótulo para conferir que ele leva ao campo.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;p&gt;
+      &lt;label for="nome"&gt;Nome completo&lt;/label&gt;
+      &lt;input type="text" id="nome" name="nome"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;p&gt;
+      &lt;label for="nome"&gt;Nome completo&lt;/label&gt;
+      &lt;input type="text" id="nome" name="nome"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="email"&gt;E-mail&lt;/label&gt;
+      &lt;input type="email" id="email" name="email"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao2">Versão 2 · O tipo certo para cada dado</h2>
+<p>Num formulário de papel, a data de nascimento tem quadradinhos para dia, mês e ano. No HTML, o <code>type</code> faz esse papel: diz ao navegador que tipo de dado vai ali, e ele ajuda a pessoa (teclado certo no celular, calendário, senha escondida). E o <code>autocomplete</code> diz ao navegador <strong>qual</strong> dado é, para ele oferecer o que a pessoa já digitou em outros sites.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;p&gt;
+      &lt;label for="nome"&gt;Nome completo&lt;/label&gt;
+      &lt;input type="text" id="nome" name="nome" autocomplete="name"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="email"&gt;E-mail&lt;/label&gt;
+      &lt;input type="email" id="email" name="email" autocomplete="email"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="celular"&gt;Celular&lt;/label&gt;
+      &lt;input type="tel" id="celular" name="celular" autocomplete="tel"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+      &lt;input type="date" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="senha"&gt;Crie uma senha&lt;/label&gt;
+      &lt;input type="password" id="senha" name="senha" autocomplete="new-password"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="cep"&gt;CEP&lt;/label&gt;
+      &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="estado"&gt;Estado&lt;/label&gt;
+      &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+        &lt;option value=""&gt;Escolha…&lt;/option&gt;
+        &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+        &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+        &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+        &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+        &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Campo</th><th><code>type</code></th><th>O que o navegador faz</th><th><code>autocomplete</code></th></tr>
+<tr><td>Nome</td><td><code>text</code></td><td>Uma linha de texto comum.</td><td><code>name</code> (nome completo)</td></tr>
+<tr><td>E-mail</td><td><code>email</code></td><td>Teclado com <code>@</code> no celular; confere o formato antes de enviar.</td><td><code>email</code></td></tr>
+<tr><td>Celular</td><td><code>tel</code></td><td>Teclado de telefone no celular. Não confere o formato (cada país escreve de um jeito).</td><td><code>tel</code></td></tr>
+<tr><td>Nascimento</td><td><code>date</code></td><td>Um seletor de data (o desenho muda de navegador para navegador). O valor enviado é sempre <code>ano-mês-dia</code>, como <code>1995-03-21</code>.</td><td><code>bday</code> (<em>birthday</em>, aniversário)</td></tr>
+<tr><td>Senha</td><td><code>password</code></td><td>Mostra bolinhas no lugar das letras.</td><td><code>new-password</code>: "senha nova"; o navegador pode sugerir uma senha forte.</td></tr>
+<tr><td>CEP</td><td><code>text</code> + <code>inputmode="numeric"</code></td><td>Teclado de números no celular, mas o campo continua sendo texto.</td><td><code>postal-code</code></td></tr>
+<tr><td>Estado</td><td><code>select</code></td><td>Uma lista de opções que abre e fecha.</td><td><code>address-level1</code> (estado)</td></tr>
+</table>
+</div>
+
+<dl class="anatomy">
+  <dt>&lt;select id="estado" name="estado"&gt;</dt><dd>A caixa de escolha. Leva <code>id</code>, <code>name</code> e um <code>label</code>, como os outros campos.</dd>
+  <dt>&lt;option value=""&gt;Escolha…&lt;/option&gt;</dt><dd>A primeira opção, vazia, convida a escolher. Sem ela, "São Paulo" já viria marcado, e quem não mexer seria cadastrado em São Paulo sem perceber.</dd>
+  <dt>&lt;option value="SP"&gt;São Paulo&lt;/option&gt;</dt><dd>O texto aparece para a pessoa; o <code>value</code> é o que vai para o servidor. Num site de verdade, liste os 27 estados.</dd>
+</dl>
+
+<div class="tip">
+<strong>Por que o CEP não é <code>type="number"</code>?</strong>
+<p>Porque CEP não é número de fazer conta: ninguém soma CEPs. Com <code>type="number"</code>, o campo ganha setinhas para aumentar e diminuir o valor, e o traço de "01234-567" não é aceito. O mesmo vale para telefone, CPF e número de cartão. Use <code>type="number"</code> para quantidades e idades; para códigos, <code>text</code> com <code>inputmode="numeric"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Copiar e colar um campo e esquecer de trocar o <code>id</code></strong>
+<p>A Ana copiou o parágrafo do e-mail para fazer o celular, trocou o texto e o <code>name</code>, mas o campo ficou com <code>id="email"</code> e o rótulo com <code>for="email"</code>. Agora há dois campos com o mesmo <code>id</code>:</p>
+<pre class="term" data-cwd="~/sites/cadastro">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/cadastro/index.html":23.7-23.69: error: Duplicate ID “email”.
+"file:/home/ana/sites/cadastro/index.html":19.7-19.71: info warning: The first occurrence of ID “email” was here.</pre>
+<p>"<code>id</code> repetido: <code>email</code>", e o aviso seguinte mostra onde está o primeiro (linha 19). O <code>id</code> tem de ser único na página. Com dois iguais, o navegador usa o <strong>primeiro</strong>: clicar em "Celular" leva o cursor para o campo de e-mail, e o leitor de tela anuncia os dois campos com o mesmo nome. <strong>Como consertar:</strong> um <code>id</code> diferente para cada campo, e o <code>for</code> acompanhando.</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:input#celular[type]=tel,attr:input#nascimento[type]=date,attr:input#senha[type]=password">
+<p class="try-task"><strong>Missão (versão 2):</strong> três campos estão com <code>type="text"</code>, e a senha aparece para quem estiver olhando a tela. Troque o tipo do celular para <code>tel</code>, o do nascimento para <code>date</code> e o da senha para <code>password</code>. Veja o resultado mudar a cada troca.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;p&gt;
+      &lt;label for="nome"&gt;Nome completo&lt;/label&gt;
+      &lt;input type="text" id="nome" name="nome" autocomplete="name"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="email"&gt;E-mail&lt;/label&gt;
+      &lt;input type="email" id="email" name="email" autocomplete="email"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="celular"&gt;Celular&lt;/label&gt;
+      &lt;input type="text" id="celular" name="celular" autocomplete="tel"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+      &lt;input type="text" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="senha"&gt;Crie uma senha&lt;/label&gt;
+      &lt;input type="text" id="senha" name="senha" autocomplete="new-password"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="cep"&gt;CEP&lt;/label&gt;
+      &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="estado"&gt;Estado&lt;/label&gt;
+      &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+        &lt;option value=""&gt;Escolha…&lt;/option&gt;
+        &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+        &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+        &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+        &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+        &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;p&gt;
+      &lt;label for="nome"&gt;Nome completo&lt;/label&gt;
+      &lt;input type="text" id="nome" name="nome" autocomplete="name"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="email"&gt;E-mail&lt;/label&gt;
+      &lt;input type="email" id="email" name="email" autocomplete="email"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="celular"&gt;Celular&lt;/label&gt;
+      &lt;input type="tel" id="celular" name="celular" autocomplete="tel"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+      &lt;input type="date" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="senha"&gt;Crie uma senha&lt;/label&gt;
+      &lt;input type="password" id="senha" name="senha" autocomplete="new-password"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="cep"&gt;CEP&lt;/label&gt;
+      &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code"&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;label for="estado"&gt;Estado&lt;/label&gt;
+      &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+        &lt;option value=""&gt;Escolha…&lt;/option&gt;
+        &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+        &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+        &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+        &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+        &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao3">Versão 3 · Grupos e escolhas</h2>
+<p>O formulário ficou comprido. Num formulário de papel, ele seria dividido em quadros: "Dados pessoais", "Endereço de entrega", "Preferências". No HTML, cada quadro é um <code>fieldset</code>, e o título dele é a <code>legend</code>. Nesta versão também entram as escolhas: <strong>uma</strong> entre várias (<code>radio</code>), <strong>quantas quiser</strong> (<code>checkbox</code>) e um texto livre maior (<code>textarea</code>).</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Dados pessoais&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="nome"&gt;Nome completo&lt;/label&gt;
+        &lt;input type="text" id="nome" name="nome" autocomplete="name"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="email"&gt;E-mail&lt;/label&gt;
+        &lt;input type="email" id="email" name="email" autocomplete="email"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="celular"&gt;Celular&lt;/label&gt;
+        &lt;input type="tel" id="celular" name="celular" autocomplete="tel"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+        &lt;input type="date" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="senha"&gt;Crie uma senha&lt;/label&gt;
+        &lt;input type="password" id="senha" name="senha" autocomplete="new-password"&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Endereço de entrega&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="cep"&gt;CEP&lt;/label&gt;
+        &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="cidade"&gt;Cidade&lt;/label&gt;
+        &lt;input type="text" id="cidade" name="cidade" autocomplete="address-level2"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="estado"&gt;Estado&lt;/label&gt;
+        &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+          &lt;option value=""&gt;Escolha…&lt;/option&gt;
+          &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+          &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+          &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+          &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+          &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Preferências&lt;/legend&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Como prefere receber as novidades?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-email" name="contato" value="email" checked&gt;
+          &lt;label for="por-email"&gt;Por e-mail&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-mensagem" name="contato" value="mensagem"&gt;
+          &lt;label for="por-mensagem"&gt;Por mensagem no celular&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="nao-quero" name="contato" value="nenhum"&gt;
+          &lt;label for="nao-quero"&gt;Não quero receber&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Do que você mais gosta?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-bolos" name="interesse" value="bolos"&gt;
+          &lt;label for="gosta-bolos"&gt;Bolos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-doces" name="interesse" value="doces"&gt;
+          &lt;label for="gosta-doces"&gt;Docinhos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-salgados" name="interesse" value="salgados"&gt;
+          &lt;label for="gosta-salgados"&gt;Salgados&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;p&gt;
+        &lt;label for="restricoes"&gt;Tem alguma alergia ou restrição alimentar?&lt;/label&gt;&lt;br&gt;
+        &lt;textarea id="restricoes" name="restricoes" rows="3" cols="40"&gt;&lt;/textarea&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;fieldset&gt;</dt><dd>Um grupo de campos. O navegador desenha uma moldura em volta.</dd>
+  <dt>&lt;legend&gt;</dt><dd>O título do grupo, encaixado na moldura. Tem de ser o primeiro filho do <code>fieldset</code>. O leitor de tela lê a legenda ao entrar no grupo.</dd>
+  <dt>&lt;input type="radio" name="contato" value="email" checked&gt;</dt><dd>Uma opção de "escolha uma". Todas as opções da mesma pergunta têm o <strong>mesmo</strong> <code>name</code>: é isso que faz marcar uma desmarcar a outra. O <code>value</code> é o que vai para o servidor (<code>contato=email</code>). <code>checked</code> deixa esta marcada no começo.</dd>
+  <dt>&lt;label for="por-email"&gt;</dt><dd>Cada opção tem o seu rótulo, <strong>depois</strong> da bolinha (é o costume para radio e checkbox). Clicar no texto marca a opção.</dd>
+  <dt>&lt;input type="checkbox" name="interesse"&gt;</dt><dd>"Marque quantas quiser". Se a pessoa marcar duas, vão duas: <code>interesse=bolos&amp;interesse=doces</code>.</dd>
+  <dt>&lt;textarea rows="3" cols="40"&gt;&lt;/textarea&gt;</dt><dd>Um campo de várias linhas: 3 linhas de altura e cerca de 40 letras de largura. Repare que ele tem tag de fechamento, e que nada pode ficar entre as duas tags (nem um espaço), senão o espaço vira o texto inicial do campo.</dd>
+</dl>
+
+<p>A pergunta "Como prefere receber as novidades?" é a <code>legend</code> de um <code>fieldset</code> <strong>dentro</strong> do grupo Preferências. Assim, quando o leitor de tela chega à opção "Não quero receber", ele lê também a pergunta. Sem isso, a pessoa ouviria só "Não quero receber, botão de opção" e teria de adivinhar o quê.</p>
+
+<div class="cenario">
+<strong>Opções de radio com <code>name</code> diferentes</strong>
+<p>Cada opção ficou com um <code>name</code> próprio (o mesmo do <code>id</code>). O validador não reclama. Experimente marcar as opções:</p>
+<pre class="file" data-file="index.html" data-resultado>&lt;fieldset&gt;
+  &lt;legend&gt;Como prefere receber as novidades?&lt;/legend&gt;
+  &lt;p&gt;
+    &lt;input type="radio" id="por-email" name="por-email" value="email"&gt;
+    &lt;label for="por-email"&gt;Por e-mail&lt;/label&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;input type="radio" id="por-mensagem" name="por-mensagem" value="mensagem"&gt;
+    &lt;label for="por-mensagem"&gt;Por mensagem no celular&lt;/label&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;input type="radio" id="nao-quero" name="nao-quero" value="nenhum"&gt;
+    &lt;label for="nao-quero"&gt;Não quero receber&lt;/label&gt;
+  &lt;/p&gt;
+&lt;/fieldset&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> deixa marcar as três ao mesmo tempo, e depois não deixa desmarcar nenhuma (radio só se desmarca marcando outra do mesmo grupo). Para o navegador, são três perguntas de uma opção cada. <strong>Como consertar:</strong> o mesmo <code>name</code> para todas as opções da pergunta; o <code>id</code> continua diferente em cada uma.</p>
+</div>
+
+<div class="tryhtml" data-goal="texto:fieldset fieldset legend=Como prefere receber as novidades?,nsel:fieldset fieldset input[type=radio][name=contato]=3">
+<p class="try-task"><strong>Missão (versão 3):</strong> a pergunta sobre as novidades está num <code>&lt;p&gt;</code> solto, e o leitor de tela não a lê junto com as opções. Dentro do grupo Preferências, coloque as três opções de radio num <code>&lt;fieldset&gt;</code> próprio e transforme a pergunta na <code>&lt;legend&gt;</code> dele (a legenda tem de ser o primeiro filho do <code>fieldset</code>).</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Dados pessoais&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="nome"&gt;Nome completo&lt;/label&gt;
+        &lt;input type="text" id="nome" name="nome" autocomplete="name"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="email"&gt;E-mail&lt;/label&gt;
+        &lt;input type="email" id="email" name="email" autocomplete="email"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="celular"&gt;Celular&lt;/label&gt;
+        &lt;input type="tel" id="celular" name="celular" autocomplete="tel"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+        &lt;input type="date" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="senha"&gt;Crie uma senha&lt;/label&gt;
+        &lt;input type="password" id="senha" name="senha" autocomplete="new-password"&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Endereço de entrega&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="cep"&gt;CEP&lt;/label&gt;
+        &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="cidade"&gt;Cidade&lt;/label&gt;
+        &lt;input type="text" id="cidade" name="cidade" autocomplete="address-level2"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="estado"&gt;Estado&lt;/label&gt;
+        &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+          &lt;option value=""&gt;Escolha…&lt;/option&gt;
+          &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+          &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+          &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+          &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+          &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Preferências&lt;/legend&gt;
+      &lt;p&gt;Como prefere receber as novidades?&lt;/p&gt;
+      &lt;p&gt;
+        &lt;input type="radio" id="por-email" name="contato" value="email" checked&gt;
+        &lt;label for="por-email"&gt;Por e-mail&lt;/label&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;input type="radio" id="por-mensagem" name="contato" value="mensagem"&gt;
+        &lt;label for="por-mensagem"&gt;Por mensagem no celular&lt;/label&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;input type="radio" id="nao-quero" name="contato" value="nenhum"&gt;
+        &lt;label for="nao-quero"&gt;Não quero receber&lt;/label&gt;
+      &lt;/p&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Do que você mais gosta?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-bolos" name="interesse" value="bolos"&gt;
+          &lt;label for="gosta-bolos"&gt;Bolos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-doces" name="interesse" value="doces"&gt;
+          &lt;label for="gosta-doces"&gt;Docinhos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-salgados" name="interesse" value="salgados"&gt;
+          &lt;label for="gosta-salgados"&gt;Salgados&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;p&gt;
+        &lt;label for="restricoes"&gt;Tem alguma alergia ou restrição alimentar?&lt;/label&gt;&lt;br&gt;
+        &lt;textarea id="restricoes" name="restricoes" rows="3" cols="40"&gt;&lt;/textarea&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Dados pessoais&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="nome"&gt;Nome completo&lt;/label&gt;
+        &lt;input type="text" id="nome" name="nome" autocomplete="name"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="email"&gt;E-mail&lt;/label&gt;
+        &lt;input type="email" id="email" name="email" autocomplete="email"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="celular"&gt;Celular&lt;/label&gt;
+        &lt;input type="tel" id="celular" name="celular" autocomplete="tel"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+        &lt;input type="date" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="senha"&gt;Crie uma senha&lt;/label&gt;
+        &lt;input type="password" id="senha" name="senha" autocomplete="new-password"&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Endereço de entrega&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="cep"&gt;CEP&lt;/label&gt;
+        &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="cidade"&gt;Cidade&lt;/label&gt;
+        &lt;input type="text" id="cidade" name="cidade" autocomplete="address-level2"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="estado"&gt;Estado&lt;/label&gt;
+        &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+          &lt;option value=""&gt;Escolha…&lt;/option&gt;
+          &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+          &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+          &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+          &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+          &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Preferências&lt;/legend&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Como prefere receber as novidades?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-email" name="contato" value="email" checked&gt;
+          &lt;label for="por-email"&gt;Por e-mail&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-mensagem" name="contato" value="mensagem"&gt;
+          &lt;label for="por-mensagem"&gt;Por mensagem no celular&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="nao-quero" name="contato" value="nenhum"&gt;
+          &lt;label for="nao-quero"&gt;Não quero receber&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Do que você mais gosta?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-bolos" name="interesse" value="bolos"&gt;
+          &lt;label for="gosta-bolos"&gt;Bolos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-doces" name="interesse" value="doces"&gt;
+          &lt;label for="gosta-doces"&gt;Docinhos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-salgados" name="interesse" value="salgados"&gt;
+          &lt;label for="gosta-salgados"&gt;Salgados&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;p&gt;
+        &lt;label for="restricoes"&gt;Tem alguma alergia ou restrição alimentar?&lt;/label&gt;&lt;br&gt;
+        &lt;textarea id="restricoes" name="restricoes" rows="3" cols="40"&gt;&lt;/textarea&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao4">Versão 4 · Conferir antes de enviar</h2>
+<p>Um cadastro sem e-mail não serve para nada, e um CEP com sete números não leva a encomenda a lugar nenhum. A versão final pede ao navegador que <strong>confira</strong> os dados antes de enviar: o que é obrigatório, o tamanho mínimo da senha e o formato do CEP. E cada exigência fica escrita na tela, para ninguém descobrir só depois de errar.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha. Os campos marcados com "(obrigatório)" precisam ser preenchidos.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Dados pessoais&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="nome"&gt;Nome completo (obrigatório)&lt;/label&gt;
+        &lt;input type="text" id="nome" name="nome" autocomplete="name" required&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="email"&gt;E-mail (obrigatório)&lt;/label&gt;
+        &lt;input type="email" id="email" name="email" autocomplete="email" required&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="celular"&gt;Celular&lt;/label&gt;
+        &lt;input type="tel" id="celular" name="celular" autocomplete="tel" aria-describedby="dica-celular"&gt;
+        &lt;small id="dica-celular"&gt;Com DDD. Exemplo: 11 90000-0000.&lt;/small&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+        &lt;input type="date" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="senha"&gt;Crie uma senha (obrigatório)&lt;/label&gt;
+        &lt;input type="password" id="senha" name="senha" autocomplete="new-password" required minlength="8" aria-describedby="dica-senha"&gt;
+        &lt;small id="dica-senha"&gt;Pelo menos 8 caracteres.&lt;/small&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Endereço de entrega&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="cep"&gt;CEP (obrigatório)&lt;/label&gt;
+        &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code" required pattern="[0-9]{5}-?[0-9]{3}" aria-describedby="dica-cep"&gt;
+        &lt;small id="dica-cep"&gt;8 números, com ou sem traço. Exemplo: 01234-567.&lt;/small&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="cidade"&gt;Cidade&lt;/label&gt;
+        &lt;input type="text" id="cidade" name="cidade" autocomplete="address-level2"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="estado"&gt;Estado&lt;/label&gt;
+        &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+          &lt;option value=""&gt;Escolha…&lt;/option&gt;
+          &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+          &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+          &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+          &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+          &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Preferências&lt;/legend&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Como prefere receber as novidades?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-email" name="contato" value="email" checked&gt;
+          &lt;label for="por-email"&gt;Por e-mail&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-mensagem" name="contato" value="mensagem"&gt;
+          &lt;label for="por-mensagem"&gt;Por mensagem no celular&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="nao-quero" name="contato" value="nenhum"&gt;
+          &lt;label for="nao-quero"&gt;Não quero receber&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Do que você mais gosta?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-bolos" name="interesse" value="bolos"&gt;
+          &lt;label for="gosta-bolos"&gt;Bolos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-doces" name="interesse" value="doces"&gt;
+          &lt;label for="gosta-doces"&gt;Docinhos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-salgados" name="interesse" value="salgados"&gt;
+          &lt;label for="gosta-salgados"&gt;Salgados&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;p&gt;
+        &lt;label for="restricoes"&gt;Tem alguma alergia ou restrição alimentar?&lt;/label&gt;&lt;br&gt;
+        &lt;textarea id="restricoes" name="restricoes" rows="3" cols="40"&gt;&lt;/textarea&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;p&gt;
+      &lt;input type="checkbox" id="termos" name="termos" value="sim" required&gt;
+      &lt;label for="termos"&gt;Concordo que a lojinha guarde os meus dados para entregas e novidades (obrigatório)&lt;/label&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>Onde</th><th>O que o navegador confere</th></tr>
+<tr><td><code>required</code></td><td>nome, e-mail, senha, CEP e o aceite</td><td>Que o campo não está vazio (no checkbox, que está marcado). O leitor de tela também anuncia "obrigatório".</td></tr>
+<tr><td><code>minlength="8"</code></td><td>senha</td><td>Que tem pelo menos 8 caracteres.</td></tr>
+<tr><td><code>pattern="[0-9]{5}-?[0-9]{3}"</code></td><td>CEP</td><td>Que o valor <strong>inteiro</strong> segue o molde: 5 dígitos, um traço opcional e 3 dígitos.</td></tr>
+<tr><td><code>type="email"</code></td><td>e-mail</td><td>Que parece um e-mail (algo, <code>@</code>, algo).</td></tr>
+</table>
+</div>
+
+<dl class="anatomy">
+  <dt>[0-9]{5}</dt><dd>Um dígito de 0 a 9 (<code>[0-9]</code>), cinco vezes (<code>{5}</code>).</dd>
+  <dt>-?</dt><dd>Um traço, que pode aparecer ou não (o <code>?</code> quer dizer "opcional").</dd>
+  <dt>[0-9]{3}</dt><dd>Mais três dígitos. Passam <code>01234-567</code> e <code>01234567</code>; não passam <code>01234 567</code> (com espaço) nem <code>1234-567</code> (faltou um dígito).</dd>
+  <dt>aria-describedby="dica-cep"</dt><dd>Liga o campo à dica com <code>id="dica-cep"</code>. O leitor de tela lê o rótulo e, logo depois, a dica: "CEP, obrigatório, 8 números, com ou sem traço…" (veja <a href="aria.html">ARIA</a>).</dd>
+  <dt>&lt;small id="dica-cep"&gt;</dt><dd>A dica, visível para todos, logo depois do campo.</dd>
+  <dt>(obrigatório)</dt><dd>Escrito no rótulo. Um asterisco sozinho não diz nada a quem nunca viu essa convenção; a palavra diz.</dd>
+</dl>
+
+<p>Experimente no resultado acima: clique em <strong>Cadastrar</strong> sem preencher nada. O navegador não envia; ele leva o cursor até o primeiro campo com problema (o nome) e mostra um balão com o motivo. O texto do balão é do próprio navegador, no idioma dele. Depois escreva <code>01234 567</code> no CEP e tente de novo: o balão agora reclama do formato. Só quando tudo estiver certo aparece a página "Formulário enviado".</p>
+
+<div class="warning">
+<strong>A conferência do navegador ajuda a pessoa, mas não protege a loja</strong>
+<p>Qualquer pessoa pode desligar essas conferências ou mandar dados direto para o servidor, sem passar pela página. Por isso o programa que recebe o cadastro tem de conferir tudo de novo. A validação do HTML existe para a pessoa descobrir o erro na hora, sem esperar a resposta do servidor (veja <a href="seguranca.html">Segurança</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>Só o <code>placeholder</code>, sem <code>label</code></strong>
+<p>Uma moda comum é tirar o rótulo e deixar só o texto cinza dentro do campo (o <code>placeholder</code>). Fica "limpo", e o validador aceita. Experimente escrever no campo do nome:</p>
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Teste&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;p&gt;&lt;input type="text" name="nome" placeholder="Nome completo"&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;input type="email" name="email" placeholder="E-mail"&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;button type="submit"&gt;Cadastrar&lt;/button&gt;&lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que acontece:</strong> o texto cinza some assim que você começa a digitar. Quem se distrai no meio não sabe mais que campo era aquele, e quem tem dificuldade de memória precisa apagar para ver. O cinza claro também é difícil de ler para muita gente. <strong>Como consertar:</strong> sempre um <code>label</code>; o <code>placeholder</code>, se houver, é só um exemplo a mais (veja <a href="formularios-acessiveis.html">Formulários Acessíveis</a>).</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:input[required]=5,attr:input#cep[pattern]=[0-9]{5}-?[0-9]{3},attr:input#senha[minlength]=8">
+<p class="try-task"><strong>Missão (versão 4):</strong> os rótulos já dizem "(obrigatório)", mas o navegador ainda não sabe disso. Coloque <code>required</code> no nome, no e-mail, na senha, no CEP e no checkbox do aceite; na senha, acrescente <code>minlength="8"</code>; no CEP, <code>pattern="[0-9]{5}-?[0-9]{3}"</code>. Depois, tente cadastrar com o formulário vazio.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha. Os campos marcados com "(obrigatório)" precisam ser preenchidos.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Dados pessoais&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="nome"&gt;Nome completo (obrigatório)&lt;/label&gt;
+        &lt;input type="text" id="nome" name="nome" autocomplete="name"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="email"&gt;E-mail (obrigatório)&lt;/label&gt;
+        &lt;input type="email" id="email" name="email" autocomplete="email"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="celular"&gt;Celular&lt;/label&gt;
+        &lt;input type="tel" id="celular" name="celular" autocomplete="tel" aria-describedby="dica-celular"&gt;
+        &lt;small id="dica-celular"&gt;Com DDD. Exemplo: 11 90000-0000.&lt;/small&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+        &lt;input type="date" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="senha"&gt;Crie uma senha (obrigatório)&lt;/label&gt;
+        &lt;input type="password" id="senha" name="senha" autocomplete="new-password" aria-describedby="dica-senha"&gt;
+        &lt;small id="dica-senha"&gt;Pelo menos 8 caracteres.&lt;/small&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Endereço de entrega&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="cep"&gt;CEP (obrigatório)&lt;/label&gt;
+        &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code" aria-describedby="dica-cep"&gt;
+        &lt;small id="dica-cep"&gt;8 números, com ou sem traço. Exemplo: 01234-567.&lt;/small&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="cidade"&gt;Cidade&lt;/label&gt;
+        &lt;input type="text" id="cidade" name="cidade" autocomplete="address-level2"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="estado"&gt;Estado&lt;/label&gt;
+        &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+          &lt;option value=""&gt;Escolha…&lt;/option&gt;
+          &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+          &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+          &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+          &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+          &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Preferências&lt;/legend&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Como prefere receber as novidades?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-email" name="contato" value="email" checked&gt;
+          &lt;label for="por-email"&gt;Por e-mail&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-mensagem" name="contato" value="mensagem"&gt;
+          &lt;label for="por-mensagem"&gt;Por mensagem no celular&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="nao-quero" name="contato" value="nenhum"&gt;
+          &lt;label for="nao-quero"&gt;Não quero receber&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Do que você mais gosta?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-bolos" name="interesse" value="bolos"&gt;
+          &lt;label for="gosta-bolos"&gt;Bolos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-doces" name="interesse" value="doces"&gt;
+          &lt;label for="gosta-doces"&gt;Docinhos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-salgados" name="interesse" value="salgados"&gt;
+          &lt;label for="gosta-salgados"&gt;Salgados&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;p&gt;
+        &lt;label for="restricoes"&gt;Tem alguma alergia ou restrição alimentar?&lt;/label&gt;&lt;br&gt;
+        &lt;textarea id="restricoes" name="restricoes" rows="3" cols="40"&gt;&lt;/textarea&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;p&gt;
+      &lt;input type="checkbox" id="termos" name="termos" value="sim"&gt;
+      &lt;label for="termos"&gt;Concordo que a lojinha guarde os meus dados para entregas e novidades (obrigatório)&lt;/label&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha. Os campos marcados com "(obrigatório)" precisam ser preenchidos.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Dados pessoais&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="nome"&gt;Nome completo (obrigatório)&lt;/label&gt;
+        &lt;input type="text" id="nome" name="nome" autocomplete="name" required&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="email"&gt;E-mail (obrigatório)&lt;/label&gt;
+        &lt;input type="email" id="email" name="email" autocomplete="email" required&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="celular"&gt;Celular&lt;/label&gt;
+        &lt;input type="tel" id="celular" name="celular" autocomplete="tel" aria-describedby="dica-celular"&gt;
+        &lt;small id="dica-celular"&gt;Com DDD. Exemplo: 11 90000-0000.&lt;/small&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+        &lt;input type="date" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="senha"&gt;Crie uma senha (obrigatório)&lt;/label&gt;
+        &lt;input type="password" id="senha" name="senha" autocomplete="new-password" required minlength="8" aria-describedby="dica-senha"&gt;
+        &lt;small id="dica-senha"&gt;Pelo menos 8 caracteres.&lt;/small&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Endereço de entrega&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="cep"&gt;CEP (obrigatório)&lt;/label&gt;
+        &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code" required pattern="[0-9]{5}-?[0-9]{3}" aria-describedby="dica-cep"&gt;
+        &lt;small id="dica-cep"&gt;8 números, com ou sem traço. Exemplo: 01234-567.&lt;/small&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="cidade"&gt;Cidade&lt;/label&gt;
+        &lt;input type="text" id="cidade" name="cidade" autocomplete="address-level2"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="estado"&gt;Estado&lt;/label&gt;
+        &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+          &lt;option value=""&gt;Escolha…&lt;/option&gt;
+          &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+          &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+          &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+          &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+          &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Preferências&lt;/legend&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Como prefere receber as novidades?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-email" name="contato" value="email" checked&gt;
+          &lt;label for="por-email"&gt;Por e-mail&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-mensagem" name="contato" value="mensagem"&gt;
+          &lt;label for="por-mensagem"&gt;Por mensagem no celular&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="nao-quero" name="contato" value="nenhum"&gt;
+          &lt;label for="nao-quero"&gt;Não quero receber&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Do que você mais gosta?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-bolos" name="interesse" value="bolos"&gt;
+          &lt;label for="gosta-bolos"&gt;Bolos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-doces" name="interesse" value="doces"&gt;
+          &lt;label for="gosta-doces"&gt;Docinhos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-salgados" name="interesse" value="salgados"&gt;
+          &lt;label for="gosta-salgados"&gt;Salgados&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;p&gt;
+        &lt;label for="restricoes"&gt;Tem alguma alergia ou restrição alimentar?&lt;/label&gt;&lt;br&gt;
+        &lt;textarea id="restricoes" name="restricoes" rows="3" cols="40"&gt;&lt;/textarea&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;p&gt;
+      &lt;input type="checkbox" id="termos" name="termos" value="sim" required&gt;
+      &lt;label for="termos"&gt;Concordo que a lojinha guarde os meus dados para entregas e novidades (obrigatório)&lt;/label&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>A página completa</h2>
+<p>A versão final é a versão 4. Salve como <code>index.html</code> na pasta <code>sites/cadastro</code>:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cadastro — Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cadastro de clientes&lt;/h1&gt;
+  &lt;p&gt;Cadastre-se para receber as novidades da lojinha. Os campos marcados com "(obrigatório)" precisam ser preenchidos.&lt;/p&gt;
+
+  &lt;form action="https://example.com/cadastro" method="post"&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Dados pessoais&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="nome"&gt;Nome completo (obrigatório)&lt;/label&gt;
+        &lt;input type="text" id="nome" name="nome" autocomplete="name" required&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="email"&gt;E-mail (obrigatório)&lt;/label&gt;
+        &lt;input type="email" id="email" name="email" autocomplete="email" required&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="celular"&gt;Celular&lt;/label&gt;
+        &lt;input type="tel" id="celular" name="celular" autocomplete="tel" aria-describedby="dica-celular"&gt;
+        &lt;small id="dica-celular"&gt;Com DDD. Exemplo: 11 90000-0000.&lt;/small&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="nascimento"&gt;Data de nascimento&lt;/label&gt;
+        &lt;input type="date" id="nascimento" name="nascimento" autocomplete="bday"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="senha"&gt;Crie uma senha (obrigatório)&lt;/label&gt;
+        &lt;input type="password" id="senha" name="senha" autocomplete="new-password" required minlength="8" aria-describedby="dica-senha"&gt;
+        &lt;small id="dica-senha"&gt;Pelo menos 8 caracteres.&lt;/small&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Endereço de entrega&lt;/legend&gt;
+      &lt;p&gt;
+        &lt;label for="cep"&gt;CEP (obrigatório)&lt;/label&gt;
+        &lt;input type="text" id="cep" name="cep" inputmode="numeric" autocomplete="postal-code" required pattern="[0-9]{5}-?[0-9]{3}" aria-describedby="dica-cep"&gt;
+        &lt;small id="dica-cep"&gt;8 números, com ou sem traço. Exemplo: 01234-567.&lt;/small&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="cidade"&gt;Cidade&lt;/label&gt;
+        &lt;input type="text" id="cidade" name="cidade" autocomplete="address-level2"&gt;
+      &lt;/p&gt;
+      &lt;p&gt;
+        &lt;label for="estado"&gt;Estado&lt;/label&gt;
+        &lt;select id="estado" name="estado" autocomplete="address-level1"&gt;
+          &lt;option value=""&gt;Escolha…&lt;/option&gt;
+          &lt;option value="SP"&gt;São Paulo&lt;/option&gt;
+          &lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;
+          &lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;
+          &lt;option value="PR"&gt;Paraná&lt;/option&gt;
+          &lt;option value="outro"&gt;Outro estado&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;fieldset&gt;
+      &lt;legend&gt;Preferências&lt;/legend&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Como prefere receber as novidades?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-email" name="contato" value="email" checked&gt;
+          &lt;label for="por-email"&gt;Por e-mail&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="por-mensagem" name="contato" value="mensagem"&gt;
+          &lt;label for="por-mensagem"&gt;Por mensagem no celular&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="radio" id="nao-quero" name="contato" value="nenhum"&gt;
+          &lt;label for="nao-quero"&gt;Não quero receber&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;Do que você mais gosta?&lt;/legend&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-bolos" name="interesse" value="bolos"&gt;
+          &lt;label for="gosta-bolos"&gt;Bolos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-doces" name="interesse" value="doces"&gt;
+          &lt;label for="gosta-doces"&gt;Docinhos&lt;/label&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;input type="checkbox" id="gosta-salgados" name="interesse" value="salgados"&gt;
+          &lt;label for="gosta-salgados"&gt;Salgados&lt;/label&gt;
+        &lt;/p&gt;
+      &lt;/fieldset&gt;
+      &lt;p&gt;
+        &lt;label for="restricoes"&gt;Tem alguma alergia ou restrição alimentar?&lt;/label&gt;&lt;br&gt;
+        &lt;textarea id="restricoes" name="restricoes" rows="3" cols="40"&gt;&lt;/textarea&gt;
+      &lt;/p&gt;
+    &lt;/fieldset&gt;
+
+    &lt;p&gt;
+      &lt;input type="checkbox" id="termos" name="termos" value="sim" required&gt;
+      &lt;label for="termos"&gt;Concordo que a lojinha guarde os meus dados para entregas e novidades (obrigatório)&lt;/label&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O que o projeto juntou: <a href="formularios.html">form</a>, <a href="label.html">label</a>, <a href="input.html">input</a> e os seus <a href="tipos-input.html">tipos</a>, <a href="atributos-input.html">autocomplete</a>, <a href="select.html">select</a>, <a href="checkbox-radio.html">radio e checkbox</a>, <a href="textarea.html">textarea</a>, <a href="fieldset.html">fieldset e legend</a>, <a href="validacao.html">validação</a> e <a href="formularios-acessiveis.html">dicas acessíveis</a>.</p>
+
+<h3>Validando no laboratório</h3>
+<pre class="term" data-cwd="~/sites/cadastro">$ ls
+index.html
+$ vnu --verbose index.html
+index.html
+$ echo $?
+0</pre>
+
+<h3>Conferindo a acessibilidade</h3>
+<p>Uma lista rápida para qualquer formulário, que esta versão final cumpre:</p>
+<ol class="passo">
+  <li>Todo campo tem um <code>label</code> visível, ligado por <code>for</code> e <code>id</code>.</li>
+  <li>Opções de uma mesma pergunta ficam num <code>fieldset</code> com a pergunta na <code>legend</code>.</li>
+  <li>O que é obrigatório está escrito na tela e marcado com <code>required</code>.</li>
+  <li>As regras (tamanho da senha, formato do CEP) aparecem antes do erro, e estão ligadas ao campo com <code>aria-describedby</code>.</li>
+  <li>Dá para preencher e enviar só com o teclado: <kbd>Tab</kbd> passa de campo em campo, as setas trocam a opção do radio, <kbd>Espaço</kbd> marca o checkbox e <kbd>Enter</kbd> envia (veja <a href="teclado.html">Teclado e Foco</a>). Teste você mesmo no resultado.</li>
+</ol>
+
+<hr>
+
+<h2>Desafios extras</h2>
+<ol>
+  <li><strong>Sugestões de cidade.</strong> Use um <code>&lt;datalist&gt;</code> para sugerir as cidades em que a Ana entrega (veja <a href="datalist.html">datalist</a>).</li>
+  <li><strong>Grupos de estados.</strong> Separe as opções do <code>select</code> por região com <code>&lt;optgroup label="Sudeste"&gt;</code> (veja <a href="select.html">select</a>).</li>
+  <li><strong>Limite no texto.</strong> Ponha <code>maxlength="300"</code> no <code>textarea</code> e escreva a regra numa dica ligada com <code>aria-describedby</code>.</li>
+  <li><strong>Um botão de limpar.</strong> Acrescente <code>&lt;button type="reset"&gt;Limpar&lt;/button&gt;</code> e pense: vale a pena? Muita gente clica nele sem querer e perde tudo (veja <a href="botoes.html">Botões</a>).</li>
+  <li><strong>Busca de produtos.</strong> Faça um segundo formulário, de busca, com <code>method="get"</code>, um <code>&lt;input type="search" name="q"&gt;</code> e um <code>label</code>. Envie e compare o endereço que o editor mostra com o do POST (veja <a href="enviar-formulario.html">Enviar: GET e POST</a>).</li>
+</ol>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">1. Qual atributo liga um <code>label</code> ao seu campo?</p>
+<label><input type="radio" name="q1"> O <code>name</code> do label igual ao <code>name</code> do campo.</label>
+<label><input type="radio" name="q1"> O <code>for</code> do label igual ao <code>id</code> do campo.</label>
+<label><input type="radio" name="q1"> O <code>id</code> do label igual ao <code>for</code> do campo.</label>
+<label><input type="radio" name="q1"> Basta o label estar antes do campo.</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">2. Um campo foi preenchido, mas o dado não chegou ao servidor. O que provavelmente falta nele?</p>
+<label><input type="radio" name="q2"> O <code>id</code>.</label>
+<label><input type="radio" name="q2"> O <code>label</code>.</label>
+<label><input type="radio" name="q2"> O <code>name</code>.</label>
+<label><input type="radio" name="q2"> O <code>required</code>.</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">3. As três opções de um radio deixam marcar todas ao mesmo tempo. Qual é o erro?</p>
+<label><input type="radio" name="q3"> Falta o <code>checked</code>.</label>
+<label><input type="radio" name="q3"> Elas deviam ser <code>checkbox</code>.</label>
+<label><input type="radio" name="q3"> Falta o <code>fieldset</code>.</label>
+<label><input type="radio" name="q3"> Cada opção tem um <code>name</code> diferente; deviam ter o mesmo.</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">4. Com <code>pattern="[0-9]{5}-?[0-9]{3}"</code>, qual CEP o navegador aceita?</p>
+<label><input type="radio" name="q4"> <code>01234567</code></label>
+<label><input type="radio" name="q4"> <code>01234 567</code></label>
+<label><input type="radio" name="q4"> <code>1234-567</code></label>
+<label><input type="radio" name="q4"> <code>CEP 01234-567</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Por que a validação do navegador não basta para proteger a loja?</p>
+<label><input type="radio" name="q5"> Porque ela só funciona no celular.</label>
+<label><input type="radio" name="q5"> Porque qualquer pessoa pode contorná-la e mandar dados direto para o servidor.</label>
+<label><input type="radio" name="q5"> Porque o <code>required</code> é ignorado pelo navegador.</label>
+<label><input type="radio" name="q5"> Porque o validador do W3C não confere formulários.</label>
+</div>
+
+<div class="exercise">
+<p>6. Complete o campo de e-mail, para o celular mostrar o teclado com <code>@</code>:</p>
+<div class="ex-code">&lt;input type="<input data-answer="email" aria-label="tipo" size="6">" id="email" name="email"&gt;</div>
+</div>
+
+<div class="exercise">
+<p>7. Complete o título do grupo de campos:</p>
+<div class="ex-code">&lt;fieldset&gt; &lt;<input data-answer="legend" aria-label="elemento" size="7">&gt;Endereço de entrega&lt;/legend&gt; …</div>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Todo campo tem um <code>label</code> ligado por <code>for</code> = <code>id</code>; o <code>name</code> é o nome com que o dado é enviado, e campo sem <code>name</code> não vai.</li>
+  <li>O <code>type</code> certo ajuda a pessoa (teclado, calendário, senha escondida); o <code>autocomplete</code> deixa o navegador preencher sozinho.</li>
+  <li>Códigos como CEP e telefone são texto: <code>inputmode="numeric"</code>, e não <code>type="number"</code>.</li>
+  <li><code>fieldset</code> e <code>legend</code> agrupam campos e dão a pergunta das opções; todas as opções de um radio têm o mesmo <code>name</code>.</li>
+  <li><code>required</code>, <code>minlength</code> e <code>pattern</code> fazem o navegador conferir antes de enviar; as regras ficam escritas na tela e ligadas com <code>aria-describedby</code>.</li>
+  <li>A conferência do navegador ajuda a pessoa; o servidor confere de novo.</li>
+</ul>
+<p>Próximo projeto: <a href="projeto-blog.html">Blog Semântico</a>.</p>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
