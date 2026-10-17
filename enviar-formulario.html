@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Enviar formulário — action, method, GET e POST | Guia HTML</title>
+<meta name="description" content="Enviar um formulário em HTML para quem nunca fez um site: action (para onde), method (GET ou POST), name (o que vai), os pares nome=valor e a codificação application/x-www-form-urlencoded, com um envio de verdade a um servidor local (python3 -m http.server), o erro 501 do POST, curl -v, as mensagens reais do validador W3C e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Enviar (action, method, GET e POST)</span></h1>
+
+<p class="intro">Nas últimas aulas, a ficha de encomenda da Ana ganhou campos, listas, botões e regras. Falta o principal: o que acontece quando a cliente clica em <strong>Enviar pedido</strong>? O navegador junta as respostas numa mensagem e manda essa mensagem para um <strong>endereço</strong>, de um de dois <strong>jeitos</strong>. O endereço é o <code>action</code>; o jeito é o <code>method</code>, <code>GET</code> ou <code>POST</code>. Nesta aula você vai ver uma mensagem dessas chegando de verdade a um servidor, na máquina da Ana, e entender cada pedaço dela.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que o navegador faz, passo a passo, quando um formulário é enviado.</li>
+  <li>O papel do <code>name</code>: só os campos com nome vão na mensagem.</li>
+  <li>Para onde a mensagem vai: o atributo <code>action</code>.</li>
+  <li>Como ela vai: <code>method="get"</code> (no endereço) e <code>method="post"</code> (no corpo).</li>
+  <li>O formato dos dados, <code>application/x-www-form-urlencoded</code>: os pares <code>nome=valor</code>, o <code>&amp;</code>, o <code>+</code> e o <code>%C3%A3</code>.</li>
+  <li>Um envio de verdade a um servidor local, com o <code>python3 -m http.server</code> e o <code>curl</code>, e o erro <code>501</code> do POST.</li>
+  <li>Quando usar GET e quando usar POST.</li>
+</ul>
+</div>
+
+<p>Você vai precisar de <a href="formularios.html">Formulários</a> e das aulas anteriores deste grupo. O terminal da aula é a máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), com Python e <code>curl</code>; o servidor local é explicado em <a href="servidor-local.html">Servidor Local</a>. O jeito como o navegador monta os dados foi conferido num envio de verdade no <strong>Chromium 155</strong>, e os erros de escrita, no <strong>validador W3C</strong> (<code>vnu</code>).</p>
+
+<hr>
+
+<h2>A ideia: cartão-postal ou carta no envelope</h2>
+<p>Para mandar uma mensagem pelo correio, você precisa de duas coisas: o <strong>endereço</strong> e o <strong>jeito</strong> de mandar.</p>
+<ul>
+  <li>Um <strong>cartão-postal</strong> tem a mensagem escrita do lado de fora, junto do endereço. É rápido, mas o carteiro, o porteiro e quem mais pegar o cartão consegue ler, e cabe pouca coisa. Esse é o <strong>GET</strong>: os dados vão <strong>no endereço</strong>.</li>
+  <li>Uma <strong>carta</strong> vai dentro de um envelope: do lado de fora, só o endereço; a mensagem vai dentro, e pode ser longa. Esse é o <strong>POST</strong>: os dados vão no <strong>corpo</strong> da mensagem, separados do endereço.</li>
+</ul>
+<p>E a mensagem em si é uma lista de etiquetas com respostas: "nome: Ana Maria", "sabor: cenoura". As etiquetas são os <code>name</code> dos campos.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No correio</th><th>No formulário</th></tr>
+<tr><td>O endereço do destinatário</td><td><code>action="…"</code></td></tr>
+<tr><td>Cartão-postal ou carta</td><td><code>method="get"</code> ou <code>method="post"</code></td></tr>
+<tr><td>"nome: Ana Maria"</td><td>o par <code>nome=Ana+Maria</code> (o <code>name</code> do campo e o valor)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O que acontece no clique</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form action="obrigado.html" method="get"&gt;
+  &lt;label for="nome"&gt;Nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome" value="Ana Maria"&gt;
+  &lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+  &lt;select id="sabor" name="sabor"&gt;
+    &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+    &lt;option value="chocolate"&gt;Chocolate&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>action="obrigado.html"</dt><dd>O <strong>endereço</strong> para onde a mensagem vai (<em>action</em> = "ação": a página que vai cuidar dos dados). Aqui, é uma página do mesmo site.</dd>
+  <dt>method="get"</dt><dd>O <strong>jeito</strong> (<em>method</em> = "método"): <code>get</code> põe os dados no endereço. Se o <code>method</code> não for escrito, ele é <code>get</code>.</dd>
+  <dt>name="nome", name="sabor"</dt><dd>As etiquetas. Cada campo com <code>name</code> vira um par <code>name=valor</code>.</dd>
+</dl>
+
+<p>Quando a cliente clica em <strong>Enviar pedido</strong>, o navegador:</p>
+<ol class="passo">
+  <li><strong>confere</strong> as regras de validação (<code>required</code>, <code>pattern</code>…); se alguma falhar, para aqui (aula <a href="validacao.html">Validação</a>);</li>
+  <li><strong>junta</strong> os campos que têm <code>name</code> e não estão desligados, na ordem em que aparecem: <code>nome</code> com "Ana Maria", <code>sabor</code> com "cenoura";</li>
+  <li><strong>codifica</strong> cada par para ele poder viajar: <code>nome=Ana+Maria</code>, <code>sabor=cenoura</code> (o espaço virou <code>+</code>; seção 5);</li>
+  <li><strong>une</strong> os pares com <code>&amp;</code>: <code>nome=Ana+Maria&amp;sabor=cenoura</code>;</li>
+  <li><strong>envia</strong> para o <code>action</code>, do jeito do <code>method</code>. Com GET, ele abre o endereço <code>obrigado.html?nome=Ana+Maria&amp;sabor=cenoura</code>: o <code>?</code> separa o endereço da página dos dados.</li>
+</ol>
+
+<p>O editor do guia não tem servidor, mas ele imita o envio: clique em <strong>Enviar pedido</strong> no resultado e veja a página "Formulário enviado", com o endereço que o navegador abriria e a tabela dos pares.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> esta caixa tem duas páginas, como um site de verdade. Escreva o seu nome, escolha um sabor e clique em <strong>Enviar pedido</strong>. Como o <code>action</code> é a aba <code>obrigado.html</code>, o editor abre essa página, e a barra do quadro mostra o endereço com os dados depois do <code>?</code>. Use o ↻ para voltar ao formulário.</p>
+<pre class="script" data-file="index.html">&lt;form action="obrigado.html" method="get"&gt;
+  &lt;label for="nome"&gt;Nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome" value="Ana Maria"&gt;
+  &lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+  &lt;select id="sabor" name="sabor"&gt;
+    &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+    &lt;option value="chocolate"&gt;Chocolate&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="script" data-file="obrigado.html">&lt;h1&gt;Obrigado pelo pedido!&lt;/h1&gt;
+&lt;p&gt;Olhe o endereço desta página na barra do quadro.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Sem <code>name</code>, não vai</h2>
+<p>O <code>id</code> serve ao <code>&lt;label&gt;</code>, ao CSS e aos scripts, <strong>dentro</strong> da página. Para o envio, quem conta é o <code>name</code>. Um campo sem <code>name</code> fica de fora da mensagem, por mais preenchido que esteja. No Chromium 155, num envio de verdade com um campo <code>&lt;input id="semnome" value="x"&gt;</code>, sem <code>name</code>, ele simplesmente não apareceu no endereço.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O campo…</th><th>Vai na mensagem?</th></tr>
+<tr><td>tem <code>name</code></td><td>sim, como <code>name=valor</code> (mesmo vazio: <code>nome=</code>)</td></tr>
+<tr><td>não tem <code>name</code></td><td>não</td></tr>
+<tr><td>tem <code>disabled</code></td><td>não (aula <a href="atributos-input.html">placeholder, value, autocomplete…</a>)</td></tr>
+<tr><td>é uma caixa ou um rádio desmarcado</td><td>não (aula <a href="checkbox-radio.html">checkbox e radio</a>)</td></tr>
+<tr><td>é o botão de enviar clicado, com <code>name</code></td><td>sim (aula <a href="botoes.html">Botões</a>)</td></tr>
+</table>
+</div>
+
+<div class="tryhtml" data-goal="sel:input#nome[name=nome],sel:input#tel[name=tel],sel:select#sabor[name=sabor]">
+<p class="try-task"><strong>Missão:</strong> clique em <strong>Enviar pedido</strong> e veja: a página "Formulário enviado" do editor avisa que há campos sem <code>name</code>, e nada deles é enviado. Dê um <code>name</code> a cada campo (<code>nome</code>, <code>tel</code> e <code>sabor</code>, iguais aos <code>id</code>) e envie de novo.</p>
+<pre class="script" data-file="index.html">&lt;form action="enviar.php" method="get"&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Telefone:&lt;/label&gt; &lt;input type="tel" id="tel"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+    &lt;select id="sabor"&gt;
+      &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+      &lt;option value="chocolate"&gt;Chocolate&lt;/option&gt;
+    &lt;/select&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="enviar.php" method="get"&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Telefone:&lt;/label&gt; &lt;input type="tel" id="tel" name="tel"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+    &lt;select id="sabor" name="sabor"&gt;
+      &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+      &lt;option value="chocolate"&gt;Chocolate&lt;/option&gt;
+    &lt;/select&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Para onde: <code>action</code></h2>
+<p>O <code>action</code> é um endereço como o <code>href</code> de um link, e segue as mesmas regras de caminhos (aula <a href="caminhos.html">Caminhos Relativos e Absolutos</a>):</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Para onde vai</th></tr>
+<tr><td><code>action="obrigado.html"</code></td><td>uma página na mesma pasta</td></tr>
+<tr><td><code>action="pedidos/novo"</code></td><td>um caminho do mesmo site</td></tr>
+<tr><td><code>action="https://padaria.example/pedidos"</code></td><td>um endereço completo, que pode ser de outro site</td></tr>
+<tr><td>sem <code>action</code></td><td>a <strong>própria página</strong> em que o formulário está</td></tr>
+</table>
+</div>
+
+<p>Quem está do outro lado do <code>action</code> é um <strong>programa</strong> no servidor (feito em PHP, Python, JavaScript, Java…), que lê os pares, grava a encomenda e responde com uma página. Escrever esse programa não é HTML e fica fora deste guia. Um site estático, como um do GitHub Pages (aula <a href="publicar.html">Publicar no GitHub Pages</a>), não tem programa nenhum: ele só entrega arquivos prontos. Para receber formulários num site assim, existem serviços de formulário, que dão um <code>action</code> para você usar.</p>
+
+<hr>
+
+<h2>4. Um envio de verdade: GET</h2>
+<p>Hora de ver a mensagem chegando. A Ana tem, na pasta <code>~/encomenda</code>, uma página <code>obrigado.html</code> simples, com um título "Obrigado pelo pedido!". Ela liga um servidor local com o Python, em <strong>segundo plano</strong> (o <code>&amp;</code> no fim do comando), para continuar usando o mesmo terminal:</p>
+
+<pre class="term" data-cwd="~/encomenda">$ ls
+obrigado.html
+$ python3 -m http.server &amp;
+[1] 5
+$ sleep 1                          « espera o servidor começar
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...</pre>
+
+<dl class="anatomy">
+  <dt>python3 -m http.server &amp;</dt><dd>Liga o servidor de arquivos do Python na pasta atual (aula <a href="servidor-local.html">Servidor Local</a>). O <code>&amp;</code> o põe em segundo plano.</dd>
+  <dt>[1] 5</dt><dd>O bash avisa: "tarefa 1, processo número 5". O <code>%1</code> do fim da aula vem desse <code>[1]</code>. (O número do processo muda a cada vez.)</dd>
+  <dt>Serving HTTP on 0.0.0.0 port 8000</dt><dd>"Servindo HTTP na porta 8000": o servidor está pronto. A partir daqui, ele escreve no terminal uma linha para cada pedido que recebe.</dd>
+</dl>
+
+<p>Agora, em vez de abrir o navegador, a Ana usa o <code>curl</code>, um programa que faz pedidos pela linha de comando. Ela pede exatamente o endereço que o navegador abriria ao enviar o formulário da seção 1:</p>
+
+<pre class="term" data-cwd="~/encomenda">$ curl -s 'http://localhost:8000/obrigado.html?nome=Ana+Maria&amp;sabor=cenoura'
+127.0.0.1 - - [17/Oct/2026 16:11:18] "GET /obrigado.html?nome=Ana+Maria&amp;sabor=cenoura HTTP/1.1" 200 -
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Obrigado&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Obrigado pelo pedido!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+<p>A primeira linha da saída é o <strong>registro</strong> (<em>log</em>) do servidor, e o resto é a página que ele devolveu. O registro, pedaço por pedaço:</p>
+
+<dl class="anatomy">
+  <dt>127.0.0.1</dt><dd>Quem pediu: o próprio computador (o "endereço de casa", aula <a href="servidor-local.html">Servidor Local</a>).</dd>
+  <dt>[17/Oct/2026 16:11:18]</dt><dd>Quando: dia, mês (em inglês) e hora.</dd>
+  <dt>"GET /obrigado.html?nome=Ana+Maria&amp;sabor=cenoura HTTP/1.1"</dt><dd>O pedido: o <strong>método</strong> <code>GET</code>, o <strong>caminho</strong> com os dados depois do <code>?</code> e a versão do HTTP. <strong>Os dados do formulário estão aqui, no endereço</strong>, à vista de quem lê o registro: é o cartão-postal.</dd>
+  <dt>200</dt><dd>A resposta: <code>200</code> quer dizer "OK, aqui está a página".</dd>
+</dl>
+
+<p>Repare: o servidor de arquivos do Python <strong>não faz nada</strong> com os dados. Ele entrega o <code>obrigado.html</code> e pronto. Mas os dados chegaram até ele, e um programa no servidor poderia lê-los do endereço.</p>
+
+<hr>
+
+<h2>5. O formato: <code>application/x-www-form-urlencoded</code></h2>
+<p>Um endereço não pode ter espaço, e caracteres como <code>&amp;</code> e <code>=</code> já têm função nele. Por isso, antes de enviar, o navegador <strong>codifica</strong> cada nome e cada valor. Esse formato tem um nome comprido: <code>application/x-www-form-urlencoded</code>, "dados de formulário codificados como numa URL" (URL é o endereço de uma página).</p>
+
+<p>Testamos num envio de verdade no Chromium 155, com o nome "Ana Maria", o sabor "pão de mel" e a observação "sem açúcar &amp; sem leite". O endereço aberto foi:</p>
+
+<pre class="file" data-file="endereço">obrigado.html?nome=Ana+Maria&amp;sabor=p%C3%A3o+de+mel&amp;obs=sem+a%C3%A7%C3%BAcar+%26+sem+leite
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No campo</th><th>No envio</th><th>Por quê</th></tr>
+<tr><td>espaço</td><td><code>+</code></td><td>endereço não tem espaço</td></tr>
+<tr><td><code>ã</code></td><td><code>%C3%A3</code></td><td>letras fora do inglês viram os bytes do UTF-8, cada um como <code>%</code> e dois algarismos hexadecimais (aula <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>)</td></tr>
+<tr><td><code>ç</code>, <code>ú</code></td><td><code>%C3%A7</code>, <code>%C3%BA</code></td><td>o mesmo</td></tr>
+<tr><td><code>&amp;</code> dentro de um valor</td><td><code>%26</code></td><td>o <code>&amp;</code> solto separa os pares; dentro de um valor, ele é codificado</td></tr>
+<tr><td>letras sem acento, números, <code>-</code>, <code>.</code>, <code>_</code></td><td>iguais</td><td>já podem viajar</td></tr>
+</table>
+</div>
+
+<p>Quem recebe <strong>decodifica</strong> tudo de volta: <code>p%C3%A3o+de+mel</code> volta a ser "pão de mel". A Ana pede esse mesmo endereço ao servidor, ainda na mesma sessão do terminal (com <code>-o /dev/null</code>, que joga fora a página devolvida, para mostrar só o registro):</p>
+
+<pre class="term" data-cwd="~/encomenda">$ curl -s -o /dev/null 'http://localhost:8000/obrigado.html?nome=Ana+Maria&amp;sabor=p%C3%A3o+de+mel&amp;obs=sem+a%C3%A7%C3%BAcar+%26+sem+leite'
+127.0.0.1 - - [17/Oct/2026 16:11:18] "GET /obrigado.html?nome=Ana+Maria&amp;sabor=p%C3%A3o+de+mel&amp;obs=sem+a%C3%A7%C3%BAcar+%26+sem+leite HTTP/1.1" 200 -</pre>
+
+<p>O nome desse formato importa porque ele é o mesmo no GET e no POST: no GET, os pares vão depois do <code>?</code>; no POST, vão no corpo, como você vai ver agora.</p>
+
+<hr>
+
+<h2>6. POST: os dados no corpo (e o erro 501)</h2>
+<p>Com <code>method="post"</code>, o endereço fica limpo, <code>obrigado.html</code>, e os pares vão <strong>dentro</strong> da mensagem. O <code>curl</code> faz um POST com a opção <code>-d</code> (de <em>data</em>, "dados"), mandando os pares do mesmo jeito que o navegador mandaria:</p>
+
+<pre class="term" data-cwd="~/encomenda">$ curl -s -d 'nome=Ana+Maria&amp;sabor=cenoura' http://localhost:8000/obrigado.html
+127.0.0.1 - - [17/Oct/2026 16:11:18] code 501, message Unsupported method ('POST')
+127.0.0.1 - - [17/Oct/2026 16:11:18] "POST /obrigado.html HTTP/1.1" 501 -
+&lt;!DOCTYPE HTML&gt;
+&lt;html lang="en"&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;style type="text/css"&gt;
+            :root {
+                color-scheme: light dark;
+            }
+        &lt;/style&gt;
+        &lt;title&gt;Error response&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Error response&lt;/h1&gt;
+        &lt;p&gt;Error code: 501&lt;/p&gt;
+        &lt;p&gt;Message: Unsupported method ('POST').&lt;/p&gt;
+        &lt;p&gt;Error code explanation: 501 - Server does not support this operation.&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</pre>
+
+<dl class="anatomy">
+  <dt>"POST /obrigado.html HTTP/1.1"</dt><dd>Agora o registro mostra o método <code>POST</code> e o caminho <strong>sem</strong> os dados: eles não estão mais no endereço.</dd>
+  <dt>501</dt><dd>A resposta: <code>501</code> quer dizer "não implementado".</dd>
+  <dt>code 501, message Unsupported method ('POST')</dt><dd>"Método não suportado: POST". O servidor de arquivos do Python só sabe <strong>entregar</strong> arquivos (GET); ele não tem nenhum programa para receber dados.</dd>
+  <dt>Error response … Error code: 501</dt><dd>A página de erro que ele devolveu, em inglês ("resposta de erro"). É isso que o navegador mostraria se o formulário fosse enviado com POST para esse servidor.</dd>
+</dl>
+
+<p>Esse erro não é defeito do seu HTML: o formulário fez a parte dele. Um POST só funciona se houver, do outro lado, um programa que saiba recebê-lo. É o mesmo motivo pelo qual o editor do guia, que também não tem servidor, mostra a página "Formulário enviado" em vez de enviar.</p>
+
+<h3>Vendo a mensagem por dentro: <code>curl -v</code></h3>
+<p>Com a opção <code>-v</code> (de <em>verbose</em>, "falante"), o <code>curl</code> mostra a mensagem que mandou e o começo da resposta. A Ana junta <code>-o /dev/null</code> para não repetir a página de erro:</p>
+
+<pre class="term" data-cwd="~/encomenda">$ curl -sv -o /dev/null -d 'nome=Ana+Maria&amp;sabor=cenoura' http://localhost:8000/obrigado.html
+* Host localhost:8000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:8000...
+* connect to ::1 port 8000 from ::1 port 45486 failed: Conexão recusada
+*   Trying 127.0.0.1:8000...
+* Established connection to localhost (127.0.0.1 port 8000) from 127.0.0.1 port 53456
+* using HTTP/1.x
+&gt; POST /obrigado.html HTTP/1.1
+&gt; Host: localhost:8000
+&gt; User-Agent: curl/8.18.0
+&gt; Accept: */*
+&gt; Content-Length: 28
+&gt; Content-Type: application/x-www-form-urlencoded
+&gt;
+} [28 bytes data]
+* upload completely sent off: 28 bytes
+127.0.0.1 - - [17/Oct/2026 16:11:18] code 501, message Unsupported method ('POST')
+127.0.0.1 - - [17/Oct/2026 16:11:18] "POST /obrigado.html HTTP/1.1" 501 -
+* HTTP 1.0, assume close after body
+&lt; HTTP/1.0 501 Unsupported method ('POST')
+&lt; Server: SimpleHTTP/0.6 Python/3.14.4
+&lt; Date: Sat, 17 Oct 2026 19:11:18 GMT
+&lt; Connection: close
+&lt; Content-Type: text/html;charset=utf-8
+&lt; Content-Length: 482
+&lt;
+{ [482 bytes data]
+* shutting down connection #0</pre>
+
+<p>As linhas com <code>*</code> são comentários do <code>curl</code>; as com <code>&gt;</code> são o que ele <strong>mandou</strong>; as com <code>&lt;</code>, o que ele <strong>recebeu</strong>.</p>
+
+<dl class="anatomy">
+  <dt>Trying [::1]:8000… failed: Conexão recusada</dt><dd>O <code>curl</code> tentou primeiro o endereço de casa no formato novo (IPv6, <code>::1</code>). O servidor do Python escuta só no formato antigo (<code>0.0.0.0</code>, IPv4), então essa tentativa foi recusada, e a segunda, em <code>127.0.0.1</code>, deu certo. Não é problema.</dd>
+  <dt>&gt; POST /obrigado.html HTTP/1.1</dt><dd>A primeira linha da mensagem: método, caminho, versão.</dd>
+  <dt>&gt; Host, User-Agent, Accept</dt><dd><strong>Cabeçalhos</strong>: informações sobre a mensagem. <code>Host</code> é o site; <code>User-Agent</code>, o programa que pediu (um navegador mandaria o nome dele aqui).</dd>
+  <dt>&gt; Content-Type: application/x-www-form-urlencoded</dt><dd>O <strong>tipo do conteúdo</strong>: "o corpo desta mensagem são dados de formulário, no formato da seção 5". É assim que o programa do servidor sabe como ler o corpo. Um navegador manda esse mesmo tipo num formulário com <code>method="post"</code>.</dd>
+  <dt>&gt; Content-Length: 28</dt><dd>O <strong>tamanho do corpo</strong>, em bytes: <code>nome=Ana+Maria&amp;sabor=cenoura</code> tem 28 caracteres.</dd>
+  <dt>} [28 bytes data]</dt><dd>O corpo foi enviado: os 28 bytes. O <code>-v</code> não mostra o texto do corpo, só o tamanho, mas ele é exatamente o que veio depois do <code>-d</code>.</dd>
+  <dt>&lt; HTTP/1.0 501 Unsupported method ('POST')</dt><dd>A resposta do servidor, com o código <code>501</code>.</dd>
+</dl>
+
+<p>Para terminar, a Ana desliga o servidor. O <code>%1</code> é a tarefa <code>[1]</code> do começo:</p>
+
+<pre class="term" data-cwd="~/encomenda">$ kill %1
+$ sleep 0.5
+[1]+  Terminado                  python3 -m http.server</pre>
+
+<p>O bash avisa, no comando seguinte, que a tarefa 1 terminou.</p>
+
+<hr>
+
+<h2>7. GET ou POST?</h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>GET</th><th>POST</th></tr>
+<tr><td>Onde vão os dados</td><td>no endereço, depois do <code>?</code></td><td>no corpo da mensagem</td></tr>
+<tr><td>Aparecem na barra do navegador, no histórico e nos registros do servidor</td><td><strong>sim</strong></td><td>não</td></tr>
+<tr><td>Dá para salvar nos favoritos e mandar o link</td><td>sim, com as respostas</td><td>não</td></tr>
+<tr><td>Tamanho</td><td>pequeno (endereços muito longos são cortados)</td><td>grande</td></tr>
+<tr><td>Recarregar a página</td><td>repete sem problema</td><td>o navegador pergunta se quer reenviar</td></tr>
+<tr><td>Use para…</td><td><strong>buscar e filtrar</strong>: busca de receitas, filtro de preço</td><td><strong>mudar algo</strong>: fazer um pedido, cadastrar, entrar com senha, enviar um arquivo</td></tr>
+</table>
+</div>
+
+<p>A pergunta que decide: <strong>o envio muda alguma coisa no servidor?</strong> Uma busca só lê, então é GET, e ainda ganha um link que dá para compartilhar ("veja estas receitas de bolo": <code>busca.html?q=bolo</code>). Uma encomenda cria um pedido: é POST. Imagine um pedido feito com GET: a cliente recarrega a página, ou o navegador abre o endereço de novo pelo histórico, e a Ana recebe o mesmo pedido duas vezes.</p>
+
+<div class="warning">
+<strong>POST não é segredo</strong>
+<p>O POST tira os dados do <strong>endereço</strong>, mas não os esconde: qualquer um no caminho entre o navegador e o servidor consegue ler o corpo, como você leu com o <code>curl -v</code>. Quem protege os dados no caminho é o <strong>HTTPS</strong> (o cadeado do navegador), que embaralha a mensagem toda, endereço e corpo. Formulário com senha ou dados pessoais: POST <strong>e</strong> HTTPS. (Aula <a href="seguranca.html">Segurança</a>.)</p>
+</div>
+
+<div class="note">
+<strong>E para enviar arquivos?</strong>
+<p>Um campo <code>&lt;input type="file"&gt;</code> (aula <a href="tipos-input.html">Tipos de input</a>) não cabe no formato da seção 5. Para ele, o formulário precisa de <code>method="post"</code> e de outro formato, escolhido com o atributo <code>enctype</code> ("tipo de codificação"): <code>&lt;form action="…" method="post" enctype="multipart/form-data"&gt;</code>. Nesse formato, cada campo vai numa "parte" separada da mensagem, e o arquivo vai inteiro.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos desta seção são páginas completas com o mesmo começo de 7 linhas (<code>&lt;!DOCTYPE html&gt;</code> até <code>&lt;body&gt;</code>, como em <a href="estrutura.html">Estrutura de uma Página</a>). O código mostrado começa na <strong>linha 8</strong>.</p>
+
+<div class="cenario">
+<strong>Um método que não existe</strong>
+<pre class="file" data-file="metodo.html">&lt;form action="obrigado.html" method="put"&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu metodo.html
+"file:/home/ana/site/metodo.html":8.1-8.42: error: Bad value “put” for attribute “method” on element “form”.</pre>
+<p><strong>O que significa:</strong> "valor ruim, <code>put</code>, para o atributo <code>method</code>". O HTTP tem outros métodos (como o PUT), mas um formulário HTML só conhece <code>get</code>, <code>post</code> e <code>dialog</code> (este último fecha um <code>&lt;dialog&gt;</code>, aula <a href="dialog.html">dialog</a>). Maiúsculas não importam: <code>POST</code> e <code>post</code> são iguais.</p>
+<p><strong>O que o navegador faz:</strong> trata um método que ele não conhece como <code>get</code>. Os dados vão parar no endereço, sem aviso.</p>
+<p><strong>Como consertar:</strong> <code>method="post"</code> ou <code>method="get"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>action</code> vazio</strong>
+<pre class="file" data-file="vazio.html">&lt;form action="" method="post"&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu vazio.html
+"file:/home/ana/site/vazio.html":8.1-8.30: error: Bad value “” for attribute “action” on element “form”: Must be non-empty.
+"file:/home/ana/site/vazio.html":8.1-8.30: info: To set the document’s location as the action for a form, omit the “action” attribute.</pre>
+<p><strong>O que significa:</strong> o erro diz "valor vazio para o <code>action</code>: não pode ser vazio". A segunda linha é uma <strong>informação</strong> (<code>info</code>), não um erro, e já dá a solução: "para enviar à própria página, <strong>omita</strong> o atributo <code>action</code>".</p>
+<p><strong>Como consertar:</strong> apague o <code>action=""</code>, ou escreva o endereço de verdade.</p>
+</div>
+
+<div class="cenario">
+<strong>Um formulário dentro de outro</strong>
+<pre class="file" data-file="dentro.html">&lt;form action="pedido.html"&gt;
+  &lt;label for="n"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="n" name="nome"&gt;
+  &lt;form action="busca.html"&gt;
+    &lt;label for="q"&gt;Busca:&lt;/label&gt; &lt;input type="search" id="q" name="q"&gt;
+  &lt;/form&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dentro.html
+"file:/home/ana/site/dentro.html":10.3-10.28: error: Saw a “form” start tag, but there was already an active “form” element. Nested forms are not allowed. Ignoring the tag.
+"file:/home/ana/site/dentro.html":14.1-14.7: error: Stray end tag “form”.</pre>
+<p><strong>O que significa:</strong> o primeiro erro diz "encontrei uma tag <code>form</code>, mas já havia um <code>form</code> ativo. Formulários dentro de formulários não são permitidos. Ignorando a tag". O segundo, "tag de fechamento <code>form</code> perdida": o <code>&lt;/form&gt;</code> da linha 12 fechou o formulário de <strong>fora</strong>, e o da linha 14 sobrou.</p>
+<p><strong>O que o navegador faz:</strong> o mesmo que o validador descreve: ignora o <code>&lt;form action="busca.html"&gt;</code>. O campo de busca vira parte do formulário de pedido, e o botão "Enviar", depois do primeiro <code>&lt;/form&gt;</code>, fica <strong>fora</strong> de qualquer formulário e não envia nada.</p>
+<p><strong>Como consertar:</strong> formulários lado a lado, nunca um dentro do outro. Se um botão ou campo precisa ficar longe do seu formulário, use o atributo <code>form="id-do-form"</code> (aula <a href="botoes.html">Botões</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>O servidor responde 501</strong>
+<p>Você enviou com <code>method="post"</code> para um servidor que só entrega arquivos, como o <code>python3 -m http.server</code> ou um site estático: a resposta é um erro (<code>501 Unsupported method ('POST')</code> no Python, seção 6; outros servidores dão outros códigos, como o <code>405</code>, "método não permitido"). O HTML está certo; falta um programa que receba os dados.</p>
+<p><strong>Como consertar:</strong> aponte o <code>action</code> para um endereço que aceite POST (o programa do seu site ou um serviço de formulários). Para testar o HTML sem servidor, use o editor do guia.</p>
+</div>
+
+<div class="cenario">
+<strong>A senha no endereço</strong>
+<p>Um formulário de login sem <code>method</code> é GET. O que a pessoa digitar vai para o endereço, <code>entrar.html?usuario=ana&amp;senha=…</code>, e fica gravado no histórico do navegador e em registros de servidor como os que você viu na seção 4. O validador não acusa nada: o HTML é válido.</p>
+<p><strong>Como consertar:</strong> <code>method="post"</code> em todo formulário com senha ou dados pessoais, e o site em HTTPS.</p>
+</div>
+
+<div class="cenario">
+<strong>O campo some do envio</strong>
+<p>Um campo sem <code>name</code> (seção 2), desligado com <code>disabled</code>, ou fora do <code>&lt;form&gt;</code> não vai na mensagem. Nenhum desses casos dá erro no validador. Para descobrir, envie e olhe o que chegou: a barra de endereço (num GET), a página "Formulário enviado" do editor do guia, ou a aba Rede do F12 (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>).</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;form action="url"&gt;</code></td><td>para onde os dados vão; sem <code>action</code>, para a própria página (nunca <code>action=""</code>)</td></tr>
+<tr><td><code>method="get"</code></td><td>dados no endereço: <code>url?nome=Ana&amp;sabor=cenoura</code>; é o padrão</td></tr>
+<tr><td><code>method="post"</code></td><td>dados no corpo da mensagem</td></tr>
+<tr><td><code>name="…"</code> nos campos</td><td>o nome de cada par; sem <code>name</code>, o campo não vai</td></tr>
+<tr><td><code>application/x-www-form-urlencoded</code></td><td>o formato padrão: pares <code>nome=valor</code> unidos por <code>&amp;</code>, espaço = <code>+</code>, acentos e símbolos = <code>%XX</code></td></tr>
+<tr><td><code>enctype="multipart/form-data"</code></td><td>o formato para enviar arquivos (com <code>method="post"</code>)</td></tr>
+<tr><td><code>python3 -m http.server &amp;</code></td><td>servidor local em segundo plano; aceita GET, responde <code>501</code> a POST</td></tr>
+<tr><td><code>curl 'url?a=1&amp;b=2'</code> / <code>curl -d 'a=1&amp;b=2' url</code></td><td>faz um GET / um POST pela linha de comando; <code>-v</code> mostra a mensagem</td></tr>
+<tr><td><code>kill %1</code></td><td>termina a tarefa <code>[1]</code> em segundo plano</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O endereço</h3>
+<p>Complete o atributo que diz para onde os dados vão:</p>
+<div class="ex-code">&lt;form <input data-answer="action" aria-label="atributo">="obrigado.html" method="post"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Os dados no corpo</h3>
+<p>Complete para os dados irem no corpo da mensagem, e não no endereço:</p>
+<div class="ex-code">&lt;form action="pedido" method="<input data-answer="post|POST" aria-label="método">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. O espaço</h3>
+<p>Como o nome "Ana Maria" aparece no endereço de um envio GET?</p>
+<div class="ex-code">nome=<input data-answer="Ana+Maria|Ana%20Maria" aria-label="valor codificado"></div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Um formulário sem <code>method</code>, com os campos <code>name="q"</code> (valor "bolo") e <code>name="ordem"</code> (valor "preco"), e <code>action="busca.html"</code>. Que endereço é aberto?</p>
+<label><input type="radio" name="q4"> <code>busca.html</code>, com os dados no corpo</label>
+<label><input type="radio" name="q4"> <code>busca.html#q=bolo&amp;ordem=preco</code></label>
+<label><input type="radio" name="q4"> <code>busca.html?q=bolo&amp;ordem=preco</code></label>
+<label><input type="radio" name="q4"> <code>busca.html?bolo&amp;preco</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. O <code>python3 -m http.server</code> respondeu <code>501 Unsupported method ('POST')</code>. O que isso quer dizer?</p>
+<label><input type="radio" name="q5"> O HTML do formulário tem um erro</label>
+<label><input type="radio" name="q5"> O servidor só entrega arquivos e não tem um programa para receber um POST</label>
+<label><input type="radio" name="q5"> O formulário precisa de <code>method="put"</code></label>
+<label><input type="radio" name="q5"> Faltou o <code>name</code> nos campos</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Qual formulário deve usar POST?</p>
+<label><input type="radio" name="q6"> O de fazer uma encomenda</label>
+<label><input type="radio" name="q6"> O de buscar receitas</label>
+<label><input type="radio" name="q6"> O de filtrar bolos por preço</label>
+<label><input type="radio" name="q6"> O de escolher a ordem de uma lista</label>
+</div>
+
+<h3>Missão final: a busca e a encomenda</h3>
+
+<div class="tryhtml" data-goal="nsel:form=2,sel:form[action='busca.html'] input[type=search][name=q],nsel:form[method=post i]=1,sel:form[method=post i][action] input#nome[name=nome],sel:form[method=post i] select#sabor[name=sabor],nsel:form[method=post i] input[name=q]=0,nsel:input:not([name])=0,nsel:form button[type=submit]=2">
+<p class="try-task"><strong>Missão:</strong> a página tem dois formulários, mas eles estão incompletos:</p>
+<ul class="try-task">
+  <li>a <strong>busca</strong> vai para <code>busca.html</code>, por GET (pode deixar sem <code>method</code>), e o campo dela se chama <code>q</code>;</li>
+  <li>a <strong>encomenda</strong> vai para <code>enviar.php</code> por <strong>POST</strong>, com os campos <code>nome</code> e <code>sabor</code>.</li>
+</ul>
+<p class="try-task">Teste os dois botões: a busca abre <code>busca.html?q=…</code>; a encomenda mostra a página "Formulário enviado" do editor, com o corpo da mensagem.</p>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;label for="q"&gt;Buscar receita:&lt;/label&gt;
+  &lt;input type="search" id="q"&gt;
+  &lt;button type="submit"&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;form&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+    &lt;select id="sabor"&gt;
+      &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+      &lt;option value="chocolate"&gt;Chocolate&lt;/option&gt;
+    &lt;/select&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="script" data-file="busca.html">&lt;h1&gt;Resultado da busca&lt;/h1&gt;
+&lt;p&gt;Olhe o endereço desta página na barra do quadro.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="busca.html"&gt;
+  &lt;label for="q"&gt;Buscar receita:&lt;/label&gt;
+  &lt;input type="search" id="q" name="q"&gt;
+  &lt;button type="submit"&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;form action="enviar.php" method="post"&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+    &lt;select id="sabor" name="sabor"&gt;
+      &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+      &lt;option value="chocolate"&gt;Chocolate&lt;/option&gt;
+    &lt;/select&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>No envio, o navegador valida, junta os campos com <code>name</code> (e não desligados), codifica os pares <code>nome=valor</code>, une com <code>&amp;</code> e manda para o <code>action</code>.</li>
+  <li><code>action</code> é o endereço; sem ele, a própria página (nunca <code>action=""</code>). <code>method</code> é o jeito: <code>get</code> (padrão) ou <code>post</code>.</li>
+  <li>GET põe os dados no endereço, depois do <code>?</code>: aparecem no histórico e no registro do servidor (você viu <code>"GET /obrigado.html?nome=Ana+Maria&amp;sabor=cenoura"</code>). Use para buscas e filtros.</li>
+  <li>POST põe os dados no corpo, com <code>Content-Type: application/x-www-form-urlencoded</code> e <code>Content-Length</code>. Use para pedidos, cadastros e senhas, sempre com HTTPS. Um servidor só de arquivos responde <code>501</code>.</li>
+  <li>No formato <code>x-www-form-urlencoded</code>, espaço vira <code>+</code>, acentos viram <code>%C3%A3</code> e um <code>&amp;</code> dentro de um valor vira <code>%26</code>.</li>
+  <li>Formulário dentro de formulário e método inventado são erros do validador; campo sem <code>name</code> e senha por GET passam calados.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
