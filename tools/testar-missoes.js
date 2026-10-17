@@ -257,9 +257,26 @@ async function main() {
     if (faltam.length || faltamR.length) {
       await navegador();
       let pg;
-      try { pg = await nav.newPage(); } catch (e) { nav.connected = false; nav = null; await navegador(); pg = await nav.newPage(); } // o Chromium caiu: abre de novo
+      try { pg = await nav.newPage(); } catch (e) { // o Chromium caiu: abre de novo
+        console.error("(o Chromium não abriu uma aba nova: " + e.message.split("\n")[0] + "; abrindo de novo)");
+        try { await nav.close(); } catch (x) { /* já caiu */ }
+        nav = null; await navegador(); pg = await nav.newPage();
+      }
       const errosPag = [];
       pg.on("pageerror", (e) => errosPag.push(e.message));
+      // recursos que falham (404, imagem, script, iframe com a 404 do editor…) enquanto uma caixa é testada
+      let rede = null;
+      const urlCurta = (u) => u.replace(base, "").replace(/^assets\/sim\/[^/]+\//, "").replace(/\?htmlsim-teste$/, "");
+      pg.on("response", (x) => {
+        if (!rede || x.status() < 400 || /favicon\.ico$/.test(x.url())) return;
+        // um pedido da pasta virtual que não passou pelo service worker veio de um documento que ele não controla
+        const fora = /\/assets\/sim\//.test(x.url()) && !x.fromServiceWorker();
+        rede.add(x.status() + " " + urlCurta(x.url()) + (fora ? "  ← não passou pelo editor: iframe com sandbox sem allow-same-origin? Use srcdoc (§4)" : ""));
+      });
+      pg.on("requestfailed", (x) => { const f = x.failure(); if (rede && !(f && /ERR_ABORTED/.test(f.errorText))) rede.add("falhou (" + (f ? f.errorText : "?") + ") " + urlCurta(x.url())); });
+      const vigiar = () => { rede = new Set(); };
+      const vistos = () => { const r = [...(rede || [])]; rede = null; return r; };
+      const notaRede = (r, quem) => r.length ? quem + " carrega algo que falha (confira se é de propósito):\n" + r.map((x) => "        │ " + x).join("\n") : null;
       pg.on("dialog", (d) => d.dismiss().catch(() => {}));
       try {
         await pg.setViewport({ width: 1100, height: 900 });
@@ -277,14 +294,18 @@ async function main() {
               if (c.meta) {
                 nMissoes++;
                 ini = await comTempo(pg.evaluate((i) => window.HtmlSim.caixas[i].testar("inicial"), c.i), 20000, "o quadro não terminou de carregar (código inicial)");
+                vigiar();
                 sol = await comTempo(pg.evaluate((i) => window.HtmlSim.caixas[i].testar("solucao"), c.i), 20000, "o quadro não terminou de carregar (solução)");
+                await new Promise((ok) => setTimeout(ok, 300));
+                const nr = notaRede(vistos(), "a solução");
+                if (nr) avisos.push(nr);
                 const erros = [];
                 const fIni = ini.metas.filter((m) => !m.ok), fSol = sol.metas.filter((m) => !m.ok);
                 const inval = sol.metas.filter((m) => m.invalida);
                 if (inval.length) erros.push("meta inválida: " + inval.map((m) => m.meta + " → " + m.motivo).join(" | "));
                 if (!fIni.length) erros.push("o código inicial JÁ cumpre a meta (a missão começa resolvida)");
                 if (fSol.length && !inval.length) erros.push("a solução NÃO cumpre: " + fSol.map((m) => m.meta + (m.motivo ? " (" + m.motivo + ")" : "")).join(" | "));
-                if (/✖|Uncaught|Error/.test(sol.console)) avisos.push("a solução mostra erro no console:\n" + trecho(sol.console, 6));
+                if (/✖|Uncaught|Error|Não foi possível carregar/.test(sol.console)) avisos.push("a solução mostra erro no console:\n" + trecho(sol.console, 6));
                 if (sol.compat === "BackCompat") avisos.push("a solução é desenhada em modo quirks (o documento não começa com <!DOCTYPE html>)");
                 if (erros.length) {
                   falha(c.rot + "\n" + erros.map((e) => "      " + e).join("\n") + (sol.console ? "\n      console da solução:\n" + trecho(sol.console, 8) : ""));
@@ -294,8 +315,12 @@ async function main() {
                 }
               } else {
                 nLivres++;
+                vigiar();
                 ini = await comTempo(pg.evaluate((i) => window.HtmlSim.caixas[i].testar("inicial"), c.i), 20000, "o quadro não terminou de carregar");
+                await new Promise((ok) => setTimeout(ok, 300));
                 if (/Uncaught|Error|Não foi possível carregar/.test(ini.console)) avisos.push("o console mostra erro:\n" + trecho(ini.console, 6));
+                const nr = notaRede(vistos(), "a caixa");
+                if (nr) avisos.push(nr);
                 novoCache[c.chave] = { ok: true, avisos };
                 if (verboso) saida.push("  ✓ " + c.rot + (ini.console ? "\n      console:\n" + trecho(ini.console, 10) : ""));
               }
@@ -305,8 +330,12 @@ async function main() {
           for (const r of faltamR) {
             nRes++;
             try {
+              vigiar();
               const x = await comTempo(pg.evaluate((i) => window.HtmlSim.resultados[i].desenhar(), r.i), 20000, "o quadro Resultado não terminou de carregar");
+              await new Promise((ok) => setTimeout(ok, 300));
               const avisos = [];
+              const nr = notaRede(vistos(), "o Resultado" + (/erro de propósito/i.test(r.nome) ? " (erro de propósito)" : ""));
+              if (nr) avisos.push(nr);
               if (/Uncaught|Error|Não foi possível carregar/.test(x.console)) avisos.push("o console do Resultado mostra erro (normal se o exemplo é de erro):\n" + trecho(x.console, 6));
               avisos.forEach((a) => aviso(r.rot + "\n      " + a));
               novoCache[r.chave] = { ok: true, avisos };

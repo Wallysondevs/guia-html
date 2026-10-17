@@ -449,6 +449,7 @@
     var antigo = this.frame;
     f.__htmlsim = this.ponte(f, ger);
     this.consoleTexto = "";
+    this.autofoco = !!extra.autofoco;
     this.atual = extra.html ? null : nome;
     this.endereco = extra.endereco || (nome + (extra.busca || "") + (extra.hash || ""));
     if (antigo) { f.style.height = antigo.style.height; f.classList.add("hs-novo"); }
@@ -636,6 +637,12 @@
     var volta = doc.getElementById("htmlsim-voltar");
     if (volta && this.atual === null) volta.addEventListener("click", function () { self.mostrar(self.antes || self.entrada()); });
     if (this.opts.altura) this.ajustarAltura(f, win, doc);
+    // ↻ é um clique do leitor: depois de qualquer foco na página do guia, o navegador ignora o
+    // autofocus dos quadros (regra do HTML); aqui o editor faz o que ele faria numa aba nova
+    if (this.autofoco) {
+      this.autofoco = false;
+      try { var af = doc.querySelector("[autofocus]"); if (af && (!doc.activeElement || doc.activeElement === doc.body)) af.focus({ preventScroll: true }); } catch (e) {}
+    }
     if (this.opts.aoCarregar) this.opts.aoCarregar({ doc: doc, win: win, nome: this.atual, ger: ger });
   };
   Quadro.prototype.ajustarAltura = function (f, win, doc) {
@@ -931,7 +938,8 @@
         w3c.innerHTML = "Não consegui falar com o validador do W3C (" + escHtml(e.message || String(e)) + "). Confira a internet, ou cole o código em <a href=\"https://validator.w3.org/nu/#textarea\" target=\"_blank\" rel=\"noopener\">validator.w3.org/nu</a>.";
       });
     });
-    w.querySelector(".hs-recarregar").addEventListener("click", function () { salvarAba(); desenhar(quadro.entrada()); });
+    // o foco sai do botão: com ele focado, o navegador ignora o autofocus da página do quadro
+    w.querySelector(".hs-recarregar").addEventListener("click", function () { this.blur(); salvarAba(); painel.limpar(); quadro.mostrar(quadro.entrada(), { autofoco: true }); });
     var abrir = w.querySelector(".hs-abrir");
     abrir.addEventListener("click", function () { if (quadro.modoAtual === "sw" && quadro.atual) window.open(quadro.pasta + quadro.atual, "_blank"); });
     prepararModo().then(function (md) { abrir.hidden = md !== "sw"; });
@@ -1005,7 +1013,7 @@
       aoCarregar: function (info) { esperando.splice(0).forEach(function (f) { f(info); }); }
     });
     r.quadro = q;
-    caixa.querySelector(".hs-recarregar").addEventListener("click", function () { painel.limpar(); q.mostrar(nome); });
+    caixa.querySelector(".hs-recarregar").addEventListener("click", function () { this.blur(); painel.limpar(); q.mostrar(nome, { autofoco: true }); });
     r.desenhar = function () {
       if (r.pronto) return r.pronto;
       r.pronto = new Promise(function (ok) {
