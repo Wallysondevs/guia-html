@@ -31,7 +31,7 @@
 </ul>
 </div>
 
-<p>As mensagens de erro desta aula são as que o <strong>Chrome</strong> mostrou no Console, e os arquivos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/js</code>. No editor do guia, o <strong>console</strong> aparece embaixo do quadro de Resultado, com o que o programa escreve e os erros, no mesmo formato.</p>
+<p>As mensagens de erro desta aula são as que o <strong>Chrome</strong> mostrou no Console, e os arquivos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/js</code>. No editor do guia, o <strong>console</strong> aparece embaixo do quadro de Resultado, com o que o programa escreve e os erros. O texto do erro é o mesmo do navegador; só o lugar é escrito por extenso: <code>(script.js, linha 2)</code> no editor, <code>script.js:2</code> no Chrome.</p>
 
 <hr>
 
@@ -255,7 +255,7 @@ document.querySelector("#mensagem").textContent = "Bolo de cenoura: R$ " + preco
 <pre class="file" data-file="Console do Chrome">Access to script at 'file:///home/ana/js/script.js' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: chrome, chrome-experimental-site-token-provider, chrome-extension, chrome-untrusted, data, http, https, isolated-app.
 Failed to load resource: net::ERR_FAILED
 </pre>
-<p>(Neste teste, o módulo se chamava <code>script.js</code>.) "O acesso ao script foi bloqueado pela política CORS": por segurança, módulos só são carregados por endereços <code>http</code> ou <code>https</code>. A solução é abrir a página pelo servidor local (aula <a href="servidor-local.html">Servidor Local</a>). O editor do guia funciona como um servidor, então os módulos funcionam nele.</p>
+<p>(Neste teste, o módulo se chamava <code>script.js</code>.) "O acesso ao script foi bloqueado pela política CORS": por segurança, módulos só são carregados por endereços <code>http</code> ou <code>https</code>. A solução é abrir a página pelo servidor local (aula <a href="servidor-local.html">Servidor Local</a>). O editor do guia funciona como um servidor, então os módulos funcionam nele. (Com o guia aberto direto do disco, ou numa janela anônima do Firefox, o editor não consegue montar esse "servidor" e usa um modo simples; nele, o <code>import</code> de uma aba para outra falha, e o console mostra <code>Failed to resolve module specifier "./precos.js"</code>.)</p>
 </div>
 
 <div class="tryhtml" data-goal="console:Bolo de cenoura: R$ 25,texto:#mensagem=Bolo de cenoura: R$ 25,sel:script[type=module]">
