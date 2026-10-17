@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML dialog — janelas por cima da página | Guia HTML</title>
+<meta name="description" content="O elemento dialog do HTML para quem nunca fez um site: a janela com open, o botão de fechar com form method=dialog, a janela modal com showModal (um script de três linhas), a tecla Esc, o fundo escurecido, o returnValue, os botões commandfor sem JavaScript e os erros reais do validador W3C e do console, com o resultado ao vivo e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">dialog</span></h1>
+
+<p class="intro">"Tem certeza de que quer apagar esta receita?" Essa janelinha que aparece <strong>por cima</strong> da página, esperando você responder, se chama <strong>caixa de diálogo</strong>. Durante anos, cada site montava a sua com muito JavaScript e CSS, e muitas eram impossíveis de usar pelo teclado. Hoje o HTML tem um elemento pronto para isso, o <code>&lt;dialog&gt;</code>, e o navegador cuida das partes difíceis: o foco, a tecla <kbd>Esc</kbd>, o fundo escurecido.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <code>&lt;dialog&gt;</code> e como mostrá-lo com o atributo <code>open</code>.</li>
+  <li>Como fechar a janela sem JavaScript, com <code>&lt;form method="dialog"&gt;</code>.</li>
+  <li>A diferença entre uma janela comum e uma janela <strong>modal</strong>, e como abrir uma modal com <code>showModal()</code>, num script de três linhas.</li>
+  <li>Como saber qual botão a pessoa clicou (<code>returnValue</code>).</li>
+  <li>Os botões <code>commandfor</code>, que abrem e fecham a janela sem nenhum JavaScript nos navegadores atuais.</li>
+  <li>Os erros reais: do validador W3C e do console do navegador.</li>
+</ul>
+</div>
+
+<p>Os exemplos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>). As mensagens do console foram conferidas no Chromium. Os quadros "Resultado" e os editores são desenhados pelo seu próprio navegador.</p>
+
+<hr>
+
+<h2>A ideia: o quadro de avisos e o balcão de atendimento</h2>
+<p>Numa loja, existem dois jeitos de falar com o cliente:</p>
+<ul>
+  <li>O <strong>quadro de avisos</strong> na parede: ele está ali, você lê se quiser e continua andando pela loja. É a janela <strong>comum</strong> (não modal).</li>
+  <li>O <strong>balcão de atendimento</strong>: quando chega a sua vez, você para tudo e só conversa com o atendente até resolver. É a janela <strong>modal</strong>: enquanto ela está aberta, o resto da página fica bloqueado.</li>
+</ul>
+<p>O <code>&lt;dialog&gt;</code> ("diálogo", uma conversa) faz os dois. Quem decide é o jeito de abrir.</p>
+
+<hr>
+
+<h2>1. A primeira janela: <code>open</code></h2>
+<p>Um <code>&lt;dialog&gt;</code> começa <strong>escondido</strong>. O atributo <code>open</code> ("aberto") faz ele aparecer:</p>
+
+<pre class="file" data-file="aviso.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bem-vindo ao site!&lt;/p&gt;
+&lt;dialog open&gt;
+  &lt;p&gt;Novidade: receitas de bolo toda sexta-feira.&lt;/p&gt;
+&lt;/dialog&gt;
+&lt;p&gt;Esta linha vem depois do dialog no código.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;dialog&gt;</dt><dd>A caixa de diálogo. Dentro vai qualquer conteúdo: textos, títulos, imagens, botões, formulários.</dd>
+  <dt>open</dt><dd>Atributo <strong>booleano</strong> (como o do <a href="details.html"><code>&lt;details&gt;</code></a>): escrito na tag, a janela aparece; sem ele, fica escondida. <code>open="false"</code> também mostra a janela.</dd>
+</dl>
+
+<p>Repare no resultado: o navegador desenha a janela com uma borda, centralizada na horizontal, e ela fica <strong>por cima</strong> do texto que vem depois (a última linha do exemplo some atrás dela). É uma janela <strong>comum</strong>: o resto da página continua funcionando. A borda, o espaçamento e a posição exata mudam um pouco de um navegador para outro, e tudo pode ser trocado com CSS (assunto do futuro Guia CSS).</p>
+
+<hr>
+
+<h2>2. Um botão para fechar: <code>form method="dialog"</code></h2>
+<p>Uma janela que não fecha incomoda. O jeito mais simples de fechar não usa JavaScript: um formulário com <code>method="dialog"</code> dentro da janela.</p>
+
+<pre class="file" data-file="aviso.html" data-resultado>&lt;dialog open&gt;
+  &lt;p&gt;Novidade: receitas de bolo toda sexta-feira.&lt;/p&gt;
+  &lt;form method="dialog"&gt;
+    &lt;button&gt;Fechar&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;form method="dialog"&gt;</dt><dd>Um formulário (aula <a href="formularios.html">Formulários</a>). O <code>method</code> ("método") diz o que fazer quando ele é enviado. Normalmente o formulário manda os dados para um servidor; com o valor <code>dialog</code>, ele não manda nada para lugar nenhum: só <strong>fecha a janela</strong> em que está.</dd>
+  <dt>&lt;button&gt;Fechar&lt;/button&gt;</dt><dd>Um botão dentro de um formulário envia o formulário ao ser clicado (aula <a href="botoes.html">Botões</a>). Enviar, aqui, é fechar.</dd>
+</dl>
+
+<p>Clique em "Fechar" no resultado: a janela some. O navegador tirou o atributo <code>open</code> da tag. (Para ver de novo, recarregue a página.)</p>
+
+<div class="tryhtml" data-goal="sel:dialog form[method='dialog'] button">
+<p class="try-task"><strong>Missão:</strong> o aviso de entrega não tem como ser fechado. Acrescente, dentro do <code>&lt;dialog&gt;</code>, um formulário com <code>method="dialog"</code> e um botão "Entendi". Depois clique no botão para testar.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;dialog open&gt;
+  &lt;p&gt;Esta semana não haverá entregas na quarta-feira.&lt;/p&gt;
+&lt;/dialog&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;dialog open&gt;
+  &lt;p&gt;Esta semana não haverá entregas na quarta-feira.&lt;/p&gt;
+  &lt;form method="dialog"&gt;
+    &lt;button&gt;Entendi&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. A janela modal: <code>showModal()</code></h2>
+<p>O <code>open</code> só serve para a janela já começar aberta, e ela é sempre comum, nunca modal. Para abrir a janela <strong>quando a pessoa clica num botão</strong>, e como modal, é preciso uma linha de JavaScript: o comando <code>showModal()</code> ("mostrar como modal"). O JavaScript tem aula própria (<a href="script.html">O Elemento script</a>); aqui ele tem só três linhas.</p>
+
+<pre class="file" data-file="apagar.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;button id="apagar"&gt;Apagar receita&lt;/button&gt;
+
+&lt;dialog id="confirma"&gt;
+  &lt;p&gt;Apagar a receita do bolo de cenoura?&lt;/p&gt;
+  &lt;form method="dialog"&gt;
+    &lt;button value="nao"&gt;Cancelar&lt;/button&gt;
+    &lt;button value="sim"&gt;Apagar&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+
+&lt;script&gt;
+  const botao = document.querySelector("#apagar");
+  const janela = document.querySelector("#confirma");
+  botao.addEventListener("click", () =&gt; janela.showModal());
+&lt;/script&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;button id="apagar"&gt;</dt><dd>O botão que abre a janela. O <code>id</code> é o "nome único" que o script usa para achá-lo (aula <a href="class-id.html">class e id</a>).</dd>
+  <dt>&lt;dialog id="confirma"&gt;</dt><dd>A janela, <strong>sem</strong> <code>open</code>: começa escondida.</dd>
+  <dt>&lt;script&gt;</dt><dd>O lugar do JavaScript. Ele fica no <strong>fim</strong>, depois do botão e da janela, porque o navegador lê a página de cima para baixo: o script só acha o que já foi lido.</dd>
+  <dt>document.querySelector("#apagar")</dt><dd>"Procure na página o elemento com <code>id="apagar"</code>". É o mesmo <code>#</code> do CSS. O resultado é guardado no nome <code>botao</code>; a linha de baixo faz o mesmo com a janela.</dd>
+  <dt>botao.addEventListener("click", …)</dt><dd>"Quando alguém clicar no botão, faça isto". <em>Event listener</em> = "ouvinte de evento".</dd>
+  <dt>() =&gt; janela.showModal()</dt><dd>"Isto" é: abrir a janela como modal.</dd>
+</dl>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> clique em "Apagar receita" e repare no que o navegador faz sozinho (a lista vem logo abaixo). Tente clicar no botão de trás com a janela aberta, use o <kbd>Tab</kbd> e aperte <kbd>Esc</kbd>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;button id="apagar"&gt;Apagar receita&lt;/button&gt;
+
+&lt;dialog id="confirma"&gt;
+  &lt;p&gt;Apagar a receita do bolo de cenoura?&lt;/p&gt;
+  &lt;form method="dialog"&gt;
+    &lt;button value="nao"&gt;Cancelar&lt;/button&gt;
+    &lt;button value="sim"&gt;Apagar&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+
+&lt;script&gt;
+  const botao = document.querySelector("#apagar");
+  const janela = document.querySelector("#confirma");
+  botao.addEventListener("click", () =&gt; janela.showModal());
+&lt;/script&gt;
+</pre>
+</div>
+
+<p>O que o navegador faz sozinho, sem nenhuma linha a mais:</p>
+<ul>
+  <li><strong>Fundo escurecido:</strong> a página atrás fica coberta por uma camada (o <em>backdrop</em>, "pano de fundo"). Em quase todos os navegadores ela é um cinza leve; dá para mudar com CSS.</li>
+  <li><strong>Página bloqueada:</strong> o botão "Apagar receita" e todo o resto não respondem a cliques, e o <kbd>Tab</kbd> só passeia pelos botões da janela.</li>
+  <li><strong>Foco:</strong> o foco do teclado vai para dentro da janela, no primeiro botão ("Cancelar"). Quando a janela fecha, ele volta para o botão que a abriu.</li>
+  <li><strong>Tecla <kbd>Esc</kbd>:</strong> fecha a janela, como "Cancelar".</li>
+  <li><strong>Leitor de tela:</strong> anuncia que um diálogo abriu e lê o conteúdo dele.</li>
+</ul>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Jeito de abrir</th><th>Tipo</th><th>Fundo escuro e página bloqueada?</th><th><kbd>Esc</kbd> fecha?</th></tr>
+<tr><td><code>&lt;dialog open&gt;</code> (no HTML)</td><td>comum</td><td>Não</td><td>Não</td></tr>
+<tr><td><code>janela.show()</code> (no JavaScript)</td><td>comum</td><td>Não</td><td>Não</td></tr>
+<tr><td><code>janela.showModal()</code> (no JavaScript)</td><td><strong>modal</strong></td><td>Sim</td><td>Sim</td></tr>
+</table>
+</div>
+
+<h3>Qual botão foi clicado? <code>returnValue</code></h3>
+<p>Cada botão da janela tem um <code>value</code>. Quando um deles fecha a janela, o valor dele fica guardado em <code>janela.returnValue</code> ("valor de retorno"). Com mais três linhas, o script pode reagir. No editor abaixo, o script ganhou um "ouvinte" do fechamento, que escreve a resposta no console (embaixo do resultado):</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> abra a janela e clique em "Apagar"; depois abra de novo e clique em "Cancelar"; depois abra e aperte <kbd>Esc</kbd>. Veja o que o console mostra em cada caso. Por fim, troque o <code>showModal()</code> por <code>show()</code> e compare: sem fundo escuro, sem <kbd>Esc</kbd>, e o botão de trás continua clicável.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;button id="apagar"&gt;Apagar receita&lt;/button&gt;
+
+&lt;dialog id="confirma"&gt;
+  &lt;p&gt;Apagar a receita do bolo de cenoura?&lt;/p&gt;
+  &lt;form method="dialog"&gt;
+    &lt;button value="nao"&gt;Cancelar&lt;/button&gt;
+    &lt;button value="sim"&gt;Apagar&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+
+&lt;script&gt;
+  const botao = document.querySelector("#apagar");
+  const janela = document.querySelector("#confirma");
+  botao.addEventListener("click", () =&gt; janela.showModal());
+  janela.addEventListener("close", () =&gt; {
+    console.log("Resposta: " + janela.returnValue);
+  });
+&lt;/script&gt;
+</pre>
+</div>
+
+<dl class="anatomy">
+  <dt>janela.addEventListener("close", …)</dt><dd>"Quando a janela fechar, faça isto". O evento <code>close</code> acontece de qualquer jeito que ela feche: botão, <kbd>Esc</kbd> ou script.</dd>
+  <dt>console.log("Resposta: " + janela.returnValue)</dt><dd>Escreve no console o <code>value</code> do botão clicado: <code>Resposta: sim</code> ou <code>Resposta: nao</code>.</dd>
+  <dt>E o <kbd>Esc</kbd>?</dt><dd>Nenhum botão foi clicado, então o <code>returnValue</code> continua com o valor da vez anterior (ou vazio, na primeira vez). Por isso, num caso de verdade, trate qualquer resposta diferente de <code>"sim"</code> como "não".</dd>
+</dl>
+
+<div class="tip">
+<strong>Dê um título e um foco inicial à janela</strong>
+<p>Uma janela com um título (<code>&lt;h2&gt;</code>) é mais fácil de entender, principalmente para quem usa leitor de tela. E o atributo <code>autofocus</code> num botão escolhe onde o foco começa: numa confirmação de "apagar", coloque-o no <strong>Cancelar</strong>, para um <kbd>Enter</kbd> distraído não apagar nada.</p>
+<pre class="file" data-file="apagar.html">&lt;dialog id="confirma"&gt;
+  &lt;h2&gt;Apagar receita?&lt;/h2&gt;
+  &lt;p&gt;Esta ação não pode ser desfeita.&lt;/p&gt;
+  &lt;form method="dialog"&gt;
+    &lt;button value="nao" autofocus&gt;Cancelar&lt;/button&gt;
+    &lt;button value="sim"&gt;Apagar&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Sem JavaScript: <code>commandfor</code> e <code>command</code></h2>
+<p>Os navegadores atuais (o Chrome desde 2025; o Firefox e o Safari desde o fim de 2025) entendem dois atributos novos de botão que abrem e fecham a janela sem nenhum script:</p>
+
+<pre class="file" data-file="apagar.html" data-resultado>&lt;button commandfor="confirma" command="show-modal"&gt;Apagar receita&lt;/button&gt;
+
+&lt;dialog id="confirma"&gt;
+  &lt;p&gt;Apagar a receita do bolo de cenoura?&lt;/p&gt;
+  &lt;button commandfor="confirma" command="close"&gt;Cancelar&lt;/button&gt;
+&lt;/dialog&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>commandfor="confirma"</dt><dd>"Comando para": o <code>id</code> do elemento que o botão controla.</dd>
+  <dt>command="show-modal"</dt><dd>O que fazer com ele: <code>show-modal</code> abre como modal; <code>close</code> fecha. (Existe também <code>request-close</code>, que pede para fechar.)</dd>
+</dl>
+
+<p>Se o botão do resultado acima não abrir nada, o seu navegador é anterior a esses atributos; atualize-o. É por isso que muitos sites ainda usam o <code>showModal()</code>, que funciona em todos os navegadores atuais. O validador W3C já conhece os dois atributos.</p>
+
+<hr>
+
+<h2>Quando usar um <code>&lt;dialog&gt;</code></h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>O que usar</th></tr>
+<tr><td>Confirmar uma ação ("Apagar?", "Sair sem salvar?")</td><td><code>&lt;dialog&gt;</code> modal (<code>showModal()</code>)</td></tr>
+<tr><td>Um formulário curto que precisa de atenção total (login rápido, endereço de entrega)</td><td><code>&lt;dialog&gt;</code> modal</td></tr>
+<tr><td>Um aviso que não impede de usar a página</td><td><code>&lt;dialog&gt;</code> comum (<code>open</code> ou <code>show()</code>)</td></tr>
+<tr><td>Um conteúdo extra que abre e fecha <strong>no meio</strong> da página, empurrando o resto</td><td><a href="details.html"><code>&lt;details&gt;</code></a></td></tr>
+<tr><td>Um menu ou uma dica que some ao clicar fora</td><td><a href="popover.html">popover</a> (Nível 3)</td></tr>
+</table>
+</div>
+
+<div class="warning">
+<strong>Não abuse da janela modal</strong>
+<p>A modal interrompe a pessoa. Abrir uma ao entrar no site ("Assine a newsletter!") irrita e atrapalha quem usa leitor de tela. Use quando a resposta é realmente necessária para continuar.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os erros de <code>&lt;dialog&gt;</code> aparecem em dois lugares: no <strong>validador</strong> (erros de HTML) e no <strong>console</strong> do navegador (erros do script). No editor do guia, o console fica embaixo do resultado; no navegador, ele está nas <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor (F12)</a>. As mensagens abaixo são as do Chrome; outros navegadores dizem o mesmo com outras palavras.</p>
+
+<div class="cenario">
+<strong><code>TypeError: Cannot read properties of null (reading 'showModal')</code></strong>
+<p><strong>O que significa:</strong> "Não dá para ler propriedades de <code>null</code> (lendo <code>showModal</code>)". O <code>null</code> é o "nada": o <code>querySelector</code> não achou o elemento, e o script tentou abrir o nada. Clicar no botão não faz nada, e o erro aparece no console a cada clique. Três causas comuns:</p>
+<ul>
+  <li>o nome no script está diferente do <code>id</code>: <code>"#confrima"</code> em vez de <code>"#confirma"</code>, ou sem o <code>#</code>;</li>
+  <li>o <code>&lt;script&gt;</code> está no <code>&lt;head&gt;</code> ou <strong>antes</strong> do <code>&lt;dialog&gt;</code>: quando ele roda, a janela ainda não foi lida;</li>
+  <li>o <code>id</code> está repetido ou escrito com maiúsculas diferentes (<code>Confirma</code>).</li>
+</ul>
+<p><strong>Como consertar:</strong> copie o <code>id</code> do HTML para o script, com o <code>#</code> na frente, e deixe o <code>&lt;script&gt;</code> no fim do <code>&lt;body&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>InvalidStateError: … The dialog is already open as a non-modal dialog, and therefore cannot be opened as a modal dialog.</code></strong>
+<p>A mensagem completa no Chrome é: <code>Failed to execute 'showModal' on 'HTMLDialogElement': The dialog is already open as a non-modal dialog, and therefore cannot be opened as a modal dialog.</code></p>
+<p><strong>O que significa:</strong> "A janela já está aberta como comum e por isso não pode ser aberta como modal". Acontece quando o <code>&lt;dialog&gt;</code> tem <code>open</code> no HTML (ou já foi aberto com <code>show()</code>) e depois o script chama <code>showModal()</code>.</p>
+<p><strong>Como consertar:</strong> numa janela que vai abrir com <code>showModal()</code>, não escreva <code>open</code>. Chamar <code>showModal()</code> numa janela que já está aberta como <strong>modal</strong> não dá erro: não acontece nada.</p>
+</div>
+
+<div class="cenario">
+<strong>"Usei <code>open</code> e a janela não é modal"</strong>
+<p><strong>O que acontece:</strong> com <code>&lt;dialog open&gt;</code>, a janela aparece, mas o fundo não escurece, a página atrás continua clicável e o <kbd>Esc</kbd> não fecha. Não é erro: é a janela comum.</p>
+<p><strong>Como consertar:</strong> tire o <code>open</code> e abra com <code>showModal()</code> (ou com um botão <code>command="show-modal"</code>).</p>
+</div>
+
+<div class="cenario">
+<strong>Valor errado em <code>command</code> ou <code>commandfor</code></strong>
+<p>Os dois arquivos abaixo têm o esqueleto de sempre (<code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;head&gt;</code> e <code>&lt;body&gt;</code> nas linhas 1 a 7), e o botão está na linha 8. No primeiro, a Ana traduziu o comando: <code>command="abrir"</code>. No segundo, o <code>commandfor="janela"</code> aponta para um <code>id</code> que não existe (o da janela é <code>confirma</code>):</p>
+<pre class="term" data-cwd="~/dialogo">$ vnu cmd.html
+"file:/home/ana/dialogo/cmd.html":8.1-8.46: error: Bad value “abrir” for attribute “command” on element “button”.
+$ vnu cmd2.html
+"file:/home/ana/dialogo/cmd2.html":8.1-8.49: error: The value of the “commandfor” attribute of the “button” element must be the ID of an element in the same tree as the “button” with the “commandfor” attribute.</pre>
+<p><strong>O que significa:</strong> o primeiro: "valor ruim <code>abrir</code> para o atributo <code>command</code>": os comandos são palavras fixas, em inglês. O segundo: "o valor de <code>commandfor</code> tem de ser o <code>id</code> de um elemento da mesma página". No navegador, nos dois casos, o botão simplesmente não faz nada.</p>
+<p><strong>Como consertar:</strong> use <code>show-modal</code> ou <code>close</code>, e copie o <code>id</code> exato da janela.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>&lt;dialog&gt;</code> dentro de um parágrafo</strong>
+<pre class="term" data-cwd="~/dialogo">$ sed -n 8p dentro.html
+&lt;p&gt;Aviso: &lt;dialog open&gt;Oi&lt;/dialog&gt;&lt;/p&gt;
+$ vnu dentro.html
+"file:/home/ana/dialogo/dentro.html":8.35-8.38: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p><strong>O que significa:</strong> como o <code>&lt;details&gt;</code>, o <code>&lt;dialog&gt;</code> é um bloco e não pode ficar dentro de <code>&lt;p&gt;</code>. O navegador fecha o parágrafo antes da janela, e o <code>&lt;/p&gt;</code> do fim fica sem par.</p>
+<p><strong>Como consertar:</strong> o <code>&lt;dialog&gt;</code> fica fora dos parágrafos; os parágrafos vão <strong>dentro</strong> dele.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;dialog&gt;…&lt;/dialog&gt;</code></td><td>Caixa de diálogo; começa escondida</td></tr>
+<tr><td><code>&lt;dialog open&gt;</code></td><td>Começa aberta, como janela comum</td></tr>
+<tr><td><code>&lt;form method="dialog"&gt;&lt;button&gt;Fechar&lt;/button&gt;&lt;/form&gt;</code></td><td>Botão que fecha a janela, sem JavaScript</td></tr>
+<tr><td><code>&lt;button value="sim"&gt;</code></td><td>Valor guardado em <code>returnValue</code> quando esse botão fecha a janela</td></tr>
+<tr><td><code>janela.showModal()</code></td><td>Abre como modal: fundo escuro, página bloqueada, <kbd>Esc</kbd> fecha</td></tr>
+<tr><td><code>janela.show()</code> / <code>janela.close()</code></td><td>Abre como comum / fecha</td></tr>
+<tr><td><code>janela.addEventListener("close", …)</code></td><td>Faz algo quando a janela fecha</td></tr>
+<tr><td><code>&lt;button commandfor="id" command="show-modal"&gt;</code></td><td>Abre como modal sem JavaScript (navegadores recentes); <code>command="close"</code> fecha</td></tr>
+<tr><td><code>autofocus</code> num botão da janela</td><td>Escolhe onde o foco começa</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Fechar sem JavaScript</h3>
+<p>Complete o valor do <code>method</code> para o botão fechar a janela:</p>
+<div class="ex-code">&lt;form method="<input data-answer="dialog" aria-label="método">"&gt;&lt;button&gt;Fechar&lt;/button&gt;&lt;/form&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Abrir como modal</h3>
+<p>Complete o comando que abre a janela como modal:</p>
+<div class="ex-code">janela.<input data-answer="showModal" aria-label="comando">();</div>
+</div>
+
+<div class="exercise">
+<h3>3. Sem script</h3>
+<p>Complete o valor do <code>command</code> para o botão abrir a janela como modal:</p>
+<div class="ex-code">&lt;button commandfor="confirma" command="<input data-answer="show-modal" aria-label="comando">"&gt;Abrir&lt;/button&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Qual destes deixa a página atrás bloqueada e fecha com <kbd>Esc</kbd>?</p>
+<label><input type="radio" name="q4"> <code>&lt;dialog open&gt;</code></label>
+<label><input type="radio" name="q4"> <code>janela.showModal()</code></label>
+<label><input type="radio" name="q4"> <code>janela.show()</code></label>
+<label><input type="radio" name="q4"> Nenhum: isso só com CSS</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O console mostra <code>Cannot read properties of null (reading 'showModal')</code>. Qual é a causa mais provável?</p>
+<label><input type="radio" name="q5"> O navegador não conhece o <code>&lt;dialog&gt;</code></label>
+<label><input type="radio" name="q5"> A janela já estava aberta</label>
+<label><input type="radio" name="q5"> Faltou o <code>method="dialog"</code></label>
+<label><input type="radio" name="q5"> O script não achou a janela: <code>id</code> escrito diferente ou script antes do <code>&lt;dialog&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. A janela tem dois botões, <code>value="sim"</code> e <code>value="nao"</code>, num <code>form method="dialog"</code>. A pessoa clica em "nao". Quanto vale <code>janela.returnValue</code>?</p>
+<label><input type="radio" name="q6"> <code>"nao"</code></label>
+<label><input type="radio" name="q6"> <code>false</code></label>
+<label><input type="radio" name="q6"> O texto do botão, "Cancelar"</label>
+<label><input type="radio" name="q6"> Vazio, porque a janela fechou</label>
+</div>
+
+<h3>Missão final: confirmar o pedido</h3>
+
+<div class="tryhtml" data-goal="sel:dialog#confirma form[method='dialog'],nsel:dialog#confirma button=2,nsel:dialog[open]=0,src:\.showModal\(\)">
+<p class="try-task"><strong>Missão:</strong> na lojinha, o botão "Finalizar pedido" deve abrir uma janela <strong>modal</strong> perguntando "Confirmar o pedido?", com dois botões: "Voltar" (<code>value="nao"</code>) e "Confirmar" (<code>value="sim"</code>), dentro de um <code>&lt;form method="dialog"&gt;</code>. A janela começa fechada (sem <code>open</code>). Complete o <code>&lt;dialog&gt;</code> e a terceira linha do script. Depois teste: abrir, <kbd>Esc</kbd>, os dois botões.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Seu carrinho&lt;/h1&gt;
+&lt;p&gt;1 bolo de cenoura: R$ 30,00&lt;/p&gt;
+&lt;button id="finalizar"&gt;Finalizar pedido&lt;/button&gt;
+
+&lt;dialog id="confirma"&gt;
+  &lt;!-- a pergunta e os dois botões aqui --&gt;
+&lt;/dialog&gt;
+
+&lt;script&gt;
+  const botao = document.querySelector("#finalizar");
+  const janela = document.querySelector("#confirma");
+  // quando clicar no botão, abra a janela como modal
+&lt;/script&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Seu carrinho&lt;/h1&gt;
+&lt;p&gt;1 bolo de cenoura: R$ 30,00&lt;/p&gt;
+&lt;button id="finalizar"&gt;Finalizar pedido&lt;/button&gt;
+
+&lt;dialog id="confirma"&gt;
+  &lt;p&gt;Confirmar o pedido?&lt;/p&gt;
+  &lt;form method="dialog"&gt;
+    &lt;button value="nao"&gt;Voltar&lt;/button&gt;
+    &lt;button value="sim"&gt;Confirmar&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+
+&lt;script&gt;
+  const botao = document.querySelector("#finalizar");
+  const janela = document.querySelector("#confirma");
+  botao.addEventListener("click", () =&gt; janela.showModal());
+&lt;/script&gt;
+</pre>
+</div>
+
+<p>Se quiser ir além, acrescente o ouvinte do evento <code>close</code> e mostre no console a resposta da pessoa, como na seção 3.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;dialog&gt;</code> é uma caixa de diálogo que fica por cima da página. Começa escondida; <code>open</code> a mostra como janela <strong>comum</strong>.</li>
+  <li><code>&lt;form method="dialog"&gt;</code> com um <code>&lt;button&gt;</code> fecha a janela sem JavaScript. O <code>value</code> do botão clicado fica em <code>returnValue</code>.</li>
+  <li><code>showModal()</code> abre como <strong>modal</strong>: fundo escurecido, resto da página bloqueado, foco dentro da janela, <kbd>Esc</kbd> fecha. O script fica no fim do <code>&lt;body&gt;</code>.</li>
+  <li>Nos navegadores recentes, <code>&lt;button commandfor="id" command="show-modal"&gt;</code> faz o mesmo sem script.</li>
+  <li>Erros comuns: <code>Cannot read properties of null (reading 'showModal')</code> (script não achou a janela) e <code>InvalidStateError</code> (a janela já estava aberta com <code>open</code>). O <code>&lt;dialog&gt;</code> não vai dentro de <code>&lt;p&gt;</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
