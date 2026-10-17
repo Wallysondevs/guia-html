@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-labelledby="t">
+<title id="t">Mapa do bairro com a Lojinha da Ana, na Rua das Flores, perto da Praça da Árvore</title>
+<rect width="800" height="500" fill="#e9eedf"/>
+<path d="M-20 470 C120 430 160 500 300 475 S520 430 820 480" stroke="#9cc9ea" stroke-width="34" fill="none"/>
+<path d="M-20 470 C120 430 160 500 300 475 S520 430 820 480" stroke="#bfe0f5" stroke-width="10" fill="none" stroke-dasharray="30 40"/>
+<rect x="330" y="40" width="150" height="170" rx="6" fill="#f3efe4" stroke="#e2dccb"/><rect x="340" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="340" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="380" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="380" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="420" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="420" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="520" y="40" width="230" height="170" rx="6" fill="#f3efe4" stroke="#e2dccb"/><rect x="530" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="530" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="570" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="570" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="610" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="610" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="650" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="650" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="690" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="690" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="330" y="290" width="150" height="170" rx="6" fill="#f3efe4" stroke="#e2dccb"/><rect x="340" y="304" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="340" y="384" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="380" y="304" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="380" y="384" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="420" y="304" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="420" y="384" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="520" y="290" width="100" height="170" rx="6" fill="#f3efe4" stroke="#e2dccb"/><rect x="530" y="304" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="530" y="384" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="570" y="304" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="570" y="384" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="650" y="290" width="100" height="170" rx="6" fill="#f3efe4" stroke="#e2dccb"/><rect x="660" y="304" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="660" y="384" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="700" y="304" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="700" y="384" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="60" y="40" width="210" height="170" rx="6" fill="#f3efe4" stroke="#e2dccb"/><rect x="70" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="70" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="110" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="110" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="150" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="150" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="190" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="190" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="230" y="54" width="28" height="56" rx="3" fill="#e7e0cf"/><rect x="230" y="134" width="28" height="56" rx="3" fill="#e7e0cf"/>
+<rect x="60" y="290" width="210" height="170" rx="10" fill="#bfe0a6" stroke="#9cc98a"/>
+<circle cx="118" cy="382" r="11" fill="#6fb35a"/><circle cx="115" cy="379" r="5" fill="#8fd17a"/><circle cx="191" cy="394" r="9" fill="#6fb35a"/><circle cx="188" cy="391" r="5" fill="#8fd17a"/><circle cx="73" cy="426" r="11" fill="#6fb35a"/><circle cx="70" cy="423" r="5" fill="#8fd17a"/><circle cx="117" cy="449" r="12" fill="#6fb35a"/><circle cx="114" cy="446" r="5" fill="#8fd17a"/><circle cx="237" cy="371" r="13" fill="#6fb35a"/><circle cx="234" cy="368" r="5" fill="#8fd17a"/><circle cx="100" cy="395" r="14" fill="#6fb35a"/><circle cx="97" cy="392" r="5" fill="#8fd17a"/><circle cx="175" cy="411" r="13" fill="#6fb35a"/><circle cx="172" cy="408" r="5" fill="#8fd17a"/><circle cx="83" cy="414" r="13" fill="#6fb35a"/><circle cx="80" cy="411" r="5" fill="#8fd17a"/><circle cx="130" cy="305" r="14" fill="#6fb35a"/><circle cx="127" cy="302" r="5" fill="#8fd17a"/><circle cx="165" cy="408" r="14" fill="#6fb35a"/><circle cx="162" cy="405" r="5" fill="#8fd17a"/><circle cx="213" cy="438" r="11" fill="#6fb35a"/><circle cx="210" cy="435" r="5" fill="#8fd17a"/><circle cx="230" cy="367" r="15" fill="#6fb35a"/><circle cx="227" cy="364" r="5" fill="#8fd17a"/><circle cx="246" cy="315" r="10" fill="#6fb35a"/><circle cx="243" cy="312" r="5" fill="#8fd17a"/><circle cx="113" cy="445" r="12" fill="#6fb35a"/><circle cx="110" cy="442" r="5" fill="#8fd17a"/><circle cx="195" cy="345" r="12" fill="#6fb35a"/><circle cx="192" cy="342" r="5" fill="#8fd17a"/><circle cx="147" cy="353" r="13" fill="#6fb35a"/><circle cx="144" cy="350" r="5" fill="#8fd17a"/>
+<circle cx="165" cy="375" r="22" fill="#d7ecf8" stroke="#9cc9ea" stroke-width="3"/>
+<g stroke="#ffffff" stroke-linecap="round">
+<path d="M0 250 H800" stroke-width="34"/><path d="M300 0 V500" stroke-width="26"/><path d="M500 0 V470" stroke-width="22"/>
+</g>
+<g stroke="#d9d2bf" stroke-width="2" stroke-dasharray="14 12"><path d="M0 250 H800"/><path d="M300 0 V500"/></g>
+<g font-family="Lato, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#5f5f5a">
+<text x="560" y="243" font-size="16" font-weight="700">Av. Central</text>
+<text x="292" y="150" font-size="15" font-weight="700" transform="rotate(-90 292 150)" text-anchor="middle">Rua das Flores</text>
+<text x="493" y="80" font-size="15" font-weight="700" transform="rotate(-90 493 80)" text-anchor="middle">Rua do Sol</text>
+<text x="165" y="320" font-size="15" font-weight="700" text-anchor="middle" fill="#3f7a35">Praça da Árvore</text>
+<text x="700" y="488" font-size="14" font-style="italic" fill="#3f7fb0">Rio Azul</text>
+</g>
+<g transform="translate(330 196)">
+<ellipse cx="0" cy="40" rx="12" ry="4" fill="#000" opacity=".2"/>
+<path d="M0 40 C-6 26 -22 14 -22 -2 A22 22 0 0 1 22 -2 C22 14 6 26 0 40 Z" fill="#c7401f" stroke="#9a2f14" stroke-width="2"/>
+<circle cx="0" cy="-2" r="8" fill="#fff"/>
+</g>
+<g transform="translate(352 140)">
+<rect width="150" height="34" rx="8" fill="#fff" stroke="#c7401f" stroke-width="2"/>
+<text x="75" y="23" font-family="Lato, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="900" fill="#c7401f" text-anchor="middle">Lojinha da Ana</text>
+</g>
+<g transform="translate(740 60)" font-family="Lato, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
+<circle r="24" fill="#fff" stroke="#c9c2ae" stroke-width="2"/>
+<path d="M0 -18 L7 4 L0 0 L-7 4 Z" fill="#c7401f"/><path d="M0 18 L7 -4 L0 0 L-7 -4 Z" fill="#9b9b94"/>
+<text y="-28" font-size="13" font-weight="700" text-anchor="middle" fill="#5f5f5a">N</text>
+</g>
+<g transform="translate(40 30)" font-family="Lato, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5f5f5a">
+<path d="M0 0 h80" stroke="#5f5f5a" stroke-width="3"/><path d="M0 -5 v10 M80 -5 v10" stroke="#5f5f5a" stroke-width="2"/>
+<text x="40" y="-8" text-anchor="middle">100 m</text>
+</g>
+</svg>
