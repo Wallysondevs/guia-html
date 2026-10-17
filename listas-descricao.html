@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Listas de Descrição — dl, dt e dd | Guia HTML</title>
+<meta name="description" content="Listas de descrição em HTML para quem nunca fez um site: dl, dt e dd para glossários e fichas do tipo nome e valor, vários termos e várias descrições, agrupar com div, quando usar dl, ul ou tabela, e os erros reais do validador W3C (dd sem dt, dt sem dd, título dentro do dt), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Listas de Descrição</span></h1>
+
+<p class="intro">Algumas listas não são de itens soltos, e sim de <strong>pares</strong>: uma palavra e a explicação dela, um nome e o valor dele. "Untar: passar manteiga na forma." "Rendimento: 12 fatias." Para isso o HTML tem uma terceira lista, a <strong>lista de descrição</strong>, feita com três tags: <code>&lt;dl&gt;</code>, <code>&lt;dt&gt;</code> e <code>&lt;dd&gt;</code>. Nesta aula a Ana monta o glossário do site de receitas e a ficha técnica do bolo.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que são <code>dl</code>, <code>dt</code> e <code>dd</code> e como montar um glossário.</li>
+  <li>Como o navegador desenha a lista (e o que ele <em>não</em> desenha).</li>
+  <li>Como fazer fichas do tipo "nome: valor".</li>
+  <li>Como pôr várias descrições para um termo e vários termos para uma descrição.</li>
+  <li>Como agrupar cada par com <code>div</code>.</li>
+  <li>Quando usar <code>dl</code>, <code>ul</code> ou uma tabela.</li>
+  <li>Os erros reais do validador: <code>dd</code> sem <code>dt</code>, <code>dt</code> sem <code>dd</code>, título dentro do <code>dt</code> e <code>div</code> pela metade.</li>
+</ul>
+</div>
+
+<p>Os quadros <strong>Resultado</strong> são desenhados pelo seu navegador. As mensagens do validador saíram do <code>vnu</code> 26.10.12 na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: o dicionário</h2>
+<p>Abra um dicionário em qualquer página: cada entrada tem a <strong>palavra</strong>, em destaque, e logo abaixo a <strong>explicação</strong>. Uma lista de descrição é igual: uma sequência de pares "termo → descrição".</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tag</th><th>Vem do inglês</th><th>No dicionário</th></tr>
+<tr><td><code>&lt;dl&gt;</code></td><td><em>description list</em>, "lista de descrição"</td><td>o dicionário inteiro</td></tr>
+<tr><td><code>&lt;dt&gt;</code></td><td><em>description term</em>, "termo descrito"</td><td>a palavra</td></tr>
+<tr><td><code>&lt;dd&gt;</code></td><td><em>description details</em>, "detalhes da descrição"</td><td>a explicação</td></tr>
+</table>
+</div>
+
+<p>Em livros antigos você vai encontrar "<em>definition list</em>" ("lista de definições"). É a mesma tag: o nome mudou porque ela serve para muito mais do que definições.</p>
+
+<hr>
+
+<h2>1. O primeiro glossário</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Glossário da cozinha&lt;/h2&gt;
+&lt;dl&gt;
+  &lt;dt&gt;Banho-maria&lt;/dt&gt;
+  &lt;dd&gt;Cozinhar dentro de uma panela que fica sobre outra com água quente.&lt;/dd&gt;
+  &lt;dt&gt;Untar&lt;/dt&gt;
+  &lt;dd&gt;Passar manteiga ou óleo na forma para a massa não grudar.&lt;/dd&gt;
+&lt;/dl&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;dl&gt; … &lt;/dl&gt;</dt><dd>A lista inteira. Junta todos os pares.</dd>
+  <dt>&lt;dt&gt;Banho-maria&lt;/dt&gt;</dt><dd>O <strong>termo</strong>: a palavra (ou nome) que vai ser explicada.</dd>
+  <dt>&lt;dd&gt;Cozinhar dentro…&lt;/dd&gt;</dt><dd>A <strong>descrição</strong> do termo que veio logo antes. Quem liga um ao outro é a <strong>ordem</strong>: cada <code>dd</code> descreve o <code>dt</code> de cima.</dd>
+</dl>
+
+<p>Repare no que o navegador desenhou:</p>
+<ul>
+  <li>O termo fica encostado na margem, e a descrição fica com um <strong>recuo</strong> à esquerda.</li>
+  <li><strong>Não há bolinhas nem números.</strong></li>
+  <li>O termo <strong>não</strong> fica em negrito. Muita gente imagina que fica; o destaque, se você quiser, vem do CSS (quer aprender mais? futuro Guia CSS).</li>
+</ul>
+
+<p>O esquema que você está lendo agora, com o código em destaque e a explicação embaixo, é uma lista de descrição: o guia usa <code>dl</code> em todas as aulas, com um pouco de CSS por cima.</p>
+
+<p>Numa página completa, o glossário passa no validador sem nenhuma mensagem:</p>
+
+<pre class="file" data-file="glossario.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Glossário&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Glossário da cozinha&lt;/h1&gt;
+&lt;dl&gt;
+  &lt;dt&gt;Banho-maria&lt;/dt&gt;
+  &lt;dd&gt;Cozinhar dentro de uma panela que fica sobre outra com água quente.&lt;/dd&gt;
+  &lt;dt&gt;Untar&lt;/dt&gt;
+  &lt;dd&gt;Passar manteiga ou óleo na forma para a massa não grudar.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose glossario.html
+glossario.html              « só o nome: nenhum erro</pre>
+
+<hr>
+
+<h2>2. Fichas "nome: valor"</h2>
+<p>A lista de descrição não serve só para palavras difíceis. Qualquer conjunto de pares <strong>nome → valor</strong> cabe nela: a ficha técnica de uma receita, os dados de um produto, as informações de contato.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;dl&gt;
+  &lt;dt&gt;Rendimento&lt;/dt&gt;
+  &lt;dd&gt;12 fatias&lt;/dd&gt;
+  &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+  &lt;dd&gt;20 minutos&lt;/dd&gt;
+  &lt;dt&gt;Tempo de forno&lt;/dt&gt;
+  &lt;dd&gt;40 minutos&lt;/dd&gt;
+&lt;/dl&gt;
+</pre>
+
+<p>Para quem lê com os olhos, tanto faz escrever "Rendimento: 12 fatias" num parágrafo. Para o navegador e para o leitor de tela, a <code>dl</code> diz algo a mais: "12 fatias" é o <strong>valor</strong> de "Rendimento". Alguns leitores de tela anunciam a lista e quantos termos ela tem.</p>
+
+<div class="tryhtml" data-goal="nsel:dl&gt;dt=4,nsel:dl&gt;dd=4,texto:dt:last-of-type=Dificuldade,texto:dd:last-of-type=fácil">
+<p class="try-task"><strong>Experimente:</strong> acrescente um quarto par no <strong>fim</strong> da ficha: o termo <code>Dificuldade</code> com a descrição <code>fácil</code>.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;dl&gt;
+  &lt;dt&gt;Rendimento&lt;/dt&gt;
+  &lt;dd&gt;12 fatias&lt;/dd&gt;
+  &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+  &lt;dd&gt;20 minutos&lt;/dd&gt;
+  &lt;dt&gt;Tempo de forno&lt;/dt&gt;
+  &lt;dd&gt;40 minutos&lt;/dd&gt;
+&lt;/dl&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;dl&gt;
+  &lt;dt&gt;Rendimento&lt;/dt&gt;
+  &lt;dd&gt;12 fatias&lt;/dd&gt;
+  &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+  &lt;dd&gt;20 minutos&lt;/dd&gt;
+  &lt;dt&gt;Tempo de forno&lt;/dt&gt;
+  &lt;dd&gt;40 minutos&lt;/dd&gt;
+  &lt;dt&gt;Dificuldade&lt;/dt&gt;
+  &lt;dd&gt;fácil&lt;/dd&gt;
+&lt;/dl&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Vários <code>dd</code>, vários <code>dt</code></h2>
+<p>Os pares não precisam ser de um para um. Um termo pode ter <strong>várias descrições</strong>, e uma descrição pode servir para <strong>vários termos</strong>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;dl&gt;
+  &lt;dt&gt;Cobertura&lt;/dt&gt;
+  &lt;dd&gt;Chocolate meio amargo&lt;/dd&gt;
+  &lt;dd&gt;Granulado&lt;/dd&gt;
+
+  &lt;dt&gt;Fubá&lt;/dt&gt;
+  &lt;dt&gt;Farinha de milho&lt;/dt&gt;
+  &lt;dd&gt;Pó amarelo feito de milho moído. Nome diferente em cada região.&lt;/dd&gt;
+&lt;/dl&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>um dt, dois dd</dt><dd>"Cobertura" tem dois valores: chocolate e granulado. Cada <code>dd</code> que vem depois do mesmo <code>dt</code> é mais uma descrição dele.</dd>
+  <dt>dois dt, um dd</dt><dd>"Fubá" e "Farinha de milho" são dois nomes para a mesma coisa, e dividem a mesma descrição. Os termos ficam um embaixo do outro, e a descrição vem depois de todos.</dd>
+  <dt>a linha em branco</dt><dd>Só para você ler o código. O navegador ignora; quem separa os grupos é a ordem: um grupo novo começa quando um <code>dt</code> aparece depois de um <code>dd</code>.</dd>
+</dl>
+
+<hr>
+
+<h2>4. Agrupar cada par com <code>div</code></h2>
+<p>Às vezes é preciso tratar cada par como um bloco, por exemplo para desenhar cada um num cartão com CSS. O HTML deixa embrulhar cada grupo <strong>inteiro</strong> (seus <code>dt</code> e seus <code>dd</code>) num <code>div</code> (aula <a href="div-span.html">div e span</a>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;dl&gt;
+  &lt;div&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;dt&gt;Tempo de forno&lt;/dt&gt;
+    &lt;dd&gt;40 minutos&lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;
+</pre>
+
+<p>Sem CSS, o resultado fica igual ao da lista sem <code>div</code>. As regras desse embrulho são rígidas:</p>
+<ul>
+  <li>O <code>div</code> só pode ser filho direto do <code>dl</code>, e cada um contém <strong>um grupo completo</strong>: pelo menos um <code>dt</code> e, depois, pelo menos um <code>dd</code>.</li>
+  <li>É <strong>tudo ou nada</strong>: se um grupo está num <code>div</code>, todos os grupos daquele <code>dl</code> precisam estar.</li>
+</ul>
+<p>Quebrar essas regras dá erro, como você vai ver em <a href="#errado">Quando dá errado</a>.</p>
+
+<hr>
+
+<h2>5. <code>dl</code>, <code>ul</code> ou tabela?</h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O conteúdo é…</th><th>Use</th><th>Exemplo</th></tr>
+<tr><td>uma sequência de itens simples</td><td><code>ul</code> ou <code>ol</code></td><td>ingredientes, passos</td></tr>
+<tr><td>pares: um nome e o valor (ou a explicação)</td><td><code>dl</code></td><td>glossário, ficha técnica, dados de contato</td></tr>
+<tr><td>vários itens com as <strong>mesmas</strong> várias informações</td><td>tabela</td><td>três bolos, cada um com preço, peso e sabor (aula <a href="tabelas.html">Tabelas</a>)</td></tr>
+</table>
+</div>
+
+<div class="warning">
+<strong>Dois usos que o HTML não quer</strong>
+<ul>
+  <li><strong>Diálogos.</strong> A especificação diz que a <code>dl</code> não serve para conversas ("Ana: oi!", "Bia: olá!"): uma fala não é a descrição de quem fala. Use parágrafos.</li>
+  <li><strong>Só para ganhar recuo.</strong> Um <code>dd</code> sozinho dá um recuo bonito, mas o recuo é coisa do CSS (<code>margin-left</code>). A tag tem de dizer o que o conteúdo <em>é</em>.</li>
+</ul>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos completos têm as mesmas 7 primeiras linhas do <code>glossario.html</code>; o código mostrado começa na linha 8. Em todos os casos, o navegador desenha alguma coisa sem reclamar. Só o validador conta o problema.</p>
+
+<div class="cenario">
+<strong><code>error: Element “dl” is missing a required child element.</code></strong>
+<p>A Ana escreveu a descrição e esqueceu o termo:</p>
+<pre class="file" data-file="dd-sozinho.html" data-resultado>&lt;dl&gt;
+  &lt;dd&gt;Rende 12 fatias.&lt;/dd&gt;
+&lt;/dl&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dd-sozinho.html
+"file:/home/ana/site/dd-sozinho.html":9.3-9.6: error: Element “dl” is missing a required child element.</pre>
+<p><strong>O que significa:</strong> "falta um elemento filho obrigatório no <code>dl</code>". O validador aponta o <code>&lt;dd&gt;</code> (linha 9): antes de qualquer <code>dd</code>, tem de haver um <code>dt</code>.</p>
+<p><strong>O que o navegador faz:</strong> desenha o texto com recuo, como se estivesse tudo certo.</p>
+<p><strong>Como consertar:</strong> ponha o termo antes: <code>&lt;dt&gt;Rendimento&lt;/dt&gt;</code>. Se você só queria o recuo, o problema é outro: troque a <code>dl</code> por um parágrafo e faça o recuo com CSS.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “dl” is missing a required instance of child element “dd”.</code></strong>
+<p>O contrário: o último termo ficou sem descrição.</p>
+<pre class="file" data-file="dt-sozinho.html">&lt;dl&gt;
+  &lt;dt&gt;Rendimento&lt;/dt&gt;
+  &lt;dd&gt;12 fatias&lt;/dd&gt;
+  &lt;dt&gt;Tempo de forno&lt;/dt&gt;
+&lt;/dl&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dt-sozinho.html
+"file:/home/ana/site/dt-sozinho.html":12.1-12.5: error: Element “dl” is missing a required instance of child element “dd”.</pre>
+<p><strong>O que significa:</strong> "falta no <code>dl</code> um filho <code>dd</code> obrigatório". A posição (linha 12) é o <code>&lt;/dl&gt;</code>: foi ali que o validador percebeu que a lista acabou com um termo sem descrição.</p>
+<p><strong>Como consertar:</strong> escreva o <code>dd</code> do último termo, ou apague o termo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “dt” not allowed as child of element “body” in this context.</code></strong>
+<p>A Ana esqueceu o <code>&lt;dl&gt;</code>:</p>
+<pre class="file" data-file="sem-dl.html" data-resultado>&lt;dt&gt;Rendimento&lt;/dt&gt;
+&lt;dd&gt;12 fatias&lt;/dd&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu sem-dl.html
+"file:/home/ana/site/sem-dl.html":8.1-8.4: error: Element “dt” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/sem-dl.html":9.1-9.4: error: Element “dd” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> <code>dt</code> e <code>dd</code> só podem morar dentro de um <code>dl</code> (ou de um <code>div</code> dentro dele), como o <code>li</code> só mora numa lista.</p>
+<p><strong>O que o navegador faz:</strong> o resultado fica <strong>igual</strong> ao de uma lista certa, porque o recuo vem do próprio <code>dd</code>. Esse é o tipo de erro que só o validador pega: olhando a página, ninguém percebe.</p>
+<p><strong>Como consertar:</strong> embrulhe os pares em <code>&lt;dl&gt;…&lt;/dl&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: The element “h2” must not appear as a descendant of the “dt” element.</code></strong>
+<p>A Ana quis o termo em letras grandes e pôs um título dentro do <code>dt</code>:</p>
+<pre class="file" data-file="titulo-dt.html">&lt;dl&gt;
+  &lt;dt&gt;&lt;h2&gt;Untar&lt;/h2&gt;&lt;/dt&gt;
+  &lt;dd&gt;Passar manteiga na forma.&lt;/dd&gt;
+&lt;/dl&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu titulo-dt.html
+"file:/home/ana/site/titulo-dt.html":9.7-9.10: error: The element “h2” must not appear as a descendant of the “dt” element.
+"file:/home/ana/site/titulo-dt.html":9.7-9.10: info warning: This document has heading elements but none of them has a computed heading level of 1.</pre>
+<p><strong>O que significa:</strong> "o elemento <code>h2</code> não pode aparecer como descendente do elemento <code>dt</code>". <em>Descendente</em> é qualquer elemento lá dentro, filho, neto ou bisneto. Um <code>dt</code> não pode ter títulos (<code>h1</code> a <code>h6</code>), nem <code>header</code>, <code>footer</code>, <code>section</code> ou <code>article</code>. O <em>info warning</em> da segunda linha é outro assunto: este arquivo de teste tem títulos, mas nenhum <code>h1</code> (aula <a href="titulos.html">Títulos</a>).</p>
+<p><strong>Como consertar:</strong> tire o <code>h2</code>. Para destacar o termo, use <code>&lt;dt&gt;&lt;strong&gt;Untar&lt;/strong&gt;&lt;/dt&gt;</code> ou CSS. Se cada termo merece mesmo um título, talvez o conteúdo não seja uma lista, e sim seções com <code>h2</code> e parágrafos.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “dt” not allowed as child of element “dl” in this context.</code></strong>
+<p>A Ana embrulhou só o primeiro par num <code>div</code>:</p>
+<pre class="file" data-file="div-misturado.html">&lt;dl&gt;
+  &lt;div&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+  &lt;/div&gt;
+  &lt;dt&gt;Tempo de forno&lt;/dt&gt;
+  &lt;dd&gt;40 minutos&lt;/dd&gt;
+&lt;/dl&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu div-misturado.html
+"file:/home/ana/site/div-misturado.html":13.3-13.6: error: Element “dt” not allowed as child of element “dl” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/div-misturado.html":14.3-14.6: error: Element “dd” not allowed as child of element “dl” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> parece estranho, "<code>dt</code> não é permitido como filho de <code>dl</code>", mas a palavra importante é <em>in this context</em>, "neste contexto". Depois que o primeiro grupo veio num <code>div</code>, o <code>dl</code> passou a aceitar só <code>div</code>: é a regra do tudo ou nada.</p>
+<p><strong>Como consertar:</strong> embrulhe o segundo grupo num <code>div</code> também, ou tire o <code>div</code> do primeiro.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;dl&gt;…&lt;/dl&gt;</code></td><td>Lista de descrição: pares termo → descrição.</td></tr>
+<tr><td><code>&lt;dt&gt;…&lt;/dt&gt;</code></td><td>O termo (nome). Sem títulos, <code>header</code>, <code>footer</code> ou seções dentro.</td></tr>
+<tr><td><code>&lt;dd&gt;…&lt;/dd&gt;</code></td><td>A descrição (valor) do <code>dt</code> de cima. Aceita parágrafos, listas, imagens.</td></tr>
+<tr><td>vários <code>dd</code> seguidos</td><td>Várias descrições para o mesmo termo.</td></tr>
+<tr><td>vários <code>dt</code> seguidos</td><td>Vários termos com a mesma descrição.</td></tr>
+<tr><td><code>&lt;div&gt;</code> dentro do <code>dl</code></td><td>Embrulha um grupo inteiro (<code>dt</code> + <code>dd</code>). Tudo ou nada.</td></tr>
+<tr><td>Visual padrão</td><td>Termo na margem, descrição com recuo; sem negrito, sem marcadores.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A tag do termo</h3>
+<p>Complete o par:</p>
+<div class="ex-code">&lt;dl&gt; &lt;<input data-answer="dt" aria-label="tag do termo">&gt;Untar&lt;/dt&gt; &lt;dd&gt;Passar manteiga.&lt;/dd&gt; &lt;/dl&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A tag da descrição</h3>
+<p>Complete o par:</p>
+<div class="ex-code">&lt;dl&gt; &lt;dt&gt;Rendimento&lt;/dt&gt; &lt;<input data-answer="dd" aria-label="tag da descrição">&gt;12 fatias&lt;/dd&gt; &lt;/dl&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. O que o navegador faz, por padrão, com um <code>dt</code>?</p>
+<label><input type="radio" name="q3"> Deixa em negrito e com bolinha</label>
+<label><input type="radio" name="q3"> Encosta na margem, sem negrito; o recuo fica para o <code>dd</code></label>
+<label><input type="radio" name="q3"> Numera, como no <code>ol</code></label>
+<label><input type="radio" name="q3"> Esconde, porque é só para o leitor de tela</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. Os dados de 5 produtos, cada um com nome, preço, peso e cor, ficam melhor em:</p>
+<label><input type="radio" name="q4"> Um <code>ul</code></label>
+<label><input type="radio" name="q4"> Uma <code>dl</code> com 20 pares</label>
+<label><input type="radio" name="q4"> Um parágrafo com <code>br</code></label>
+<label><input type="radio" name="q4"> Uma tabela</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. <code>&lt;dl&gt;&lt;dd&gt;Rende 12 fatias.&lt;/dd&gt;&lt;/dl&gt;</code>: o que o validador diz?</p>
+<label><input type="radio" name="q5"> <em>Element “dl” is missing a required child element.</em></label>
+<label><input type="radio" name="q5"> Nada, está válido</label>
+<label><input type="radio" name="q5"> <em>Element “dd” not allowed as child of element “body”</em></label>
+<label><input type="radio" name="q5"> <em>Unclosed element “dl”</em></label>
+</div>
+
+<h3>Missão final: a ficha do caderno</h3>
+
+<div class="tryhtml" data-goal="nsel:dl&gt;dt=3,nsel:dl&gt;dd=3,texto:dt=Preço,texto:dd=25,nsrc:&lt;br">
+<p class="try-task"><strong>Missão:</strong> a Ana escreveu a ficha do caderno num parágrafo com <code>&lt;br&gt;</code>. Transforme em uma lista de descrição com <strong>3 pares</strong>: o que vem antes dos dois-pontos é o termo, o que vem depois é a descrição. O primeiro termo é <code>Preço</code>. Não deixe nenhum <code>&lt;br&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Caderno universitário&lt;/h2&gt;
+&lt;p&gt;Preço: R$ 25,00&lt;br&gt;
+Folhas: 96&lt;br&gt;
+Capa: dura&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Caderno universitário&lt;/h2&gt;
+&lt;dl&gt;
+  &lt;dt&gt;Preço&lt;/dt&gt;
+  &lt;dd&gt;R$ 25,00&lt;/dd&gt;
+  &lt;dt&gt;Folhas&lt;/dt&gt;
+  &lt;dd&gt;96&lt;/dd&gt;
+  &lt;dt&gt;Capa&lt;/dt&gt;
+  &lt;dd&gt;dura&lt;/dd&gt;
+&lt;/dl&gt;
+</pre>
+</div>
+
+<p>Os dois-pontos sumiram: na <code>dl</code>, quem diz que "R$ 25,00" é o valor de "Preço" é a estrutura, e não a pontuação. Se a Ana quiser os dois-pontos de volta na tela, o CSS consegue desenhá-los sem mexer no HTML.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>dl</code> (<em>description list</em>) é uma lista de pares: <code>dt</code> (o termo) e <code>dd</code> (a descrição).</li>
+  <li>Cada <code>dd</code> descreve o <code>dt</code> que veio antes. Pode haver vários <code>dd</code> para um termo e vários <code>dt</code> para uma descrição.</li>
+  <li>O navegador põe recuo no <code>dd</code>; não há marcador, número nem negrito.</li>
+  <li>Serve para glossários e fichas "nome: valor". Para itens simples, <code>ul</code>/<code>ol</code>; para várias colunas, tabela. Nunca para diálogos ou só para recuar texto.</li>
+  <li>Cada grupo pode ir num <code>div</code>, mas é tudo ou nada.</li>
+  <li>Erros do validador: <em>missing a required child element</em> (<code>dd</code> sem <code>dt</code>), <em>missing a required instance of child element “dd”</em>, <em>“dt” not allowed as child of element “body”</em> e <em>“h2” must not appear as a descendant of the “dt” element</em>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
