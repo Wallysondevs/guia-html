@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Primeiro Arquivo — criar, salvar e abrir um .html no navegador | Guia HTML</title>
+<meta name="description" content="Crie a sua primeira página HTML no seu computador: a pasta do site, o nome index.html, as regras para nomes de arquivo (minúsculas, sem espaço, sem acento), salvar no VS Code ou no nano, mostrar as extensões no Windows e no macOS, abrir no navegador (dois cliques, arrastar, Ctrl+O, file://), o ciclo editar-salvar-recarregar e o validador, com saídas reais.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Primeiro Arquivo</span></h1>
+
+<p class="intro">Até aqui, você mexeu em HTML só nas caixas do guia. Agora é hora de criar uma página <strong>no seu computador</strong>: uma pasta para o site, um arquivo chamado <code>index.html</code>, algumas linhas de HTML e dois cliques para ver tudo no navegador. É assim que todo site começa, do blog da Ana ao maior portal do mundo. Nesta aula você também aprende as regras para dar nome aos arquivos e o ciclo que vai repetir milhares de vezes: <strong>editar, salvar, recarregar</strong>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Criar a pasta do site, pelo gerenciador de arquivos ou pelo terminal.</li>
+  <li>Por que a primeira página se chama <code>index.html</code>.</li>
+  <li>As regras para nomes de arquivo: minúsculas, sem espaços, sem acentos, e o porquê de cada uma.</li>
+  <li>Escrever e salvar o arquivo no VS Code ou no <code>nano</code>.</li>
+  <li>Mostrar as extensões dos arquivos no Windows e no macOS (e fugir do <code>index.html.txt</code>).</li>
+  <li>Abrir a página no navegador de quatro jeitos e entender o endereço <code>file://</code>.</li>
+  <li>Conferir a página no validador.</li>
+</ul>
+</div>
+
+<p>Os comandos desta aula rodaram na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>, Linux em português), e as saídas foram copiadas da tela. As telas do Windows, do macOS e do navegador não puderam ser reproduzidas na máquina do guia: elas são descritas, sem prometer o texto exato de cada menu, que muda com a versão e o idioma.</p>
+
+<hr>
+
+<h2>A ideia: a gaveta e a capa</h2>
+<p>Pense no site como uma gaveta de arquivo. A <strong>pasta</strong> é a gaveta: tudo o que é do site (páginas, imagens, estilos) fica dentro dela, e nada de fora entra. O <strong><code>index.html</code></strong> é a capa: a primeira folha, a que todo mundo vê quando abre a gaveta. As outras páginas (<code>sobre.html</code>, <code>contato.html</code>) são as folhas de dentro, e a capa tem links para elas.</p>
+
+<hr>
+
+<h2>1. Criar a pasta do site</h2>
+<p>Escolha um lugar fácil de achar e crie uma pasta chamada <code>site</code>:</p>
+<ul>
+  <li><strong>Windows:</strong> no Explorador de Arquivos, entre em Documentos, clique com o botão direito num espaço vazio e escolha a opção de criar uma nova pasta.</li>
+  <li><strong>macOS:</strong> no Finder, entre na sua pasta pessoal ou em Documentos e crie uma nova pasta (atalho <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd>).</li>
+  <li><strong>Linux:</strong> no gerenciador de arquivos, do mesmo jeito; ou pelo terminal, como a Ana:</li>
+</ul>
+
+<pre class="term">$ mkdir site                « cria a pasta "site" dentro da pasta pessoal
+$ cd site                   « entra nela
+$ ls                        « lista o que tem dentro: nada, por enquanto</pre>
+
+<p>Nenhum dos três comandos escreveu nada: o <code>mkdir</code> (<em>make directory</em>, "criar pasta") e o <code>cd</code> (<em>change directory</em>, "mudar de pasta") ficam quietos quando dão certo, e o <code>ls</code> (<em>list</em>) não tinha o que listar. Repare que o prompt mudou para <code>~/site</code>: a Ana está dentro da pasta nova. (Esses comandos são do terminal, não do HTML; o Guia Bash explica cada um.)</p>
+
+<hr>
+
+<h2>2. O nome: <code>index.html</code></h2>
+<p>A primeira página de um site se chama <code>index.html</code> ("índice"), e não é só costume. Quando alguém visita um endereço sem nome de arquivo, como <code>https://exemplo.com/</code>, o servidor procura um arquivo chamado <code>index.html</code> na pasta e entrega esse. Veja com o servidor simples do Python, que você conheceu em <a href="como-funciona.html">Como o Navegador Lê HTML</a>:</p>
+
+<pre class="term" data-cwd="~/site">$ curl -s http://localhost:8000/        « o endereço termina em "/", sem nome de arquivo
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Olá! Este é o meu primeiro site.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+<p>A Ana não pediu nenhum arquivo, e o servidor entregou o <code>index.html</code>. No GitHub Pages, onde você vai publicar o site no Nível 3 (<a href="publicar.html">Publicar no GitHub Pages</a>), acontece o mesmo. Por isso a capa do site sempre se chama assim.</p>
+
+<h3>As regras para nomes de arquivo</h3>
+<p>Nomes de arquivo de sites viram parte do <strong>endereço</strong> da página. Por isso, o guia segue três regras:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Regra</th><th>Bom</th><th>Evite</th><th>Por quê</th></tr>
+<tr><td>Só letras minúsculas</td><td><code>index.html</code></td><td><code>Index.html</code>, <code>INDEX.HTML</code></td><td>Nos servidores (quase todos rodam Linux), maiúscula e minúscula são letras <strong>diferentes</strong>: um link para <code>index.html</code> não acha <code>Index.html</code>.</td></tr>
+<tr><td>Sem espaços</td><td><code>bolo-de-cenoura.html</code></td><td><code>bolo de cenoura.html</code></td><td>Espaços não podem aparecer num endereço: viram <code>%20</code>.</td></tr>
+<tr><td>Sem acentos nem cedilha</td><td><code>pagina-inicial.html</code></td><td><code>página-inicial.html</code></td><td>Acentos também viram códigos no endereço (<code>á</code> = <code>%C3%A1</code>) e confundem algumas ferramentas.</td></tr>
+</table>
+</div>
+
+<p>Para separar palavras, use o hífen (<code>-</code>). E a extensão é sempre <code>.html</code>. Veja o endereço que um nome "proibido" ganha, calculado pelo Python do mesmo jeito que um navegador faria:</p>
+
+<pre class="term" data-cwd="~/site">$ python3 -c 'import pathlib; print(pathlib.Path("/home/ana/site/Página Inicial.html").as_uri())'
+file:///home/ana/site/P%C3%A1gina%20Inicial.html</pre>
+
+<p>O <code>á</code> virou <code>%C3%A1</code> e o espaço virou <code>%20</code>. Funciona, mas ninguém consegue ditar esse endereço por telefone, e qualquer link escrito "do jeito normal" pode não achar a página. E as maiúsculas: com o arquivo <code>index.html</code> na pasta, o servidor não acha <code>Index.html</code>:</p>
+
+<pre class="term" data-cwd="~/site">$ curl -s -I http://localhost:8000/Index.html | head -1     « só a primeira linha da resposta
+HTTP/1.0 404 File not found</pre>
+
+<div class="warning">
+<strong>No Windows e no macOS "funciona", no servidor não</strong>
+<p>O Windows e o macOS, por padrão, não diferenciam maiúsculas de minúsculas nos nomes de arquivo. Um link para <code>Sobre.html</code> abre o <code>sobre.html</code> no seu computador e dá <code>404</code> depois de publicado. Seguindo a regra das minúsculas, esse problema nunca acontece.</p>
+</div>
+
+<hr>
+
+<h2>3. Escrever e salvar</h2>
+<p>Abra o editor (veja <a href="editores.html">Editores</a>) e crie um arquivo novo. Digite esta página, linha por linha:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Olá! Este é o meu primeiro site.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O quadro Resultado mostra como ela vai ficar. Você ainda não precisa entender as linhas da moldura (elas são o assunto da próxima aula, <a href="estrutura.html">Estrutura de uma Página</a>); só copie com cuidado, porque cada sinal conta.</p>
+
+<h3>No VS Code</h3>
+<ol class="passo">
+  <li>Abra a pasta <code>site</code> no VS Code (a opção de abrir pasta, no menu Arquivo).</li>
+  <li>Na barra lateral, use o botão de arquivo novo e digite o nome <code>index.html</code>. O editor já sabe que é HTML pela extensão e liga as cores.</li>
+  <li>Digite a página. (Se quiser, comece com <code>!</code> e o Emmet, e ajuste o <code>lang</code> e o <code>title</code>.)</li>
+  <li>Salve com <kbd>Ctrl</kbd> + <kbd>S</kbd> (<kbd>Cmd</kbd> + <kbd>S</kbd> no macOS). A bolinha da aba some.</li>
+</ol>
+
+<h3>No nano, pelo terminal</h3>
+<pre class="term" data-cwd="~/site">$ nano index.html          « abre o nano com um arquivo novo chamado index.html</pre>
+<ol class="passo">
+  <li>O terminal vira um editor: no alto, <code>GNU nano 8.7.1</code> e o nome do arquivo; embaixo, <code>[ Novo arquivo ]</code> e a lista de atalhos, como <code>^O Gravar</code> e <code>^X Sair</code> (o <code>^</code> é a tecla <kbd>Ctrl</kbd>).</li>
+  <li>Digite as onze linhas.</li>
+  <li><kbd>Ctrl</kbd> + <kbd>O</kbd> grava. O nano pergunta o nome (<code>Escrever para o arquivo: index.html</code>); confirme com <kbd>Enter</kbd>.</li>
+  <li><kbd>Ctrl</kbd> + <kbd>X</kbd> sai e volta ao terminal.</li>
+</ol>
+
+<h3>Conferir o arquivo</h3>
+<p>De qualquer editor, o resultado no disco é o mesmo. Pelo terminal:</p>
+
+<pre class="term" data-cwd="~/site">$ ls -l                                 « lista com detalhes
+total 4
+-rw-rw-r-- 1 ana ana 195 out 17 16:03 index.html
+$ file index.html
+index.html: HTML document, Unicode text, UTF-8 text</pre>
+
+<dl class="anatomy">
+  <dt>195</dt><dd>O tamanho do arquivo, em bytes. São 193 caracteres, mas as duas letras acentuadas (o <code>á</code> de "Olá" e o <code>é</code>) ocupam dois bytes cada em UTF-8.</dd>
+  <dt>out 17 16:03</dt><dd>A data e a hora em que o arquivo foi salvo pela última vez. Útil para ver se o "salvar" funcionou.</dd>
+  <dt>index.html</dt><dd>O nome, com a extensão certa.</dd>
+  <dt>HTML document</dt><dd>O <code>file</code> olhou o conteúdo e reconheceu uma página HTML.</dd>
+  <dt>Unicode text, UTF-8 text</dt><dd>Salvo em UTF-8, a codificação certa (veja <a href="editores.html">Editores</a>).</dd>
+</dl>
+
+<hr>
+
+<h2>4. Mostrar as extensões dos arquivos</h2>
+<p>O Windows e o macOS, por padrão, <strong>escondem</strong> a extensão de vários tipos de arquivo. Você vê só "index" no lugar de "index.html", e pode não perceber quando o arquivo se chama, na verdade, <code>index.html.txt</code>. Para quem faz sites, vale mostrar as extensões sempre:</p>
+<ul>
+  <li><strong>Windows 11:</strong> no Explorador de Arquivos, abra o menu <strong>Exibir</strong> e ligue a opção de mostrar as extensões de nomes de arquivos (fica no submenu de mostrar itens).</li>
+  <li><strong>Windows 10:</strong> no Explorador de Arquivos, guia <strong>Exibir</strong>, marque a caixa das extensões de nomes de arquivos.</li>
+  <li><strong>macOS:</strong> no Finder, abra os ajustes (ou preferências) do Finder, vá à parte avançada e ligue a opção de mostrar todas as extensões de nome de arquivo.</li>
+  <li><strong>Linux:</strong> os gerenciadores de arquivos mostram a extensão sempre.</li>
+</ul>
+
+<p>Com as extensões à vista, um arquivo errado se denuncia sozinho:</p>
+
+<pre class="term" data-cwd="~/site">$ ls
+index.html.txt                       « o nome verdadeiro termina em .txt
+$ file index.html.txt
+index.html.txt: HTML document, Unicode text, UTF-8 text</pre>
+
+<p>O conteúdo é HTML (o <code>file</code> percebeu), mas o nome termina em <code>.txt</code>, e o navegador vai mostrar o código como texto. Esse é o tropeço mais comum de quem usa o Bloco de Notas: ele acrescenta <code>.txt</code> se o tipo do arquivo na janela de salvar estiver como documento de texto. Escolha o tipo "todos os arquivos" e digite o nome completo, <code>index.html</code>.</p>
+
+<hr>
+
+<h2>5. Abrir no navegador</h2>
+<p>Com o arquivo salvo, há quatro jeitos de abri-lo:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Jeito</th><th>Como</th><th>Quando usar</th></tr>
+<tr><td><strong>Dois cliques</strong></td><td>No gerenciador de arquivos, dê dois cliques no <code>index.html</code>. Ele abre no seu navegador padrão.</td><td>O mais simples, para o dia a dia</td></tr>
+<tr><td><strong>Abrir com…</strong></td><td>Clique com o botão direito no arquivo e escolha a opção de abrir com outro programa; escolha o navegador.</td><td>Para testar em outro navegador, que não é o padrão</td></tr>
+<tr><td><strong>Arrastar</strong></td><td>Arraste o arquivo para dentro de uma janela do navegador.</td><td>Quando o navegador já está aberto</td></tr>
+<tr><td><strong>Pelo navegador</strong></td><td>No navegador, aperte <kbd>Ctrl</kbd> + <kbd>O</kbd> (<kbd>Cmd</kbd> + <kbd>O</kbd> no macOS) e escolha o arquivo.</td><td>Quando não acha a pasta no gerenciador</td></tr>
+</table>
+</div>
+
+<p>Pelo terminal também dá: <code>xdg-open index.html</code> no Linux, <code>open index.html</code> no macOS e <code>start index.html</code> no Prompt de Comando do Windows. Os três abrem o arquivo no navegador padrão e não escrevem nada no terminal.</p>
+
+<h3>O endereço <code>file://</code></h3>
+<p>Olhe a barra de endereço do navegador. Em vez de <code>https://</code>, ela mostra o caminho do arquivo no seu disco, começando com <code>file://</code>:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Sistema</th><th>Endereço da página da Ana</th></tr>
+<tr><td>Linux</td><td><code>file:///home/ana/site/index.html</code></td></tr>
+<tr><td>macOS</td><td><code>file:///Users/ana/site/index.html</code></td></tr>
+<tr><td>Windows</td><td><code>file:///C:/Users/ana/Documents/site/index.html</code></td></tr>
+</table>
+</div>
+
+<p>Esse endereço só funciona <strong>no seu computador</strong>: ele aponta para o seu disco. Mandar esse link para uma amiga não adianta nada. Para outras pessoas verem o site, ele precisa estar num servidor, com um endereço <code>https://</code> (aula <a href="publicar.html">Publicar no GitHub Pages</a>). E alguns poucos recursos do navegador, por segurança, não funcionam em páginas <code>file://</code>; quando chegar a hora, o guia avisa e usa um servidor local (aula <a href="servidor-local.html">Servidor Local</a>). Para tudo do Nível 1, o <code>file://</code> basta.</p>
+
+<div class="tryhtml" data-goal="texto:title=Página da Ana,texto:h1=Olá\, eu sou a Ana,nsel:p=2">
+<p class="try-task"><strong>Experimente:</strong> esta é a página que você acabou de criar. Faça dela a sua: troque o título da aba (<code>title</code>) por <code>Página da Ana</code>, o título da página (<code>h1</code>) por <code>Olá, eu sou a Ana</code> e acrescente um segundo parágrafo, com o que quiser, depois do primeiro. No seu computador, faça o mesmo no seu <code>index.html</code>, salve e recarregue o navegador.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Olá! Este é o meu primeiro site.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Página da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Olá, eu sou a Ana&lt;/h1&gt;
+&lt;p&gt;Olá! Este é o meu primeiro site.&lt;/p&gt;
+&lt;p&gt;Aqui eu vou colocar as minhas receitas favoritas.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Repare no <strong>título da aba</strong>: ele não aparece no quadro Resultado, que mostra só o corpo da página. No seu navegador, ele aparece na aba, lá em cima. É uma boa forma de conferir se você está olhando o arquivo certo.</p>
+
+<hr>
+
+<h2>6. O ciclo: editar, salvar, recarregar</h2>
+<p>A partir de agora, todo trabalho num site segue o mesmo ciclo:</p>
+<ol class="passo">
+  <li><strong>Editar</strong> o arquivo no editor.</li>
+  <li><strong>Salvar</strong> (<kbd>Ctrl</kbd> + <kbd>S</kbd>). Sem isso, o navegador continua vendo a versão antiga.</li>
+  <li><strong>Recarregar</strong> o navegador (<kbd>F5</kbd>, ou <kbd>Ctrl</kbd> + <kbd>R</kbd>; <kbd>Cmd</kbd> + <kbd>R</kbd> no macOS).</li>
+  <li><strong>Olhar</strong> o resultado e voltar ao passo 1.</li>
+</ol>
+
+<p>Deixe o editor e o navegador lado a lado na tela, cada um ocupando metade. Assim, o ciclo fica tão rápido quanto nas caixas Experimente. (A extensão Live Server, de <a href="editores.html">Editores</a>, faz o passo 3 sozinha.)</p>
+
+<hr>
+
+<h2>7. Conferir no validador</h2>
+<p>A página apareceu certa? Ótimo, mas lembre: o navegador conserta erros em silêncio. Passe a página pelo validador. Na máquina da Ana, ele está instalado como <code>vnu</code>:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose index.html
+index.html                           « só o nome: nenhum erro, nenhum aviso</pre>
+
+<p>Você não precisa instalar nada para fazer o mesmo: o validador oficial está na internet, em <strong>validator.w3.org/nu</strong>. Lá, escolha a opção de enviar um arquivo (<em>file upload</em>) e mande o seu <code>index.html</code>, ou cole o código na opção de digitar o texto (<em>text input</em>). As mensagens são as mesmas do <code>vnu</code>, porque é o mesmo programa. A aula <a href="validar.html">Validar o HTML</a> ensina a ler o resultado com calma.</p>
+
+<hr>
+
+<h2>Quando dá errado</h2>
+
+<div class="cenario">
+<strong>O navegador mostra o código, com as tags</strong>
+<p><strong>O que significa:</strong> o arquivo se chama <code>index.html.txt</code> (ou <code>index.txt</code>) e o navegador o abriu como texto simples.</p>
+<p><strong>Como consertar:</strong> ligue a exibição das extensões (seção 4), renomeie para <code>index.html</code> e abra de novo. Se o sistema perguntar se você quer mesmo mudar a extensão, confirme.</p>
+</div>
+
+<div class="cenario">
+<strong>A página abriu em branco</strong>
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Olá! Este é o meu primeiro site.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que significa:</strong> o resultado ficou vazio porque faltou o <code>&lt;/title&gt;</code> na linha 5. Dentro do <code>title</code>, o navegador não procura tags: ele trata tudo como o texto do título até achar o fechamento, que nunca chega. A página inteira virou o título da aba. O validador:</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":11.8-11.8: error: End of file seen when expecting text or an end tag.
+"file:/home/ana/site/index.html":5.1-5.7: error: Unclosed element “title”.</pre>
+<p>"Fim do arquivo quando eu esperava texto ou uma tag de fechamento" e "elemento <code>title</code> não fechado", apontando a linha 5. Outras causas de página em branco: o arquivo está vazio (não foi salvo) ou todo o conteúdo ficou dentro do <code>&lt;head&gt;</code>.</p>
+<p><strong>Como consertar:</strong> <code>&lt;title&gt;Receitas da Ana&lt;/title&gt;</code>, na mesma linha.</p>
+</div>
+
+<div class="cenario">
+<strong>"Arquivo não encontrado" (ou <code>404</code>)</strong>
+<p><strong>O que significa:</strong> o endereço aponta para um arquivo que não existe com aquele nome exato. Do disco, o navegador mostra uma mensagem de arquivo não encontrado; de um servidor, o erro <code>404</code>. Causas: um link com maiúscula para um arquivo em minúsculas, um acento ou espaço no nome, ou o arquivo foi movido para outra pasta.</p>
+<p><strong>Como consertar:</strong> compare, letra por letra, o endereço na barra do navegador com o nome do arquivo na pasta. Siga as regras de nome: minúsculas, hífen no lugar do espaço, sem acentos.</p>
+</div>
+
+<div class="cenario">
+<strong>Dois cliques abrem o editor, e não o navegador</strong>
+<p><strong>O que significa:</strong> o sistema associou os arquivos <code>.html</code> ao editor de código (alguns editores fazem isso na instalação).</p>
+<p><strong>Como consertar:</strong> use o "abrir com…" do botão direito e escolha o navegador; quase sempre há uma opção para usar esse programa sempre. Ou abra pelo navegador, com <kbd>Ctrl</kbd> + <kbd>O</kbd>.</p>
+</div>
+
+<div class="cenario">
+<strong>Mudei o arquivo e a página continua igual</strong>
+<p><strong>O que significa:</strong> o arquivo não foi salvo, ou você está editando um arquivo e vendo outro (por exemplo, uma cópia em Downloads).</p>
+<p><strong>Como consertar:</strong> salve, recarregue e confira o caminho na barra de endereço. No terminal, o <code>ls -l</code> mostra a hora do último salvamento.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tarefa</th><th>Como</th></tr>
+<tr><td>Criar a pasta do site (terminal)</td><td><code>mkdir site</code> e <code>cd site</code></td></tr>
+<tr><td>Nome da primeira página</td><td><code>index.html</code></td></tr>
+<tr><td>Nomes de arquivo</td><td>minúsculas, hífen no lugar de espaço, sem acentos, extensão <code>.html</code></td></tr>
+<tr><td>Salvar</td><td><kbd>Ctrl</kbd> + <kbd>S</kbd> (<kbd>Cmd</kbd> + <kbd>S</kbd>); no nano, <kbd>Ctrl</kbd> + <kbd>O</kbd> e <kbd>Enter</kbd></td></tr>
+<tr><td>Abrir no navegador</td><td>dois cliques, arrastar, "abrir com…" ou <kbd>Ctrl</kbd> + <kbd>O</kbd> no navegador</td></tr>
+<tr><td>Abrir pelo terminal</td><td><code>xdg-open index.html</code> (Linux), <code>open index.html</code> (macOS), <code>start index.html</code> (Windows)</td></tr>
+<tr><td>Recarregar</td><td><kbd>F5</kbd> ou <kbd>Ctrl</kbd> + <kbd>R</kbd> (<kbd>Cmd</kbd> + <kbd>R</kbd>)</td></tr>
+<tr><td>Ver o tipo e a codificação</td><td><code>file index.html</code></td></tr>
+<tr><td>Validar</td><td><code>vnu index.html</code>, ou validator.w3.org/nu</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A capa do site</h3>
+<p>Qual é o nome do arquivo que o servidor entrega quando o endereço termina em <code>/</code>?</p>
+<div class="ex-code"><input data-answer="index.html" aria-label="nome do arquivo"></div>
+</div>
+
+<div class="exercise">
+<h3>2. Um bom nome</h3>
+<p>A Ana quer uma página para a receita "Pão de Queijo". Complete um nome que siga as três regras:</p>
+<div class="ex-code"><input data-answer="pao-de-queijo" aria-label="nome sem extensão">.html</div>
+</div>
+
+<div class="exercise">
+<h3>3. O começo do endereço</h3>
+<p>Com que esquema começa o endereço de uma página aberta direto do disco?</p>
+<div class="ex-code"><input data-answer="file" aria-label="esquema">:///home/ana/site/index.html</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. O arquivo aparece como "index" no Explorador do Windows e abre como texto no navegador. O que provavelmente aconteceu?</p>
+<label><input type="radio" name="q4"> O navegador está desatualizado</label>
+<label><input type="radio" name="q4"> Faltou o <code>&lt;!DOCTYPE html&gt;</code></label>
+<label><input type="radio" name="q4"> O arquivo se chama <code>index.html.txt</code>, e a extensão está escondida</label>
+<label><input type="radio" name="q4"> O Windows não abre arquivos HTML</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Um link para <code>Sobre.html</code> funciona no seu Windows, mas dá <code>404</code> depois de publicado. O arquivo se chama <code>sobre.html</code>. Por quê?</p>
+<label><input type="radio" name="q5"> O servidor diferencia maiúsculas de minúsculas, e o Windows não</label>
+<label><input type="radio" name="q5"> Links não funcionam em sites publicados</label>
+<label><input type="radio" name="q5"> O arquivo precisa se chamar <code>index.html</code></label>
+<label><input type="radio" name="q5"> Faltou salvar</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">6. Você manda para uma amiga o endereço <code>file:///home/ana/site/index.html</code>. O que ela vê?</p>
+<label><input type="radio" name="q6"> A sua página, normalmente</label>
+<label><input type="radio" name="q6"> Nada: o endereço aponta para o disco do seu computador, não para a internet</label>
+<label><input type="radio" name="q6"> Uma versão sem imagens da sua página</label>
+<label><input type="radio" name="q6"> O código da página</label>
+</div>
+
+<h3>Missão final: a segunda página</h3>
+
+<div class="tryhtml" data-goal="attr:a[href]=sobre.html,texto:a=Sobre mim">
+<p class="try-task"><strong>Missão:</strong> o site da Ana ganhou uma segunda página, <code>sobre.html</code> (veja a outra aba). Na capa, <code>index.html</code>, acrescente um link para ela, com o texto <code>Sobre mim</code>, logo depois do parágrafo: <code>&lt;p&gt;&lt;a href="sobre.html"&gt;Sobre mim&lt;/a&gt;&lt;/p&gt;</code>. Depois clique no link, no resultado, para ir à outra página. Os links têm aula própria (<a href="links.html">Links</a>); aqui, repare que o <code>href</code> é só o nome do arquivo, porque os dois estão na mesma pasta.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Olá! Este é o meu primeiro site.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Sobre a Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;A Ana cozinha desde pequena e guarda as receitas num caderno.&lt;/p&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Voltar para o início&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Olá! Este é o meu primeiro site.&lt;/p&gt;
+&lt;p&gt;&lt;a href="sobre.html"&gt;Sobre mim&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>No seu computador, crie o <code>sobre.html</code> na mesma pasta do <code>index.html</code>, com o conteúdo da segunda aba, e faça o mesmo link. Pronto: o seu site tem duas páginas ligadas, como qualquer site de verdade.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Todo site mora numa <strong>pasta</strong>. A primeira página se chama <strong><code>index.html</code></strong>: é ela que o servidor entrega quando o endereço termina em <code>/</code>.</li>
+  <li>Nomes de arquivo: <strong>minúsculas</strong> (servidores diferenciam <code>Index.html</code> de <code>index.html</code>), <strong>hífen</strong> no lugar de espaço (<code>%20</code>), <strong>sem acentos</strong> (<code>%C3%A1</code>) e extensão <code>.html</code>.</li>
+  <li>Mostre as extensões no Windows e no macOS, para não cair no <code>index.html.txt</code>.</li>
+  <li>Abra a página com dois cliques, arrastando, pelo "abrir com…" ou com <kbd>Ctrl</kbd> + <kbd>O</kbd> no navegador. O endereço começa com <code>file://</code> e só funciona no seu computador.</li>
+  <li>O ciclo de trabalho é <strong>editar, salvar, recarregar</strong>. O título da aba ajuda a conferir que você está vendo o arquivo certo.</li>
+  <li>Valide sempre: <code>vnu index.html</code> ou validator.w3.org/nu.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
