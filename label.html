@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML label — o rótulo de cada campo | Guia HTML</title>
+<meta name="description" content="O elemento label do HTML para quem nunca fez um site: ligar o rótulo ao campo com for e id ou envolvendo o campo, por que clicar no rótulo foca o campo e marca a caixinha, o nome que o leitor de tela lê, qual forma usar e os erros reais do validador W3C (for que não acha o id, id duplicado, dois campos num label), com o resultado ao vivo e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">label</span></h1>
+
+<p class="intro">Todo campo de formulário precisa de um texto que diga o que escrever nele: "Nome", "E-mail", "Quero receber novidades". Esse texto é o <strong>rótulo</strong>, e em HTML ele tem um elemento próprio, o <code>&lt;label&gt;</code>. Parece um detalhe, porque um texto qualquer do lado do campo fica igualzinho na tela. Mas o <code>&lt;label&gt;</code> <strong>liga</strong> o texto ao campo, e essa ligação muda a vida de quem usa leitor de tela, de quem tem dificuldade de acertar uma caixinha pequena com o dedo e de quem preenche formulários pelo teclado.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>A diferença entre um texto solto do lado do campo e um <code>&lt;label&gt;</code> ligado a ele.</li>
+  <li>Os dois jeitos de ligar: com <code>for</code> + <code>id</code> e <strong>envolvendo</strong> o campo.</li>
+  <li>O que a ligação faz: clicar no rótulo foca o campo (ou marca a caixinha), e o leitor de tela lê o rótulo.</li>
+  <li>Qual forma usar em cada caso, e por que o <code>placeholder</code> não substitui o rótulo.</li>
+  <li>Os erros reais do validador W3C: <code>for</code> que não acha o campo, <code>id</code> duplicado, dois campos num rótulo, rótulo dentro de rótulo.</li>
+</ul>
+</div>
+
+<p>Os exemplos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>). Para onde cada rótulo errado aponta foi conferido no Chromium. Os quadros "Resultado" são desenhados pelo seu próprio navegador: <strong>clique nos rótulos</strong> para testar.</p>
+
+<hr>
+
+<h2>A ideia: a etiqueta colada no pote</h2>
+<p>Na cozinha da Ana, os potes de tempero são todos iguais. Ela pode fazer de dois jeitos:</p>
+<ul>
+  <li>colar um papelzinho na <strong>prateleira</strong>, mais ou menos embaixo de cada pote: se alguém mudar um pote de lugar, ninguém sabe mais qual é qual;</li>
+  <li>colar a etiqueta <strong>no próprio pote</strong>: o pote pode ir para qualquer lugar, e a etiqueta vai junto.</li>
+</ul>
+<p>Um texto comum do lado do campo é o papel na prateleira: para os olhos, parece ligado; para o navegador e o leitor de tela, não tem ligação nenhuma. O <code>&lt;label&gt;</code> é a etiqueta colada no pote.</p>
+
+<hr>
+
+<h2>1. Texto solto × <code>&lt;label&gt;</code></h2>
+<p>Os dois campos abaixo parecem iguais. Clique na <strong>palavra</strong> "Nome" de cada um:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Nome: &lt;input name="nome1"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="nome2"&gt;Nome:&lt;/label&gt; &lt;input id="nome2" name="nome2"&gt;&lt;/p&gt;
+</pre>
+
+<p>No primeiro, nada acontece. No segundo, o cursor pula para dentro do campo. E isso é só a parte visível. A diferença completa:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>Texto solto</th><th><code>&lt;label&gt;</code> ligado</th></tr>
+<tr><td>Clicar no texto</td><td>nada</td><td>foca o campo (ou marca a caixinha)</td></tr>
+<tr><td>Leitor de tela, ao entrar no campo</td><td>só "editar texto" (a pessoa não sabe o que digitar)</td><td>"Nome, editar texto"</td></tr>
+<tr><td>Controle por voz ("clicar em Nome")</td><td>não acha o campo</td><td>acha</td></tr>
+<tr><td>Preenchimento automático do navegador</td><td>adivinha pior</td><td>usa o rótulo como pista</td></tr>
+</table>
+</div>
+
+<p>O texto do leitor de tela varia de um programa para outro (e de um idioma para outro), mas a regra é a mesma em todos: o que está no <code>&lt;label&gt;</code> vira o <strong>nome</strong> do campo. Esse "nome para a acessibilidade" é o assunto de <a href="formularios-acessiveis.html">Formulários Acessíveis</a>.</p>
+
+<hr>
+
+<h2>2. Primeiro jeito: <code>for</code> + <code>id</code></h2>
+
+<pre class="file" data-file="cadastro.html" data-resultado>&lt;p&gt;
+  &lt;label for="email"&gt;E-mail:&lt;/label&gt;
+  &lt;input type="email" id="email" name="email"&gt;
+&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;label&gt;</dt><dd>"Rótulo", "etiqueta". Um elemento em linha que contém o texto do rótulo.</dd>
+  <dt>for="email"</dt><dd>"Para": o <code>id</code> do campo a que este rótulo pertence. É a cola da etiqueta.</dd>
+  <dt>id="email"</dt><dd>O <code>id</code> do campo, que tem de ser <strong>exatamente igual</strong> ao <code>for</code>: mesmas letras, mesmas maiúsculas, sem espaço.</dd>
+  <dt>name="email"</dt><dd>Não participa da ligação. O <code>name</code> é para o envio (aula <a href="input.html">O Elemento input</a>). O <code>for</code> procura o <strong><code>id</code></strong>.</dd>
+</dl>
+
+<p>Com <code>for</code> + <code>id</code>, o rótulo e o campo podem ficar em qualquer lugar da página, até em células diferentes de uma tabela. A ligação é pelo nome, e não pela posição.</p>
+
+<div class="tryhtml" data-goal="sel:label[for='nome'],sel:label[for='email'],sel:label[for='tel']">
+<p class="try-task"><strong>Missão:</strong> os textos "Nome:", "E-mail:" e "Celular:" estão soltos. Transforme cada um num <code>&lt;label&gt;</code> com o <code>for</code> certo (olhe o <code>id</code> de cada campo). Depois clique em cada rótulo no resultado: o cursor tem de ir para o campo dele.</p>
+<pre class="script" data-file="index.html">&lt;form action="contato.html"&gt;
+  &lt;p&gt;Nome: &lt;input id="nome" name="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;E-mail: &lt;input type="email" id="email" name="email"&gt;&lt;/p&gt;
+  &lt;p&gt;Celular: &lt;input type="tel" id="tel" name="tel"&gt;&lt;/p&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="contato.html"&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input id="nome" name="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt; &lt;input type="email" id="email" name="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Celular:&lt;/label&gt; &lt;input type="tel" id="tel" name="tel"&gt;&lt;/p&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Segundo jeito: envolvendo o campo</h2>
+<p>Em vez de apontar com <code>for</code>, você pode colocar o campo <strong>dentro</strong> do <code>&lt;label&gt;</code>. Aí não precisa de <code>for</code> nem de <code>id</code>: o rótulo vale para o campo que está dentro dele.</p>
+
+<pre class="file" data-file="cadastro.html" data-resultado>&lt;p&gt;&lt;label&gt;Cidade: &lt;input name="cidade"&gt;&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;&lt;input type="checkbox" name="novidades"&gt; Quero receber novidades&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;&lt;input type="checkbox" name="termos"&gt; Li e aceito os termos&lt;/label&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;label&gt;Cidade: &lt;input …&gt;&lt;/label&gt;</dt><dd>O texto e o campo, juntos, dentro do rótulo. O texto pode vir antes ou depois do campo.</dd>
+  <dt>As caixinhas</dt><dd>Clique no <strong>texto</strong> "Quero receber novidades": a caixinha marca e desmarca. Uma caixinha tem uns 13 pixels; com o rótulo, a área de clique passa a ser a frase inteira. No celular, isso faz toda a diferença.</dd>
+</dl>
+
+<div class="tryhtml" data-goal="nsel:label > input[type='checkbox']=3">
+<p class="try-task"><strong>Missão:</strong> nas três opções de cobertura, só dá para clicar no quadradinho. Envolva cada caixinha e o seu texto com um <code>&lt;label&gt;</code>, para a frase inteira virar área de clique. Teste clicando nos nomes.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Coberturas:&lt;/p&gt;
+&lt;p&gt;&lt;input type="checkbox" name="cobertura" value="chocolate"&gt; Chocolate&lt;/p&gt;
+&lt;p&gt;&lt;input type="checkbox" name="cobertura" value="coco"&gt; Coco ralado&lt;/p&gt;
+&lt;p&gt;&lt;input type="checkbox" name="cobertura" value="morango"&gt; Morango&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Coberturas:&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;&lt;input type="checkbox" name="cobertura" value="chocolate"&gt; Chocolate&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;&lt;input type="checkbox" name="cobertura" value="coco"&gt; Coco ralado&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;&lt;input type="checkbox" name="cobertura" value="morango"&gt; Morango&lt;/label&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<p>Um grupo de opções como esse ainda ganha um título com <code>&lt;fieldset&gt;</code> e <code>&lt;legend&gt;</code> (aula <a href="fieldset.html">fieldset e legend</a>); as caixinhas têm aula própria em <a href="checkbox-radio.html">checkbox e radio</a>.</p>
+
+<hr>
+
+<h2>4. Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Melhor jeito</th><th>Por quê</th></tr>
+<tr><td>Caixinha (<code>checkbox</code>) ou bolinha (<code>radio</code>)</td><td>Envolvendo</td><td>Curto, e a frase inteira vira área de clique.</td></tr>
+<tr><td>Rótulo e campo longe um do outro (células de tabela, colunas)</td><td><code>for</code> + <code>id</code></td><td>Não dá para envolver o que está em lugares diferentes.</td></tr>
+<tr><td>Campos de texto comuns</td><td>Os dois servem</td><td>Muita gente prefere <code>for</code> + <code>id</code>, que deixa rótulo e campo independentes para o CSS.</td></tr>
+<tr><td>Quer garantir em qualquer ferramenta</td><td>Os dois juntos</td><td>Envolver <strong>e</strong> usar <code>for</code> + <code>id</code> é válido, desde que o <code>for</code> aponte para o campo de dentro.</td></tr>
+</table>
+</div>
+
+<h3>Que campos aceitam um <code>&lt;label&gt;</code>?</h3>
+<p>Além do <code>&lt;input&gt;</code> (menos o <code>type="hidden"</code>, que não aparece), o <code>&lt;label&gt;</code> serve para <code>&lt;textarea&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;button&gt;</code>, <code>&lt;meter&gt;</code>, <code>&lt;output&gt;</code> e <code>&lt;progress&gt;</code>. Um campo pode até ter <strong>dois</strong> rótulos (os dois focam o campo), mas um rótulo pertence a um campo só.</p>
+
+<div class="warning">
+<strong>O <code>placeholder</code> não é rótulo</strong>
+<p>O texto cinza de exemplo dentro do campo (<code>placeholder</code>, aula <a href="atributos-input.html">placeholder, value, autocomplete…</a>) <strong>some</strong> quando a pessoa começa a digitar. No meio do formulário, ela esquece o que aquele campo pedia. Além disso, o cinza claro costuma ser difícil de ler. Use o <code>placeholder</code> para um exemplo ("ana@exemplo.com.br"), e o <code>&lt;label&gt;</code> para dizer o que é o campo.</p>
+</div>
+
+<div class="tip">
+<strong>E quando não há espaço para um texto visível?</strong>
+<p>Numa caixa de busca com um botão de lupa, por exemplo, o desenho não tem um texto "Buscar". Aí o nome pode vir do atributo <code>aria-label="Buscar receitas"</code> no próprio campo, que o leitor de tela lê e ninguém vê. É uma exceção; o rótulo visível ajuda todo mundo. Veja <a href="aria.html">ARIA</a>.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Erros de rótulo quase nunca aparecem na tela: o texto continua do lado do campo, igualzinho. Só clicando no rótulo (ou usando um leitor de tela) dá para perceber, e o validador acusa a maioria. As páginas abaixo têm o esqueleto de sempre nas linhas 1 a 7, e o trecho mostrado começa na <strong>linha 8</strong>.</p>
+
+<div class="cenario">
+<strong>O <code>for</code> não acha o <code>id</code></strong>
+<pre class="file" data-file="nome.html" data-resultado>&lt;label for="email"&gt;E-mail:&lt;/label&gt;
+&lt;input type="email" id="e-mail" name="email"&gt;
+</pre>
+<pre class="term" data-cwd="~/rotulos">$ vnu nome.html
+"file:/home/ana/rotulos/nome.html":8.1-8.19: error: The value of the “for” attribute of the “label” element must be the ID of a non-hidden form control.</pre>
+<p><strong>O validador diz:</strong> "O valor do <code>for</code> do <code>label</code> tem de ser o <code>id</code> de um campo de formulário que não seja escondido (<code>hidden</code>)".</p>
+<p><strong>O que o navegador faz:</strong> nada. Clique em "E-mail:" no resultado: o cursor não vai para o campo, e o leitor de tela não lê o rótulo. O <code>for="email"</code> procura um <code>id="email"</code>, e o campo tem <code>id="e-mail"</code> (o <code>name="email"</code> não conta). A mesma mensagem aparece para <code>for="Nome"</code> com <code>id="nome"</code>: maiúsculas importam.</p>
+<p><strong>Como consertar:</strong> copie o <code>id</code> do campo e cole no <code>for</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Dois campos com o mesmo <code>id</code></strong>
+<pre class="file" data-file="duplo.html" data-resultado>&lt;p&gt;&lt;label for="nome"&gt;Seu nome:&lt;/label&gt; &lt;input id="nome" name="nome"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="nome"&gt;Nome do bolo:&lt;/label&gt; &lt;input id="nome" name="bolo"&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/rotulos">$ vnu duplo.html
+"file:/home/ana/rotulos/duplo.html":9.44-9.72: error: Duplicate ID “nome”.
+"file:/home/ana/rotulos/duplo.html":8.40-8.68: info warning: The first occurrence of ID “nome” was here.</pre>
+<p><strong>O validador diz:</strong> "<code>id</code> repetido: <code>nome</code>", e mostra onde ele apareceu primeiro.</p>
+<p><strong>O que o navegador faz:</strong> o <code>for</code> sempre acha o <strong>primeiro</strong> elemento com aquele <code>id</code>. Clique em "Nome do bolo:" no resultado: o cursor vai para o campo de <strong>cima</strong>. O segundo campo fica sem rótulo. Acontece muito quando se copia e cola um bloco do formulário.</p>
+<p><strong>Como consertar:</strong> cada campo com um <code>id</code> único (<code>id="bolo"</code>) e o <code>for</code> do rótulo acompanhando.</p>
+</div>
+
+<div class="cenario">
+<strong>Dois campos dentro do mesmo <code>&lt;label&gt;</code></strong>
+<pre class="file" data-file="dois.html" data-resultado>&lt;label&gt;Nome e sobrenome:
+&lt;input name="nome"&gt;
+&lt;input name="sobrenome"&gt;
+&lt;/label&gt;
+</pre>
+<pre class="term" data-cwd="~/rotulos">$ vnu dois.html
+"file:/home/ana/rotulos/dois.html":10.1-10.24: error: The “label” element may contain at most one “button”, “input”, “meter”, “output”, “progress”, “select”, or “textarea” descendant.
+"file:/home/ana/rotulos/dois.html":8.1-8.7: info warning: “label” element with multiple labelable descendants.</pre>
+<p><strong>O validador diz:</strong> "O <code>label</code> pode conter no máximo um" desses campos. A linha 10 é o segundo <code>&lt;input&gt;</code>.</p>
+<p><strong>O que o navegador faz:</strong> liga o rótulo só ao <strong>primeiro</strong> campo. O do sobrenome fica sem nome para o leitor de tela.</p>
+<p><strong>Como consertar:</strong> um rótulo por campo: "Nome:" e "Sobrenome:".</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>for</code> aponta para um campo, e o <code>&lt;label&gt;</code> envolve outro</strong>
+<pre class="term" data-cwd="~/rotulos">$ sed -n 8,11p outro.html
+&lt;label for="nome"&gt;Nome:
+&lt;input id="apelido" name="apelido"&gt;
+&lt;/label&gt;
+&lt;input id="nome" name="nome"&gt;
+$ vnu outro.html
+"file:/home/ana/rotulos/outro.html":9.1-9.35: error: Any “input” descendant of a “label” element with a “for” attribute must have an ID value that matches that “for” attribute.</pre>
+<p><strong>O validador diz:</strong> "Todo <code>input</code> dentro de um <code>label</code> com <code>for</code> tem de ter o <code>id</code> igual a esse <code>for</code>".</p>
+<p><strong>O que o navegador faz:</strong> o <code>for</code> vence. Clicar em "Nome:" leva o cursor para o campo de <strong>fora</strong>, e o campo de dentro (o apelido) fica sem rótulo.</p>
+<p><strong>Como consertar:</strong> escolha um jeito só, ou faça o <code>for</code> apontar para o campo de dentro.</p>
+</div>
+
+<div class="cenario">
+<strong>Rótulo dentro de rótulo</strong>
+<pre class="term" data-cwd="~/rotulos">$ sed -n 8p dentro.html
+&lt;label&gt;Nome: &lt;label&gt;Apelido&lt;/label&gt; &lt;input name="nome"&gt;&lt;/label&gt;
+$ vnu dentro.html
+"file:/home/ana/rotulos/dentro.html":8.14-8.20: error: The element “label” must not appear as a descendant of the “label” element.</pre>
+<p><strong>Como consertar:</strong> um <code>&lt;label&gt;</code> nunca vai dentro de outro. Separe-os.</p>
+</div>
+
+<div class="cenario">
+<strong>Um rótulo vazio passa no validador</strong>
+<pre class="term" data-cwd="~/rotulos">$ sed -n 8,9p vazio.html
+&lt;label for="nome"&gt;&lt;/label&gt;
+&lt;input id="nome" name="nome"&gt;
+$ vnu vazio.html</pre>
+<p><strong>O que acontece:</strong> nenhum erro, mas o campo continua sem nome: o rótulo não tem texto. Acontece quando o texto ficou fora do <code>&lt;label&gt;</code> por engano (<code>&lt;label for="nome"&gt;&lt;/label&gt;Nome:</code>). O validador confere a ligação, mas não o texto.</p>
+<p><strong>Como consertar:</strong> o texto vai <strong>entre</strong> <code>&lt;label&gt;</code> e <code>&lt;/label&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;label for="x"&gt;Texto&lt;/label&gt; &lt;input id="x"&gt;</code></td><td>Liga pelo <code>id</code>; rótulo e campo podem estar em qualquer lugar</td></tr>
+<tr><td><code>&lt;label&gt;Texto &lt;input&gt;&lt;/label&gt;</code></td><td>Liga envolvendo; não precisa de <code>for</code> nem <code>id</code></td></tr>
+<tr><td><code>&lt;label&gt;&lt;input type="checkbox"&gt; Texto&lt;/label&gt;</code></td><td>Clicar no texto marca a caixinha</td></tr>
+<tr><td><code>&lt;label for="x"&gt;…&lt;input id="x"&gt;&lt;/label&gt;</code></td><td>Os dois juntos (válido se o <code>for</code> aponta para o campo de dentro)</td></tr>
+<tr><td><code>aria-label="…"</code> no campo</td><td>Nome sem texto visível (exceção)</td></tr>
+<tr><td>Campos que aceitam rótulo</td><td><code>input</code> (menos <code>hidden</code>), <code>textarea</code>, <code>select</code>, <code>button</code>, <code>meter</code>, <code>output</code>, <code>progress</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O atributo da ligação</h3>
+<p>Complete o atributo do <code>&lt;label&gt;</code> que aponta para o campo:</p>
+<div class="ex-code">&lt;label <input data-answer="for" aria-label="atributo">="cep"&gt;CEP:&lt;/label&gt; &lt;input id="cep" name="cep"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O valor certo</h3>
+<p>Complete o <code>for</code> para este rótulo ficar ligado ao campo:</p>
+<div class="ex-code">&lt;label for="<input data-answer="sabor-bolo" aria-label="valor">"&gt;Sabor:&lt;/label&gt; &lt;input id="sabor-bolo" name="sabor"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Envolvendo</h3>
+<p>Complete com o elemento que envolve a caixinha e o texto:</p>
+<div class="ex-code">&lt;<input data-answer="label" aria-label="elemento">&gt;&lt;input type="checkbox" name="presente"&gt; É para presente&lt;/label&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Em <code>&lt;label for="email"&gt;</code>, o <code>for</code> procura qual atributo do campo?</p>
+<label><input type="radio" name="q4"> O <code>name</code></label>
+<label><input type="radio" name="q4"> O <code>id</code></label>
+<label><input type="radio" name="q4"> O <code>type</code></label>
+<label><input type="radio" name="q4"> O texto do campo</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Dois campos têm <code>id="nome"</code>, cada um com o seu <code>&lt;label for="nome"&gt;</code>. Ao clicar no segundo rótulo, o que acontece?</p>
+<label><input type="radio" name="q5"> O cursor vai para o segundo campo</label>
+<label><input type="radio" name="q5"> Nada</label>
+<label><input type="radio" name="q5"> O cursor vai para o primeiro campo</label>
+<label><input type="radio" name="q5"> Os dois campos ficam selecionados</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Por que o <code>placeholder</code> não substitui o <code>&lt;label&gt;</code>?</p>
+<label><input type="radio" name="q6"> Porque some quando a pessoa começa a digitar</label>
+<label><input type="radio" name="q6"> Porque não funciona em campos de texto</label>
+<label><input type="radio" name="q6"> Porque o validador proíbe usar os dois</label>
+<label><input type="radio" name="q6"> Porque ele é enviado junto com o formulário</label>
+</div>
+
+<h3>Missão final: os rótulos trocados</h3>
+
+<div class="tryhtml" data-goal="sel:label[for='email'] + #email,sel:label[for='cidade'] + #cidade[name='cidade'],nsel:#nome=1,nsel:label > input[name='novidades']=1">
+<p class="try-task"><strong>Missão:</strong> o cadastro foi feito copiando e colando, e dois rótulos não funcionam: clique em "E-mail:" e em "Cidade:" e veja. Conserte <strong>só os <code>id</code> e os <code>for</code></strong> (o campo de e-mail tem de ficar com <code>id="email"</code>; o de cidade, com <code>id="cidade"</code>). A caixinha de novidades já está certa. Use o botão <strong>Validar no W3C</strong> para conferir.</p>
+<pre class="script" data-file="index.html">&lt;form action="cadastro.html" method="post"&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input id="nome" name="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt; &lt;input type="email" id="e-mail" name="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Cidade:&lt;/label&gt; &lt;input id="nome" name="cidade"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label&gt;&lt;input type="checkbox" name="novidades"&gt; Quero receber novidades&lt;/label&gt;&lt;/p&gt;
+  &lt;button&gt;Cadastrar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="cadastro.html" method="post"&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input id="nome" name="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt; &lt;input type="email" id="email" name="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="cidade"&gt;Cidade:&lt;/label&gt; &lt;input id="cidade" name="cidade"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label&gt;&lt;input type="checkbox" name="novidades"&gt; Quero receber novidades&lt;/label&gt;&lt;/p&gt;
+  &lt;button&gt;Cadastrar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>Depois de consertar, clique em cada rótulo: todos levam ao campo certo. Nada mudou na aparência, e mesmo assim o formulário ficou muito melhor para quem não enxerga a tela.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <code>&lt;label&gt;</code> liga um texto a um campo: clicar no texto foca o campo (ou marca a caixinha), e o leitor de tela lê o texto como o nome do campo. Um texto solto do lado não faz nada disso.</li>
+  <li>Dois jeitos: <code>&lt;label for="x"&gt;</code> + <code>id="x"</code> no campo (o <code>for</code> procura o <code>id</code>, não o <code>name</code>), ou o campo <strong>dentro</strong> do <code>&lt;label&gt;</code>.</li>
+  <li>Envolver é ótimo para caixinhas; <code>for</code> + <code>id</code> serve quando rótulo e campo estão longe. Os dois juntos são válidos se apontarem para o mesmo campo.</li>
+  <li>O <code>placeholder</code> não substitui o rótulo. Sem texto visível, use <code>aria-label</code> como exceção.</li>
+  <li>Erros que o validador pega: <code>for</code> que não acha o <code>id</code>, <code>Duplicate ID</code> (o rótulo vai para o primeiro), dois campos num rótulo, rótulo dentro de rótulo. Um rótulo vazio passa calado.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
