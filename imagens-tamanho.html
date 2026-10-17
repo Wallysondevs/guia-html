@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML width e height — o tamanho das imagens | Guia HTML</title>
+<meta name="description" content="Os atributos width e height do img para quem nunca fez um site: o tamanho natural da imagem, como descobrir com o comando file, a proporção que não pode mudar, o pulo da página quando a imagem chega sem width e height (medido num Chromium de verdade), o par com max-width: 100% no CSS e os erros reais do validador, como width=&quot;400px&quot;.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Largura e Altura</span></h1>
+
+<p class="intro">Você já começou a ler uma notícia no celular e, de repente, o texto pulou para baixo, bem quando você ia tocar num link? Quase sempre a culpa é de uma imagem que chegou atrasada e <strong>empurrou</strong> tudo. Nesta aula você vai usar os atributos <code>width</code> ("largura") e <code>height</code> ("altura") do <code>&lt;img&gt;</code> para dizer ao navegador, <strong>antes</strong> de a foto chegar, quanto espaço ela vai ocupar. E vai ver o que acontece quando a proporção está errada.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <strong>tamanho natural</strong> de uma imagem e como descobri-lo (com o comando <code>file</code>, no terminal).</li>
+  <li>Como escrever <code>width="400" height="300"</code>, e por que não se escreve <code>px</code>.</li>
+  <li>O que acontece com só um dos dois, e com a proporção errada (a foto achatada).</li>
+  <li>O <strong>pulo da página</strong> sem <code>width</code> e <code>height</code>, medido num navegador de verdade.</li>
+  <li>A dupla <code>width</code>/<code>height</code> no HTML + <code>max-width: 100%</code> no CSS, para a foto caber no celular.</li>
+  <li>Por que <code>width</code> não deixa uma foto pesada mais leve.</li>
+  <li>Os erros reais do validador: <code>400px</code>, <code>50%</code>, <code>auto</code>.</li>
+</ul>
+</div>
+
+<p>Antes, veja <a href="imagens.html">Imagens</a>. As mensagens do validador saíram do <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/tamanho</code>. As fotos dos exemplos são as do guia, em <code>assets/midia/</code>.</p>
+
+<hr>
+
+<h2>A ideia: a moldura na parede</h2>
+<p>A Ana encomendou um quadro de 40 × 30 cm para a parede da lojinha. Ele só chega semana que vem. Se ela já pendurar uma <strong>moldura vazia</strong> do tamanho certo, pode arrumar as prateleiras em volta hoje mesmo: quando o quadro chegar, é só encaixar, e nada sai do lugar. Sem a moldura, ela arruma tudo e, quando o quadro chega, tem de empurrar as prateleiras para abrir espaço.</p>
+
+<p>Com uma página é igual. O navegador desenha o texto assim que o HTML chega, mas cada foto é um arquivo à parte, que chega <strong>depois</strong> (aula <a href="imagens.html">Imagens</a>). O <code>width</code> e o <code>height</code> são a moldura: dizem o tamanho do espaço antes de a foto chegar.</p>
+
+<hr>
+
+<h2>1. O tamanho natural de uma imagem</h2>
+<p>Toda imagem de pixels (JPG, PNG, WebP…) tem um tamanho próprio, o <strong>tamanho natural</strong>: tantos pontinhos de largura por tantos de altura. Sem <code>width</code> e <code>height</code>, o navegador mostra a imagem nesse tamanho. Para descobrir, a Ana usou o comando <code>file</code> ("arquivo"), que conta o que tem dentro de um arquivo:</p>
+
+<pre class="term" data-cwd="~/tamanho">$ file bolo-800.jpg
+bolo-800.jpg: JPEG image data, JFIF standard 1.01, aspect ratio, density 1x1, segment length 16, progressive, precision 8, 800x600, components 3
+$ file bolo-400.jpg bolo-1200.jpg logo-lojinha-200.png
+bolo-400.jpg:         JPEG image data, JFIF standard 1.01, aspect ratio, density 1x1, segment length 16, progressive, precision 8, 400x300, components 3
+bolo-1200.jpg:        JPEG image data, JFIF standard 1.01, aspect ratio, density 1x1, segment length 16, progressive, precision 8, 1200x900, components 3
+logo-lojinha-200.png: PNG image data, 200 x 80, 8-bit/color RGBA, non-interlaced</pre>
+
+<p>A linha é comprida, mas só uma parte interessa: <code>800x600</code> = 800 pixels de largura por 600 de altura (sempre a largura primeiro). No PNG, o <code>file</code> escreve com espaços: <code>200 x 80</code>.</p>
+
+<p>Sem terminal? No navegador, abra a imagem sozinha numa aba (clique com o botão direito nela e escolha a opção de abrir a imagem numa nova aba): o título da aba mostra o tamanho. No gerenciador de arquivos do Windows, do macOS ou do Linux, as <strong>propriedades</strong> da imagem também mostram.</p>
+
+<div class="note">
+<strong>Proporção</strong>
+<p>800 × 600 é a mesma <strong>proporção</strong> que 400 × 300 e 1200 × 900: a largura é sempre 4/3 da altura (as TVs antigas tinham essa forma, "4 por 3"). É a proporção que mantém o bolo redondo. Para calcular a altura de uma largura nova: <strong>altura = largura nova × altura natural ÷ largura natural</strong>. Para 400 de largura: 400 × 600 ÷ 800 = 300.</p>
+</div>
+
+<hr>
+
+<h2>2. <code>width</code> e <code>height</code></h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+&lt;p&gt;Modo de preparo: bata a cenoura, os ovos e o óleo no liquidificador.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>src="assets/midia/bolo-800.jpg"</dt><dd>A foto de 800 × 600 pixels.</dd>
+  <dt>alt="…"</dt><dd>O texto alternativo, como sempre (aula <a href="imagens-alt.html">Texto Alternativo</a>).</dd>
+  <dt>width="400"</dt><dd>A <strong>largura</strong> em que a foto aparece: 400. Só o número, sem <code>px</code>. A unidade é sempre o pixel do CSS.</dd>
+  <dt>height="300"</dt><dd>A <strong>altura</strong>: 300. Com 400 × 300, a proporção é a mesma do arquivo (4 por 3), e o bolo não deforma.</dd>
+</dl>
+
+<p>A foto apareceu com metade do tamanho natural, mas o arquivo baixado continua sendo o de 800 × 600. Isso tem uma vantagem: em telas de alta densidade (a maioria dos celulares, que usa 2 ou 3 pontinhos da tela para cada pixel do CSS), a foto fica mais nítida. E um custo, que a seção 6 mostra.</p>
+
+<div class="tip">
+<strong>"Pixel do CSS"?</strong>
+<p>O número do <code>width</code> não é em pontinhos da tela, e sim em <strong>pixels do CSS</strong>, uma medida que o navegador ajusta para que 400 tenha mais ou menos o mesmo tamanho físico em qualquer aparelho. Num celular com tela "2x", 400 pixels do CSS usam 800 pontinhos da tela. Você não precisa fazer conta nenhuma: escreva o tamanho que quer ver.</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:img[width]=400,attr:img[height]=300">
+<p class="try-task"><strong>Missão:</strong> a foto do bolo aparece enorme (800 × 600). Faça-a aparecer com <strong>400</strong> de largura e a altura certa para não deformar. Calcule a altura com a regra da proporção.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate"&gt;
+&lt;p&gt;Rende 12 fatias.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+&lt;p&gt;Rende 12 fatias.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Só um dos dois, ou a proporção errada</h2>
+
+<h3>Só o <code>width</code></h3>
+<p>Com só a largura, o navegador calcula a altura sozinho, pela proporção da foto, <strong>quando ela chega</strong>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura" width="200"&gt;
+</pre>
+
+<p>Ficou 200 × 150, certinho. O problema está no "quando ela chega": antes disso, o navegador não sabe a altura. A seção 4 mostra o que isso causa. (O contrário, só o <code>height</code>, funciona do mesmo jeito: o navegador calcula a largura.)</p>
+
+<h3>A proporção errada: a foto achatada</h3>
+<p>Com os dois valores, o navegador <strong>obedece</strong>, mesmo que a proporção não seja a da foto. A Ana queria uma faixa baixinha no topo da página e escreveu <code>height="150"</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Certo, 400 × 300:&lt;/p&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura" width="400" height="300"&gt;
+&lt;p&gt;Errado, 400 × 150:&lt;/p&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura achatado" width="400" height="150"&gt;
+</pre>
+
+<p>O segundo bolo ficou <strong>achatado</strong>, como se alguém tivesse sentado em cima. O navegador estica ou espreme a foto para caber exatamente no espaço pedido. O validador não reclama: ele não abre a imagem para conferir a proporção. Quem tem de conferir é você.</p>
+
+<p>Se a ideia é uma foto mais baixa, a solução é <strong>recortar</strong> a foto num editor de imagens (e usar a versão recortada) ou escolher outra foto. Para recortes diferentes em telas diferentes, existe o <code>&lt;picture&gt;</code> (aula <a href="picture.html">O Elemento picture</a>).</p>
+
+<div class="tryhtml" data-goal="attr:img[width]=300,attr:img[height]=225">
+<p class="try-task"><strong>Missão:</strong> este bolo ficou esticado: a largura está certa (300), mas a altura não respeita a proporção 4 por 3 da foto. Conserte a altura. (300 × 600 ÷ 800 = ?)</p>
+<pre class="script" data-file="index.html">&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="300" height="300"&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="300" height="225"&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="pulo">4. O pulo da página</h2>
+<p>Agora a parte mais importante. A Ana fez a página da receita com a foto <strong>sem</strong> <code>width</code> e <code>height</code>. Na internet rápida da casa dela, tudo parecia bem. No celular da tia, no 3G da roça, o texto pulava.</p>
+
+<p>O que acontece, passo a passo, com uma foto sem tamanho:</p>
+<ol class="passo">
+  <li>O HTML chega. O navegador desenha o título e o parágrafo. Da foto, ele só sabe o endereço: reserva <strong>zero</strong> pixels de altura para ela.</li>
+  <li>A pessoa começa a ler o "Modo de preparo", lá no alto da tela.</li>
+  <li>A foto chega. Agora o navegador sabe que ela tem 600 de altura e abre esse espaço. O "Modo de preparo" é <strong>empurrado</strong> para baixo, sumindo da tela.</li>
+</ol>
+
+<p>Para medir isso de verdade, abrimos estas páginas num <strong>Chromium 155</strong> (o mesmo navegador sem janela que confere as missões do guia), numa janela de 800 pixels de largura, com a foto <code>bolo-800.jpg</code> demorando 1,5 segundo para chegar. Medimos a distância do parágrafo "Modo de preparo" até o topo da página antes e depois de a foto chegar:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O <code>&lt;img&gt;</code></th><th>Espaço reservado antes da foto</th><th>Parágrafo antes</th><th>Parágrafo depois</th><th>Pulou?</th></tr>
+<tr><td>sem <code>width</code> e <code>height</code></td><td>0 × 0</td><td>114 px do topo</td><td>700 px do topo</td><td><strong>sim, 586 px</strong></td></tr>
+<tr><td>só <code>width="400"</code></td><td>400 × 0</td><td>114 px</td><td>400 px</td><td><strong>sim, 286 px</strong></td></tr>
+<tr><td><code>width="400" height="300"</code></td><td>400 × 300</td><td>400 px</td><td>400 px</td><td>não</td></tr>
+<tr><td><code>width="800" height="600"</code> + CSS <code>max-width: 100%; height: auto</code></td><td>784 × 588</td><td>688 px</td><td>688 px</td><td>não</td></tr>
+<tr><td>só o CSS <code>max-width: 100%; height: auto</code>, sem os atributos</td><td>0 × 0</td><td>114 px</td><td>688 px</td><td><strong>sim, 574 px</strong></td></tr>
+</table>
+</div>
+
+<p>Com <code>width</code> e <code>height</code>, o espaço da foto (a moldura) já estava lá quando o texto foi desenhado: quando a foto chegou, só preencheu o buraco, e nada se mexeu. Sem eles, o parágrafo andou quase 600 pixels, mais que meia tela de celular.</p>
+
+<p>Para ver o pulo no seu navegador, abra uma página sua com o servidor local, abra as Ferramentas do Desenvolvedor (F12) e procure, na aba de rede (<em>Network</em>), a opção que simula uma internet lenta. Recarregue a página com e sem <code>width</code>/<code>height</code> e observe o texto. (No editor do guia as fotos chegam rápido demais para notar.)</p>
+
+<div class="note">
+<strong>O Google também mede</strong>
+<p>Esse pulo tem nome: <em>layout shift</em>, "mudança de leiaute". O Google mede o quanto a página pula, numa nota chamada <strong>CLS</strong> (<em>Cumulative Layout Shift</em>, "mudança de leiaute acumulada"), e ela faz parte das métricas que ele usa para avaliar a experiência das páginas. A ferramenta Lighthouse, dentro do F12 do Chrome, aponta as imagens sem <code>width</code> e <code>height</code> (aula <a href="preload.html">Desempenho</a>).</p>
+</div>
+
+<hr>
+
+<h2>5. <code>width</code> e <code>height</code> + <code>max-width: 100%</code></h2>
+<p>Uma foto com <code>width="800"</code> não cabe na tela de um celular, que costuma ter uns 360 a 430 pixels do CSS de largura. Ela "vaza" para fora, e a pessoa tem de arrastar a página para o lado. O jeito profissional de resolver junta HTML e um pouquinho de CSS:</p>
+
+<ul>
+  <li>no HTML, <code>width</code> e <code>height</code> com o tamanho natural (ou qualquer par com a <strong>mesma proporção</strong>): eles informam a proporção;</li>
+  <li>no CSS, duas regras: <code>max-width: 100%</code> ("largura máxima: toda a largura disponível, e não mais") e <code>height: auto</code> ("calcule a altura pela proporção").</li>
+</ul>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> a foto <code>bolo-1200.jpg</code> tem <code>width="1200" height="900"</code>, mais larga que qualquer quadro, mas o CSS não deixa ela passar da largura disponível. Apague a linha do <code>max-width</code> no <code>estilo.css</code> e veja a foto vazar para fora do quadro. Depois volte o <code>max-width</code> e apague só o <code>height: auto</code>: o bolo fica esticado para cima, porque a largura encolheu e a altura continuou 900.</p>
+<pre class="script" data-file="index.html">&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-1200.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="1200" height="900"&gt;
+&lt;p&gt;Modo de preparo: bata a cenoura, os ovos e o óleo no liquidificador.&lt;/p&gt;
+</pre>
+<pre class="script" data-file="estilo.css">img {
+  max-width: 100%;
+  height: auto;
+}
+</pre>
+</div>
+
+<p>Por que isso evita o pulo, se a altura é "auto"? Porque os navegadores atuais usam o <code>width</code> e o <code>height</code> do HTML para calcular a <strong>proporção</strong> antes de a foto chegar. Na tabela da seção 4, a linha com os atributos + CSS reservou 784 × 588 (a largura da janela, menos a margem, na proporção 4 por 3) e não pulou; a linha só com CSS pulou 574 pixels. O CSS tem guia próprio (futuro Guia CSS); a aula <a href="ligar-css.html">Ligar CSS</a> mostra o <code>&lt;link&gt;</code>.</p>
+
+<hr>
+
+<h2>6. <code>width</code> não emagrece a foto</h2>
+<p>A Ana tirou uma foto de 1200 × 900 e a mostrou com <code>width="400" height="300"</code>. Na tela, ficou pequena. Mas o navegador baixou o arquivo <strong>inteiro</strong>:</p>
+
+<pre class="term" data-cwd="~/tamanho">$ ls -l bolo-*.jpg
+-rw-rw-r-- 1 ana ana 42493 out 17 15:56 bolo-1200.jpg
+-rw-rw-r-- 1 ana ana 10241 out 17 15:56 bolo-400.jpg
+-rw-rw-r-- 1 ana ana 25020 out 17 15:56 bolo-800.jpg
+-rw-rw-r-- 1 ana ana 16291 out 17 15:56 bolo-quadrado-400.jpg
+-rw-rw-r-- 1 ana ana 38136 out 17 15:56 bolo-quadrado-800.jpg</pre>
+
+<p>O <code>bolo-1200.jpg</code> tem 42493 bytes (uns 42 KB); o <code>bolo-400.jpg</code>, com o mesmo bolo, 10241 (uns 10 KB). Mostrar a de 1200 em 400 de largura gasta 4 vezes mais internet, para um resultado que, numa tela comum, parece igual. Com fotos de celular (4000 pixels, 3 MB ou mais), a diferença vira segundos de espera.</p>
+
+<p>A regra: guarde no site a foto já no tamanho em que ela vai aparecer (ou o dobro, para telas de alta densidade). Para mandar uma foto pequena ao celular e uma grande ao computador, existe o <code>srcset</code> (aula <a href="imagens-responsivas.html">Imagens Responsivas</a>), e os formatos novos deixam o arquivo ainda menor (aula <a href="formatos-imagem.html">Formatos</a>).</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: Bad value “400px” for attribute “width” on element “img”: Expected a digit but saw “p” instead.</code></strong>
+<p><strong>O que aconteceu:</strong> a Ana escreveu a unidade, como no CSS: <code>width="400px" height="300px"</code>.</p>
+<pre class="term" data-cwd="~/tamanho">$ vnu px.html
+"file:/home/ana/tamanho/px.html":8.1-8.71: error: Bad value “400px” for attribute “width” on element “img”: Expected a digit but saw “p” instead.
+"file:/home/ana/tamanho/px.html":8.1-8.71: error: Bad value “300px” for attribute “height” on element “img”: Expected a digit but saw “p” instead.</pre>
+<p>"Valor ruim para o atributo <code>width</code>: esperava um dígito, mas encontrou um <code>p</code>." O navegador, como sempre, conserta: lê os números do começo (<code>400</code>) e ignora o resto. A foto aparece com 400 × 300, e o erro passa despercebido. Veja (e repare nos outros dois casos) na caixa abaixo.</p>
+<p><strong>Como consertar:</strong> só o número: <code>width="400" height="300"</code>. O <code>px</code> é do CSS.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “50%” for attribute “width” on element “img”: Expected a digit but saw “%” instead.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>width="50%"</code>, para a foto ocupar metade da largura. No HTML antigo isso era permitido; no HTML de hoje, não.</p>
+<pre class="term" data-cwd="~/tamanho">$ vnu pct.html
+"file:/home/ana/tamanho/pct.html":8.1-8.54: error: Bad value “50%” for attribute “width” on element “img”: Expected a digit but saw “%” instead.
+$ vnu auto.html
+"file:/home/ana/tamanho/auto.html":8.1-8.55: error: Bad value “auto” for attribute “width” on element “img”: Expected a digit but saw “a” instead.</pre>
+<p>Os navegadores ainda entendem a porcentagem (por compatibilidade com páginas antigas), mas o validador recusa. O <code>width="auto"</code> é ignorado: o navegador age como se ele não existisse.</p>
+<p><strong>Como consertar:</strong> no HTML, o tamanho natural em números; no CSS, a porcentagem (<code>width: 50%</code>) ou o <code>max-width: 100%</code> da seção 5.</p>
+</div>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> as três fotos têm valores que o validador recusa. Veja o que o seu navegador fez com cada uma: a primeira saiu com 400 (ele leu o número e ignorou o <code>px</code>); a segunda, com metade da largura do quadro; a terceira ignorou o <code>auto</code> e usou só o <code>height</code>. Agora troque tudo por números e compare.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;width="400px":&lt;/p&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo 1" width="400px"&gt;
+&lt;p&gt;width="50%":&lt;/p&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo 2" width="50%"&gt;
+&lt;p&gt;width="auto" height="60":&lt;/p&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo 3" width="auto" height="60"&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Outros valores que o validador recusa</strong>
+<pre class="term" data-cwd="~/tamanho">$ vnu decimal.html negativo.html espaco.html vazio.html
+"file:/home/ana/tamanho/decimal.html":8.1-8.56: error: Bad value “400.5” for attribute “width” on element “img”: Expected a digit but saw “.” instead.
+"file:/home/ana/tamanho/negativo.html":8.1-8.55: error: Bad value “-400” for attribute “width” on element “img”: Expected a digit but saw “-” instead.
+"file:/home/ana/tamanho/espaco.html":8.1-8.55: error: Bad value “ 400” for attribute “width” on element “img”: Expected a digit but saw “ ” instead.
+"file:/home/ana/tamanho/vazio.html":8.1-8.51: error: Bad value “” for attribute “width” on element “img”: The empty string is not a valid non-negative integer.</pre>
+<p><code>400.5</code> (número quebrado), <code>-400</code> (negativo), <code>" 400"</code> (espaço antes) e <code>""</code> (vazio: "a string vazia não é um inteiro não negativo válido"). O <code>width</code> e o <code>height</code> aceitam só <strong>inteiros, de 0 para cima</strong>, sem nada em volta.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Attribute “size” not allowed on element “img” at this point.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>size="400"</code>, um atributo que não existe no <code>&lt;img&gt;</code>. O navegador o ignora e a foto sai no tamanho natural.</p>
+<p><strong>Como consertar:</strong> <code>width</code> e <code>height</code>. (Existe um <code>sizes</code>, com <code>s</code> no fim, mas ele é outra coisa: aula <a href="imagens-responsivas.html">Imagens Responsivas</a>.)</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: The “border” attribute on the “img” element is obsolete.</code></strong>
+<p><strong>O que aconteceu:</strong> um código copiado de um site antigo: <code>&lt;img … width="400" height="300" border="0"&gt;</code>.</p>
+<pre class="term" data-cwd="~/tamanho">$ vnu border.html
+"file:/home/ana/tamanho/border.html":8.1-8.78: info warning: The “border” attribute on the “img” element is obsolete. Consider specifying “img { border: 0; }” in CSS instead.</pre>
+<p>"O atributo <code>border</code> do <code>img</code> é obsoleto. Considere usar <code>img { border: 0; }</code> no CSS." É um aviso, não um erro: o <code>vnu</code> sai com código 0. Mas o atributo não serve para nada hoje.</p>
+<p><strong>Como consertar:</strong> apague o <code>border="0"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Sem erro no validador, mas a foto está achatada, esticada ou o texto pula</strong>
+<p><strong>O que aconteceu:</strong> o validador não abre as imagens. Ele não sabe que a foto tem 800 × 600, então não percebe <code>width="400" height="150"</code> (achatada) nem a falta de <code>width</code>/<code>height</code> (o pulo).</p>
+<p><strong>Como consertar:</strong> confira o tamanho com o <code>file</code>, use a regra da proporção e passe a página no Lighthouse (F12), que aponta as imagens sem tamanho.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>width="400" height="300"</code></td><td>Mostra a imagem com 400 × 300 pixels do CSS e reserva o espaço antes de ela chegar</td></tr>
+<tr><td>só <code>width="400"</code></td><td>Altura calculada pela proporção, mas só depois de a foto chegar (a página pula)</td></tr>
+<tr><td>proporção diferente da foto</td><td>A foto deforma (achata ou estica)</td></tr>
+<tr><td><code>width="400px"</code>, <code>"50%"</code>, <code>"auto"</code></td><td>Erro no validador; use só números inteiros</td></tr>
+<tr><td>altura = largura × altura natural ÷ largura natural</td><td>A regra da proporção</td></tr>
+<tr><td><code>file foto.jpg</code></td><td>Mostra o tamanho natural no terminal (<code>800x600</code>)</td></tr>
+<tr><td>CSS <code>img { max-width: 100%; height: auto; }</code></td><td>A foto nunca passa da largura disponível, sem deformar</td></tr>
+<tr><td>Foto grande com <code>width</code> pequeno</td><td>Fica pequena na tela, mas o arquivo inteiro é baixado</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A proporção</h3>
+<p>A foto tem 1200 × 900. Complete a altura para mostrá-la com 600 de largura:</p>
+<div class="ex-code">&lt;img src="bolo-1200.jpg" alt="Bolo de cenoura" width="600" height="<input data-answer="450" aria-label="altura">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Sem unidade</h3>
+<p>Conserte o valor para o validador aceitar:</p>
+<div class="ex-code">&lt;img src="logo.png" alt="Lojinha da Ana" width="<input data-answer="200" aria-label="largura">" height="80"&gt;   &lt;!-- era width="200px" --&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Por que o texto de uma página "pula" quando uma foto sem <code>width</code> e <code>height</code> termina de carregar?</p>
+<label><input type="radio" name="q3"> Porque o navegador recarrega a página inteira</label>
+<label><input type="radio" name="q3"> Porque, antes de a foto chegar, o navegador não sabe a altura dela e não reserva espaço; quando ela chega, empurra o que está embaixo</label>
+<label><input type="radio" name="q3"> Porque o validador mandou</label>
+<label><input type="radio" name="q3"> Porque a foto é JPG</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. Uma foto de 800 × 600 com <code>width="400" height="150"</code> aparece…</p>
+<label><input type="radio" name="q4"> com 400 × 300, porque o navegador corrige a proporção</label>
+<label><input type="radio" name="q4"> recortada, só a faixa do meio</label>
+<label><input type="radio" name="q4"> com 800 × 600, porque o navegador ignora valores errados</label>
+<label><input type="radio" name="q4"> achatada: o navegador espreme a foto para caber em 400 × 150</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. A Ana mostra uma foto de 4000 × 3000 (3 MB) com <code>width="400" height="300"</code>. Quanto o navegador baixa?</p>
+<label><input type="radio" name="q5"> Os 3 MB inteiros: o <code>width</code> só muda o tamanho na tela</label>
+<label><input type="radio" name="q5"> Um décimo, porque a largura é um décimo</label>
+<label><input type="radio" name="q5"> Nada, porque a foto é grande demais</label>
+<label><input type="radio" name="q5"> Depende do validador</label>
+</div>
+
+<h3>Missão final: a página sem pulos</h3>
+
+<div class="tryhtml" data-goal="nsel:img[width][height]=2,attr:img[src$=&quot;logo-lojinha.svg&quot;][width]=200,attr:img[src$=&quot;logo-lojinha.svg&quot;][height]=80,attr:img[src$=&quot;bolo-800.jpg&quot;][width]=400,attr:img[src$=&quot;bolo-800.jpg&quot;][height]=300,nsrc:=&quot;\d+px&quot;">
+<p class="try-task"><strong>Missão:</strong> esta página pula e tem um erro de validador. Dê <code>width</code> e <code>height</code> às duas imagens, só com números: o logo (o arquivo tem 400 × 160) deve aparecer com <strong>200</strong> de largura, e a foto (800 × 600) com <strong>400</strong> de largura. Calcule as alturas.</p>
+<pre class="script" data-file="index.html">&lt;img src="assets/midia/logo-lojinha.svg" alt="Lojinha da Ana"&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400px"&gt;
+&lt;p&gt;Modo de preparo: bata a cenoura, os ovos e o óleo no liquidificador.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;img src="assets/midia/logo-lojinha.svg" alt="Lojinha da Ana" width="200" height="80"&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+&lt;p&gt;Modo de preparo: bata a cenoura, os ovos e o óleo no liquidificador.&lt;/p&gt;
+</pre>
+</div>
+
+<p>O logo é um SVG (aula <a href="formatos-imagem.html">Formatos</a>): um desenho feito de formas, que não perde a nitidez em nenhum tamanho. Mesmo assim, ele precisa de <code>width</code> e <code>height</code>, pelo mesmo motivo da foto: reservar o espaço. 200 × 160 ÷ 400 = 80.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Toda imagem de pixels tem um <strong>tamanho natural</strong> (<code>800x600</code>, no <code>file</code>). Sem <code>width</code> e <code>height</code>, ela aparece nesse tamanho.</li>
+  <li><code>width="400" height="300"</code>: só números inteiros, em pixels do CSS, sem <code>px</code>. Mantenha a proporção da foto: altura = largura × altura natural ÷ largura natural. Com a proporção errada, a foto deforma.</li>
+  <li>Sem <code>width</code> e <code>height</code>, o navegador não reserva espaço, e a página <strong>pula</strong> quando a foto chega (586 pixels, na medição da seção 4). Com eles, nada se mexe.</li>
+  <li>Para caber no celular: <code>width</code>/<code>height</code> no HTML + <code>max-width: 100%; height: auto</code> no CSS. Os atributos dão a proporção, e o espaço continua reservado.</li>
+  <li>O <code>width</code> não diminui o arquivo: guarde a foto no tamanho em que ela vai aparecer (ou use <code>srcset</code>).</li>
+  <li>O validador recusa <code>400px</code>, <code>50%</code>, <code>auto</code>, decimais, negativos e vazio, mas não confere a proporção nem o pulo.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
