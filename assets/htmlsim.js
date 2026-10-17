@@ -430,7 +430,9 @@
     var self = this, f = document.createElement("iframe");
     f.className = "hs-frame";
     f.setAttribute("title", "Resultado do código");
-    f.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads");
+    // sem o atributo sandbox: com "allow-scripts allow-same-origin" (necessários para o service
+    // worker e as metas) o Chrome encheria o console do F12 com um aviso por quadro. A navegação
+    // da página do guia é barrada em clique() e envio() (target=_top, formulários).
     f.setAttribute("allow", "fullscreen; autoplay; clipboard-write");
     f.setAttribute("loading", "eager");
     var antigo = this.frame;
@@ -619,7 +621,9 @@
       if (Math.abs(f.offsetHeight - h) > 2) f.style.height = h + "px";
     }
     medir();
-    try { var ro = new win.ResizeObserver(function () { medir(); }); ro.observe(doc.documentElement); if (doc.body) ro.observe(doc.body); } catch (e) {}
+    // o ResizeObserver é o da página do guia e mede no quadro seguinte (sem "ResizeObserver loop" no console do leitor)
+    var pedido = 0;
+    try { var ro = new ResizeObserver(function () { if (!pedido) pedido = requestAnimationFrame(function () { pedido = 0; medir(); }); }); ro.observe(doc.documentElement); if (doc.body) ro.observe(doc.body); } catch (e) {}
     setTimeout(medir, 300);
   };
   // espera a página carregar e "assentar" (rAF + um pouco), para o testador e para as metas
@@ -900,6 +904,7 @@
     var abrir = w.querySelector(".hs-abrir");
     abrir.addEventListener("click", function () { if (quadro.modoAtual === "sw" && quadro.atual) window.open(quadro.pasta + quadro.atual, "_blank"); });
     prepararModo().then(function (md) { abrir.hidden = md !== "sw"; });
+    ta.value = abas[0].atual;
     desenharAbas();
     ajustar();
 
