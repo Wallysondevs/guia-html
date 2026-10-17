@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Legendas — track e o arquivo WebVTT | Guia HTML</title>
+<meta name="description" content="Legendas em vídeos HTML para quem nunca fez um site: o arquivo WebVTT (.vtt) linha por linha, o elemento track com src, kind, srclang, label e default, legendas em várias línguas, subtitles × captions, por que a legenda não aparece com o arquivo aberto do disco, o que o navegador faz com um .vtt errado e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Legendas</span></h1>
+
+<p class="intro">O vídeo do bolo de cenoura fez sucesso, e chegaram três pedidos: uma cliente surda quer entender o que a Ana fala; um amigo de Portugal assiste no trem, sem som; e uma prima que mora no Canadá quer mostrar o vídeo para o marido, que não fala português. A resposta para os três é a mesma: <strong>legendas</strong>. No HTML, elas ficam num arquivo de texto à parte, no formato <strong>WebVTT</strong>, e entram no vídeo pelo elemento <code>&lt;track&gt;</code>. Nesta aula você vai escrever um arquivo de legendas de verdade, ligá-lo ao vídeo e ver o que acontece quando um detalhe do arquivo está errado.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Escrever um arquivo de legendas WebVTT (<code>.vtt</code>): o cabeçalho, os tempos e o texto.</li>
+  <li>Ligar as legendas ao vídeo com <code>&lt;track src kind srclang label default&gt;</code>.</li>
+  <li>A diferença entre <code>subtitles</code> e <code>captions</code>, e os outros tipos de <code>kind</code>.</li>
+  <li>Oferecer legendas em várias línguas.</li>
+  <li>Por que a legenda não aparece quando você abre a página com dois cliques, e como resolver com um servidor local.</li>
+  <li>Os erros do <code>.vtt</code> que fazem a legenda sumir sem aviso, e as mensagens reais do validador sobre o <code>&lt;track&gt;</code>.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula estão na pasta <code>~/site/legendas</code> da máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>). As páginas foram conferidas com o validador W3C (<code>vnu</code>). O validador não confere arquivos <code>.vtt</code>; o comportamento dos arquivos de legenda errados foi conferido no Chrome. Esta aula continua a aula <a href="video.html">Vídeo</a>.</p>
+
+<hr>
+
+<h2>A ideia: o roteiro com o relógio do lado</h2>
+<p>Pense em quem faz a legenda de um filme. Ela não escreve o texto <em>dentro</em> do filme: escreve uma lista à parte, com o horário de cada frase. "De 0 a 3 segundos, aparece <em>Olá!</em>; de 3 a 6, aparece <em>Primeiro, bata as cenouras</em>." O tocador lê a lista e mostra cada frase na hora certa, por cima da imagem.</p>
+
+<p>Isso tem uma vantagem enorme: como o texto está fora do vídeo, dá para ter várias listas (português, inglês, espanhol) para o mesmo vídeo, ligar e desligar a legenda, e corrigir um erro de digitação sem mexer no vídeo. No HTML:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Peça</th><th>O que é</th><th>Exemplo</th></tr>
+<tr><td>O arquivo de legendas</td><td>Um arquivo de texto com tempos e frases, no formato WebVTT</td><td><code>bolo-pt.vtt</code></td></tr>
+<tr><td>O elemento <code>&lt;track&gt;</code></td><td>A "trilha" que liga o arquivo ao vídeo, dentro do <code>&lt;video&gt;</code></td><td><code>&lt;track src="bolo-pt.vtt" …&gt;</code></td></tr>
+</table>
+</div>
+
+<p><strong>WebVTT</strong> quer dizer <em>Web Video Text Tracks</em>, "trilhas de texto para vídeos da web". É o formato de legendas do HTML.</p>
+
+<hr>
+
+<h2>1. O arquivo WebVTT</h2>
+<p>Um arquivo <code>.vtt</code> é texto puro: você o escreve no mesmo editor em que escreve o HTML (aula <a href="editores.html">Editores</a>). Este é o <code>bolo-pt.vtt</code>, com as falas do começo do vídeo:</p>
+
+<pre class="file" data-file="bolo-pt.vtt">WEBVTT
+
+00:00.000 --&gt; 00:03.000
+Olá! Hoje é dia de bolo de cenoura.
+
+00:03.000 --&gt; 00:06.500
+Primeiro, bata as cenouras
+com os ovos e o óleo.
+</pre>
+
+<dl class="anatomy">
+  <dt>WEBVTT</dt><dd>O <strong>cabeçalho</strong>: a primeira linha do arquivo tem de ser exatamente <code>WEBVTT</code>, em maiúsculas. É o "documento de identidade" do arquivo: sem ele, o navegador recusa o arquivo inteiro.</dd>
+  <dt>(linha em branco)</dt><dd>Separa o cabeçalho da primeira legenda. As linhas em branco são a "pontuação" do WebVTT: cada bloco fica entre linhas em branco.</dd>
+  <dt>00:00.000 --&gt; 00:03.000</dt><dd>O <strong>tempo</strong> da legenda: aparece em 0 segundos e some em 3. A seta é feita de <strong>dois</strong> hifens e um sinal de maior: <code>--&gt;</code>, com um espaço de cada lado.</dd>
+  <dt>Olá! Hoje é dia de bolo de cenoura.</dt><dd>O <strong>texto</strong> que aparece na tela. Pode ter mais de uma linha, como na segunda legenda: ela aparece em duas linhas.</dd>
+</dl>
+
+<p>Cada bloco "tempo + texto" se chama <strong>deixa</strong> (em inglês, <em>cue</em>). O arquivo é uma lista de deixas, separadas por uma linha em branco.</p>
+
+<h3>Como escrever o tempo</h3>
+<p>O WebVTT é <strong>exigente</strong> com o tempo, e um tempo escrito errado faz a deixa sumir em silêncio (veja <a href="#errado">Quando dá errado</a>):</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Lê-se</th><th>Vale?</th></tr>
+<tr><td><code>00:03.000</code></td><td>0 minutos, 3 segundos e 0 milésimos</td><td>sim</td></tr>
+<tr><td><code>01:15.250</code></td><td>1 minuto, 15 segundos e um quarto</td><td>sim</td></tr>
+<tr><td><code>01:02:03.000</code></td><td>1 hora, 2 minutos e 3 segundos (as horas são opcionais)</td><td>sim</td></tr>
+<tr><td><code>00:03</code></td><td>faltam os milésimos</td><td><strong>não</strong></td></tr>
+<tr><td><code>00:06.5</code></td><td>os milésimos têm de ter 3 algarismos: <code>00:06.500</code></td><td><strong>não</strong></td></tr>
+<tr><td><code>0:03.000</code></td><td>os minutos têm de ter 2 algarismos: <code>00:03.000</code></td><td><strong>não</strong></td></tr>
+<tr><td><code>00:00:03,000</code></td><td>vírgula antes dos milésimos (é o formato SRT, outro tipo de legenda)</td><td><strong>não</strong></td></tr>
+</table>
+</div>
+
+<div class="tip">
+<strong>Salve em UTF-8</strong>
+<p>O arquivo de legendas é sempre lido como UTF-8, a codificação que guarda acentos e emojis (aula <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>). Os editores de hoje já salvam assim. Se as letras acentuadas aparecerem trocadas na legenda, como "Ã©" no lugar de "é", o arquivo foi salvo em outra codificação.</p>
+</div>
+
+<hr>
+
+<h2>2. O elemento <code>&lt;track&gt;</code></h2>
+<p>Com o arquivo pronto, falta dizer ao vídeo que ele existe. O <code>&lt;track&gt;</code> ("trilha") vai <strong>dentro</strong> do <code>&lt;video&gt;</code>:</p>
+
+<pre class="file" data-file="index.html">&lt;video src="bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
+&lt;/video&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;track</dt><dd>Abre o elemento. Ele é <strong>vazio</strong>, como o <code>&lt;source&gt;</code> e o <code>&lt;img&gt;</code>: não tem <code>&lt;/track&gt;</code>.</dd>
+  <dt>src="bolo-pt.vtt"</dt><dd>O endereço do arquivo de legendas. Obrigatório.</dd>
+  <dt>kind="subtitles"</dt><dd>O <strong>tipo</strong> de trilha (<em>kind</em> = "tipo"). <code>subtitles</code> = legendas. Os outros tipos estão na seção 3.</dd>
+  <dt>srclang="pt-BR"</dt><dd>A língua do texto (<em>source language</em>), escrita como no <code>lang</code> do <code>&lt;html&gt;</code>: <code>pt-BR</code>, <code>en</code>, <code>es</code>.</dd>
+  <dt>label="Português"</dt><dd>O nome que aparece no menu de legendas do tocador. Escreva-o na própria língua da legenda: "English", "Español".</dd>
+  <dt>default</dt><dd>"Padrão": a legenda já começa <strong>ligada</strong>. Sem ele, ela existe, mas a pessoa precisa ligá-la no menu do tocador (o botão "CC" ou o menu de três pontinhos, conforme o navegador).</dd>
+</dl>
+
+<p>Agora veja funcionando. Este editor tem <strong>duas abas</strong>: a página e o arquivo de legendas. Dê play no resultado:</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> dê play e veja as legendas aparecerem. Depois, na aba <code>bolo-pt.vtt</code>, mude o texto de uma legenda ou o tempo dela e dê play de novo.</p>
+<pre class="script" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
+&lt;/video&gt;
+</pre>
+<pre class="script" data-file="bolo-pt.vtt">WEBVTT
+
+00:00.000 --&gt; 00:03.000
+Olá! Hoje é dia de bolo de cenoura.
+
+00:03.000 --&gt; 00:06.500
+Primeiro, bata as cenouras
+com os ovos e o óleo.
+</pre>
+</div>
+
+<div class="tryhtml" data-goal="attr:track[src]=bolo-pt.vtt,attr:track[kind]=subtitles,attr:track[srclang]=pt-BR,attr:track[label]=Português,sel:track[default]">
+<p class="try-task"><strong>Missão:</strong> o vídeo tem o arquivo de legendas, mas o <code>&lt;track&gt;</code> está incompleto. Complete-o: o arquivo <code>bolo-pt.vtt</code>, o tipo <code>subtitles</code>, a língua <code>pt-BR</code>, o nome <code>Português</code> no menu, e faça a legenda começar ligada.</p>
+<pre class="script" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track&gt;
+&lt;/video&gt;
+</pre>
+<pre class="script" data-file="bolo-pt.vtt">WEBVTT
+
+00:00.000 --&gt; 00:03.000
+Olá! Hoje é dia de bolo de cenoura.
+
+00:03.000 --&gt; 00:06.500
+Primeiro, bata as cenouras
+com os ovos e o óleo.
+</pre>
+<pre class="solucao" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
+&lt;/video&gt;
+</pre>
+</div>
+
+<h3>Onde o <code>&lt;track&gt;</code> fica</h3>
+<p>Dentro do <code>&lt;video&gt;</code>, a ordem é: primeiro os <code>&lt;source&gt;</code> (se houver), depois os <code>&lt;track&gt;</code>, por último o texto reserva.</p>
+
+<pre class="file" data-file="index.html">&lt;video controls width="640" height="360"&gt;
+  &lt;source src="bolo.webm" type="video/webm"&gt;
+  &lt;source src="bolo.mp4" type="video/mp4"&gt;
+  &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
+  &lt;p&gt;Seu navegador não mostra vídeos. &lt;a href="bolo.mp4"&gt;Baixe o vídeo&lt;/a&gt;.&lt;/p&gt;
+&lt;/video&gt;
+</pre>
+
+<hr>
+
+<h2>3. Os tipos de trilha: <code>kind</code></h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>kind</code></th><th>Para quem / para quê</th><th>O que tem no arquivo</th></tr>
+<tr><td><code>subtitles</code></td><td>Quem <strong>ouve</strong>, mas não entende a língua (ou está sem som)</td><td>Só as falas, muitas vezes traduzidas. É o tipo padrão, quando o <code>kind</code> falta.</td></tr>
+<tr><td><code>captions</code></td><td>Quem <strong>não ouve</strong> (pessoas surdas)</td><td>As falas <strong>e</strong> os sons importantes: "[liquidificador ligado]", "[risos]", quem está falando.</td></tr>
+<tr><td><code>descriptions</code></td><td>Quem <strong>não vê</strong></td><td>A descrição do que aparece na tela, para um programa ler em voz alta. Os navegadores ainda não fazem isso sozinhos.</td></tr>
+<tr><td><code>chapters</code></td><td>Navegar pelo vídeo</td><td>Títulos de capítulos ("Massa", "Cobertura") com o tempo de cada um.</td></tr>
+<tr><td><code>metadata</code></td><td>Scripts</td><td>Dados para o JavaScript; nunca aparece na tela.</td></tr>
+</table>
+</div>
+
+<p>Para a cliente surda da Ana, o certo é <code>captions</code>, com os sons descritos. No Brasil, essa legenda costuma ser chamada de <strong>LSE</strong> ("legenda para surdos e ensurdecidos") ou <em>closed caption</em>, o "CC" dos botões. Um arquivo de <code>captions</code> pode usar marcações do próprio WebVTT:</p>
+
+<pre class="file" data-file="bolo-cc.vtt">WEBVTT
+
+NOTE Legendas para surdos do vídeo do bolo de cenoura
+
+1
+00:00.000 --&gt; 00:03.000
+&lt;v Ana&gt;Olá! Hoje é dia de bolo de cenoura.
+
+2
+00:03.000 --&gt; 00:06.500
+&lt;v Ana&gt;Primeiro, bata as cenouras
+com os ovos e o óleo.
+
+3
+00:06.500 --&gt; 00:09.000 line:0
+&lt;i&gt;[liquidificador ligado]&lt;/i&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>NOTE …</dt><dd>Um <strong>comentário</strong>: o bloco que começa com <code>NOTE</code> nunca aparece na tela (como o <code>&lt;!-- --&gt;</code> do HTML, aula <a href="comentarios.html">Comentários</a>).</dd>
+  <dt>1, 2, 3</dt><dd><strong>Identificadores</strong> opcionais: um nome para a deixa, na linha de cima do tempo. Ajudam a achar uma legenda num arquivo grande.</dd>
+  <dt>&lt;v Ana&gt;</dt><dd>"Voz" (<em>voice</em>): marca quem está falando. Alguns tocadores mostram o nome; o leitor de tela pode anunciá-lo.</dd>
+  <dt>&lt;i&gt;…&lt;/i&gt;</dt><dd>Itálico, como no HTML. O WebVTT também aceita <code>&lt;b&gt;</code> (negrito) e <code>&lt;u&gt;</code> (sublinhado). Só essas poucas marcações: o resto do HTML não funciona aqui.</dd>
+  <dt>line:0</dt><dd>Uma <strong>configuração</strong> da deixa, escrita depois do tempo: <code>line:0</code> põe esta legenda no <strong>topo</strong> do vídeo, em vez de embaixo. Útil quando há texto na parte de baixo da imagem.</dd>
+</dl>
+
+<hr>
+
+<h2>4. Várias línguas</h2>
+<p>Para a prima do Canadá, a Ana fez também o <code>bolo-en.vtt</code>, em inglês. Cada língua é um <code>&lt;track&gt;</code>, e só <strong>um</strong> deles leva <code>default</code>. O tocador mostra todos no menu de legendas, pelo <code>label</code>:</p>
+
+<div class="tryhtml" data-goal="nsel:video track=2,attr:track:last-of-type[src]=bolo-en.vtt,attr:track:last-of-type[srclang]=en,attr:track:last-of-type[label]=English,nsel:track[default]=1">
+<p class="try-task"><strong>Missão:</strong> o arquivo <code>bolo-en.vtt</code> já existe (veja a aba), mas ainda não está no vídeo. Acrescente um segundo <code>&lt;track&gt;</code>, depois do português, com <code>src="bolo-en.vtt"</code>, <code>kind="subtitles"</code>, <code>srclang="en"</code> e <code>label="English"</code>. O português continua sendo o único com <code>default</code>. Depois, no resultado, troque a legenda pelo menu do tocador.</p>
+<pre class="script" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
+&lt;/video&gt;
+</pre>
+<pre class="script" data-file="bolo-pt.vtt">WEBVTT
+
+00:00.000 --&gt; 00:03.000
+Olá! Hoje é dia de bolo de cenoura.
+
+00:03.000 --&gt; 00:06.500
+Primeiro, bata as cenouras
+com os ovos e o óleo.
+</pre>
+<pre class="script" data-file="bolo-en.vtt">WEBVTT
+
+00:00.000 --&gt; 00:03.000
+Hi! Today is carrot cake day.
+
+00:03.000 --&gt; 00:06.500
+First, blend the carrots
+with the eggs and the oil.
+</pre>
+<pre class="solucao" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
+  &lt;track src="bolo-en.vtt" kind="subtitles" srclang="en" label="English"&gt;
+&lt;/video&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. A legenda não aparece no arquivo aberto do disco</h2>
+<p>A Ana salvou o <code>index.html</code>, o <code>bolo.mp4</code> e o <code>bolo-pt.vtt</code> na mesma pasta e abriu a página com dois cliques. O vídeo toca… e a legenda não aparece. O HTML está certo. O problema é o endereço: aberta do disco, a página começa com <code>file://</code>, e, por segurança, o Chrome não deixa uma página <code>file://</code> carregar arquivos de legenda, mesmo da mesma pasta. (No editor desta página funciona, porque o guia é servido como um site de verdade.)</p>
+
+<p>A solução é abrir a página por um <strong>servidor local</strong>, um programinha que faz o seu computador se comportar como um site (aula <a href="servidor-local.html">Servidor Local</a>). Com o Python, que já vem no Linux e no macOS:</p>
+
+<pre class="term" data-cwd="~/site/legendas">$ python3 -m http.server &amp;
+[1] 4
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+$ curl -sI http://localhost:8000/bolo-pt.vtt
+127.0.0.1 - - [17/Oct/2026 15:51:16] "HEAD /bolo-pt.vtt HTTP/1.1" 200 -
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:51:16 GMT
+Content-type: text/vtt         « o servidor avisa: "isto é WebVTT"
+Content-Length: 145
+Last-Modified: Sat, 17 Oct 2026 18:50:52 GMT
+
+$ kill %1
+[1]+  Terminado                  python3 -m http.server</pre>
+
+<dl class="anatomy">
+  <dt>python3 -m http.server &amp;</dt><dd>Liga o servidor na pasta atual, na porta 8000. O <code>&amp;</code> o deixa rodando "em segundo plano", para o terminal continuar livre. A linha <code>Serving HTTP on … port 8000</code> ("servindo HTTP na porta 8000") confirma que ele está no ar.</dd>
+  <dt>curl -sI http://localhost:8000/bolo-pt.vtt</dt><dd>Pede ao servidor só o cabeçalho da resposta (<code>-I</code>), em silêncio (<code>-s</code>). No navegador, você abriria <code>http://localhost:8000/</code>.</dd>
+  <dt>200 OK</dt><dd>"Tudo certo": o arquivo existe. A linha de cima, com a data, é o servidor anotando o pedido.</dd>
+  <dt>Content-type: text/vtt</dt><dd>O tipo do arquivo, que o servidor descobre pela extensão <code>.vtt</code>. É o tipo que os navegadores esperam de um arquivo de legendas.</dd>
+  <dt>kill %1</dt><dd>Desliga o servidor (o trabalho número 1 do terminal). Sem o <code>&amp;</code>, você o desligaria com <kbd>Ctrl</kbd>+<kbd>C</kbd>.</dd>
+</dl>
+
+<p>Com o servidor ligado, a página aberta em <code>http://localhost:8000/</code> mostra a legenda. Num site publicado (aula <a href="publicar.html">Publicar no GitHub Pages</a>), o servidor de lá faz o mesmo papel.</p>
+
+<hr>
+
+<h2>Formas diferentes: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>Vídeo com fala, para quem está sem som ou não ouve bem</td><td><code>&lt;track kind="captions"&gt;</code> com as falas e os sons, <code>default</code></td></tr>
+<tr><td>Tradução para outra língua</td><td>Mais um <code>&lt;track kind="subtitles" srclang label&gt;</code>, sem <code>default</code></td></tr>
+<tr><td>Vídeo longo, para pular para uma parte</td><td><code>&lt;track kind="chapters"&gt;</code> (e os títulos também em texto na página)</td></tr>
+<tr><td>Vídeo sem fala (só imagens)</td><td>Uma descrição em texto na página; não precisa de legenda</td></tr>
+<tr><td>Texto escrito "dentro" do vídeo, no editor de vídeo</td><td>Evite: não dá para desligar, traduzir, corrigir nem ser lido por leitor de tela ou buscador</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Erros no arquivo <code>.vtt</code> são traiçoeiros: o validador do HTML não lê o <code>.vtt</code>, e o navegador não mostra mensagem nenhuma na tela. A legenda simplesmente não aparece, inteira ou em parte. Os casos abaixo foram conferidos no Chrome. Na última caixa da seção, você pode testar cada um.</p>
+
+<div class="cenario">
+<strong>Sem o cabeçalho <code>WEBVTT</code> (ou escrito <code>Webvtt</code>)</strong>
+<p>O navegador recusa o arquivo <strong>inteiro</strong>: nenhuma legenda aparece. <strong>Como consertar:</strong> a primeira linha do arquivo deve ser exatamente <code>WEBVTT</code>, em maiúsculas. Pode haver um título depois de um espaço (<code>WEBVTT - Receitas da Ana</code>), mas nada antes.</p>
+</div>
+
+<div class="cenario">
+<strong>Arquivo de legenda SRT renomeado para <code>.vtt</code></strong>
+<p>Muita legenda da internet vem no formato <strong>SRT</strong> (<code>.srt</code>), que é parecido, mas usa vírgula nos milésimos (<code>00:00:03,000</code>) e não tem o cabeçalho. Só trocar a extensão não basta. Com o cabeçalho, mas ainda com as vírgulas, o arquivo carrega sem erro e mesmo assim <strong>nenhuma</strong> legenda aparece: o navegador descarta cada deixa com vírgula. <strong>Como consertar:</strong> acrescente <code>WEBVTT</code> e uma linha em branco no começo e troque a vírgula dos tempos por ponto: <code>00:00:03.000</code>. (Os números que o SRT põe em cada bloco podem ficar: no WebVTT, eles viram identificadores.)</p>
+</div>
+
+<div class="cenario">
+<strong>Uma deixa some: seta com um hífen só, ou tempo incompleto</strong>
+<p>Com <code>00:00.000 -&gt; 00:03.000</code> (um hífen só), ou com <code>00:06.5</code>, <code>00:03</code> ou <code>0:03.000</code>, só <strong>aquela</strong> deixa é descartada; as outras aparecem normalmente. É o erro mais difícil de achar, porque "quase tudo" funciona. <strong>Como consertar:</strong> confira a linha de tempo da legenda que faltou: <code>MM:SS.mmm --&gt; MM:SS.mmm</code>, com dois algarismos nos minutos e nos segundos, três nos milésimos e a seta <code>--&gt;</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="src:^WEBVTT,nsrc:\d\d\,\d\d\d">
+<p class="try-task"><strong>Missão:</strong> a Ana baixou uma legenda SRT e só trocou a extensão para <code>.vtt</code>. Dê play: nenhuma legenda aparece. Conserte a aba <code>bolo-pt.vtt</code>: acrescente o cabeçalho e troque as vírgulas dos tempos por ponto. Dê play de novo.</p>
+<pre class="script" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
+&lt;/video&gt;
+</pre>
+<pre class="script" data-file="bolo-pt.vtt">1
+00:00:00,000 --&gt; 00:00:03,000
+Olá! Hoje é dia de bolo de cenoura.
+
+2
+00:00:03,000 --&gt; 00:00:06,500
+Primeiro, bata as cenouras
+com os ovos e o óleo.
+</pre>
+<pre class="solucao" data-file="bolo-pt.vtt">WEBVTT
+
+1
+00:00:00.000 --&gt; 00:00:03.000
+Olá! Hoje é dia de bolo de cenoura.
+
+2
+00:00:03.000 --&gt; 00:00:06.500
+Primeiro, bata as cenouras
+com os ovos e o óleo.
+</pre>
+</div>
+
+<p>Agora os erros do lado do HTML, no <code>&lt;track&gt;</code>. Esses o validador pega. Os arquivos usam o esqueleto de sempre: o <code>&lt;video&gt;</code> começa na linha 8, e os <code>&lt;track&gt;</code> estão nas linhas 9 e 10.</p>
+
+<div class="cenario">
+<strong><code>kind="legendas"</code>: o valor é em inglês</strong>
+<pre class="term" data-cwd="~/site">$ vnu t-kind.html
+"file:/home/ana/site/t-kind.html":9.3-9.77: error: Bad value “legendas” for attribute “kind” on element “track”.</pre>
+<p>"Valor ruim <code>legendas</code> para o atributo <code>kind</code>". O navegador trata um valor desconhecido como <code>metadata</code>, a trilha dos scripts, que <strong>nunca aparece</strong> na tela. <strong>Como consertar:</strong> use um dos valores da tabela: <code>subtitles</code>, <code>captions</code>, <code>descriptions</code>, <code>chapters</code> ou <code>metadata</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>default</code> em duas trilhas</strong>
+<pre class="file" data-file="t-default.html">&lt;video src="bolo.mp4" controls&gt;
+  &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
+  &lt;track src="bolo-en.vtt" kind="subtitles" srclang="en" label="English" default&gt;
+&lt;/video&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu t-default.html
+"file:/home/ana/site/t-default.html":10.3-10.81: error: The “default” attribute must not occur on more than one “track” element within the same “audio” or “video” element.
+"file:/home/ana/site/t-default.html":8.1-8.31: info warning: “audio” or “video” element has more than one “track” child element with a “default” attribute.</pre>
+<p>"O atributo <code>default</code> não pode aparecer em mais de um <code>track</code> do mesmo <code>audio</code> ou <code>video</code>". A segunda linha é um <code>info warning</code>, um aviso informativo, que repete o problema apontando o <code>&lt;video&gt;</code> (linha 8). Só uma legenda pode estar ligada por vez; o navegador liga a primeira. <strong>Como consertar:</strong> deixe o <code>default</code> só na língua principal.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;/track&gt;</code>, <code>label</code> vazio e <code>track</code> sem <code>src</code></strong>
+<pre class="term" data-cwd="~/site">$ vnu t-fecha.html
+"file:/home/ana/site/t-fecha.html":9.79-9.86: error: Stray end tag “track”.
+$ vnu t-lab.html
+"file:/home/ana/site/t-lab.html":9.3-9.69: error: Attribute “label” for element “track” must have non-empty value.
+$ vnu t-semsrc.html
+"file:/home/ana/site/t-semsrc.html":9.3-9.60: error: Element “track” is missing required attribute “src”.</pre>
+<ul>
+  <li><em>Stray end tag “track”</em> = "tag de fechamento <code>track</code> perdida": o <code>&lt;track&gt;</code> é vazio, e o <code>&lt;/track&gt;</code> sobra. O navegador o ignora. Apague-o.</li>
+  <li><em>must have non-empty value</em> = "precisa de um valor não vazio": com <code>label=""</code>, o menu do tocador fica com uma opção sem nome. Escreva o nome da língua, ou apague o atributo.</li>
+  <li><em>missing required attribute “src”</em> = "falta o atributo obrigatório <code>src</code>": uma trilha sem arquivo não tem o que mostrar.</li>
+</ul>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;track&gt;</code> antes do <code>&lt;source&gt;</code></strong>
+<pre class="term" data-cwd="~/site">$ vnu t-ordem.html
+"file:/home/ana/site/t-ordem.html":10.3-10.42: error: Element “source” not allowed as child of element “video” in this context. (Suppressing further errors from this subtree.) Note: The “video” element has a transparent content model; its allowed content is inherited from its parent element.</pre>
+<p>O erro aponta o <code>&lt;source&gt;</code> da linha 10, que veio depois do <code>&lt;track&gt;</code> da linha 9. <strong>Como consertar:</strong> a ordem é sempre <code>&lt;source&gt;</code>, depois <code>&lt;track&gt;</code>, depois o texto reserva.</p>
+</div>
+
+<div class="cenario">
+<strong>O que o validador <em>não</em> pega</strong>
+<p>Duas regras do HTML passam sem nenhuma mensagem no validador (confira: <code>vnu t-srclang.html</code> e <code>vnu t-label.html</code> não mostram nada):</p>
+<ul>
+  <li>Um <code>kind="subtitles"</code> <strong>precisa</strong> de <code>srclang</code>: sem a língua, o navegador não sabe qual legenda combina com a língua de quem assiste.</li>
+  <li>Dois <code>&lt;track&gt;</code> com o mesmo <code>kind</code>, <code>srclang</code> e <code>label</code> não podem existir: o menu mostraria duas opções "Português" iguais.</li>
+</ul>
+<p>"Passou no validador" não quer dizer "está certo". Releia o seu <code>&lt;track&gt;</code> com a tabela da referência.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No <code>&lt;track&gt;</code></th><th>O que faz</th></tr>
+<tr><td><code>src</code></td><td>O arquivo <code>.vtt</code> (obrigatório)</td></tr>
+<tr><td><code>kind</code></td><td><code>subtitles</code> (padrão), <code>captions</code>, <code>descriptions</code>, <code>chapters</code>, <code>metadata</code></td></tr>
+<tr><td><code>srclang</code></td><td>A língua do texto (<code>pt-BR</code>, <code>en</code>); obrigatório com <code>subtitles</code></td></tr>
+<tr><td><code>label</code></td><td>O nome no menu do tocador (não vazio)</td></tr>
+<tr><td><code>default</code></td><td>Começa ligada (no máximo uma trilha por vídeo)</td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No arquivo <code>.vtt</code></th><th>O que faz</th></tr>
+<tr><td><code>WEBVTT</code></td><td>Primeira linha, obrigatória, em maiúsculas</td></tr>
+<tr><td>linha em branco</td><td>Separa os blocos</td></tr>
+<tr><td><code>00:00.000 --&gt; 00:03.000</code></td><td>Tempo de entrada e de saída (<code>HH:</code> opcional, milésimos com 3 algarismos, ponto)</td></tr>
+<tr><td>texto nas linhas seguintes</td><td>A legenda (uma ou mais linhas)</td></tr>
+<tr><td><code>1</code> (acima do tempo)</td><td>Identificador opcional da deixa</td></tr>
+<tr><td><code>NOTE …</code></td><td>Comentário</td></tr>
+<tr><td><code>&lt;v Nome&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;b&gt;</code>, <code>&lt;u&gt;</code></td><td>Quem fala, itálico, negrito, sublinhado</td></tr>
+<tr><td><code>line:0</code> (depois do tempo)</td><td>Legenda no topo do vídeo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A primeira linha</h3>
+<p>Complete a primeira linha de todo arquivo de legendas:</p>
+<div class="ex-code"><input data-answer="WEBVTT" aria-label="cabeçalho"></div>
+</div>
+
+<div class="exercise">
+<h3>2. A seta</h3>
+<p>Complete a linha de tempo de uma legenda que vai de 3 a 6 segundos:</p>
+<div class="ex-code">00:03.000 <input data-answer="--&gt;" aria-label="seta"> 00:06.000</div>
+</div>
+
+<div class="exercise">
+<h3>3. Legenda para surdos</h3>
+<p>Complete o tipo de trilha com as falas <em>e</em> os sons:</p>
+<div class="ex-code">&lt;track src="bolo-cc.vtt" kind="<input data-answer="captions" aria-label="tipo">" srclang="pt-BR" label="Português (CC)"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Qual destes tempos o WebVTT aceita?</p>
+<label><input type="radio" name="q4"> <code>00:00:03,000</code></label>
+<label><input type="radio" name="q4"> <code>00:03</code></label>
+<label><input type="radio" name="q4"> <code>00:03.000</code></label>
+<label><input type="radio" name="q4"> <code>0:03.000</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. A página abre com dois cliques (<code>file://</code>), o vídeo toca, mas a legenda não aparece, e o HTML passou no validador. O que fazer?</p>
+<label><input type="radio" name="q5"> Trocar o <code>.vtt</code> por <code>.srt</code></label>
+<label><input type="radio" name="q5"> Abrir a página por um servidor local (<code>python3 -m http.server</code>)</label>
+<label><input type="radio" name="q5"> Tirar o <code>default</code></label>
+<label><input type="radio" name="q5"> Colocar a legenda dentro do <code>&lt;video&gt;</code>, como texto</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Um vídeo tem três <code>&lt;track&gt;</code> (português, inglês e espanhol). Quantos podem ter <code>default</code>?</p>
+<label><input type="radio" name="q6"> Todos os três</label>
+<label><input type="radio" name="q6"> Nenhum, é proibido</label>
+<label><input type="radio" name="q6"> Dois</label>
+<label><input type="radio" name="q6"> No máximo um</label>
+</div>
+
+<h3>Missão final: legenda para surdos</h3>
+
+<div class="tryhtml" data-goal="attr:track[kind]=captions,attr:track[srclang]=pt-BR,sel:track[label],sel:track[default],src:^WEBVTT,src:-->[^\n]*\n[^\n]*\[liquidificador ligado\]">
+<p class="try-task"><strong>Missão:</strong> transforme a legenda numa legenda para surdos. No <code>&lt;track&gt;</code>, troque o tipo para <code>captions</code>, mantenha a língua, o nome e o <code>default</code>. No arquivo <code>bolo-cc.vtt</code>, falta a terceira deixa: de <code>00:06.500</code> a <code>00:09.000</code>, com o texto <code>[liquidificador ligado]</code>. Lembre da linha em branco antes dela. Dê play e confira.</p>
+<pre class="script" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-cc.vtt" kind="subtitles" srclang="pt-BR" label="Português (CC)" default&gt;
+&lt;/video&gt;
+</pre>
+<pre class="script" data-file="bolo-cc.vtt">WEBVTT
+
+00:00.000 --&gt; 00:03.000
+&lt;v Ana&gt;Olá! Hoje é dia de bolo de cenoura.
+
+00:03.000 --&gt; 00:06.500
+&lt;v Ana&gt;Primeiro, bata as cenouras
+com os ovos e o óleo.
+</pre>
+<pre class="solucao" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-cc.vtt" kind="captions" srclang="pt-BR" label="Português (CC)" default&gt;
+&lt;/video&gt;
+</pre>
+<pre class="solucao" data-file="bolo-cc.vtt">WEBVTT
+
+00:00.000 --&gt; 00:03.000
+&lt;v Ana&gt;Olá! Hoje é dia de bolo de cenoura.
+
+00:03.000 --&gt; 00:06.500
+&lt;v Ana&gt;Primeiro, bata as cenouras
+com os ovos e o óleo.
+
+00:06.500 --&gt; 00:09.000
+[liquidificador ligado]
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Legendas ficam num arquivo de texto à parte, no formato <strong>WebVTT</strong> (<code>.vtt</code>, em UTF-8): <code>WEBVTT</code> na primeira linha, depois blocos de tempo e texto separados por linhas em branco.</li>
+  <li>O tempo é <code>MM:SS.mmm --&gt; MM:SS.mmm</code> (horas opcionais), com <strong>ponto</strong> e três algarismos nos milésimos. Um tempo errado faz a deixa sumir em silêncio; sem o cabeçalho, some o arquivo inteiro.</li>
+  <li><code>&lt;track src kind srclang label default&gt;</code> liga o arquivo ao vídeo. É vazio (sem <code>&lt;/track&gt;</code>) e vem depois dos <code>&lt;source&gt;</code>.</li>
+  <li><code>subtitles</code> = falas (e traduções); <code>captions</code> = falas e sons, para surdos. Uma trilha por língua; só uma com <code>default</code>.</li>
+  <li>Aberta do disco (<code>file://</code>), a página não carrega a legenda no Chrome: use um servidor local, que entrega o arquivo como <code>text/vtt</code>.</li>
+  <li>O validador confere o <code>&lt;track&gt;</code>, mas não o <code>.vtt</code>, nem o <code>srclang</code> que falta numa <code>subtitles</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
