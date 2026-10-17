@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML textarea — texto de várias linhas | Guia HTML</title>
+<meta name="description" content="O elemento textarea do HTML para quem nunca fez um site: a caixa de texto de várias linhas, rows e cols, o texto inicial entre as tags (e não no value), os espaços e a primeira quebra de linha, as tags que viram texto, maxlength, o envio das quebras de linha (%0D%0A) e os erros reais do validador W3C, como o textarea sem fechamento que engole a página.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">textarea</span></h1>
+
+<p class="intro">O <code>&lt;input&gt;</code> de texto tem <strong>uma linha só</strong>: se a pessoa aperta <kbd>Enter</kbd> nele, o formulário é enviado. Para um comentário no blog, um recado para a Ana ou o endereço completo de entrega, é pouco. Para textos de várias linhas existe o <code>&lt;textarea&gt;</code> ("área de texto"). Ele parece um primo do <code>&lt;input&gt;</code>, mas funciona de um jeito bem diferente, e é aí que moram os erros desta aula.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como criar uma caixa de várias linhas com <code>&lt;textarea&gt;</code>, que <strong>tem</strong> tag de fechamento.</li>
+  <li>Como escolher o tamanho com <code>rows</code> e <code>cols</code>.</li>
+  <li>Como dar um texto inicial: entre as tags, e não com <code>value</code>.</li>
+  <li>Por que os espaços e as quebras de linha do código aparecem na caixa, e por que tags dentro dela viram texto.</li>
+  <li>O que é enviado quando o texto tem várias linhas.</li>
+  <li>Os erros reais do validador W3C, inclusive o <code>&lt;textarea&gt;</code> sem fechamento que <strong>engole</strong> o resto da página.</li>
+</ul>
+</div>
+
+<p>Os exemplos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>). O que o navegador faz com cada caso foi conferido no Chromium. Os quadros "Resultado" são desenhados pelo seu próprio navegador: você pode digitar neles.</p>
+
+<hr>
+
+<h2>A ideia: a linha de assinatura e a folha pautada</h2>
+<p>Num formulário de papel, o campo "Nome: ________" é uma linha só. Já o espaço "Observações", no fim da ficha, é um quadro com várias linhas pautadas. O <code>&lt;input&gt;</code> é a linha; o <code>&lt;textarea&gt;</code> é o quadro.</p>
+
+<hr>
+
+<h2>1. O primeiro <code>&lt;textarea&gt;</code></h2>
+
+<pre class="file" data-file="contato.html" data-resultado>&lt;form action="recado.html" method="post"&gt;
+  &lt;p&gt;&lt;label for="recado"&gt;Deixe um recado para a Ana:&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;textarea id="recado" name="recado"&gt;&lt;/textarea&gt;&lt;/p&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;textarea&gt;</dt><dd>A caixa de texto de várias linhas. Diferente do <code>&lt;input&gt;</code>, ele <strong>não</strong> é um elemento vazio: tem conteúdo (o texto inicial) e precisa da tag de fechamento.</dd>
+  <dt>id="recado" name="recado"</dt><dd>Os mesmos papéis do <code>&lt;input&gt;</code>: o <code>id</code> para o <code>&lt;label for&gt;</code> (aula <a href="label.html">label</a>), o <code>name</code> para o envio.</dd>
+  <dt>&lt;/textarea&gt;</dt><dd><strong>Obrigatório</strong>, mesmo com a caixa vazia. Esquecer o fechamento é o erro mais grave desta aula (veja <a href="#errado">Quando dá errado</a>).</dd>
+</dl>
+
+<p>Digite algumas linhas no resultado: o <kbd>Enter</kbd> pula de linha, em vez de enviar. Quando o texto passa do tamanho da caixa, aparece uma barra de rolagem. Em muitos navegadores de computador, o canto de baixo à direita tem uma "alcinha" para arrastar e aumentar a caixa. O desenho da caixa, da barra e da alcinha muda de um navegador e de um sistema para outro.</p>
+
+<hr>
+
+<h2>2. O tamanho: <code>rows</code> e <code>cols</code></h2>
+<p>Sem nada, a caixa é pequena: 2 linhas de altura e uns 20 caracteres de largura. Dois atributos mudam isso:</p>
+
+<pre class="file" data-file="contato.html" data-resultado>&lt;p&gt;&lt;label for="comentario"&gt;Comentário:&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;textarea id="comentario" name="comentario" rows="5" cols="40"&gt;&lt;/textarea&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>rows="5"</dt><dd>"Linhas": a altura da caixa, em linhas de texto. Não limita o que a pessoa escreve; só o que aparece sem rolar.</dd>
+  <dt>cols="40"</dt><dd>"Colunas": a largura, em caracteres (aproximada, porque as letras têm larguras diferentes). Também não limita o texto: ao chegar no fim, ele quebra para a linha de baixo.</dd>
+</dl>
+
+<p>Em sites de verdade, a largura costuma vir do CSS (para a caixa ocupar a largura da tela no celular, por exemplo), e o <code>rows</code> continua útil para a altura. O tamanho da caixa também é uma dica para a pessoa: uma caixa grande diz "pode escrever bastante".</p>
+
+<div class="tryhtml" data-goal="sel:textarea#endereco[name='endereco'][rows='4'],sel:label[for='endereco']">
+<p class="try-task"><strong>Missão:</strong> o endereço de entrega não cabe numa linha (rua, número, complemento, ponto de referência). Troque o <code>&lt;input&gt;</code> por um <code>&lt;textarea&gt;</code> com 4 linhas de altura, mantendo o <code>id</code> e o <code>name</code>. Não esqueça o fechamento.</p>
+<pre class="script" data-file="index.html">&lt;form action="entrega.html" method="post"&gt;
+  &lt;p&gt;&lt;label for="endereco"&gt;Endereço de entrega:&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;input id="endereco" name="endereco"&gt;&lt;/p&gt;
+  &lt;button&gt;Continuar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="entrega.html" method="post"&gt;
+  &lt;p&gt;&lt;label for="endereco"&gt;Endereço de entrega:&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;textarea id="endereco" name="endereco" rows="4"&gt;&lt;/textarea&gt;&lt;/p&gt;
+  &lt;button&gt;Continuar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Texto inicial: entre as tags</h2>
+<p>No <code>&lt;input&gt;</code>, o valor inicial vai no atributo <code>value</code>. No <code>&lt;textarea&gt;</code>, ele vai <strong>entre as tags</strong>, como o texto de um parágrafo:</p>
+
+<pre class="file" data-file="recado.html" data-resultado>&lt;textarea name="recado" rows="3" cols="40" aria-label="Recado"&gt;Oi, Ana!
+Adorei o bolo de cenoura.&lt;/textarea&gt;
+</pre>
+
+<p>Esse texto é tratado de um jeito especial, diferente de todo o resto da página:</p>
+
+<dl class="anatomy">
+  <dt>Os espaços e as quebras de linha ficam</dt><dd>Num parágrafo, o navegador junta espaços e ignora quebras de linha (aula <a href="espacos.html">Espaços e Quebras de Linha</a>). No <code>&lt;textarea&gt;</code>, não: cada espaço e cada <kbd>Enter</kbd> do código aparecem na caixa, como no <code>&lt;pre&gt;</code>. Por isso o "Adorei" começa na segunda linha.</dd>
+  <dt>A primeira quebra de linha é ignorada</dt><dd>Uma única exceção: se o texto começa com uma quebra de linha logo depois de <code>&lt;textarea&gt;</code>, o navegador a descarta. Assim você pode escrever <code>&lt;textarea&gt;</code> numa linha e o texto na de baixo.</dd>
+  <dt>Tags viram texto</dt><dd>Dentro do <code>&lt;textarea&gt;</code>, um <code>&lt;b&gt;</code> não deixa nada em negrito: aparece como as letras <code>&lt;b&gt;</code>. A caixa só mostra texto puro. A <strong>única</strong> tag que o navegador reconhece ali dentro é o <code>&lt;/textarea&gt;</code>, que fecha a caixa.</dd>
+  <dt>Entidades funcionam</dt><dd>Já <code>&amp;lt;</code> e <code>&amp;amp;</code> (aula <a href="entidades.html">Entidades</a>) são traduzidos: <code>&amp;lt;3</code> aparece como <code>&lt;3</code>.</dd>
+</dl>
+
+<pre class="file" data-file="recado.html" data-resultado>&lt;textarea name="a" rows="3" cols="40" aria-label="Recuado"&gt;
+    Este texto começa com 4 espaços,
+    porque o código estava recuado.&lt;/textarea&gt;
+&lt;textarea name="b" rows="2" cols="40" aria-label="Com tags"&gt;&lt;b&gt;Oi&lt;/b&gt; &amp;lt;3 &amp;amp; tchau&lt;/textarea&gt;
+</pre>
+
+<p>Na primeira caixa, a quebra de linha logo depois de <code>&lt;textarea&gt;</code> sumiu, mas os 4 espaços do recuo ficaram, e são enviados junto com o texto. Por isso, quando quiser uma caixa vazia, escreva <code>&lt;textarea&gt;&lt;/textarea&gt;</code> <strong>colados</strong>: um espaço ou uma quebra de linha a mais entre as tags já é conteúdo. Na segunda, o <code>&lt;b&gt;</code> aparece como texto, e as entidades viram <code>&lt;3 &amp;</code>.</p>
+
+<div class="tryhtml" data-goal="texto:textarea#recado=Parabéns pelo bolo!,nsel:textarea[value]=0">
+<p class="try-task"><strong>Missão:</strong> a Ana quer que a caixa já venha com "Parabéns pelo bolo!", mas escreveu como num <code>&lt;input&gt;</code>, e a caixa aparece vazia. Tire o <code>value</code> e ponha o texto no lugar certo.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;label for="recado"&gt;Recado:&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;textarea id="recado" name="recado" rows="3" value="Parabéns pelo bolo!"&gt;&lt;/textarea&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;&lt;label for="recado"&gt;Recado:&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;textarea id="recado" name="recado" rows="3"&gt;Parabéns pelo bolo!&lt;/textarea&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Limite, exemplo e obrigatório</h2>
+<p>Alguns atributos do <code>&lt;input&gt;</code> também servem no <code>&lt;textarea&gt;</code>:</p>
+
+<pre class="file" data-file="contato.html" data-resultado>&lt;p&gt;&lt;label for="depoimento"&gt;Seu depoimento (até 140 caracteres):&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;textarea id="depoimento" name="depoimento" rows="3" cols="40"
+  maxlength="140" placeholder="Ex.: O melhor bolo de cenoura do bairro!" required&gt;&lt;/textarea&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>maxlength="140"</dt><dd>"Comprimento máximo": a pessoa não consegue digitar mais que 140 caracteres. Tente no resultado.</dd>
+  <dt>placeholder="Ex.: …"</dt><dd>Um texto de exemplo, cinza, que some quando a pessoa digita. Não é o texto inicial (esse vai entre as tags) e não substitui o <code>&lt;label&gt;</code>.</dd>
+  <dt>required</dt><dd>"Obrigatório": o navegador não envia o formulário com a caixa vazia.</dd>
+</dl>
+
+<p>Esses atributos têm aulas próprias: <a href="atributos-input.html">placeholder, value, autocomplete…</a> e <a href="validacao.html">Validação</a>. Repare que a tag de abertura do <code>&lt;textarea&gt;</code> foi quebrada em duas linhas no código: isso pode, porque a quebra está <strong>dentro</strong> da tag, entre atributos, e não no conteúdo.</p>
+
+<hr>
+
+<h2>5. O que é enviado</h2>
+<p>O <code>&lt;textarea&gt;</code> manda o texto que estiver na caixa, com o <code>name</code> dele, como qualquer campo. As quebras de linha vão junto, codificadas. Para ver o envio de verdade, a Ana testou no Chromium um formulário com <code>method="get"</code> e o recado "Linha 1", <kbd>Enter</kbd>, "Linha 2". O endereço que o navegador abriu terminou assim:</p>
+
+<pre class="file" data-file="endereço aberto pelo navegador">?recado=Linha+1%0D%0ALinha+2
+</pre>
+
+<dl class="anatomy">
+  <dt>+</dt><dd>Os espaços, como em qualquer campo (aula <a href="formularios.html">Formulários</a>).</dd>
+  <dt>%0D%0A</dt><dd>A quebra de linha. São dois caracteres invisíveis: o "volta ao começo da linha" (<code>%0D</code>, chamado CR) e o "desce uma linha" (<code>%0A</code>, chamado LF), a quebra de linha tradicional da internet. O navegador sempre manda os dois, mesmo que o sistema use só um.</dd>
+</dl>
+
+<div class="note">
+<strong>No editor do guia</strong>
+<p>Ao enviar um <code>&lt;textarea&gt;</code> com várias linhas, a página "Formulário enviado" do editor mostra a quebra como <code>%0A</code>, sem o <code>%0D</code>. É uma diferença do editor, que monta o envio de outro jeito; um navegador enviando para um servidor de verdade manda <code>%0D%0A</code>, como acima. O texto em si é o mesmo.</p>
+</div>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> escreva um recado de duas ou três linhas e envie. Compare o texto na tabela do editor com o que você digitou. Depois troque o <code>method</code> para <code>get</code> e veja as quebras de linha no endereço. Por fim, ponha um texto inicial com recuo de espaços e veja os espaços chegarem no envio.</p>
+<pre class="script" data-file="index.html">&lt;form action="recado.html" method="post"&gt;
+  &lt;p&gt;&lt;label for="recado"&gt;Recado:&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;textarea id="recado" name="recado" rows="4" cols="40"&gt;&lt;/textarea&gt;&lt;/p&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Qual usar: <code>&lt;input&gt;</code> ou <code>&lt;textarea&gt;</code>?</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>&lt;input&gt;</code></th><th><code>&lt;textarea&gt;</code></th></tr>
+<tr><td>Linhas</td><td>Uma</td><td>Várias</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>Envia o formulário</td><td>Pula de linha</td></tr>
+<tr><td>Fechamento</td><td>Não tem (elemento vazio)</td><td><code>&lt;/textarea&gt;</code> obrigatório</td></tr>
+<tr><td>Valor inicial</td><td><code>value="…"</code></td><td>Entre as tags</td></tr>
+<tr><td>Tamanho</td><td><code>size</code></td><td><code>rows</code> e <code>cols</code></td></tr>
+<tr><td>Bom para</td><td>Nome, e-mail, cidade, busca</td><td>Comentário, recado, endereço completo, descrição</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>As páginas abaixo têm o esqueleto de sempre nas linhas 1 a 7, um <code>&lt;label&gt;</code> na linha 8 e o <code>&lt;textarea&gt;</code> na <strong>linha 9</strong>.</p>
+
+<div class="cenario">
+<strong>Esqueceu o <code>&lt;/textarea&gt;</code>: a caixa engole a página</strong>
+<pre class="file" data-file="sem.html" data-resultado>&lt;label for="recado"&gt;Recado:&lt;/label&gt;
+&lt;textarea id="recado" name="recado"&gt;
+&lt;p&gt;Obrigada pela visita!&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/recados">$ vnu sem.html
+"file:/home/ana/recados/sem.html":12.8-12.8: error: End of file seen when expecting text or an end tag.
+"file:/home/ana/recados/sem.html":9.1-9.36: error: Unclosed element “textarea”.</pre>
+<p><strong>O validador diz:</strong> "Fim do arquivo encontrado quando esperava texto ou uma tag de fechamento" (na linha 12, a última) e "elemento <code>textarea</code> não fechado" (na linha 9).</p>
+<p><strong>O que o navegador faz:</strong> como dentro do <code>&lt;textarea&gt;</code> tudo é texto até aparecer um <code>&lt;/textarea&gt;</code>, e ele nunca aparece, <strong>todo o resto do arquivo</strong> vai parar dentro da caixa: o <code>&lt;p&gt;Obrigada pela visita!&lt;/p&gt;</code> e, no <code>sem.html</code> completo, até o <code>&lt;/body&gt;</code> e o <code>&lt;/html&gt;</code> do fim. Veja no resultado: as tags aparecem como texto dentro da caixa, e o parágrafo sumiu da página.</p>
+<p><strong>Como consertar:</strong> feche sempre: <code>&lt;textarea …&gt;&lt;/textarea&gt;</code>. Quando metade da sua página aparecer dentro de uma caixa, procure um <code>&lt;textarea&gt;</code> sem fechamento.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;textarea /&gt;</code>: a barra não fecha</strong>
+<pre class="file" data-file="barra.html" data-resultado>&lt;label for="recado"&gt;Recado:&lt;/label&gt;
+&lt;textarea id="recado" name="recado" /&gt;
+&lt;button&gt;Enviar&lt;/button&gt;
+&lt;p&gt;Obrigada pela visita!&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/recados">$ vnu barra.html
+"file:/home/ana/recados/barra.html":9.1-9.38: error: Self-closing syntax (“/&gt;”) used on a non-void HTML element. Ignoring the slash and treating as a start tag.
+"file:/home/ana/recados/barra.html":13.8-13.8: error: End of file seen when expecting text or an end tag.
+"file:/home/ana/recados/barra.html":9.1-9.38: error: Unclosed element “textarea”.</pre>
+<p><strong>O validador diz:</strong> "Sintaxe de autofechamento (<code>/&gt;</code>) usada num elemento que não é vazio. <strong>Ignorando a barra</strong> e tratando como tag de abertura." Depois, os mesmos dois erros do caso anterior.</p>
+<p><strong>O que o navegador faz:</strong> exatamente o que a mensagem diz. A barra só vale nos elementos vazios, como o <code>&lt;input /&gt;</code>. Aqui ela é ignorada, o <code>&lt;textarea&gt;</code> fica aberto e engole o botão e o parágrafo: o botão "Enviar" vira o texto <code>&lt;button&gt;Enviar&lt;/button&gt;</code> dentro da caixa. Quem vem do React ou de outras ferramentas, onde <code>&lt;textarea /&gt;</code> funciona, cai muito nesse.</p>
+<p><strong>Como consertar:</strong> <code>&lt;textarea id="recado" name="recado"&gt;&lt;/textarea&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>value</code> no <code>&lt;textarea&gt;</code></strong>
+<pre class="term" data-cwd="~/recados">$ sed -n 9p valor.html
+&lt;textarea id="recado" name="recado" value="Adorei o bolo!"&gt;&lt;/textarea&gt;
+$ vnu valor.html
+"file:/home/ana/recados/valor.html":9.1-9.59: error: Attribute “value” not allowed on element “textarea” at this point.</pre>
+<p><strong>O validador diz:</strong> "Atributo <code>value</code> não permitido no elemento <code>textarea</code>".</p>
+<p><strong>O que o navegador faz:</strong> ignora o atributo. A caixa aparece vazia.</p>
+<p><strong>Como consertar:</strong> o texto vai entre as tags: <code>&lt;textarea …&gt;Adorei o bolo!&lt;/textarea&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;input type="textarea"&gt;</code></strong>
+<pre class="term" data-cwd="~/recados">$ vnu tipo.html
+"file:/home/ana/recados/tipo.html":9.1-9.49: error: Bad value “textarea” for attribute “type” on element “input”.</pre>
+<p><strong>O que significa:</strong> <code>textarea</code> não é um tipo de <code>&lt;input&gt;</code>: é outro elemento. O navegador trata o tipo desconhecido como <code>text</code>, e o campo fica com uma linha só.</p>
+<p><strong>Como consertar:</strong> <code>&lt;textarea id="recado" name="recado"&gt;&lt;/textarea&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>A caixa "vazia" já vem com espaços</strong>
+<p><strong>O que acontece:</strong> o código foi recuado assim:</p>
+<pre class="file" data-file="recuo.html">&lt;textarea id="recado" name="recado"&gt;
+    &lt;/textarea&gt;
+</pre>
+<p>A primeira quebra de linha é descartada, mas os 4 espaços antes do <code>&lt;/textarea&gt;</code> ficam. A caixa parece vazia, o cursor começa no meio da linha, o <code>placeholder</code> não aparece (porque a caixa não está vazia) e, se for <code>required</code>, quatro espaços contam como preenchida. O validador não acusa nada: espaços são um conteúdo válido.</p>
+<p><strong>Como consertar:</strong> <code>&lt;textarea …&gt;&lt;/textarea&gt;</code> com as tags coladas.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;textarea id="x" name="x"&gt;&lt;/textarea&gt;</code></td><td>Caixa de várias linhas (fechamento obrigatório)</td></tr>
+<tr><td><code>rows="5"</code> / <code>cols="40"</code></td><td>Altura em linhas / largura em caracteres (padrão: 2 e 20)</td></tr>
+<tr><td><code>&lt;textarea&gt;Texto inicial&lt;/textarea&gt;</code></td><td>Valor inicial (não existe <code>value</code>)</td></tr>
+<tr><td>Espaços e quebras de linha do conteúdo</td><td>Aparecem na caixa (menos a primeira quebra logo depois da tag)</td></tr>
+<tr><td><code>&lt;b&gt;</code> dentro</td><td>Vira texto; só <code>&lt;/textarea&gt;</code> é reconhecido. Entidades (<code>&amp;lt;</code>) funcionam</td></tr>
+<tr><td><code>maxlength</code>, <code>placeholder</code>, <code>required</code></td><td>Limite, exemplo e obrigatório, como no <code>&lt;input&gt;</code></td></tr>
+<tr><td>Envio</td><td>Quebra de linha vira <code>%0D%0A</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A altura</h3>
+<p>Complete o atributo que dá à caixa 6 linhas de altura:</p>
+<div class="ex-code">&lt;textarea name="obs" <input data-answer="rows" aria-label="atributo">="6"&gt;&lt;/textarea&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O fechamento</h3>
+<p>Complete a tag que falta:</p>
+<div class="ex-code">&lt;textarea name="obs"&gt;<input data-answer="&lt;/textarea&gt;" aria-label="tag" size="12"></div>
+</div>
+
+<div class="exercise">
+<h3>3. A largura</h3>
+<p>Complete o atributo que dá à caixa uns 50 caracteres de largura:</p>
+<div class="ex-code">&lt;textarea name="obs" <input data-answer="cols" aria-label="atributo">="50"&gt;&lt;/textarea&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Como dar o texto inicial "Sem cebola" a um <code>&lt;textarea&gt;</code>?</p>
+<label><input type="radio" name="q4"> <code>&lt;textarea value="Sem cebola"&gt;&lt;/textarea&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;textarea&gt;Sem cebola&lt;/textarea&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;textarea placeholder="Sem cebola"&gt;&lt;/textarea&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;textarea text="Sem cebola" /&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O que aparece na caixa com <code>&lt;textarea&gt;&lt;b&gt;Oi&lt;/b&gt;&lt;/textarea&gt;</code>?</p>
+<label><input type="radio" name="q5"> <strong>Oi</strong>, em negrito</label>
+<label><input type="radio" name="q5"> Oi, sem negrito</label>
+<label><input type="radio" name="q5"> Nada: a caixa fica vazia</label>
+<label><input type="radio" name="q5"> O texto <code>&lt;b&gt;Oi&lt;/b&gt;</code>, com as tags</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Metade da página da Ana apareceu dentro de uma caixa de texto. Qual é a causa mais provável?</p>
+<label><input type="radio" name="q6"> Um <code>&lt;textarea&gt;</code> sem <code>&lt;/textarea&gt;</code> (ou escrito como <code>&lt;textarea /&gt;</code>)</label>
+<label><input type="radio" name="q6"> Um <code>&lt;input&gt;</code> sem <code>&lt;/input&gt;</code></label>
+<label><input type="radio" name="q6"> Um <code>rows</code> grande demais</label>
+<label><input type="radio" name="q6"> Faltou o <code>&lt;label&gt;</code></label>
+</div>
+
+<h3>Missão final: o formulário de recados</h3>
+
+<div class="tryhtml" data-goal="sel:form button,texto:p.obrigada=Obrigada pela visita,attr:textarea#recado[rows]=4,attr:textarea#recado[maxlength]=300,sel:label[for='recado']">
+<p class="try-task"><strong>Missão:</strong> o formulário de recados está quebrado: o botão e o agradecimento foram parar dentro da caixa. Conserte o <code>&lt;textarea&gt;</code> e aproveite para dar a ele 4 linhas de altura e um limite de 300 caracteres. No fim, o botão "Enviar" e o parágrafo "Obrigada pela visita!" têm de aparecer fora da caixa.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Recados para a Ana&lt;/h1&gt;
+&lt;form action="recados.html" method="post"&gt;
+  &lt;p&gt;&lt;label for="recado"&gt;Seu recado:&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;textarea id="recado" name="recado" /&gt;&lt;/p&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+&lt;p class="obrigada"&gt;Obrigada pela visita!&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Recados para a Ana&lt;/h1&gt;
+&lt;form action="recados.html" method="post"&gt;
+  &lt;p&gt;&lt;label for="recado"&gt;Seu recado:&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;textarea id="recado" name="recado" rows="4" maxlength="300"&gt;&lt;/textarea&gt;&lt;/p&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+&lt;p class="obrigada"&gt;Obrigada pela visita!&lt;/p&gt;
+</pre>
+</div>
+
+<p>Depois de consertar, escreva um recado de duas linhas e envie: a tabela do editor mostra o texto inteiro no par <code>recado</code>.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;textarea&gt;</code> é a caixa de várias linhas. Diferente do <code>&lt;input&gt;</code>, ela tem conteúdo e o <code>&lt;/textarea&gt;</code> é obrigatório; <code>&lt;textarea /&gt;</code> não fecha.</li>
+  <li><code>rows</code> e <code>cols</code> dão a altura (em linhas) e a largura (em caracteres). Não limitam o texto; quem limita é o <code>maxlength</code>.</li>
+  <li>O texto inicial vai entre as tags (não existe <code>value</code>). Espaços e quebras de linha do código aparecem na caixa, menos a primeira quebra logo depois da tag. Tags dentro viram texto; entidades funcionam.</li>
+  <li>No envio, as quebras de linha viram <code>%0D%0A</code>.</li>
+  <li>Sem <code>&lt;/textarea&gt;</code>, o resto da página vai parar dentro da caixa, e o validador acusa <code>Unclosed element “textarea”</code>. A aparência da caixa muda de um navegador para outro.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
