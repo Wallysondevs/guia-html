@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML SVG — desenhar com formas direto no HTML | Guia HTML</title>
+<meta name="description" content="SVG no HTML para quem nunca fez um site: o elemento svg, as coordenadas com o zero no canto de cima, as formas simples rect, circle, ellipse, line, polyline, polygon e text, fill e stroke, o viewBox que faz o desenho crescer sem perder a qualidade, SVG acessível com role e title, a diferença para img src, e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">SVG</span></h1>
+
+<p class="intro">Até aqui, toda imagem da página era um arquivo pronto, aberto com <code>&lt;img&gt;</code>. Com o <strong>SVG</strong>, você <strong>desenha</strong> a imagem com tags, direto no HTML: "um círculo laranja aqui, um retângulo marrom ali". O navegador lê as tags e desenha. Nesta aula a Ana vai desenhar o selo da lojinha e um bolo, forma por forma, e entender por que um desenho em SVG fica nítido em qualquer tamanho.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é SVG e quando ele é melhor que um JPG ou PNG.</li>
+  <li>O elemento <code>&lt;svg&gt;</code> e as <strong>coordenadas</strong> (o zero fica no canto de cima, à esquerda).</li>
+  <li>As formas simples: <code>&lt;rect&gt;</code>, <code>&lt;circle&gt;</code>, <code>&lt;ellipse&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;polyline&gt;</code>, <code>&lt;polygon&gt;</code> e <code>&lt;text&gt;</code>.</li>
+  <li>As cores e as bordas: <code>fill</code> e <code>stroke</code>.</li>
+  <li>O <code>viewBox</code>, que faz o desenho crescer sem perder a qualidade.</li>
+  <li>Como deixar um SVG acessível (<code>role="img"</code> e <code>&lt;title&gt;</code>) e quando usar <code>&lt;img src="….svg"&gt;</code>.</li>
+  <li>Os erros reais do validador W3C e os que ele não vê.</li>
+</ul>
+</div>
+
+<p>Os exemplos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, versão 26.10.12) na máquina fictícia da Ana, na pasta <code>~/site</code>. Cada desenho embaixo de um código é feito de verdade pelo seu navegador.</p>
+
+<hr>
+
+<h2>A ideia: a receita do desenho</h2>
+<p>Uma foto (JPG, PNG) é como um mosaico: milhares de quadradinhos coloridos, os <strong>pixels</strong>. Se você amplia demais, os quadradinhos aparecem e a imagem fica borrada. Um SVG é como uma <strong>receita</strong> de desenho: "pegue o lápis, faça um círculo de raio 40 com o centro aqui, pinte de laranja". Como o navegador refaz o desenho a cada vez, ele sai nítido em qualquer tamanho, na tela do celular ou num telão.</p>
+
+<p>SVG quer dizer <em>Scalable Vector Graphics</em>, "gráficos vetoriais escaláveis": <strong>vetorial</strong> porque é feito de formas descritas por números, e <strong>escalável</strong> porque muda de tamanho sem perder a qualidade. Ele é ótimo para logotipos, ícones, gráficos simples, mapas e ilustrações com cores chapadas. Para fotos, continue com JPG ou WebP (aula <a href="formatos-imagem.html">Formatos de imagem</a>).</p>
+
+<hr>
+
+<h2>1. O primeiro desenho</h2>
+<pre class="file" data-file="selo.html" data-resultado>&lt;svg width="120" height="120"&gt;
+  &lt;circle cx="60" cy="60" r="50" fill="darkorange" /&gt;
+&lt;/svg&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;svg width="120" height="120"&gt;</dt><dd>A "folha de papel": uma área de 120 por 120 pixels na página. Tudo o que estiver dentro é desenhado nela.</dd>
+  <dt>&lt;circle … /&gt;</dt><dd>Um círculo. No SVG, uma forma sem nada dentro termina com <code>/&gt;</code> (veja o porquê em <a href="#errado">Quando dá errado</a>).</dd>
+  <dt>cx="60" cy="60"</dt><dd>O <strong>centro</strong> do círculo (<em>center x</em> e <em>center y</em>): 60 para a direita e 60 para baixo.</dd>
+  <dt>r="50"</dt><dd>O <strong>raio</strong>: 50 pixels do centro até a borda.</dd>
+  <dt>fill="darkorange"</dt><dd>A cor de dentro (<em>fill</em> = "preencher"). Aceita os nomes de cor do CSS em inglês (<code>red</code>, <code>gold</code>, <code>darkorange</code>) e códigos como <code>#d35400</code>.</dd>
+</dl>
+
+<h3>As coordenadas: o zero fica em cima</h3>
+<p>Na escola, o gráfico tem o zero embaixo e o <em>y</em> cresce para cima. No SVG (e em quase toda tela de computador), o ponto <code>(0, 0)</code> fica no <strong>canto de cima, à esquerda</strong>. O <code>x</code> cresce para a direita e o <code>y</code> cresce <strong>para baixo</strong>:</p>
+
+<pre class="file" data-file="coordenadas.html" data-resultado>&lt;svg width="200" height="120"&gt;
+  &lt;rect x="0" y="0" width="200" height="120" fill="whitesmoke" stroke="gray" /&gt;
+  &lt;circle cx="0" cy="0" r="6" fill="red" /&gt;
+  &lt;text x="10" y="20"&gt;(0, 0)&lt;/text&gt;
+  &lt;circle cx="150" cy="30" r="6" fill="blue" /&gt;
+  &lt;text x="105" y="55"&gt;(150, 30)&lt;/text&gt;
+  &lt;circle cx="50" cy="100" r="6" fill="green" /&gt;
+  &lt;text x="62" y="105"&gt;(50, 100)&lt;/text&gt;
+&lt;/svg&gt;
+</pre>
+
+<p>O ponto vermelho, em <code>(0, 0)</code>, aparece cortado no canto: só um quarto dele cabe na folha. O azul está bem à direita e perto do topo (<code>y = 30</code>, pequeno). O verde, com <code>y = 100</code>, está perto do <strong>fundo</strong>. Quanto maior o <code>y</code>, mais para baixo.</p>
+
+<hr>
+
+<h2>2. As formas simples</h2>
+<p>O SVG tem poucas formas básicas, e com elas dá para desenhar quase tudo:</p>
+
+<pre class="file" data-file="formas.html" data-resultado>&lt;svg width="460" height="130"&gt;
+  &lt;rect x="10" y="10" width="80" height="60" fill="peru" /&gt;
+  &lt;rect x="10" y="80" width="80" height="40" rx="12" fill="tan" /&gt;
+  &lt;circle cx="140" cy="65" r="40" fill="gold" /&gt;
+  &lt;ellipse cx="240" cy="65" rx="45" ry="25" fill="plum" /&gt;
+  &lt;line x1="300" y1="20" x2="340" y2="110" stroke="black" stroke-width="4" /&gt;
+  &lt;polyline points="350,110 370,30 390,110 410,30" fill="none" stroke="teal" stroke-width="3" /&gt;
+  &lt;polygon points="440,20 455,110 425,110" fill="tomato" /&gt;
+&lt;/svg&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>Atributos</th><th>O que desenha</th></tr>
+<tr><td><code>&lt;rect&gt;</code> (<em>rectangle</em>)</td><td><code>x</code>, <code>y</code> (canto de cima, à esquerda), <code>width</code>, <code>height</code>; <code>rx</code> arredonda os cantos</td><td>retângulo</td></tr>
+<tr><td><code>&lt;circle&gt;</code></td><td><code>cx</code>, <code>cy</code> (centro), <code>r</code> (raio)</td><td>círculo</td></tr>
+<tr><td><code>&lt;ellipse&gt;</code></td><td><code>cx</code>, <code>cy</code>, <code>rx</code> (raio na horizontal), <code>ry</code> (raio na vertical)</td><td>oval</td></tr>
+<tr><td><code>&lt;line&gt;</code></td><td><code>x1</code>, <code>y1</code> (começo), <code>x2</code>, <code>y2</code> (fim)</td><td>reta (precisa de <code>stroke</code>, senão fica invisível)</td></tr>
+<tr><td><code>&lt;polyline&gt;</code></td><td><code>points="x,y x,y …"</code></td><td>linha quebrada, aberta</td></tr>
+<tr><td><code>&lt;polygon&gt;</code></td><td><code>points="x,y x,y …"</code></td><td>figura fechada: liga o último ponto ao primeiro (triângulo, estrela…)</td></tr>
+<tr><td><code>&lt;text&gt;</code></td><td><code>x</code>, <code>y</code> (onde começa a <strong>linha de base</strong> do texto)</td><td>texto</td></tr>
+</table>
+</div>
+
+<p>Repare: as formas são desenhadas na <strong>ordem do código</strong>, como folhas de papel empilhadas. A que vem depois fica <strong>por cima</strong>. Existe também o <code>&lt;path&gt;</code> ("caminho"), que desenha qualquer curva com uma linguagem própria de letras e números (<code>d="M10 10 L90 90"</code>). Ele é o que os programas de desenho geram, mas fica para depois: com as formas simples você já faz muita coisa.</p>
+
+<h3>Cor de dentro e borda: <code>fill</code> e <code>stroke</code></h3>
+<dl class="anatomy">
+  <dt>fill</dt><dd>A cor de dentro. Sem <code>fill</code>, a forma sai <strong>preta</strong>. <code>fill="none"</code> deixa vazada.</dd>
+  <dt>stroke</dt><dd>A cor da borda (<em>stroke</em> = "traço"). Sem <code>stroke</code>, não há borda.</dd>
+  <dt>stroke-width</dt><dd>A grossura da borda. O padrão é 1.</dd>
+  <dt>opacity</dt><dd>A transparência, de <code>0</code> (invisível) a <code>1</code> (normal).</dd>
+</dl>
+
+<div class="tryhtml" data-goal="attr:svg circle[cx]=150,attr:svg circle[cy]=40,attr:svg circle[r]=25,attr:svg circle[fill]=gold">
+<p class="try-task"><strong>Missão:</strong> a paisagem da página "Sobre" da Ana não tem sol. Acrescente um <code>&lt;circle&gt;</code> com o centro em <code>(150, 40)</code>, raio <code>25</code> e cor <code>gold</code>. Depois experimente pôr o sol <strong>antes</strong> do morro, no código, e veja o que muda.</p>
+<pre class="script" data-file="index.html">&lt;svg width="200" height="120"&gt;
+  &lt;rect x="0" y="0" width="200" height="120" fill="lightskyblue" /&gt;
+  &lt;ellipse cx="60" cy="120" rx="110" ry="45" fill="seagreen" /&gt;
+&lt;/svg&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;svg width="200" height="120"&gt;
+  &lt;rect x="0" y="0" width="200" height="120" fill="lightskyblue" /&gt;
+  &lt;ellipse cx="60" cy="120" rx="110" ry="45" fill="seagreen" /&gt;
+  &lt;circle cx="150" cy="40" r="25" fill="gold" /&gt;
+&lt;/svg&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Crescer sem borrar: o <code>viewBox</code></h2>
+<p>Até aqui, cada número era um pixel da tela. O atributo <code>viewBox</code> ("caixa de visão") separa as duas coisas: os números do desenho viram uma <strong>régua própria</strong>, e o <code>width</code> diz o tamanho na tela. O navegador estica a régua para caber.</p>
+
+<pre class="file" data-file="viewbox.html" data-resultado>&lt;svg viewBox="0 0 100 100" width="50" height="50"&gt;
+  &lt;circle cx="50" cy="50" r="45" fill="darkorange" /&gt;
+  &lt;text x="50" y="58" text-anchor="middle" font-size="22" fill="white"&gt;Novo!&lt;/text&gt;
+&lt;/svg&gt;
+&lt;svg viewBox="0 0 100 100" width="150" height="150"&gt;
+  &lt;circle cx="50" cy="50" r="45" fill="darkorange" /&gt;
+  &lt;text x="50" y="58" text-anchor="middle" font-size="22" fill="white"&gt;Novo!&lt;/text&gt;
+&lt;/svg&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>viewBox="0 0 100 100"</dt><dd>Quatro números: o <code>x</code> e o <code>y</code> do canto de cima (0 e 0), e a largura e a altura da régua (100 por 100). O desenho é feito nessa régua.</dd>
+  <dt>width="50" / width="150"</dt><dd>O tamanho na tela. Os dois selos têm o <strong>mesmo</strong> código de desenho; o segundo só foi esticado três vezes, e continua nítido.</dd>
+  <dt>text-anchor="middle"</dt><dd>Faz o <code>x</code> do texto ser o <strong>meio</strong> da palavra, e não o começo. Assim o "Novo!" fica centralizado no círculo.</dd>
+</dl>
+
+<p>Com <code>viewBox</code>, você pode até tirar o <code>width</code> e o <code>height</code> e controlar o tamanho pelo CSS (quer aprender mais? futuro Guia CSS). Sem <code>viewBox</code> e sem tamanho nenhum, o navegador dá ao <code>&lt;svg&gt;</code> um tamanho padrão de 300 por 150 pixels.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> troque o <code>width</code> e o <code>height</code> para <code>300</code>: o selo cresce e continua nítido. Depois mude o <code>viewBox</code> para <code>"0 0 200 200"</code>: a régua dobra, e o mesmo desenho ocupa só um quarto da área. E <code>"25 25 50 50"</code>? É um zoom no meio.</p>
+<pre class="script" data-file="index.html">&lt;svg viewBox="0 0 100 100" width="150" height="150"&gt;
+  &lt;circle cx="50" cy="50" r="45" fill="darkorange" /&gt;
+  &lt;text x="50" y="58" text-anchor="middle" font-size="22" fill="white"&gt;Novo!&lt;/text&gt;
+&lt;/svg&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. SVG acessível</h2>
+<p>Um leitor de tela (aula <a href="leitores-tela.html">Leitores de Tela</a>) não "vê" o círculo laranja. Um <code>&lt;svg&gt;</code> direto no HTML não tem <code>alt</code>; o nome vem de outro jeito:</p>
+
+<pre class="file" data-file="acessivel.html" data-resultado>&lt;svg viewBox="0 0 100 100" width="80" height="80" role="img" aria-labelledby="titulo-selo"&gt;
+  &lt;title id="titulo-selo"&gt;Selo: produto novo&lt;/title&gt;
+  &lt;circle cx="50" cy="50" r="45" fill="darkorange" /&gt;
+  &lt;text x="50" y="58" text-anchor="middle" font-size="22" fill="white"&gt;Novo!&lt;/text&gt;
+&lt;/svg&gt;
+&lt;p&gt;
+  &lt;svg viewBox="0 0 10 10" width="12" height="12" aria-hidden="true"&gt;&lt;circle cx="5" cy="5" r="5" fill="seagreen" /&gt;&lt;/svg&gt;
+  Em estoque
+&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>role="img"</dt><dd>"Trate este desenho como uma imagem só", e não como um monte de formas soltas.</dd>
+  <dt>&lt;title&gt; dentro do &lt;svg&gt;</dt><dd>O <code>&lt;title&gt;</code> do SVG é o texto alternativo do desenho. Ele <strong>não</strong> é o título da página: fica dentro do <code>&lt;svg&gt;</code>, e os navegadores costumam mostrá-lo como dica quando o mouse para em cima.</dd>
+  <dt>aria-labelledby="titulo-selo"</dt><dd>Liga o nome ao desenho pelo <code>id</code> do <code>&lt;title&gt;</code>. Os dois juntos (<code>&lt;title&gt;</code> e <code>aria-labelledby</code>) funcionam na maior parte dos leitores de tela.</dd>
+  <dt>aria-hidden="true"</dt><dd>A bolinha verde é só enfeite: o texto "Em estoque" já diz tudo. Esconda-a do leitor de tela, como o <code>alt=""</code> numa imagem.</dd>
+</dl>
+
+<hr>
+
+<h2>5. Direto no HTML ou com <code>&lt;img&gt;</code>?</h2>
+<p>Um SVG também pode ser um <strong>arquivo</strong> <code>.svg</code>, aberto com <code>&lt;img&gt;</code>, como qualquer imagem. O guia tem um bolo desenhado em SVG:</p>
+
+<pre class="file" data-file="img-svg.html" data-resultado>&lt;img src="assets/midia/bolo.svg" alt="Bolo de cenoura com cobertura de chocolate" width="200" height="150"&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>&lt;svg&gt;</code> direto no HTML</th><th><code>&lt;img src="desenho.svg"&gt;</code></th></tr>
+<tr><td>Texto alternativo</td><td><code>role="img"</code> + <code>&lt;title&gt;</code></td><td><code>alt</code>, como toda imagem</td></tr>
+<tr><td>Mudar as cores pelo CSS da página</td><td>Sim</td><td>Não: o desenho é um arquivo fechado</td></tr>
+<tr><td>Mudar o desenho com JavaScript</td><td>Sim: cada forma é um elemento do DOM</td><td>Não</td></tr>
+<tr><td>O navegador guarda (cache) e reaproveita em várias páginas</td><td>Não: o desenho vem junto com cada página</td><td>Sim</td></tr>
+<tr><td>Deixa o HTML comprido</td><td>Sim, num desenho grande</td><td>Não</td></tr>
+</table>
+</div>
+
+<p><strong>Qual usar:</strong> para um ícone pequeno que muda de cor, um selo, um gráfico que o JavaScript atualiza, use o <code>&lt;svg&gt;</code> direto. Para um logotipo ou uma ilustração que se repete em todas as páginas, um arquivo com <code>&lt;img&gt;</code> (aula <a href="imagens.html">Imagens</a>). Para desenhos que mudam muitas vezes por segundo, como um jogo, existe o <code>&lt;canvas&gt;</code> (aula <a href="canvas.html">canvas</a>).</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>End tag “svg” did not match the name of the current open element (“circle”).</code></strong>
+<p>A Ana escreveu o <code>&lt;circle&gt;</code> como se fosse um <code>&lt;img&gt;</code> do HTML, sem o <code>/&gt;</code>:</p>
+<pre class="file" data-file="semfechar.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Selo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width="120" height="120"&gt;
+  &lt;circle cx="60" cy="60" r="50" fill="darkorange"&gt;
+&lt;/svg&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu semfechar.html
+"file:/home/ana/site/semfechar.html":10.1-10.6: error: End tag “svg” did not match the name of the current open element (“circle”).</pre>
+<p><strong>Por quê:</strong> dentro do <code>&lt;svg&gt;</code>, as regras são as do SVG, e lá <strong>não existem</strong> elementos vazios como o <code>&lt;img&gt;</code> e o <code>&lt;br&gt;</code> do HTML. Um <code>&lt;circle&gt;</code> sem <code>/&gt;</code> fica <strong>aberto</strong>, esperando um <code>&lt;/circle&gt;</code>. O validador diz que o <code>&lt;/svg&gt;</code> "não combina com o elemento aberto agora, o <code>circle</code>".</p>
+<p><strong>O que o navegador faz:</strong> fecha o <code>&lt;circle&gt;</code> sozinho no <code>&lt;/svg&gt;</code>, e o desenho até aparece. Mas a próxima forma que você escrever ficaria <strong>dentro</strong> do círculo, e formas dentro de formas não são desenhadas. <strong>Como consertar:</strong> <code>&lt;circle … /&gt;</code> ou <code>&lt;circle …&gt;&lt;/circle&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>The “circulo” element is a completely-unknown element that is not allowed anywhere in any SVG content.</code></strong>
+<p>Os nomes das formas são em inglês. A Ana escreveu em português:</p>
+<pre class="file" data-file="circulo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Selo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width="120" height="120"&gt;
+  &lt;circulo cx="60" cy="60" r="50" fill="darkorange" /&gt;
+&lt;/svg&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu circulo.html
+"file:/home/ana/site/circulo.html":9.3-9.54: error: Element “circulo” not allowed as child of element “svg” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/circulo.html":9.3-9.54: error: The “circulo” element is a completely-unknown element that is not allowed anywhere in any SVG content.</pre>
+<p><strong>O que o navegador faz:</strong> não conhece <code>circulo</code> e não desenha nada: a folha de 120 por 120 fica vazia. <strong>O que o validador diz:</strong> "o elemento <code>circulo</code> não é permitido dentro de <code>svg</code>" e "é um elemento totalmente desconhecido, que não é permitido em lugar nenhum de um SVG". <strong>Como consertar:</strong> <code>&lt;circle&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>HTML start tag “p” in a foreign namespace context.</code></strong>
+<p>Um parágrafo do HTML dentro do <code>&lt;svg&gt;</code>, para escrever um texto no desenho:</p>
+<pre class="file" data-file="paragrafo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Selo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width="120" height="120"&gt;
+  &lt;circle cx="60" cy="60" r="50" fill="darkorange" /&gt;
+  &lt;p&gt;Novo!&lt;/p&gt;
+&lt;/svg&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu paragrafo.html
+"file:/home/ana/site/paragrafo.html":10.3-10.5: error: HTML start tag “p” in a foreign namespace context.
+"file:/home/ana/site/paragrafo.html":11.1-11.6: error: Stray end tag “svg”.</pre>
+<p><strong>O que o navegador faz:</strong> quando encontra um <code>&lt;p&gt;</code> no meio do SVG, ele <strong>fecha o <code>&lt;svg&gt;</code> ali mesmo</strong> e põe o parágrafo depois, fora do desenho. O "Novo!" aparece embaixo do círculo, e não em cima dele. Veja:</p>
+<pre class="file" data-file="trecho do paragrafo.html" data-resultado>&lt;svg width="120" height="120"&gt;
+  &lt;circle cx="60" cy="60" r="50" fill="darkorange" /&gt;
+  &lt;p&gt;Novo!&lt;/p&gt;
+&lt;/svg&gt;
+</pre>
+<p><strong>O que o validador diz:</strong> "tag de abertura <code>p</code> do HTML num contexto de outro espaço de nomes" (o SVG), e depois "tag de fechamento <code>svg</code> perdida", porque o <code>&lt;svg&gt;</code> já tinha sido fechado. <strong>Como consertar:</strong> dentro do desenho, texto é <code>&lt;text x="…" y="…"&gt;</code>.</p>
+</div>
+
+<h3>O que o validador não vê</h3>
+<p>O validador confere os nomes das tags, mas quase não confere os <strong>valores</strong> dos atributos do SVG. Esta página passa sem nenhuma mensagem:</p>
+
+<pre class="file" data-file="valores.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Valores&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width="240" height="100"&gt;
+  &lt;rect x="10" y="10" width="80" height="80" fill="laranja" /&gt;
+  &lt;circle cx="150" cy="50" r="-30" fill="gold" /&gt;
+  &lt;rect x="190" y="10" width="40" fill="tomato" /&gt;
+&lt;/svg&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose valores.html
+valores.html             « nenhuma mensagem
+$ echo $?
+0</pre>
+
+<p>E o desenho, no seu navegador:</p>
+
+<pre class="file" data-file="trecho de valores.html" data-resultado>&lt;svg width="240" height="100"&gt;
+  &lt;rect x="10" y="10" width="80" height="80" fill="laranja" /&gt;
+  &lt;circle cx="150" cy="50" r="-30" fill="gold" /&gt;
+  &lt;rect x="190" y="10" width="40" fill="tomato" /&gt;
+&lt;/svg&gt;
+</pre>
+
+<div class="cenario">
+<strong>Válido, e o desenho sai errado</strong>
+<ul>
+  <li><code>fill="laranja"</code>: não é uma cor que o navegador conheça. Ele ignora o valor e usa o padrão, o <strong>preto</strong>. Use <code>orange</code>, <code>darkorange</code> ou <code>#e67e22</code>.</li>
+  <li><code>r="-30"</code>: um raio negativo não existe. O círculo não é desenhado.</li>
+  <li>O retângulo sem <code>height</code>: a altura padrão é 0, e ele não aparece.</li>
+</ul>
+<p><strong>Como achar:</strong> olhe o desenho. Uma forma preta que devia ser colorida é quase sempre um nome de cor errado; uma forma que sumiu é um número errado ou um atributo que faltou. O F12 (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>) mostra cada forma como um elemento: passe o mouse por cima e o navegador destaca onde ela está.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;svg width="…" height="…"&gt;</code></td><td>A área do desenho na página</td></tr>
+<tr><td><code>viewBox="0 0 100 100"</code></td><td>A régua do desenho (x, y, largura, altura)</td></tr>
+<tr><td><code>&lt;rect x y width height rx /&gt;</code></td><td>Retângulo (cantos redondos com <code>rx</code>)</td></tr>
+<tr><td><code>&lt;circle cx cy r /&gt;</code></td><td>Círculo</td></tr>
+<tr><td><code>&lt;ellipse cx cy rx ry /&gt;</code></td><td>Oval</td></tr>
+<tr><td><code>&lt;line x1 y1 x2 y2 stroke /&gt;</code></td><td>Reta</td></tr>
+<tr><td><code>&lt;polyline points="x,y …" /&gt;</code> / <code>&lt;polygon points="…" /&gt;</code></td><td>Linha quebrada / figura fechada</td></tr>
+<tr><td><code>&lt;text x y&gt;…&lt;/text&gt;</code></td><td>Texto (<code>text-anchor="middle"</code> centraliza)</td></tr>
+<tr><td><code>fill</code> / <code>stroke</code> / <code>stroke-width</code></td><td>Cor de dentro / cor da borda / grossura da borda</td></tr>
+<tr><td><code>role="img"</code> + <code>&lt;title id&gt;</code> + <code>aria-labelledby</code></td><td>Nome acessível do desenho</td></tr>
+<tr><td><code>aria-hidden="true"</code></td><td>Desenho decorativo, escondido do leitor de tela</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O raio</h3>
+<p>Complete para desenhar um círculo de raio 30:</p>
+<div class="ex-code">&lt;circle cx="50" cy="50" <input data-answer="r" aria-label="atributo">="30" /&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Cor de dentro</h3>
+<p>Complete o atributo que pinta o <strong>interior</strong> da forma:</p>
+<div class="ex-code">&lt;rect x="0" y="0" width="50" height="50" <input data-answer="fill" aria-label="atributo">="gold" /&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Num <code>&lt;svg width="200" height="200"&gt;</code>, onde fica o ponto <code>(0, 200)</code>?</p>
+<label><input type="radio" name="q3"> No canto de cima, à esquerda</label>
+<label><input type="radio" name="q3"> No canto de cima, à direita</label>
+<label><input type="radio" name="q3"> No canto de baixo, à esquerda</label>
+<label><input type="radio" name="q3"> No meio</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Duas formas ocupam o mesmo lugar. Qual aparece por cima?</p>
+<label><input type="radio" name="q4"> A que vem primeiro no código</label>
+<label><input type="radio" name="q4"> A que vem depois no código</label>
+<label><input type="radio" name="q4"> A maior</label>
+<label><input type="radio" name="q4"> A que tem <code>fill</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Um retângulo saiu preto, mas a Ana escreveu <code>fill="vermelho"</code>. Por quê?</p>
+<label><input type="radio" name="q5"> O validador trocou a cor</label>
+<label><input type="radio" name="q5"> Faltou o <code>stroke</code></label>
+<label><input type="radio" name="q5"> Faltou o <code>viewBox</code></label>
+<label><input type="radio" name="q5"> "vermelho" não é um nome de cor válido; o navegador usou o padrão, preto</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Por que um desenho em SVG fica nítido quando é ampliado?</p>
+<label><input type="radio" name="q6"> Porque ele é uma descrição de formas que o navegador redesenha no tamanho novo</label>
+<label><input type="radio" name="q6"> Porque ele tem muitos pixels</label>
+<label><input type="radio" name="q6"> Porque ele é comprimido como um JPG</label>
+<label><input type="radio" name="q6"> Porque ele só funciona em telas grandes</label>
+</div>
+
+<h3>Missão final: o bolo da Ana</h3>
+
+<div class="tryhtml" data-goal="nsel:svg rect=3,sel:svg circle[fill='red'],attr:svg[role]=img,texto:svg title=Bolo,sel:svg[aria-labelledby]">
+<p class="try-task"><strong>Missão:</strong> em cima do pratinho, desenhe um bolo com <strong>dois</strong> <code>&lt;rect&gt;</code> novos (a massa e, por cima, a cobertura de chocolate) e uma cereja: um <code>&lt;circle&gt;</code> com <code>fill="red"</code> em cima da cobertura. Depois deixe o desenho acessível: <code>role="img"</code>, um <code>&lt;title&gt;</code> que comece com "Bolo" e o <code>aria-labelledby</code> apontando para o <code>id</code> do <code>&lt;title&gt;</code>. As medidas são suas; dica: a massa pode ir de <code>y="50"</code> a <code>y="110"</code>.</p>
+<pre class="script" data-file="index.html">&lt;svg viewBox="0 0 160 120" width="240" height="180"&gt;
+  &lt;!-- desenhe o bolo aqui --&gt;
+  &lt;rect x="10" y="110" width="140" height="6" rx="3" fill="lightgray" /&gt;
+&lt;/svg&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;svg viewBox="0 0 160 120" width="240" height="180" role="img" aria-labelledby="titulo-bolo"&gt;
+  &lt;title id="titulo-bolo"&gt;Bolo de cenoura com cobertura de chocolate e uma cereja&lt;/title&gt;
+  &lt;rect x="30" y="50" width="100" height="60" fill="darkorange" /&gt;
+  &lt;rect x="30" y="40" width="100" height="18" rx="6" fill="saddlebrown" /&gt;
+  &lt;circle cx="80" cy="32" r="9" fill="red" /&gt;
+  &lt;rect x="10" y="110" width="140" height="6" rx="3" fill="lightgray" /&gt;
+&lt;/svg&gt;
+</pre>
+</div>
+
+<p>Não precisa ficar igual à solução: qualquer bolo que cumpra a missão vale. Experimente mudar a ordem das formas no código e veja qual fica por cima.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>SVG é um desenho feito de formas descritas por números, direto no HTML. Fica nítido em qualquer tamanho; é ótimo para ícones, logotipos e gráficos, e não para fotos.</li>
+  <li>O <code>(0, 0)</code> fica no canto de cima, à esquerda; o <code>y</code> cresce para baixo.</li>
+  <li>Formas: <code>&lt;rect&gt;</code>, <code>&lt;circle&gt;</code>, <code>&lt;ellipse&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;polyline&gt;</code>, <code>&lt;polygon&gt;</code> e <code>&lt;text&gt;</code>, desenhadas na ordem do código (a última fica por cima).</li>
+  <li><code>fill</code> é a cor de dentro (o padrão é preto), <code>stroke</code> é a borda.</li>
+  <li><code>viewBox</code> cria a régua do desenho, e o <code>width</code>/<code>height</code> o tamanho na tela.</li>
+  <li>Acessível: <code>role="img"</code> com <code>&lt;title&gt;</code> e <code>aria-labelledby</code>; enfeite com <code>aria-hidden="true"</code>. Como arquivo, use <code>&lt;img src="….svg" alt="…"&gt;</code>.</li>
+  <li>No SVG, toda forma se fecha (<code>/&gt;</code>), e nada de tags do HTML dentro. O validador quase não confere os valores: cor errada vira preto, número errado some.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
