@@ -280,7 +280,7 @@ with chocolate. Done!
 <hr>
 
 <h2>5. A legenda não aparece no arquivo aberto do disco</h2>
-<p>A Ana salvou o <code>index.html</code>, o <code>video-bolo.mp4</code> e o <code>bolo-pt.vtt</code> na mesma pasta e abriu a página com dois cliques. O vídeo toca… e a legenda não aparece. O HTML está certo. O problema é o endereço: aberta do disco, a página começa com <code>file://</code>, e, por segurança, o Chrome não deixa uma página <code>file://</code> carregar arquivos de legenda, mesmo da mesma pasta. (No editor desta página funciona, porque o guia é servido como um site de verdade.)</p>
+<p>A Ana salvou o <code>index.html</code>, o <code>video-bolo.mp4</code> e o <code>bolo-pt.vtt</code> na mesma pasta e abriu a página com dois cliques. O vídeo toca… e a legenda não aparece. O HTML está certo. O problema é o endereço: aberta do disco, a página começa com <code>file://</code>, e, por segurança, o Chrome não deixa uma página <code>file://</code> carregar arquivos de legenda, mesmo da mesma pasta. (No editor desta página funciona, porque o guia publicado é servido como um site de verdade. Com o próprio guia aberto direto do disco, o editor usa um modo simples, e a legenda que está numa aba, como o <code>bolo-pt.vtt</code>, também não carrega.)</p>
 
 <p>A solução é abrir a página por um <strong>servidor local</strong>, um programinha que faz o seu computador se comportar como um site (aula <a href="servidor-local.html">Servidor Local</a>). Com o Python, que já vem no Linux e no macOS:</p>
 
