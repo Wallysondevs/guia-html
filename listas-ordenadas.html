@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Listas Numeradas — ol, start, reversed e type | Guia HTML</title>
+<meta name="description" content="Listas numeradas em HTML para quem nunca fez um site: ol e li, começar de outro número com start, contar de trás para frente com reversed, letras e algarismos romanos com type, o value do li e os erros reais do validador W3C (start=&quot;dez&quot;, reversed=&quot;false&quot;), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Listas Numeradas</span></h1>
+
+<p class="intro">Na aula <a href="listas.html">Listas com Marcadores</a>, a Ana listou os ingredientes do bolo, e a ordem não importava. Agora ela vai escrever o <strong>modo de preparo</strong>, e aí a ordem é tudo: ninguém põe o bolo no forno antes de bater a massa. Para listas em que a ordem importa, o HTML tem o <code>&lt;ol&gt;</code>, que <strong>numera os itens sozinho</strong>. Nesta aula você também vai começar de outro número, contar de trás para frente e trocar os números por letras.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como montar uma lista numerada com <code>ol</code> e <code>li</code>.</li>
+  <li>Como começar de outro número com <code>start</code>.</li>
+  <li>Como contar de trás para frente com <code>reversed</code>, e por que <code>reversed="false"</code> não desliga nada.</li>
+  <li>Como trocar os números por letras ou algarismos romanos com <code>type</code>.</li>
+  <li>Como mudar o número de um item só com <code>value</code>.</li>
+  <li>Quando usar <code>ol</code> e quando usar <code>ul</code>.</li>
+  <li>Os erros reais do validador para valores errados nesses atributos.</li>
+</ul>
+</div>
+
+<p>Os quadros <strong>Resultado</strong> são desenhados pelo seu navegador. As mensagens do validador saíram do <code>vnu</code> 26.10.12 na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: os passos da receita</h2>
+<p>Num caderno de receitas, o modo de preparo vem numerado: 1, 2, 3. Se a Ana pular uma linha ou trocar duas de lugar, a receita muda. Os números contam a <strong>ordem</strong>.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tag</th><th>Vem do inglês</th><th>O que é</th></tr>
+<tr><td><code>&lt;ol&gt;</code></td><td><em>ordered list</em>, "lista ordenada"</td><td>a lista inteira, em que a ordem importa</td></tr>
+<tr><td><code>&lt;li&gt;</code></td><td><em>list item</em>, "item da lista"</td><td>cada passo (o mesmo <code>li</code> do <code>ul</code>)</td></tr>
+</table>
+</div>
+
+<p>A diferença para o <code>ul</code> é uma letra só na tag, mas muda o que a lista <strong>significa</strong>: "estes itens estão numa sequência".</p>
+
+<hr>
+
+<h2>1. A primeira lista numerada</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Modo de preparo&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;Bata as cenouras, os ovos e o óleo no liquidificador.&lt;/li&gt;
+  &lt;li&gt;Misture o açúcar e a farinha numa tigela.&lt;/li&gt;
+  &lt;li&gt;Junte tudo e acrescente o fermento.&lt;/li&gt;
+  &lt;li&gt;Asse por 40 minutos.&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;ol&gt; … &lt;/ol&gt;</dt><dd>A lista numerada. O <code>&lt;/ol&gt;</code> é obrigatório.</dd>
+  <dt>&lt;li&gt; … &lt;/li&gt;</dt><dd>Um passo. As mesmas regras do <code>ul</code>: os filhos diretos do <code>ol</code> só podem ser <code>li</code>, e dentro do <code>li</code> cabe texto, link, parágrafo…</dd>
+  <dt>1. 2. 3. 4.</dt><dd>Os números <strong>não estão no código</strong>. O navegador conta os <code>li</code> e escreve o número na frente de cada um, com um ponto, no lugar onde o <code>ul</code> põe a bolinha.</dd>
+</dl>
+
+<p>A vantagem aparece na hora de mudar a receita: se a Ana inserir um passo novo no meio, todos os números de baixo se ajustam sozinhos. Com números digitados à mão, ela teria de renumerar tudo.</p>
+
+<p>A página completa, com o esqueleto de sempre, passa no validador sem nenhuma mensagem:</p>
+
+<pre class="file" data-file="receita.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receita&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;h2&gt;Modo de preparo&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;Bata as cenouras, os ovos e o óleo no liquidificador.&lt;/li&gt;
+  &lt;li&gt;Misture o açúcar e a farinha numa tigela.&lt;/li&gt;
+  &lt;li&gt;Junte tudo e acrescente o fermento.&lt;/li&gt;
+  &lt;li&gt;Asse por 40 minutos.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose receita.html
+receita.html                « só o nome: nenhum erro</pre>
+
+<hr>
+
+<h2>2. Começar de outro número: <code>start</code></h2>
+<p>Às vezes a lista é interrompida no meio: a Ana explica alguma coisa num parágrafo e depois continua os passos. Uma lista nova começaria do 1 de novo. O atributo <code>start</code> ("início") diz de qual número a contagem começa:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ol&gt;
+  &lt;li&gt;Bata as cenouras, os ovos e o óleo.&lt;/li&gt;
+  &lt;li&gt;Misture o açúcar e a farinha.&lt;/li&gt;
+  &lt;li&gt;Junte tudo e acrescente o fermento.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Enquanto o forno esquenta, unte a forma com manteiga.&lt;/p&gt;
+&lt;ol start="4"&gt;
+  &lt;li&gt;Despeje a massa na forma.&lt;/li&gt;
+  &lt;li&gt;Asse por 40 minutos.&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>start="4"</dt><dd>O primeiro item desta lista recebe o número 4; os seguintes continuam: 5, 6… O valor é sempre um <strong>número inteiro</strong> escrito com algarismos. Pode ser 0 ou negativo (<code>start="-1"</code> dá -1, 0, 1…).</dd>
+  <dt>as duas listas</dt><dd>Para o HTML, continuam sendo duas listas separadas. O <code>start</code> só muda o número que aparece.</dd>
+</dl>
+
+<div class="tryhtml" data-goal="nsel:ol=2,attr:ol + p + ol[start]=3">
+<p class="try-task"><strong>Experimente:</strong> a segunda lista deveria continuar a primeira, mas recomeçou do 1. Ponha o atributo certo no <strong>segundo</strong> <code>&lt;ol&gt;</code> para ele começar do 3.</p>
+<pre class="script" data-file="index.html">&lt;ol&gt;
+  &lt;li&gt;Lave as cenouras.&lt;/li&gt;
+  &lt;li&gt;Corte em rodelas.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Dica: não precisa descascar.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Bata no liquidificador com os ovos.&lt;/li&gt;
+  &lt;li&gt;Junte o óleo.&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;ol&gt;
+  &lt;li&gt;Lave as cenouras.&lt;/li&gt;
+  &lt;li&gt;Corte em rodelas.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Dica: não precisa descascar.&lt;/p&gt;
+&lt;ol start="3"&gt;
+  &lt;li&gt;Bata no liquidificador com os ovos.&lt;/li&gt;
+  &lt;li&gt;Junte o óleo.&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. De trás para frente: <code>reversed</code></h2>
+<p>Num ranking do tipo "os 3 bolos mais vendidos", é comum revelar do terceiro para o primeiro. O atributo <code>reversed</code> ("invertido") faz a contagem <strong>descer</strong>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Os mais vendidos da semana&lt;/h2&gt;
+&lt;ol reversed&gt;
+  &lt;li&gt;Bolo de fubá&lt;/li&gt;
+  &lt;li&gt;Bolo de chocolate&lt;/li&gt;
+  &lt;li&gt;Bolo de cenoura&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>reversed</dt><dd>Um <strong>atributo booleano</strong>: ele não tem valor, basta estar escrito. Presente, a lista conta para trás; ausente, conta para frente (aula <a href="atributos.html">Atributos</a>).</dd>
+  <dt>3. 2. 1.</dt><dd>O navegador conta quantos itens há (3) e começa por esse número. Se a Ana acrescentar um quarto bolo, a lista passa a começar do 4, sozinha.</dd>
+</dl>
+
+<p>Repare que <code>reversed</code> <strong>não muda a ordem dos itens</strong>: o fubá continua em cima. Só os números descem. Para o bolo de cenoura ficar com o número 1, ele precisa estar por último no código.</p>
+
+<p><code>reversed</code> e <code>start</code> podem ir juntos. Aí a contagem desce a partir do <code>start</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ol reversed start="10"&gt;
+  &lt;li&gt;Dez&lt;/li&gt;
+  &lt;li&gt;Nove&lt;/li&gt;
+  &lt;li&gt;Oito…&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+
+<hr>
+
+<h2>4. Letras e algarismos romanos: <code>type</code></h2>
+<p>O atributo <code>type</code> ("tipo") troca os números por outro sistema de contagem. São só cinco valores, e <strong>maiúscula e minúscula fazem diferença</strong>:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>type</code></th><th>Conta assim</th><th>Nome</th></tr>
+<tr><td><code>1</code></td><td>1, 2, 3, 4… (o padrão)</td><td>números (decimal)</td></tr>
+<tr><td><code>a</code></td><td>a, b, c, d…</td><td>letras minúsculas</td></tr>
+<tr><td><code>A</code></td><td>A, B, C, D…</td><td>letras maiúsculas</td></tr>
+<tr><td><code>i</code></td><td>i, ii, iii, iv…</td><td>romanos minúsculos</td></tr>
+<tr><td><code>I</code></td><td>I, II, III, IV…</td><td>romanos maiúsculos</td></tr>
+</table>
+</div>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Qual é o ingrediente que deixa o bolo laranja?&lt;/p&gt;
+&lt;ol type="a"&gt;
+  &lt;li&gt;Beterraba&lt;/li&gt;
+  &lt;li&gt;Cenoura&lt;/li&gt;
+  &lt;li&gt;Espinafre&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Capítulos do livro de receitas:&lt;/p&gt;
+&lt;ol type="I"&gt;
+  &lt;li&gt;Bolos&lt;/li&gt;
+  &lt;li&gt;Tortas&lt;/li&gt;
+  &lt;li&gt;Pães&lt;/li&gt;
+  &lt;li&gt;Doces de festa&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>type="a"</dt><dd>Alternativas de prova: a, b, c. Quem lê pode responder "letra b".</dd>
+  <dt>type="I"</dt><dd>Capítulos e partes de documentos: I, II, III, IV.</dd>
+  <dt>start com letras</dt><dd>O <code>start</code> continua sendo um <strong>número</strong>, mesmo com letras: <code>&lt;ol type="a" start="3"&gt;</code> começa do "c" (a terceira letra). <code>start="c"</code> é um erro.</dd>
+</dl>
+
+<div class="note">
+<strong>No <code>ul</code> o <code>type</code> é obsoleto; no <code>ol</code>, não</strong>
+<p>Na aula de <a href="listas.html">Listas com Marcadores</a>, o <code>type</code> do <code>ul</code> deu <em>info warning</em> de obsoleto. No <code>ol</code> ele é válido, porque aqui ele faz parte do <strong>sentido</strong>: num contrato que diz "conforme o item b", trocar as letras por números quebraria o texto. Quando é só enfeite (você prefere letras porque acha bonito), o lugar é o CSS, com a mesma propriedade <code>list-style-type</code> (quer aprender mais? futuro Guia CSS).</p>
+</div>
+
+<hr>
+
+<h2>5. Mudar o número de um item: <code>value</code></h2>
+<p>O <code>li</code> de um <code>ol</code> aceita o atributo <code>value</code> ("valor"), que força o número <strong>daquele</strong> item. Os seguintes continuam contando a partir dele:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ol&gt;
+  &lt;li&gt;Abertura da loja&lt;/li&gt;
+  &lt;li value="10"&gt;Promoção do dia&lt;/li&gt;
+  &lt;li&gt;Sorteio&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+
+<p>O primeiro item é 1, o segundo virou 10, e o terceiro seguiu para 11. O <code>value</code> é raro; quase sempre o <code>start</code> no <code>ol</code> resolve. E ele só vale em itens de <code>ol</code>: num <code>ul</code>, o validador recusa (veja abaixo).</p>
+
+<hr>
+
+<h2>6. <code>ol</code> ou <code>ul</code>?</h2>
+<p>Faça o teste do <strong>embaralhar</strong>: se você trocar os itens de lugar, o sentido muda?</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Conteúdo</th><th>Embaralhar muda o sentido?</th><th>Use</th></tr>
+<tr><td>Ingredientes do bolo</td><td>Não</td><td><code>ul</code></td></tr>
+<tr><td>Modo de preparo</td><td>Sim: o forno não pode vir antes da massa</td><td><code>ol</code></td></tr>
+<tr><td>Ranking dos mais vendidos</td><td>Sim: a posição é a informação</td><td><code>ol</code> (talvez com <code>reversed</code>)</td></tr>
+<tr><td>Menu do site</td><td>Não muito</td><td><code>ul</code></td></tr>
+<tr><td>Alternativas de uma pergunta</td><td>A ordem é usada para responder ("letra b")</td><td><code>ol type="a"</code></td></tr>
+</table>
+</div>
+
+<p>Para o leitor de tela, a escolha também conta: numa <code>ol</code>, ele anuncia o número de cada item.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos completos têm as mesmas 7 primeiras linhas do <code>receita.html</code>; o código mostrado começa na linha 8. Em todos estes casos o navegador não mostra erro nenhum: ele ignora o valor que não entendeu, ou faz algo que você não esperava.</p>
+
+<div class="cenario">
+<strong><code>error: Bad value “dez” for attribute “start” on element “ol”</code></strong>
+<pre class="file" data-file="start-dez.html" data-resultado>&lt;ol start="dez"&gt;
+  &lt;li&gt;Junte tudo.&lt;/li&gt;
+  &lt;li&gt;Asse por 40 minutos.&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu start-dez.html
+"file:/home/ana/site/start-dez.html":8.1-8.16: error: Bad value “dez” for attribute “start” on element “ol”: Expected a minus sign or a digit but saw “d” instead.</pre>
+<p><strong>O que significa:</strong> "valor ruim, <code>dez</code>, para o atributo <code>start</code> no elemento <code>ol</code>: esperava um sinal de menos ou um algarismo, mas vi um <code>d</code>". O validador lê o valor letra por letra e para na primeira que não pode estar num número.</p>
+<p><strong>O que o navegador faz:</strong> ignora o <code>start</code> inteiro e começa do 1, como se ele não existisse.</p>
+<p><strong>Como consertar:</strong> escreva o número com algarismos: <code>start="10"</code>. O mesmo vale para <code>value</code> no <code>li</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “false” for attribute “reversed” on element “ol”.</code></strong>
+<p>A Ana quis "desligar" o <code>reversed</code> escrevendo <code>false</code> ("falso"):</p>
+<pre class="file" data-file="reversed-false.html" data-resultado>&lt;ol reversed="false"&gt;
+  &lt;li&gt;Bronze&lt;/li&gt;
+  &lt;li&gt;Prata&lt;/li&gt;
+  &lt;li&gt;Ouro&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu reversed-false.html
+"file:/home/ana/site/reversed-false.html":8.1-8.21: error: Bad value “false” for attribute “reversed” on element “ol”.</pre>
+<p><strong>O que significa:</strong> um atributo booleano só aceita três formas: <code>reversed</code>, <code>reversed=""</code> ou <code>reversed="reversed"</code>. Qualquer outro valor é erro.</p>
+<p><strong>O que o navegador faz:</strong> a lista sai <strong>invertida</strong> mesmo assim (3, 2, 1). Para o navegador, o que conta é o atributo <strong>existir</strong>; o valor é ignorado. Escrever <code>false</code> não desliga nada.</p>
+<p><strong>Como consertar:</strong> para não inverter, <strong>apague</strong> o atributo. Para inverter, escreva só <code>reversed</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “x” for attribute “type” on element “ol”.</code></strong>
+<pre class="file" data-file="type-x.html">&lt;ol type="x"&gt;
+  &lt;li&gt;Concordo com os termos&lt;/li&gt;
+  &lt;li&gt;Quero receber novidades&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu type-x.html
+"file:/home/ana/site/type-x.html":8.1-8.13: error: Bad value “x” for attribute “type” on element “ol”.</pre>
+<p><strong>O que significa:</strong> o <code>type</code> só aceita <code>1</code>, <code>a</code>, <code>A</code>, <code>i</code> e <code>I</code>. A Ana queria caixinhas de marcar, mas isso não é lista: é formulário (aula <a href="checkbox-radio.html">checkbox e radio</a>).</p>
+<p><strong>O que o navegador faz:</strong> ignora o valor e numera com 1, 2.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Attribute “start” not allowed on element “ul” at this point.</code></strong>
+<pre class="file" data-file="ul-start.html">&lt;ul start="3"&gt;
+  &lt;li&gt;Junte tudo.&lt;/li&gt;
+  &lt;li&gt;Asse por 40 minutos.&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu ul-start.html
+"file:/home/ana/site/ul-start.html":8.1-8.14: error: Attribute “start” not allowed on element “ul” at this point.</pre>
+<p><strong>O que significa:</strong> "o atributo <code>start</code> não é permitido no elemento <code>ul</code> neste ponto". <code>start</code>, <code>reversed</code> e <code>type</code> com letras são do <code>ol</code>; uma lista de bolinhas não tem número para começar. Com <code>&lt;li value="4"&gt;</code> dentro de um <code>ul</code>, a mensagem é a mesma: <em>Attribute “value” not allowed on element “li” at this point.</em></p>
+<p><strong>O que o navegador faz:</strong> desenha bolinhas e ignora o atributo.</p>
+<p><strong>Como consertar:</strong> se os itens têm ordem, troque o <code>ul</code> por <code>ol</code> (abertura e fechamento).</p>
+</div>
+
+<div class="cenario">
+<strong>"1. 1. Bata tudo": o número em dobro (sem erro)</strong>
+<pre class="file" data-file="numero-duplo.html" data-resultado>&lt;ol&gt;
+  &lt;li&gt;1. Bata tudo no liquidificador.&lt;/li&gt;
+  &lt;li&gt;2. Asse por 40 minutos.&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu numero-duplo.html
+$ echo $?
+0                           « válido: o validador não lê o seu texto</pre>
+<p><strong>O que acontece:</strong> o código é válido, mas cada item aparece com dois números, o do navegador e o digitado.</p>
+<p><strong>Como consertar:</strong> apague os números do texto. Num <code>ol</code>, quem numera é o navegador.</p>
+</div>
+
+<div class="cenario">
+<strong>Algarismo romano cortado na margem (sem erro)</strong>
+<p>Com <code>&lt;ol type="I" start="1999"&gt;</code>, o primeiro item é <strong>MCMXCIX</strong>. O recuo que o navegador reserva para o número tem a largura de uns poucos caracteres, e um número comprido passa para fora dele, colado ou até cortado na beirada esquerda. O mesmo acontece com listas de centenas de itens. Não é erro de HTML; o espaço do recuo se ajusta com CSS (<code>padding-left</code>).</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;ol&gt;…&lt;/ol&gt;</code></td><td>Lista numerada (a ordem importa). Filhos diretos: só <code>li</code>.</td></tr>
+<tr><td><code>&lt;ol start="4"&gt;</code></td><td>Começa a contar do 4 (inteiro; pode ser 0 ou negativo).</td></tr>
+<tr><td><code>&lt;ol reversed&gt;</code></td><td>Conta para trás, a partir do número de itens (ou do <code>start</code>).</td></tr>
+<tr><td><code>&lt;ol type="a"&gt;</code></td><td><code>1</code> (padrão), <code>a</code>, <code>A</code>, <code>i</code>, <code>I</code>. Válido no <code>ol</code>.</td></tr>
+<tr><td><code>&lt;li value="10"&gt;</code></td><td>Força o número deste item; os seguintes continuam dele. Só em <code>li</code> de <code>ol</code>.</td></tr>
+<tr><td><code>reversed="false"</code></td><td>Erro no validador, e a lista sai invertida mesmo assim. Para não inverter, apague o atributo.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A tag da lista numerada</h3>
+<p>Complete:</p>
+<div class="ex-code">&lt;<input data-answer="ol" aria-label="tag"> start="5"&gt; &lt;li&gt;Asse.&lt;/li&gt; &lt;/ol&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Letras maiúsculas</h3>
+<p>Qual valor de <code>type</code> numera com A, B, C?</p>
+<div class="ex-code">&lt;ol type="<input data-answer="A" aria-label="valor do type">"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. O que <code>&lt;ol reversed="false"&gt;</code> com 3 itens mostra no navegador?</p>
+<label><input type="radio" name="q3"> 1, 2, 3, porque <code>false</code> desliga o <code>reversed</code></label>
+<label><input type="radio" name="q3"> Uma mensagem de erro</label>
+<label><input type="radio" name="q3"> 3, 2, 1, porque basta o atributo existir (e o validador acusa <em>Bad value “false”</em>)</label>
+<label><input type="radio" name="q3"> Bolinhas no lugar dos números</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. <code>&lt;ol type="a" start="4"&gt;</code>: qual é a marca do primeiro item?</p>
+<label><input type="radio" name="q4"> a</label>
+<label><input type="radio" name="q4"> d</label>
+<label><input type="radio" name="q4"> 4</label>
+<label><input type="radio" name="q4"> 4a</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Qual destas listas pede <code>ol</code>?</p>
+<label><input type="radio" name="q5"> Os passos para instalar um programa</label>
+<label><input type="radio" name="q5"> Os ingredientes de uma salada</label>
+<label><input type="radio" name="q5"> As redes sociais da lojinha</label>
+<label><input type="radio" name="q5"> As cores de um estojo</label>
+</div>
+
+<h3>Missão final: o pódio dos bolos</h3>
+
+<div class="tryhtml" data-goal="sel:ol[reversed],nsel:ol&gt;li=3,nsel:ul=0,texto:ol&gt;li:last-child=cenoura">
+<p class="try-task"><strong>Missão:</strong> a Ana quer mostrar o pódio do concurso de bolos, revelando do 3º lugar para o 1º. Hoje é uma lista de bolinhas. Troque por uma lista <strong>numerada que conta para trás</strong> (3, 2, 1). O campeão, o bolo de <strong>cenoura</strong>, tem de ficar com o número 1, ou seja, por último. Não pode sobrar nenhum <code>ul</code>.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Pódio do concurso&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Bolo de cenoura&lt;/li&gt;
+  &lt;li&gt;Bolo de chocolate&lt;/li&gt;
+  &lt;li&gt;Bolo de fubá&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Pódio do concurso&lt;/h2&gt;
+&lt;ol reversed&gt;
+  &lt;li&gt;Bolo de fubá&lt;/li&gt;
+  &lt;li&gt;Bolo de chocolate&lt;/li&gt;
+  &lt;li&gt;Bolo de cenoura&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+</div>
+
+<p>Duas mudanças foram necessárias: a <strong>tag</strong> (de <code>ul</code> para <code>ol reversed</code>, na abertura e no fechamento) e a <strong>ordem dos itens</strong>, porque o <code>reversed</code> só inverte os números, nunca os itens.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>ol</code> (<em>ordered list</em>) é a lista em que a ordem importa. O navegador numera os <code>li</code> sozinho.</li>
+  <li><code>start="N"</code> começa a contagem do número N (sempre algarismos, mesmo com letras).</li>
+  <li><code>reversed</code> conta para trás. É booleano: basta existir; <code>reversed="false"</code> é erro e ainda inverte.</li>
+  <li><code>type</code>: <code>1</code>, <code>a</code>, <code>A</code>, <code>i</code>, <code>I</code>. É válido no <code>ol</code> quando a marca faz parte do sentido; para enfeite, use CSS.</li>
+  <li><code>value</code> num <code>li</code> de <code>ol</code> força o número daquele item.</li>
+  <li>Teste do embaralhar: se a ordem muda o sentido, <code>ol</code>; senão, <code>ul</code>. Nunca digite os números no texto.</li>
+  <li>Valores errados dão <em>Bad value</em> no validador, e o navegador simplesmente ignora o atributo (menos o <code>reversed</code>).</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
