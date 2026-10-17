@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Open Graph — o cartão do link nas redes sociais | Guia HTML</title>
+<meta name="description" content="Open Graph para quem nunca fez um site: o cartão com imagem, título e resumo que aparece quando um link é colado no WhatsApp, no Telegram ou nas redes sociais. As metas og:title, og:description, og:image, og:url, og:type, og:locale e twitter:card, o atributo property, o endereço completo da imagem e o que o robô lê, com curl e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Open Graph</span></h1>
+
+<p class="intro">Quando você cola um link no WhatsApp, no Telegram, no Facebook ou no LinkedIn, em vez do endereço pelado aparece um <strong>cartão</strong>: uma foto, um título em negrito e uma ou duas linhas de resumo. Quem escolhe essa foto e esse texto é o dono da página, com algumas linhas no <code>&lt;head&gt;</code>. Nesta aula a Ana vai preparar o cartão da receita de bolo de cenoura, para ele chegar bonito no grupo da família.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <strong>Open Graph</strong> e quem lê essas informações.</li>
+  <li>As metas principais: <code>og:title</code>, <code>og:description</code>, <code>og:image</code>, <code>og:url</code> e <code>og:type</code>.</li>
+  <li>Por que elas usam <code>property</code> em vez de <code>name</code>.</li>
+  <li>As regras da imagem: endereço completo, tamanho, texto alternativo.</li>
+  <li>O <code>og:locale</code>, o <code>og:site_name</code> e o <code>twitter:card</code>.</li>
+  <li>Como ver o que o robô da rede social recebe, e por que o cartão às vezes não muda.</li>
+  <li>Os erros reais do validador W3C, e os que ele não vê.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, versão 26.10.12) e servidos com <code>python3 -m http.server</code> na máquina fictícia da Ana, na pasta <code>~/site</code>. O endereço do site, <code>https://ana.exemplo.com/</code>, é fictício. Os cartões de verdade não aparecem nesta página: cada aplicativo desenha o seu, do jeito dele.</p>
+
+<hr>
+
+<h2>A ideia: a etiqueta da caixa de presente</h2>
+<p>Pense numa caixa de presente com uma etiqueta presa na fita: "Para a vó. Bolo de cenoura da Ana". Quem recebe sabe o que é antes de abrir. O cartão do link é essa etiqueta: o aplicativo não abre a sua página para a pessoa; ele lê a etiqueta e mostra um resumo.</p>
+
+<p>Quem cola o link não faz nada. O que acontece por trás:</p>
+<ol class="passo">
+  <li>Você cola <code>https://ana.exemplo.com/bolo-de-cenoura.html</code> numa conversa.</li>
+  <li>Um <strong>robô</strong> do aplicativo baixa o HTML da página, como o <code>curl</code> faz.</li>
+  <li>O robô procura no <code>&lt;head&gt;</code> as metas do <strong>Open Graph</strong> ("grafo aberto"), um padrão criado pelo Facebook em 2010 e hoje lido por quase todo aplicativo de mensagem e rede social. A especificação fica em ogp.me.</li>
+  <li>Com elas, o aplicativo monta o cartão. Sem elas, ele tenta adivinhar com o <code>&lt;title&gt;</code>, a <code>meta description</code> e alguma imagem da página, ou mostra só o endereço.</li>
+</ol>
+
+<hr>
+
+<h2>1. As quatro metas básicas</h2>
+<p>A especificação do Open Graph pede quatro informações em toda página. Veja o <code>&lt;head&gt;</code> da receita da Ana:</p>
+
+<pre class="file" data-file="bolo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura fofinho | Receitas da Ana&lt;/title&gt;
+&lt;meta name="description" content="Bolo de cenoura de liquidificador com cobertura de chocolate. Rende 12 fatias."&gt;
+&lt;meta property="og:title" content="Bolo de cenoura fofinho"&gt;
+&lt;meta property="og:type" content="article"&gt;
+&lt;meta property="og:url" content="https://ana.exemplo.com/bolo-de-cenoura.html"&gt;
+&lt;meta property="og:image" content="https://ana.exemplo.com/fotos/bolo-de-cenoura.jpg"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura fofinho&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;meta property="…" content="…"&gt;</dt><dd>Cada informação é uma <code>&lt;meta&gt;</code> no <code>&lt;head&gt;</code>. O <code>property</code> ("propriedade") diz <strong>qual</strong> informação é; o <code>content</code> ("conteúdo") traz o valor.</dd>
+  <dt>og:title</dt><dd>O título do cartão, em negrito. Pode ser igual ao <code>&lt;title&gt;</code>, ou mais curto, sem o nome do site. O <code>og:</code> no começo quer dizer "do Open Graph".</dd>
+  <dt>og:type</dt><dd>O tipo da coisa: <code>website</code> para a página inicial de um site, <code>article</code> para um artigo, uma receita, um post de blog. Há outros (<code>video.movie</code>, <code>music.song</code>, <code>profile</code>), menos usados.</dd>
+  <dt>og:url</dt><dd>O endereço <strong>oficial</strong> da página, completo. É o mesmo papel do <code>canonical</code> da aula <a href="seo.html">HTML e SEO</a>: se a página abre por vários endereços, os compartilhamentos contam todos para este.</dd>
+  <dt>og:image</dt><dd>O endereço <strong>completo</strong> da imagem do cartão, com <code>https://</code>. Veja a seção 3.</dd>
+</dl>
+
+<div class="note">
+<strong>Por que <code>property</code>, e não <code>name</code>?</strong>
+<p>As metas comuns usam <code>name</code> (<code>&lt;meta name="description"&gt;</code>). O Open Graph nasceu de outro padrão, o <strong>RDFa</strong>, que usa o atributo <code>property</code>. A especificação pede <code>property</code>, e o validador W3C aceita os dois atributos. Na prática, muitos robôs também leem <code>name="og:title"</code>, mas siga a regra: <code>property</code>.</p>
+</div>
+
+<hr>
+
+<h2>2. O resumo e as outras metas úteis</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Meta</th><th>Exemplo</th><th>Para quê</th></tr>
+<tr><td><code>og:description</code></td><td><code>Rende 12 fatias e fica pronto em 50 minutos.</code></td><td>O texto do cartão, embaixo do título. Uma ou duas frases.</td></tr>
+<tr><td><code>og:site_name</code></td><td><code>Receitas da Ana</code></td><td>O nome do site, que alguns aplicativos mostram em letra pequena.</td></tr>
+<tr><td><code>og:locale</code></td><td><code>pt_BR</code></td><td>O idioma, escrito com <strong>sublinhado</strong> (<code>pt_BR</code>), e não com hífen como no <code>lang</code>. O padrão, se faltar, é <code>en_US</code>.</td></tr>
+<tr><td><code>og:image:alt</code></td><td><code>Fatia de bolo de cenoura com cobertura de chocolate</code></td><td>O texto alternativo da imagem do cartão, como o <code>alt</code> (aula <a href="imagens-alt.html">Texto Alternativo</a>).</td></tr>
+<tr><td><code>og:image:width</code> / <code>og:image:height</code></td><td><code>1200</code> / <code>630</code></td><td>O tamanho da imagem em pixels. Ajuda o aplicativo a montar o cartão sem baixar a imagem antes.</td></tr>
+</table>
+</div>
+
+<p>Para ver o que a página está "dizendo" a um robô, este editor tem um <code>script.js</code> que lista no console todas as metas que começam com <code>og:</code>. O JavaScript é só a ferramenta de inspeção; o robô de verdade lê o HTML, sem rodar script nenhum.</p>
+
+<div class="tryhtml" data-goal="attr:meta[property='og:title'][content]=Torta de limão gelada,sel:meta[property='og:description'][content],attr:meta[property='og:locale'][content]=pt_BR">
+<p class="try-task"><strong>Missão:</strong> a página da torta tem só o <code>og:type</code>. Acrescente <code>og:title</code> com o valor <code>Torta de limão gelada</code>, um <code>og:description</code> com um resumo seu e o <code>og:locale</code> do português do Brasil (atenção ao sublinhado). Veja a lista no console.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Torta de limão gelada | Receitas da Ana&lt;/title&gt;
+&lt;meta property="og:type" content="article"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Torta de limão gelada&lt;/h1&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="script.js">// Lista as metas do Open Graph, como um robô leria
+document.querySelectorAll('meta[property^="og:"]').forEach(function (m) {
+  console.log(m.getAttribute("property") + " = " + m.content);
+});
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Torta de limão gelada | Receitas da Ana&lt;/title&gt;
+&lt;meta property="og:type" content="article"&gt;
+&lt;meta property="og:title" content="Torta de limão gelada"&gt;
+&lt;meta property="og:description" content="Sem forno: massa de biscoito, creme de limão e merengue."&gt;
+&lt;meta property="og:locale" content="pt_BR"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Torta de limão gelada&lt;/h1&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. A imagem do cartão</h2>
+<p>A imagem é o que mais chama a atenção no cartão. Três regras:</p>
+
+<ol class="passo">
+  <li><strong>Endereço completo.</strong> <code>content="https://ana.exemplo.com/fotos/bolo.jpg"</code>, e não <code>content="fotos/bolo.jpg"</code>. O robô recebe só o texto da meta, e muitos não sabem completar um caminho relativo (aula <a href="caminhos.html">Caminhos</a>). Com um caminho relativo, o cartão costuma sair sem imagem.</li>
+  <li><strong>Formato largo.</strong> O tamanho mais recomendado é <strong>1200 × 630 pixels</strong> (quase 2 para 1). Cada aplicativo corta a imagem de um jeito, alguns em quadrado: deixe o assunto no meio, sem texto pequeno nas bordas.</li>
+  <li><strong>Leve e pública.</strong> JPG, PNG ou WebP, com poucas centenas de kilobytes. A imagem precisa abrir para qualquer pessoa, sem login: o robô não tem senha.</li>
+</ol>
+
+<pre class="file" data-file="imagem.html">&lt;meta property="og:image" content="https://ana.exemplo.com/fotos/bolo-de-cenoura.jpg"&gt;
+&lt;meta property="og:image:width" content="1200"&gt;
+&lt;meta property="og:image:height" content="630"&gt;
+&lt;meta property="og:image:alt" content="Fatia de bolo de cenoura com cobertura de chocolate"&gt;
+</pre>
+
+<p>Repare que as metas da imagem vêm <strong>logo depois</strong> do <code>og:image</code>: o <code>og:image:width</code> fala da imagem que veio antes dele. Se a página tiver várias imagens, cada <code>og:image</code> é seguido das suas metas.</p>
+
+<div class="tryhtml" data-goal="src:property=&quot;og:image&quot;\s+content=&quot;https://ana\.exemplo\.com/fotos/torta\.jpg&quot;,sel:meta[property='og:image:alt'][content]">
+<p class="try-task"><strong>Missão:</strong> o <code>og:image</code> usa um caminho relativo, que muitos robôs não entendem. Troque pelo endereço completo <code>https://ana.exemplo.com/fotos/torta.jpg</code> e acrescente logo depois um <code>og:image:alt</code> que descreva a foto.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Torta de limão gelada | Receitas da Ana&lt;/title&gt;
+&lt;meta property="og:title" content="Torta de limão gelada"&gt;
+&lt;meta property="og:image" content="fotos/torta.jpg"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Torta de limão gelada&lt;/h1&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="script.js">document.querySelectorAll('meta[property^="og:"]').forEach(function (m) {
+  console.log(m.getAttribute("property") + " = " + m.content);
+});
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Torta de limão gelada | Receitas da Ana&lt;/title&gt;
+&lt;meta property="og:title" content="Torta de limão gelada"&gt;
+&lt;meta property="og:image" content="https://ana.exemplo.com/fotos/torta.jpg"&gt;
+&lt;meta property="og:image:alt" content="Torta de limão com merengue dourado numa travessa"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Torta de limão gelada&lt;/h1&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. O X (antigo Twitter): <code>twitter:card</code></h2>
+<p>O X tem as suas próprias metas, os <em>Cards</em>, com <code>name</code> (e não <code>property</code>). A boa notícia: quando falta uma meta <code>twitter:</code>, ele usa a <code>og:</code> correspondente. Na prática, basta uma meta a mais, que escolhe o formato do cartão:</p>
+
+<pre class="file" data-file="twitter.html">&lt;meta name="twitter:card" content="summary_large_image"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>summary_large_image</dt><dd>Cartão com a imagem grande, em cima do título.</dd>
+  <dt>summary</dt><dd>Cartão pequeno, com uma miniatura quadrada ao lado do título. Sem nenhum <code>twitter:card</code>, o formato fica por conta do X.</dd>
+</dl>
+
+<p>Outros aplicativos (WhatsApp, Telegram, Discord, Slack, LinkedIn, Bluesky) leem o Open Graph direto. Cada um desenha o cartão do seu jeito, mostra ou esconde a descrição, corta a imagem de um jeito: o Open Graph diz <strong>o que</strong> mostrar, e não <strong>como</strong>.</p>
+
+<hr>
+
+<h2>5. O que o robô recebe, e o cartão que não muda</h2>
+<p>Como na aula de SEO, o <code>curl</code> mostra o que um robô baixa. A Ana subiu o servidor local e pediu a página, filtrando as metas do Open Graph:</p>
+
+<pre class="term" data-cwd="~/site">$ python3 -m http.server &amp;
+[1] 4
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+$ curl -s http://localhost:8000/bolo.html | grep 'og:'
+127.0.0.1 - - [17/Oct/2026 15:57:09] "GET /bolo.html HTTP/1.1" 200 -
+&lt;meta property="og:title" content="Bolo de cenoura fofinho"&gt;
+&lt;meta property="og:type" content="article"&gt;
+&lt;meta property="og:url" content="https://ana.exemplo.com/bolo-de-cenoura.html"&gt;
+&lt;meta property="og:image" content="https://ana.exemplo.com/fotos/bolo-de-cenoura.jpg"&gt;
+$ kill %1
+[1]+  Terminado                  python3 -m http.server</pre>
+
+<p>Essas linhas são tudo o que o robô usa. Duas consequências importantes:</p>
+<ul>
+  <li><strong>Precisa estar no HTML.</strong> Uma meta criada pelo JavaScript depois que a página abre <strong>não</strong> aparece para o robô: ele não roda o script. O teste é o <code>curl</code>.</li>
+  <li><strong>Precisa estar na internet.</strong> O robô do WhatsApp não alcança o <code>localhost</code> do seu computador. Para testar um cartão de verdade, a página tem de estar publicada (aula <a href="publicar.html">Publicar no GitHub Pages</a>).</li>
+</ul>
+
+<div class="warning">
+<strong>"Mudei a foto e o cartão continua o antigo"</strong>
+<p>Os aplicativos guardam o cartão de cada endereço por um tempo (o <em>cache</em>), para não baixar a página a cada vez que alguém cola o link. Depois de mudar as metas, o cartão antigo pode continuar aparecendo por horas ou dias. Algumas redes oferecem ferramentas gratuitas para o dono do site conferir as metas e pedir uma leitura nova: o Facebook tem o <strong>Sharing Debugger</strong> ("depurador de compartilhamento") e o LinkedIn, o <strong>Post Inspector</strong>. Elas também mostram os erros que o robô encontrou, como uma imagem que não abre.</p>
+</div>
+
+<hr>
+
+<h2>Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Metas</th></tr>
+<tr><td>Toda página que pode ser compartilhada</td><td><code>og:title</code>, <code>og:type</code>, <code>og:url</code>, <code>og:image</code> (e <code>og:description</code>)</td></tr>
+<tr><td>Site em português</td><td><code>og:locale</code> = <code>pt_BR</code></td></tr>
+<tr><td>Imagem do cartão</td><td><code>og:image</code> com <code>https://</code>, 1200 × 630, mais <code>og:image:alt</code></td></tr>
+<tr><td>Cartão grande no X</td><td><code>&lt;meta name="twitter:card" content="summary_large_image"&gt;</code></td></tr>
+<tr><td>Página inicial do site</td><td><code>og:type</code> = <code>website</code></td></tr>
+<tr><td>Receita, artigo, post</td><td><code>og:type</code> = <code>article</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>Element “meta” is missing required attribute “content”.</code></strong>
+<p>A Ana escreveu o valor no lugar errado, como texto dentro da meta:</p>
+<pre class="file" data-file="semvalor.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura | Receitas da Ana&lt;/title&gt;
+&lt;meta property="og:title"&gt;Bolo de cenoura
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu semvalor.html
+"file:/home/ana/site/semvalor.html":6.1-6.26: error: Element “meta” is missing required attribute “content”.
+"file:/home/ana/site/semvalor.html":7.1-7.7: error: Stray end tag “head”.
+"file:/home/ana/site/semvalor.html":8.1-8.6: error: Start tag “body” seen but an element of the same type was already open.</pre>
+<p><strong>O que o navegador faz:</strong> o <code>&lt;meta&gt;</code> é um elemento vazio (não tem tag de fechamento), então o texto "Bolo de cenoura" não fica dentro dele. Pior: texto solto não pode ficar no <code>&lt;head&gt;</code>, então o navegador fecha o <code>&lt;head&gt;</code> ali e começa o <code>&lt;body&gt;</code> mais cedo. O título do cartão fica vazio.</p>
+<p><strong>O que o validador diz:</strong> "falta à <code>meta</code> o atributo obrigatório <code>content</code>". Os outros dois erros são o efeito do texto solto: "tag de fechamento <code>head</code> perdida" (o <code>&lt;head&gt;</code> já tinha sido fechado pelo navegador) e "tag de abertura <code>body</code> vista, mas já havia um <code>body</code> aberto".</p>
+<p><strong>Como consertar:</strong> <code>&lt;meta property="og:title" content="Bolo de cenoura"&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Element “meta” is missing one or more of the following attributes: “http-equiv”, “itemprop”, “name”, “property”.</code></strong>
+<p>Uma <code>&lt;meta content="…"&gt;</code> sem dizer que informação é aquela:</p>
+<pre class="file" data-file="semnome.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura | Receitas da Ana&lt;/title&gt;
+&lt;meta content="Bolo de cenoura"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu semnome.html
+"file:/home/ana/site/semnome.html":6.1-6.32: error: Element “meta” is missing one or more of the following attributes: “http-equiv”, “itemprop”, “name”, “property”.</pre>
+<p>"Falta à <code>meta</code> um destes atributos: <code>http-equiv</code>, <code>itemprop</code>, <code>name</code>, <code>property</code>." Sem eles, a meta é um valor sem etiqueta. <strong>Como consertar:</strong> acrescente <code>property="og:title"</code>.</p>
+</div>
+
+<h3>O que o validador não vê</h3>
+<p>O validador confere se as metas estão bem escritas, mas não conhece as regras do Open Graph. Esta página passa sem nenhuma mensagem e gera um cartão ruim:</p>
+
+<pre class="file" data-file="cartao-ruim.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura | Receitas da Ana&lt;/title&gt;
+&lt;meta property="og:titulo" content="Bolo de cenoura"&gt;
+&lt;meta property="og:image" content="fotos/bolo.jpg"&gt;
+&lt;meta property="og:locale" content="pt-BR"&gt;
+&lt;meta property="og:title" content="Bolo de cenoura"&gt;
+&lt;meta property="og:title" content="Torta de limão"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose cartao-ruim.html
+cartao-ruim.html         « nenhuma mensagem
+$ echo $?
+0</pre>
+
+<div class="cenario">
+<strong>Válido, e o cartão sai errado</strong>
+<ul>
+  <li><code>og:titulo</code>: o nome é sempre em inglês. Nenhum robô procura "titulo".</li>
+  <li><code>og:image</code> relativo: muitos robôs não acham a imagem.</li>
+  <li><code>og:locale</code> com hífen: o Open Graph usa <code>pt_BR</code>, com sublinhado.</li>
+  <li>Dois <code>og:title</code> diferentes: cada robô escolhe um, geralmente o primeiro.</li>
+</ul>
+<p><strong>Como achar:</strong> o <code>curl</code> com <code>grep 'og:'</code> e, depois de publicar, as ferramentas de inspeção das redes.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Meta</th><th>Valor</th></tr>
+<tr><td><code>&lt;meta property="og:title" content="…"&gt;</code></td><td>Título do cartão</td></tr>
+<tr><td><code>&lt;meta property="og:description" content="…"&gt;</code></td><td>Resumo do cartão</td></tr>
+<tr><td><code>&lt;meta property="og:type" content="article"&gt;</code></td><td><code>website</code>, <code>article</code>…</td></tr>
+<tr><td><code>&lt;meta property="og:url" content="https://…"&gt;</code></td><td>Endereço oficial, completo</td></tr>
+<tr><td><code>&lt;meta property="og:image" content="https://…"&gt;</code></td><td>Imagem do cartão, endereço completo (1200 × 630)</td></tr>
+<tr><td><code>og:image:alt</code>, <code>og:image:width</code>, <code>og:image:height</code></td><td>Texto alternativo e tamanho da imagem anterior</td></tr>
+<tr><td><code>og:site_name</code></td><td>Nome do site</td></tr>
+<tr><td><code>og:locale</code></td><td>Idioma com sublinhado: <code>pt_BR</code></td></tr>
+<tr><td><code>&lt;meta name="twitter:card" content="summary_large_image"&gt;</code></td><td>Cartão grande no X</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O atributo</h3>
+<p>Complete com o atributo que o Open Graph usa:</p>
+<div class="ex-code">&lt;meta <input data-answer="property" aria-label="atributo">="og:title" content="Bolo de cenoura"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O idioma</h3>
+<p>Complete o <code>og:locale</code> do português do Brasil:</p>
+<div class="ex-code">&lt;meta property="og:locale" content="<input data-answer="pt_BR" aria-label="valor">"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Por que o <code>og:image</code> deve ter o endereço completo, com <code>https://</code>?</p>
+<label><input type="radio" name="q3"> Porque o validador dá erro com caminho relativo</label>
+<label><input type="radio" name="q3"> Porque a imagem fica maior</label>
+<label><input type="radio" name="q3"> Porque o robô recebe só o texto da meta, e muitos não completam um caminho relativo</label>
+<label><input type="radio" name="q3"> Porque o navegador não mostra a imagem</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. A Ana trocou a foto do <code>og:image</code>, mas o WhatsApp continua mostrando a antiga. O motivo mais provável:</p>
+<label><input type="radio" name="q4"> O HTML está inválido</label>
+<label><input type="radio" name="q4"> O aplicativo guardou o cartão antigo (cache)</label>
+<label><input type="radio" name="q4"> O WhatsApp não lê Open Graph</label>
+<label><input type="radio" name="q4"> Falta o <code>twitter:card</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Uma meta <code>og:title</code> criada por JavaScript depois que a página abre…</p>
+<label><input type="radio" name="q5"> aparece no cartão normalmente</label>
+<label><input type="radio" name="q5"> substitui o <code>&lt;title&gt;</code></label>
+<label><input type="radio" name="q5"> dá erro no validador</label>
+<label><input type="radio" name="q5"> não é vista pelo robô, que não roda o script</label>
+</div>
+
+<h3>Missão final: o cartão do pão de queijo</h3>
+
+<div class="tryhtml" data-goal="attr:meta[property='og:title'][content]=Pão de queijo mineiro,sel:meta[property='og:description'][content],attr:meta[property='og:type'][content]=article,attr:meta[property='og:url'][content]=https://ana.exemplo.com/pao-de-queijo.html,attr:meta[property='og:image'][content]=https://ana.exemplo.com/fotos/pao-de-queijo.jpg,sel:meta[property='og:image:alt'][content],attr:meta[property='og:locale'][content]=pt_BR,attr:meta[name='twitter:card'][content]=summary_large_image">
+<p class="try-task"><strong>Missão:</strong> monte o cartão completo da página <code>https://ana.exemplo.com/pao-de-queijo.html</code>: <code>og:title</code> = <code>Pão de queijo mineiro</code>, um <code>og:description</code>, <code>og:type</code> = <code>article</code>, o <code>og:url</code> da página, <code>og:image</code> = <code>https://ana.exemplo.com/fotos/pao-de-queijo.jpg</code> com o seu <code>og:image:alt</code>, <code>og:locale</code> do Brasil e o <code>twitter:card</code> de imagem grande. O console lista as metas <code>og:</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Pão de queijo mineiro | Receitas da Ana&lt;/title&gt;
+&lt;meta name="description" content="Pão de queijo de polvilho azedo e queijo meia-cura. Rende 30 unidades."&gt;
+&lt;!-- as metas do cartão vão aqui --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pão de queijo mineiro&lt;/h1&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="script.js">document.querySelectorAll('meta[property^="og:"]').forEach(function (m) {
+  console.log(m.getAttribute("property") + " = " + m.content);
+});
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Pão de queijo mineiro | Receitas da Ana&lt;/title&gt;
+&lt;meta name="description" content="Pão de queijo de polvilho azedo e queijo meia-cura. Rende 30 unidades."&gt;
+&lt;meta property="og:title" content="Pão de queijo mineiro"&gt;
+&lt;meta property="og:description" content="Crocante por fora, macio por dentro. Rende 30 unidades."&gt;
+&lt;meta property="og:type" content="article"&gt;
+&lt;meta property="og:url" content="https://ana.exemplo.com/pao-de-queijo.html"&gt;
+&lt;meta property="og:image" content="https://ana.exemplo.com/fotos/pao-de-queijo.jpg"&gt;
+&lt;meta property="og:image:alt" content="Cesta de pães de queijo dourados"&gt;
+&lt;meta property="og:locale" content="pt_BR"&gt;
+&lt;meta name="twitter:card" content="summary_large_image"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pão de queijo mineiro&lt;/h1&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <strong>Open Graph</strong> é a etiqueta do link: as metas que os aplicativos de mensagem e as redes sociais leem para montar o cartão.</li>
+  <li>As metas usam <code>property="og:…"</code> e <code>content="…"</code>, no <code>&lt;head&gt;</code>.</li>
+  <li>As básicas: <code>og:title</code>, <code>og:type</code>, <code>og:url</code>, <code>og:image</code>; mais <code>og:description</code>, <code>og:site_name</code> e <code>og:locale</code> (<code>pt_BR</code>, com sublinhado).</li>
+  <li>A imagem: endereço completo com <code>https://</code>, 1200 × 630, leve, pública e com <code>og:image:alt</code>.</li>
+  <li>No X, <code>twitter:card</code> escolhe o formato; o resto vem do Open Graph.</li>
+  <li>O robô lê só o HTML que chega pela rede (veja com <code>curl</code>) e guarda o cartão por um tempo.</li>
+  <li>O validador pega meta sem <code>content</code> ou sem nome, mas não conhece as regras do Open Graph: nomes em português, imagem relativa e locale com hífen passam calados.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
