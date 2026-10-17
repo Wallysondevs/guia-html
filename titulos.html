@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Títulos — h1 a h6 e a ordem certa | Guia HTML</title>
+<meta name="description" content="Títulos em HTML para quem nunca fez um site: os seis níveis, de h1 a h6, como montar o sumário da página, por que não se pula nível, um só h1, subtítulo com hgroup, o que o navegador faz com um título sem fechar e as mensagens reais do validador W3C, com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Títulos</span></h1>
+
+<p class="intro">Abra qualquer jornal: tem a manchete grande no alto, os títulos das seções e, dentro delas, os títulos menores de cada notícia. Você entende como o jornal está organizado antes de ler uma linha. Numa página da web é igual, e quem faz esse trabalho são os <strong>títulos</strong>: as tags <code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code>. Nesta aula você vai usá-las para montar o "sumário" do site de receitas da Ana e vai ver o erro mais comum com elas, que o validador W3C pega: <strong>pular um nível</strong>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Os seis níveis de título, do <code>&lt;h1&gt;</code> ao <code>&lt;h6&gt;</code>, e como o navegador desenha cada um.</li>
+  <li>Como os títulos formam o <strong>sumário</strong> da página, e por que leitores de tela e buscadores dependem dele.</li>
+  <li>A regra da ordem: descer um nível por vez (<code>h1</code> → <code>h2</code> → <code>h3</code>) e subir quando quiser.</li>
+  <li>Por que escolher o título pelo <strong>nível</strong>, e não pelo tamanho da letra.</li>
+  <li>Um só <code>&lt;h1&gt;</code> por página, e o subtítulo com <code>&lt;hgroup&gt;</code>.</li>
+  <li>O que o navegador e o validador fazem com um título pulado, vazio, sem fechar ou dentro de um parágrafo.</li>
+</ul>
+</div>
+
+<p>Os exemplos desta aula são desenhados <strong>pelo seu próprio navegador</strong>, no quadro "Resultado" embaixo de cada código. As mensagens do validador são reais: saíram do <code>vnu</code> (o validador do W3C, o mesmo do site validator.w3.org) na máquina fictícia da Ana, na pasta <code>~/site</code>. Se ainda não viu como usar o validador, a aula <a href="validar.html">Validar o HTML</a> explica.</p>
+
+<hr>
+
+<h2>A ideia: o sumário de um livro</h2>
+<p>Pense no sumário de um livro de receitas:</p>
+
+<pre class="file" data-file="sumário do livro">Receitas da Ana
+  1. Bolos
+     1.1 Bolo de cenoura
+     1.2 Bolo de fubá
+  2. Tortas
+     2.1 Torta de limão
+</pre>
+
+<p>Há um título para o livro inteiro, títulos de capítulo e, dentro de cada capítulo, títulos de receita. Cada nível fica "dentro" do nível de cima. Em HTML, esses níveis têm números:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No livro</th><th>Em HTML</th><th>No site da Ana</th></tr>
+<tr><td>Título do livro</td><td><code>&lt;h1&gt;</code> (nível 1)</td><td>Receitas da Ana</td></tr>
+<tr><td>Capítulo</td><td><code>&lt;h2&gt;</code> (nível 2)</td><td>Bolos, Tortas</td></tr>
+<tr><td>Seção do capítulo</td><td><code>&lt;h3&gt;</code> (nível 3)</td><td>Bolo de cenoura, Bolo de fubá</td></tr>
+<tr><td>Partes menores</td><td><code>&lt;h4&gt;</code>, <code>&lt;h5&gt;</code>, <code>&lt;h6&gt;</code></td><td>Ingredientes, Massa, Cobertura…</td></tr>
+</table>
+</div>
+
+<p>O <strong>h</strong> vem de <em>heading</em>, "título" (ou "cabeçalho") em inglês, e o número é o <strong>nível</strong>: 1 é o mais importante, 6 é o mais "fundo". O HTML para no 6; não existe <code>&lt;h7&gt;</code>.</p>
+
+<hr>
+
+<h2>1. O primeiro título</h2>
+<p>Um título é um elemento como outro qualquer (veja <a href="elementos.html">Elementos e Tags</a>): tag de abertura, o texto e a tag de fechamento.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Pratos simples, testados na cozinha de casa.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;h1&gt;</dt><dd>Abre um título de <strong>nível 1</strong>, o título principal da página.</dd>
+  <dt>Receitas da Ana</dt><dd>O texto do título. Escreva o que um visitante precisa saber para entender do que trata a página (ou a seção).</dd>
+  <dt>&lt;/h1&gt;</dt><dd>Fecha o título. O número do fechamento tem de ser <strong>o mesmo</strong> da abertura. Esquecer o fechamento dá um efeito bem estranho, que você vai ver em <a href="#errado">Quando dá errado</a>.</dd>
+  <dt>&lt;p&gt;…&lt;/p&gt;</dt><dd>Um parágrafo comum, para comparar. Parágrafos têm aula própria: <a href="paragrafos.html">Parágrafos</a>.</dd>
+</dl>
+
+<p>Repare no resultado: você não pediu letra grande nem negrito, e o título saiu assim. Cada navegador traz um <strong>estilo padrão</strong> para cada elemento, e o de um título é letra maior, em negrito, com um espaço em cima e embaixo. Um título também é um elemento <strong>de bloco</strong>: ocupa a linha inteira, e o que vem depois começa na linha de baixo (mais em <a href="bloco-inline.html">Bloco × Em Linha</a>).</p>
+
+<div class="tryhtml" data-goal="texto:h1=Receitas da Ana,texto:h2=Bolos">
+<p class="try-task"><strong>Experimente:</strong> troque o título "Meu site" por <code>Receitas da Ana</code>. Depois, embaixo do parágrafo, crie um título de nível 2 com o texto <code>Bolos</code>: <code>&lt;h2&gt;Bolos&lt;/h2&gt;</code>. Veja que ele sai menor que o <code>h1</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Meu site&lt;/h1&gt;
+&lt;p&gt;Pratos simples, testados na cozinha de casa.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Pratos simples, testados na cozinha de casa.&lt;/p&gt;
+&lt;h2&gt;Bolos&lt;/h2&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Os seis níveis</h2>
+<p>Aqui estão todos, do maior para o menor, um embaixo do outro:</p>
+
+<pre class="file" data-file="niveis.html" data-resultado>&lt;h1&gt;Nível 1: o título da página&lt;/h1&gt;
+&lt;h2&gt;Nível 2: um capítulo&lt;/h2&gt;
+&lt;h3&gt;Nível 3: uma seção do capítulo&lt;/h3&gt;
+&lt;h4&gt;Nível 4: uma parte da seção&lt;/h4&gt;
+&lt;h5&gt;Nível 5: raro&lt;/h5&gt;
+&lt;h6&gt;Nível 6: muito raro&lt;/h6&gt;
+&lt;p&gt;Um parágrafo comum, para comparar.&lt;/p&gt;
+</pre>
+
+<p>O tamanho padrão de cada um, medido no Chromium (o motor do Chrome e do Edge) com o texto normal da página em 16 pixels, é este. Firefox e Safari usam praticamente os mesmos valores:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Tamanho padrão</th><th>Comparado ao texto normal</th></tr>
+<tr><td><code>&lt;h1&gt;</code></td><td>32px</td><td>2 vezes</td></tr>
+<tr><td><code>&lt;h2&gt;</code></td><td>24px</td><td>1,5 vez</td></tr>
+<tr><td><code>&lt;h3&gt;</code></td><td>18,72px</td><td>1,17 vez</td></tr>
+<tr><td><code>&lt;h4&gt;</code></td><td>16px</td><td>igual (só fica em negrito)</td></tr>
+<tr><td><code>&lt;h5&gt;</code></td><td>13,28px</td><td>menor que o texto</td></tr>
+<tr><td><code>&lt;h6&gt;</code></td><td>10,72px</td><td>bem menor que o texto</td></tr>
+<tr><td><code>&lt;p&gt;</code></td><td>16px</td><td>o texto normal</td></tr>
+</table>
+</div>
+
+<p>Repare: o <code>&lt;h5&gt;</code> e o <code>&lt;h6&gt;</code> saem <strong>menores</strong> que um parágrafo. Isso confunde muita gente, e mostra que o tamanho não é o que importa num título. Na prática, quase todo site usa só do <code>h1</code> ao <code>h3</code> ou <code>h4</code>. Se você precisar de <code>h5</code> e <code>h6</code>, provavelmente a página está grande demais e vale dividi-la em duas.</p>
+
+<div class="tip">
+<strong>Pixel?</strong>
+<p>Um <strong>pixel</strong> (<em>px</em>, de <em>picture element</em>, "elemento da imagem") é a unidade de medida de tamanho na tela. Você não precisa decorar esses números; eles estão aqui só para mostrar que cada nível tem um tamanho padrão, que o CSS pode mudar.</p>
+</div>
+
+<hr>
+
+<h2>3. Os títulos formam o sumário da página</h2>
+<p>Agora o site da Ana, com o sumário do livro lá de cima escrito em HTML:</p>
+
+<pre class="file" data-file="certo.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Pratos simples, testados na cozinha de casa.&lt;/p&gt;
+&lt;h2&gt;Bolos&lt;/h2&gt;
+&lt;h3&gt;Bolo de cenoura&lt;/h3&gt;
+&lt;p&gt;Massa fofinha com cobertura de chocolate.&lt;/p&gt;
+&lt;h3&gt;Bolo de fubá&lt;/h3&gt;
+&lt;p&gt;O preferido do café da tarde.&lt;/p&gt;
+&lt;h2&gt;Tortas&lt;/h2&gt;
+&lt;h3&gt;Torta de limão&lt;/h3&gt;
+&lt;p&gt;Azedinha e gelada.&lt;/p&gt;
+</pre>
+
+<p>Leia o código de cima para baixo e repare que o HTML <strong>não</strong> coloca o conteúdo "dentro" do título. O título é só a linha do título; o que vem depois dele, até o próximo título do mesmo nível ou de nível mais alto, é a <strong>seção</strong> que ele abre:</p>
+
+<ol class="passo">
+  <li>O <code>h1</code> "Receitas da Ana" abre a página inteira.</li>
+  <li>O <code>h2</code> "Bolos" abre um capítulo. Tudo até o próximo <code>h2</code> é sobre bolos.</li>
+  <li>Os dois <code>h3</code> são seções dentro de "Bolos": cada um vai até o próximo <code>h3</code> ou <code>h2</code>.</li>
+  <li>O <code>h2</code> "Tortas" fecha o capítulo dos bolos e abre outro, no mesmo nível.</li>
+</ol>
+
+<p>Quem lê só os títulos enxerga exatamente o sumário do livro:</p>
+
+<pre class="file" data-file="sumário (só os títulos)">h1 Receitas da Ana
+   h2 Bolos
+      h3 Bolo de cenoura
+      h3 Bolo de fubá
+   h2 Tortas
+      h3 Torta de limão
+</pre>
+
+<h3>Quem usa esse sumário</h3>
+<ul>
+  <li><strong>Leitores de tela.</strong> Uma pessoa cega ouve a página por um programa que lê o texto em voz alta (aula <a href="leitores-tela.html">Leitores de Tela</a>). Ninguém quer ouvir a página inteira para achar a torta de limão. Esses programas têm atalhos para pular de título em título, ou para listar todos os títulos, como um sumário falado. Pesquisas com usuários de leitores de tela mostram que pular pelos títulos é o jeito mais comum de procurar algo numa página.</li>
+  <li><strong>Buscadores.</strong> O Google e os outros usam os títulos para entender do que a página trata (aula <a href="seo.html">HTML e SEO</a>).</li>
+  <li><strong>Você.</strong> Um visitante com pressa passa os olhos só pelos títulos antes de decidir se lê. Títulos claros seguram esse visitante.</li>
+</ul>
+
+<p>No navegador, você pode ver os títulos de qualquer página nas ferramentas do desenvolvedor (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor (F12)</a>): no painel de elementos, cada <code>h1</code>, <code>h2</code>… aparece com o seu número.</p>
+
+<hr>
+
+<h2>4. A regra da ordem: desça um nível por vez</h2>
+<p>A regra é uma só, e é a mesma do sumário de um livro: <strong>para descer, desça um degrau por vez</strong>. Depois de um <code>h1</code> vem um <code>h2</code>; depois de um <code>h2</code>, um <code>h3</code> (ou outro <code>h2</code>). Um livro não tem a seção "1.1.1" sem ter antes a "1.1".</p>
+
+<p>Para <strong>subir</strong>, pode pular à vontade: depois de um <code>h4</code> pode vir direto um <code>h2</code>, porque isso só quer dizer "acabou este capítulo, começa outro".</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Depois de…</th><th>Pode vir</th><th>Não pode vir</th></tr>
+<tr><td><code>h1</code></td><td><code>h2</code></td><td><code>h3</code>, <code>h4</code>, <code>h5</code>, <code>h6</code> (pulam nível)</td></tr>
+<tr><td><code>h2</code></td><td><code>h3</code>, outro <code>h2</code></td><td><code>h4</code>, <code>h5</code>, <code>h6</code></td></tr>
+<tr><td><code>h3</code></td><td><code>h4</code>, outro <code>h3</code>, ou subir para <code>h2</code></td><td><code>h5</code>, <code>h6</code></td></tr>
+<tr><td><code>h4</code></td><td><code>h5</code>, outro <code>h4</code>, ou subir para <code>h3</code> ou <code>h2</code></td><td><code>h6</code></td></tr>
+</table>
+</div>
+
+<h3>O erro de pular nível</h3>
+<p>A Ana achou o <code>h2</code> grande demais para "Bolos" e usou um <code>h3</code>, que é menor. Na tela, ficou com a cara que ela queria:</p>
+
+<pre class="file" data-file="pulo.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h3&gt;Bolos&lt;/h3&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O navegador desenhou tudo sem reclamar. Mas o sumário agora tem um buraco: "Bolos" virou a seção "1.1.1" de um livro sem "1.1". Quem navega pelos títulos com um leitor de tela ouve "título nível 1, Receitas da Ana", depois "título nível 3, Bolos", e fica se perguntando se perdeu alguma parte. O validador pega o problema:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu pulo.html
+"file:/home/ana/site/pulo.html":9.1-9.4: error: The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.</pre>
+
+<dl class="anatomy">
+  <dt>"file:/home/ana/site/pulo.html"</dt><dd>O arquivo que tem o problema.</dd>
+  <dt>9.1-9.4</dt><dd>Linha 9, da coluna 1 à coluna 4: é exatamente o <code>&lt;h3&gt;</code> da linha 9.</dd>
+  <dt>error:</dt><dd>É um <strong>erro</strong>, não um simples aviso: o validador termina com código de saída 1, como em qualquer HTML inválido.</dd>
+  <dt>The heading “h3” (with computed level 3)</dt><dd>"O título <code>h3</code> (com nível calculado 3)". O "nível calculado" é o nível que vale de verdade para aquele título; numa página simples, é o próprio número da tag.</dd>
+  <dt>follows the heading “h1” (with computed level 1)</dt><dd>"vem depois do título <code>h1</code> (com nível calculado 1)".</dd>
+  <dt>skipping 1 heading level</dt><dd>"pulando 1 nível de título": faltou o nível 2.</dd>
+</dl>
+
+<p>O conserto é trocar <code>&lt;h3&gt;Bolos&lt;/h3&gt;</code> por <code>&lt;h2&gt;Bolos&lt;/h2&gt;</code>. E se a Ana quer o título menor? Isso é <strong>aparência</strong>, e aparência é trabalho do CSS: o <code>h2</code> continua <code>h2</code>, só com outra letra (veja <a href="ligar-css.html">Ligar CSS</a>; quer aprender mais? futuro Guia CSS).</p>
+
+<p>O mesmo erro aparece em qualquer nível. Aqui, o <code>h4</code> veio logo depois de um <code>h2</code>:</p>
+
+<pre class="file" data-file="pulo2.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h2&gt;Bolos&lt;/h2&gt;
+&lt;h4&gt;Bolo de cenoura&lt;/h4&gt;
+&lt;h4&gt;Bolo de fubá&lt;/h4&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu pulo2.html
+"file:/home/ana/site/pulo2.html":10.1-10.4: error: The heading “h4” (with computed level 4) follows the heading “h2” (with computed level 2), skipping 1 heading level.
+$ echo $?
+1                        « 1 = o validador achou erro</pre>
+
+<p>Repare que o validador acusou só a linha 10, o <strong>primeiro</strong> <code>h4</code>. O segundo <code>h4</code> vem depois de outro <code>h4</code>, e isso é permitido. Conserte o primeiro pulo (aqui, os dois <code>h4</code> viram <code>h3</code>) e valide de novo.</p>
+
+<div class="tryhtml" data-goal="nsel:h2=2,nsel:h3=0,texto:h2=Bolos">
+<p class="try-task"><strong>Missão:</strong> o sumário desta página tem buracos: depois do <code>h1</code> vêm direto dois <code>h3</code>. Conserte os dois títulos, "Bolos" e "Tortas", para o nível certo. Não esqueça de trocar o número também na tag de fechamento.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h3&gt;Bolos&lt;/h3&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;h3&gt;Tortas&lt;/h3&gt;
+&lt;p&gt;Torta de limão, azedinha e gelada.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h2&gt;Bolos&lt;/h2&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;h2&gt;Tortas&lt;/h2&gt;
+&lt;p&gt;Torta de limão, azedinha e gelada.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. Escolha pelo nível, não pelo tamanho</h2>
+<p>A pergunta certa nunca é "qual título tem o tamanho que eu quero?". É "<strong>de que nível é este assunto?</strong>". A tabela mostra os usos errados mais comuns:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O que a pessoa quer</th><th>O erro</th><th>O certo</th></tr>
+<tr><td>Um título menor</td><td>Usar <code>h3</code> ou <code>h4</code> no lugar de <code>h2</code></td><td>Usar o nível certo e mudar o tamanho com CSS</td></tr>
+<tr><td>Destacar uma frase no meio do texto</td><td>Pôr a frase num <code>h2</code> para ela ficar grande</td><td>Ela não abre uma seção, então não é título: use <code>&lt;strong&gt;</code> (aula <a href="negrito-italico.html">Negrito e Itálico</a>)</td></tr>
+<tr><td>Uma letra miudinha para o rodapé</td><td>Usar <code>h6</code></td><td>É texto comum: um <code>&lt;p&gt;</code>, ou <code>&lt;small&gt;</code> (aula <a href="formatacao.html">Formatação</a>)</td></tr>
+<tr><td>Um título que só "parece" título</td><td>Um <code>&lt;p&gt;</code> com letra grande e negrito</td><td>Se abre uma seção, use <code>h2</code>, <code>h3</code>…: só assim leitores de tela e buscadores o reconhecem</td></tr>
+</table>
+</div>
+
+<p>O último caso é o contrário dos outros e acontece muito: um parágrafo enfeitado com CSS para parecer título. Para os olhos, funciona. Para um leitor de tela, aquilo é só mais um parágrafo, e o atalho de pular de título em título passa direto por ele.</p>
+
+<div class="warning">
+<strong>E o atributo <code>align</code>?</strong>
+<p>Em sites antigos você vai achar <code>&lt;h1 align="center"&gt;</code> para centralizar o título. O navegador ainda obedece, mas o atributo é <strong>obsoleto</strong>. O validador avisa:</p>
+<pre class="term" data-cwd="~/site">$ vnu align.html
+"file:/home/ana/site/align.html":8.1-8.19: info warning: The “align” attribute on the “h1” element is obsolete. Use CSS instead.</pre>
+<p>"O atributo <code>align</code> no elemento <code>h1</code> é obsoleto. Use CSS no lugar." É um <code>info warning</code> (um aviso informativo): o código de saída continua 0, mas siga o conselho e centralize com CSS.</p>
+</div>
+
+<hr>
+
+<h2>6. Um só <code>h1</code> por página</h2>
+<p>O <code>h1</code> é o título <strong>da página</strong>: diz, numa frase, do que ela trata. Na página da receita de bolo de cenoura, o <code>h1</code> é "Bolo de cenoura"; na página inicial, pode ser "Receitas da Ana". Um livro tem um título só.</p>
+
+<p>O validador aceita dois <code>h1</code> sem dizer nada (o arquivo <code>dois.html</code>, com <code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code> e <code>&lt;h1&gt;Bolos&lt;/h1&gt;</code>, passa limpo). Mesmo assim, a recomendação dos especialistas em acessibilidade é <strong>um <code>h1</code> por página</strong>: quem pula direto para o <code>h1</code> espera achar o assunto da página, e não um entre vários.</p>
+
+<p>E uma página sem nenhum <code>h1</code>? O validador avisa, mas não chama de erro:</p>
+
+<pre class="file" data-file="semh1.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Bolos&lt;/h2&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu semh1.html
+"file:/home/ana/site/semh1.html":8.1-8.4: info warning: This document has heading elements but none of them has a computed heading level of 1.</pre>
+
+<p>"Este documento tem elementos de título, mas nenhum deles tem nível calculado 1." Em outras palavras: a página começou o sumário pelo capítulo e esqueceu o nome do livro.</p>
+
+<div class="note">
+<strong>O título da página × o <code>&lt;title&gt;</code></strong>
+<p>Não confunda o <code>&lt;h1&gt;</code> com o <code>&lt;title&gt;</code> do <code>&lt;head&gt;</code>. O <code>&lt;title&gt;</code> é o texto que aparece na <strong>aba</strong> do navegador e no resultado do Google; ele não aparece dentro da página. O <code>&lt;h1&gt;</code> é o título <strong>visível</strong>, no alto do conteúdo. Muitas vezes os dois têm um texto parecido. O <code>&lt;title&gt;</code> tem aula própria: <a href="meta.html">title e meta</a>.</p>
+</div>
+
+<hr>
+
+<h2>7. Subtítulo: <code>hgroup</code></h2>
+<p>O site da Ana tem um slogan embaixo do nome: "Comida de casa, sem complicação". A primeira ideia de muita gente é um <code>h2</code>:</p>
+
+<pre class="file" data-file="subtitulo.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h2&gt;Comida de casa, sem complicação&lt;/h2&gt;
+&lt;h2&gt;Bolos&lt;/h2&gt;
+</pre>
+
+<p>O validador não reclama, mas o sumário ficou errado: o slogan virou um "capítulo" ao lado de "Bolos", e um capítulo vazio. Um slogan não abre seção nenhuma; ele faz parte do título. Para isso existe o <code>&lt;hgroup&gt;</code> (de <em>heading group</em>, "grupo de título"): junta um título com um ou mais parágrafos de subtítulo.</p>
+
+<pre class="file" data-file="hgroup.html" data-resultado>&lt;hgroup&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Comida de casa, sem complicação&lt;/p&gt;
+&lt;/hgroup&gt;
+&lt;h2&gt;Bolos&lt;/h2&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;hgroup&gt;</dt><dd>Abre o grupo. Dentro dele vai <strong>um</strong> título (<code>h1</code> a <code>h6</code>) e um ou mais <code>&lt;p&gt;</code>.</dd>
+  <dt>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</dt><dd>O título de verdade, o único que entra no sumário.</dd>
+  <dt>&lt;p&gt;Comida de casa…&lt;/p&gt;</dt><dd>O subtítulo. É um parágrafo, então não conta como nível.</dd>
+</dl>
+
+<p>Na tela, o slogan aparece como um parágrafo comum. O que muda é o sumário: agora ele tem só o <code>h1</code> e, abaixo, o capítulo "Bolos". Sem <code>hgroup</code>, um simples <code>&lt;p&gt;</code> logo depois do <code>h1</code> também está correto; o <code>hgroup</code> só deixa claro que o parágrafo pertence ao título.</p>
+
+<div class="note">
+<strong>Títulos dentro de <code>section</code> e <code>article</code></strong>
+<p>Mais adiante você vai dividir a página com <code>&lt;section&gt;</code> e <code>&lt;article&gt;</code> (aula <a href="section-article.html">section e article</a>). Mesmo lá dentro, a regra continua a mesma desta aula: o nível é o número da tag, e você desce um degrau por vez. Textos antigos diziam que um <code>h1</code> dentro de cada <code>section</code> virava nível 2 sozinho; os navegadores nunca trataram o título assim para os leitores de tela, e essa regra saiu do padrão em 2022.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O navegador quase nunca mostra um erro: ele <strong>conserta sozinho</strong> o que encontra, e às vezes o conserto é bem diferente do que você queria. Em cada caso abaixo, o quadro "Resultado" mostra o que o seu navegador fez de verdade.</p>
+
+<div class="cenario">
+<strong>Esqueceu de fechar o título</strong>
+<p>A Ana esqueceu o <code>&lt;/h1&gt;</code>:</p>
+<pre class="file" data-file="semfechar.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;h2&gt;Tortas&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> sem o fechamento, o título continua aberto, e o parágrafo vai parar <strong>dentro</strong> do <code>h1</code>. Por isso a frase do bolo sai enorme e em negrito, como se fosse parte do título. Quem fecha o <code>h1</code> é o <code>&lt;h2&gt;</code>: um título novo fecha o anterior, se ainda estiver aberto. A página que o navegador montou ficou assim (é o que você veria no F12):</p>
+<pre class="file" data-file="o que o navegador montou">&lt;h1&gt;Receitas da Ana
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/h1&gt;&lt;h2&gt;Tortas&lt;/h2&gt;
+</pre>
+<p><strong>O validador:</strong></p>
+<pre class="term" data-cwd="~/site">$ vnu semfechar.html
+"file:/home/ana/site/semfechar.html":9.1-9.3: error: Element “p” not allowed as child of element “h1” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/semfechar.html":10.1-10.4: error: Heading cannot be a child of another heading.</pre>
+<p>A primeira mensagem diz "o elemento <code>p</code> não é permitido como filho do elemento <code>h1</code> neste contexto (os próximos erros dentro deste trecho serão omitidos)": um título só pode ter texto e elementos de frase (como <code>strong</code>), nunca um parágrafo. A segunda diz "um título não pode ser filho de outro título": o validador também viu o <code>h2</code> chegando com o <code>h1</code> ainda aberto. Repare que ele aponta as linhas 9 e 10, e não a 8, onde o erro realmente está. Quando o validador aponta um parágrafo "dentro" de um título, procure o fechamento que faltou <strong>acima</strong>.</p>
+<p><strong>Como consertar:</strong> feche o título no fim da linha: <code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:h1 p=0,texto:h1=Receitas da Ana,nsel:p=1">
+<p class="try-task"><strong>Missão:</strong> veja no resultado como o parágrafo ficou gigante. Conserte o código para que o parágrafo volte ao tamanho normal, fora do título.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana
+&lt;p&gt;Pratos simples, testados na cozinha de casa.&lt;/p&gt;
+&lt;h2&gt;Bolos&lt;/h2&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Pratos simples, testados na cozinha de casa.&lt;/p&gt;
+&lt;h2&gt;Bolos&lt;/h2&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Fechou com o número errado: <code>&lt;h1&gt;…&lt;/h2&gt;</code></strong>
+<pre class="file" data-file="fechaerrado.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h2&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> aqui ele é bonzinho. Um fechamento de título com o número errado fecha o título que estiver aberto, então o resultado sai igual ao de <code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code>. Você não vê nada de estranho na tela, e é por isso que esse erro passa despercebido.</p>
+<pre class="term" data-cwd="~/site">$ vnu fechaerrado.html
+"file:/home/ana/site/fechaerrado.html":8.20-8.24: error: End tag “h2” seen, but there were open elements.</pre>
+<p>"Foi vista a tag de fechamento <code>h2</code>, mas havia elementos abertos": o validador encontrou um <code>&lt;/h2&gt;</code> (linha 8, colunas 20 a 24) quando quem estava aberto era o <code>h1</code>.</p>
+<p><strong>Como consertar:</strong> o número do fechamento tem de ser igual ao da abertura: <code>&lt;/h1&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Título dentro de um parágrafo</strong>
+<pre class="file" data-file="dentrop.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;&lt;h2&gt;Bolos&lt;/h2&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> um parágrafo não pode conter um título. Quando o navegador encontra o <code>&lt;h2&gt;</code>, ele <strong>fecha</strong> o parágrafo antes. Depois, o <code>&lt;/p&gt;</code> do fim fica sem par, e o navegador cria um parágrafo novo, vazio, só para ele. Resultado: dois parágrafos vazios, um antes e um depois do título:</p>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;&lt;/p&gt;&lt;h2&gt;Bolos&lt;/h2&gt;&lt;p&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dentrop.html
+"file:/home/ana/site/dentrop.html":8.18-8.21: error: No “p” element in scope but a “p” end tag seen.
+"file:/home/ana/site/dentrop.html":8.4-8.7: info warning: This document has heading elements but none of them has a computed heading level of 1.</pre>
+<p>"Nenhum elemento <code>p</code> aberto, mas foi vista uma tag de fechamento <code>p</code>." O validador reclama do <code>&lt;/p&gt;</code> (colunas 18 a 21), porque o parágrafo já tinha sido fechado pelo <code>&lt;h2&gt;</code>. O aviso de baixo é o mesmo da seção 6: a página não tem <code>h1</code>.</p>
+<p><strong>Como consertar:</strong> título e parágrafo ficam <strong>lado a lado</strong>, nunca um dentro do outro: <code>&lt;h2&gt;Bolos&lt;/h2&gt;</code> sozinho.</p>
+</div>
+
+<div class="cenario">
+<strong>Título vazio</strong>
+<pre class="file" data-file="vazio.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> na tela, nada; no máximo um espaço em branco a mais. Mas o título existe, e um leitor de tela anuncia "título nível 2" seguido de silêncio. Isso costuma acontecer quando alguém usa um título vazio só para "dar espaço" entre partes da página.</p>
+<pre class="term" data-cwd="~/site">$ vnu vazio.html
+"file:/home/ana/site/vazio.html":9.1-9.4: info warning: Empty heading.</pre>
+<p>"Título vazio." É só um aviso (código de saída 0), mas leve a sério.</p>
+<p><strong>Como consertar:</strong> escreva o texto do título ou apague a linha. Espaço entre partes se faz com CSS.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;h7&gt;</code> não existe</strong>
+<pre class="file" data-file="h7.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h7&gt;Dica da vovó&lt;/h7&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> ele não conhece <code>h7</code>, então trata como um elemento sem significado nenhum: o texto sai normal, sem negrito, sem tamanho especial, no meio da linha (como um texto solto). Não é título para ninguém.</p>
+<pre class="term" data-cwd="~/site">$ vnu h7.html
+"file:/home/ana/site/h7.html":9.1-9.4: error: Element “h7” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/h7.html":9.1-9.4: error: The “h7” element is a completely-unknown element that is not allowed anywhere in any HTML content.</pre>
+<p>"O elemento <code>h7</code> não é permitido como filho do <code>body</code> neste contexto" e "o elemento <code>h7</code> é completamente desconhecido e não é permitido em lugar nenhum do HTML".</p>
+<p><strong>Como consertar:</strong> use <code>h1</code> a <code>h6</code>. Se a página "precisa" de um sétimo nível, ela está organizada fundo demais: reorganize ou divida em mais páginas.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;h1&gt;…&lt;/h1&gt;</code></td><td>Título da página (um por página)</td></tr>
+<tr><td><code>&lt;h2&gt;…&lt;/h2&gt;</code></td><td>Título de uma seção principal (capítulo)</td></tr>
+<tr><td><code>&lt;h3&gt;…&lt;/h3&gt;</code></td><td>Título de uma parte dentro de um <code>h2</code></td></tr>
+<tr><td><code>&lt;h4&gt;</code>, <code>&lt;h5&gt;</code>, <code>&lt;h6&gt;</code></td><td>Níveis mais fundos (raros)</td></tr>
+<tr><td><code>&lt;hgroup&gt;&lt;h1&gt;…&lt;/h1&gt;&lt;p&gt;…&lt;/p&gt;&lt;/hgroup&gt;</code></td><td>Título com subtítulo; o <code>p</code> não entra no sumário</td></tr>
+<tr><td>Descer de nível</td><td>Um degrau por vez: <code>h1</code> → <code>h2</code> → <code>h3</code></td></tr>
+<tr><td>Subir de nível</td><td>Livre: depois de <code>h4</code> pode vir <code>h2</code></td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem do validador</th><th>Quer dizer</th></tr>
+<tr><td><code>The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.</code></td><td>Pulou um nível ao descer (error)</td></tr>
+<tr><td><code>This document has heading elements but none of them has a computed heading level of 1.</code></td><td>A página não tem <code>h1</code> (info warning)</td></tr>
+<tr><td><code>Empty heading.</code></td><td>Título sem texto (info warning)</td></tr>
+<tr><td><code>Element “p” not allowed as child of element “h1” in this context.</code></td><td>Um parágrafo ficou dentro do título: faltou o <code>&lt;/h1&gt;</code> (error)</td></tr>
+<tr><td><code>Heading cannot be a child of another heading.</code></td><td>Um título começou com outro ainda aberto (error)</td></tr>
+<tr><td><code>End tag “h2” seen, but there were open elements.</code></td><td>Fechamento com o número errado (error)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O título da página</h3>
+<p>Complete com a tag do título principal da página:</p>
+<div class="ex-code">&lt;<input data-answer="h1" aria-label="tag de abertura">&gt;Bolo de cenoura&lt;/h1&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Um degrau abaixo</h3>
+<p>Dentro do capítulo <code>&lt;h2&gt;Bolos&lt;/h2&gt;</code>, a Ana quer o título da receita "Bolo de fubá". Complete as duas tags:</p>
+<div class="ex-code">&lt;<input data-answer="h3" aria-label="tag de abertura">&gt;Bolo de fubá&lt;/<input data-answer="h3" aria-label="tag de fechamento">&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Qual destas sequências de títulos o validador acusa como erro?</p>
+<label><input type="radio" name="q3"> h1, h2, h3, h2</label>
+<label><input type="radio" name="q3"> h1, h2, h2, h2</label>
+<label><input type="radio" name="q3"> h1, h2, h4</label>
+<label><input type="radio" name="q3"> h1, h2, h3, h4, h2</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. A Ana escreveu <code>&lt;h1&gt;Receitas</code> sem fechar e, na linha de baixo, um <code>&lt;p&gt;</code>. O que o navegador mostra?</p>
+<label><input type="radio" name="q4"> Uma mensagem de erro no lugar da página</label>
+<label><input type="radio" name="q4"> O parágrafo dentro do título: grande e em negrito</label>
+<label><input type="radio" name="q4"> A página em branco</label>
+<label><input type="radio" name="q4"> Tudo normal, porque o navegador ignora o erro</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. A Ana quer uma frase em letra pequena no fim da página, com o aviso "Fotos tiradas em casa". O que ela deve usar?</p>
+<label><input type="radio" name="q5"> <code>&lt;h6&gt;</code>, porque é o título menor</label>
+<label><input type="radio" name="q5"> <code>&lt;h5&gt;</code>, porque o <code>h6</code> é pequeno demais</label>
+<label><input type="radio" name="q5"> <code>&lt;h7&gt;</code></label>
+<label><input type="radio" name="q5"> Um parágrafo (<code>&lt;p&gt;</code>), porque a frase não é título de nenhuma seção</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Depois de um <code>&lt;h4&gt;</code>, qual título pode vir em seguida sem erro?</p>
+<label><input type="radio" name="q6"> <code>&lt;h2&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;h6&gt;</code></label>
+<label><input type="radio" name="q6"> Nenhum: depois de <code>h4</code> só pode vir <code>h5</code></label>
+<label><input type="radio" name="q6"> Só outro <code>&lt;h4&gt;</code></label>
+</div>
+
+<h3>Missão final: a página da receita</h3>
+
+<div class="tryhtml" data-goal="texto:h1=Bolo de Cenoura,nsel:h1=1,nsel:h2=2,nsel:h3=2,texto:h2=Ingredientes,texto:h2 ~ h2=Modo de preparo,nsel:h2 ~ h2 ~ h3=2,texto:h3=Massa,texto:h3 ~ h3=Cobertura,nsel:p=4">
+<p class="try-task"><strong>Missão:</strong> a Ana escreveu a receita toda em parágrafos, e ficou sem sumário. Transforme em títulos as linhas que abrem uma parte, cada uma no nível certo: "Bolo de Cenoura" é o título da página; "Ingredientes" e "Modo de preparo" são capítulos; "Massa" e "Cobertura" são partes do modo de preparo. Os outros quatro parágrafos continuam parágrafos. Sem pular nível.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Bolo de Cenoura&lt;/p&gt;
+&lt;p&gt;Rende 12 pedaços e fica pronto em 50 minutos.&lt;/p&gt;
+&lt;p&gt;Ingredientes&lt;/p&gt;
+&lt;p&gt;3 cenouras, 3 ovos, 1 xícara de óleo e 2 xícaras de farinha.&lt;/p&gt;
+&lt;p&gt;Modo de preparo&lt;/p&gt;
+&lt;p&gt;Massa&lt;/p&gt;
+&lt;p&gt;Bata a cenoura, os ovos e o óleo no liquidificador e misture a farinha.&lt;/p&gt;
+&lt;p&gt;Cobertura&lt;/p&gt;
+&lt;p&gt;Derreta o chocolate com o leite e espalhe sobre o bolo.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de Cenoura&lt;/h1&gt;
+&lt;p&gt;Rende 12 pedaços e fica pronto em 50 minutos.&lt;/p&gt;
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;p&gt;3 cenouras, 3 ovos, 1 xícara de óleo e 2 xícaras de farinha.&lt;/p&gt;
+&lt;h2&gt;Modo de preparo&lt;/h2&gt;
+&lt;h3&gt;Massa&lt;/h3&gt;
+&lt;p&gt;Bata a cenoura, os ovos e o óleo no liquidificador e misture a farinha.&lt;/p&gt;
+&lt;h3&gt;Cobertura&lt;/h3&gt;
+&lt;p&gt;Derreta o chocolate com o leite e espalhe sobre o bolo.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Compare o resultado antes e depois: o texto é o mesmo, mas agora a página tem um sumário que os olhos, os leitores de tela e os buscadores conseguem seguir. Os ingredientes ainda estão num parágrafo só, separados por vírgula; numa lista eles ficariam bem melhores, e isso você aprende em <a href="listas.html">Listas com Marcadores</a>.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Os títulos vão de <code>&lt;h1&gt;</code> (o mais importante) a <code>&lt;h6&gt;</code>. Não existe <code>&lt;h7&gt;</code>.</li>
+  <li>Os títulos formam o <strong>sumário</strong> da página: cada um abre uma seção que vai até o próximo título do mesmo nível ou de nível mais alto. Leitores de tela e buscadores navegam por eles.</li>
+  <li>Para descer, um degrau por vez (<code>h1</code> → <code>h2</code> → <code>h3</code>); para subir, livre. Pular um nível dá <code>error: The heading “h3” … skipping 1 heading level</code> no validador.</li>
+  <li>Escolha o título pelo <strong>nível</strong> do assunto, nunca pelo tamanho. O tamanho se muda com CSS.</li>
+  <li>Um <code>&lt;h1&gt;</code> por página, com o assunto dela. Subtítulo vai num <code>&lt;p&gt;</code>, de preferência dentro de <code>&lt;hgroup&gt;</code> junto com o título.</li>
+  <li>Feche sempre o título, com o mesmo número. Sem o fechamento, o parágrafo seguinte vai parar dentro do título. Títulos nunca vão dentro de parágrafos.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
