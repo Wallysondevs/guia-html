@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML robots.txt e sitemap — falar com os robôs de busca | Guia HTML</title>
+<meta name="description" content="robots.txt e sitemap.xml para quem nunca fez um site: os dois arquivos da raiz do site que conversam com os robôs dos buscadores. User-agent, Disallow, Allow e Sitemap; a lista de páginas em XML com loc e lastmod; a diferença entre robots.txt e noindex; conferidos com curl, o urllib.robotparser do Python e um servidor local de verdade.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">robots.txt e sitemap</span></h1>
+
+<p class="intro">Nas aulas de <a href="seo.html">SEO</a> e de <a href="open-graph.html">Open Graph</a>, você conversou com os robôs <strong>dentro</strong> de cada página, com metas no <code>&lt;head&gt;</code>. Esta aula é sobre dois arquivos que conversam com eles pelo site <strong>inteiro</strong>, e que não são HTML: o <code>robots.txt</code>, que diz aos robôs por onde eles <strong>não</strong> devem andar, e o <code>sitemap.xml</code>, a lista das páginas que você <strong>quer</strong> que eles encontrem. A Ana vai criar os dois para o site de receitas e conferir no servidor local, como um robô faria.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Onde fica o <code>robots.txt</code> e como os robôs o procuram.</li>
+  <li>As linhas <code>User-agent</code>, <code>Disallow</code>, <code>Allow</code> e <code>Sitemap</code>.</li>
+  <li>Por que o <code>robots.txt</code> não protege nada, e a diferença para o <code>noindex</code>.</li>
+  <li>O formato do <code>sitemap.xml</code>: <code>&lt;urlset&gt;</code>, <code>&lt;url&gt;</code>, <code>&lt;loc&gt;</code> e <code>&lt;lastmod&gt;</code>.</li>
+  <li>Como pedir os dois arquivos ao servidor local com <code>curl</code>, e como perguntar a um robô do Python se ele pode visitar uma página.</li>
+  <li>Os erros mais comuns, com as mensagens reais.</li>
+</ul>
+</div>
+
+<p>Tudo nesta aula foi feito na máquina fictícia da Ana, na pasta <code>~/site</code>, com <code>python3 -m http.server</code>, <code>curl</code> e o Python 3.14. O endereço do site publicado, <code>https://ana.exemplo.com/</code>, é fictício.</p>
+
+<hr>
+
+<h2>A ideia: a placa no portão e o mapa na recepção</h2>
+<p>Imagine que um fiscal vem visitar a confeitaria da Ana. No portão há uma <strong>placa</strong>: "Visitantes: não entrem na despensa nem no escritório". Na recepção há um <strong>mapa</strong> com todas as salas que valem a visita. O fiscal educado lê a placa e usa o mapa. Mas a placa não tranca porta nenhuma: quem quiser entrar na despensa, entra.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na confeitaria</th><th>No site</th><th>Formato</th></tr>
+<tr><td>A placa no portão</td><td><code>robots.txt</code></td><td>texto simples, uma regra por linha</td></tr>
+<tr><td>O mapa na recepção</td><td><code>sitemap.xml</code></td><td>XML, uma lista de endereços</td></tr>
+<tr><td>O fiscal</td><td>o robô do buscador (<em>crawler</em>)</td><td>—</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. Onde ficam os arquivos</h2>
+<p>O robô procura o <code>robots.txt</code> num lugar só: a <strong>raiz</strong> do endereço, logo depois do domínio. Para o site da Ana, <code>https://ana.exemplo.com/robots.txt</code>. Ele não procura em pastas. Esta é a pasta do site, com os dois arquivos ao lado do <code>index.html</code>:</p>
+
+<pre class="term" data-cwd="~/site">$ tree
+.
+├── bolo-de-cenoura.html
+├── busca.html
+├── index.html
+├── mapa-ecomercial.xml
+├── mapa-maiuscula.xml
+├── rascunhos
+│   └── torta-nova.html
+├── robots.txt
+├── sitemap.xml
+└── torta-de-limao.html
+
+2 directories, 9 files</pre>
+
+<div class="warning">
+<strong>Site em subpasta não tem <code>robots.txt</code> próprio</strong>
+<p>No GitHub Pages, um site de projeto fica numa subpasta: <code>https://usuario.github.io/receitas/</code>. Um <code>robots.txt</code> dentro dessa pasta (<code>/receitas/robots.txt</code>) <strong>não é lido</strong>: os robôs só pedem <code>https://usuario.github.io/robots.txt</code>. Para ter um <code>robots.txt</code> que valha, o site precisa estar na raiz do endereço (um domínio próprio ou o site de usuário). O <code>sitemap.xml</code> não tem esse problema: ele pode ficar em qualquer lugar, desde que você diga onde (seção 4).</p>
+</div>
+
+<hr>
+
+<h2>2. O <code>robots.txt</code></h2>
+<p>É um arquivo de texto simples, sem HTML, com o nome em letras minúsculas. Este é o da Ana:</p>
+
+<pre class="file" data-file="robots.txt"># robots.txt do site Receitas da Ana
+User-agent: *
+Disallow: /rascunhos/
+Disallow: /busca.html
+
+User-agent: GPTBot
+Disallow: /
+
+Sitemap: https://ana.exemplo.com/sitemap.xml
+</pre>
+
+<dl class="anatomy">
+  <dt># robots.txt do site…</dt><dd>Um <strong>comentário</strong>: tudo depois do <code>#</code> é ignorado pelos robôs.</dd>
+  <dt>User-agent: *</dt><dd>"Para quais robôs valem as regras abaixo." O <code>*</code> quer dizer "todos". <em>User-agent</em> ("agente do usuário") é o nome com que cada programa se apresenta ao servidor: o robô do Google se chama <code>Googlebot</code>, o do Bing, <code>Bingbot</code>.</dd>
+  <dt>Disallow: /rascunhos/</dt><dd>"Não visite": nenhum endereço que <strong>comece</strong> com <code>/rascunhos/</code>. Vale para a pasta toda: <code>/rascunhos/torta-nova.html</code>, <code>/rascunhos/fotos/…</code>.</dd>
+  <dt>Disallow: /busca.html</dt><dd>Uma página só: os resultados da busca interna do site, que não valem a pena na busca do Google.</dd>
+  <dt>(linha em branco)</dt><dd>Separa os <strong>grupos</strong> de regras.</dd>
+  <dt>User-agent: GPTBot / Disallow: /</dt><dd>Um grupo só para um robô, pelo nome. O <code>GPTBot</code> é o robô que a OpenAI usa para recolher textos da internet. <code>Disallow: /</code> quer dizer "o site inteiro", porque todo endereço começa com <code>/</code>. Cada robô segue o grupo com o nome dele; se não houver, segue o grupo <code>*</code>.</dd>
+  <dt>Sitemap: https://…</dt><dd>Onde está o mapa do site, sempre com o endereço <strong>completo</strong>. Essa linha vale para todos os robôs, em qualquer lugar do arquivo.</dd>
+</dl>
+
+<h3>As regras, uma por uma</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Linha</th><th>O que quer dizer</th></tr>
+<tr><td><code>Disallow: /</code></td><td>Não visite <strong>nada</strong></td></tr>
+<tr><td><code>Disallow:</code> (vazio)</td><td>Não há nada proibido: pode visitar tudo</td></tr>
+<tr><td><code>Disallow: /fotos/</code></td><td>Não visite nada dentro da pasta <code>fotos</code></td></tr>
+<tr><td><code>Allow: /fotos/bolo.jpg</code></td><td>Exceção: este arquivo pode, mesmo com a pasta proibida</td></tr>
+<tr><td><code>Disallow: /*.pdf$</code></td><td>Nenhum endereço que termine em <code>.pdf</code> (<code>*</code> = qualquer coisa; <code>$</code> = "termina aqui")</td></tr>
+</table>
+</div>
+
+<p>Os nomes das regras (<code>User-agent</code>, <code>Disallow</code>) não ligam para maiúsculas, mas os <strong>caminhos</strong> ligam: <code>/Rascunhos/</code> e <code>/rascunhos/</code> são pastas diferentes. Esse formato, que existe desde 1994, virou norma oficial da internet em 2022, a RFC 9309.</p>
+
+<div class="tryhtml" data-goal="nsrc:^Disallow:\s*/\s*$,src:^User-agent:\s*\*,src:^Disallow:\s*/rascunhos/\s*$,src:^Sitemap:\s*https://ana\.exemplo\.com/sitemap\.xml">
+<p class="try-task"><strong>Missão:</strong> o <code>robots.txt</code> da Ana tem o erro mais perigoso que existe: <code>Disallow: /</code> para todos os robôs, que tira o site inteiro da busca. Troque por uma regra que proíba só a pasta <code>/rascunhos/</code> e acrescente a linha <code>Sitemap</code> com <code>https://ana.exemplo.com/sitemap.xml</code>. Clique no link do Resultado para ver o arquivo como o robô o recebe.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="robots.txt"&gt;Ver o robots.txt&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="script" data-file="robots.txt">User-agent: *
+Disallow: /
+</pre>
+<pre class="solucao" data-file="robots.txt">User-agent: *
+Disallow: /rascunhos/
+
+Sitemap: https://ana.exemplo.com/sitemap.xml
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Conferir como um robô</h2>
+<p>A Ana subiu o servidor local na pasta do site e pediu o <code>robots.txt</code> com <code>curl -i</code> (o <code>-i</code> mostra também o <strong>cabeçalho</strong> da resposta, o envelope que o servidor manda antes do conteúdo):</p>
+
+<pre class="term" data-cwd="~/site">$ python3 -m http.server &amp;
+[1] 5
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+$ curl -i http://localhost:8000/robots.txt
+127.0.0.1 - - [17/Oct/2026 16:05:53] "GET /robots.txt HTTP/1.1" 200 -     « o registro do servidor
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 19:05:53 GMT
+Content-type: text/plain
+Content-Length: 173
+Last-Modified: Sat, 17 Oct 2026 19:05:48 GMT
+
+# robots.txt do site Receitas da Ana
+User-agent: *
+Disallow: /rascunhos/
+Disallow: /busca.html
+
+User-agent: GPTBot
+Disallow: /
+
+Sitemap: https://ana.exemplo.com/sitemap.xml</pre>
+
+<dl class="anatomy">
+  <dt>HTTP/1.0 200 OK</dt><dd>"Achei, aqui está." Um <code>robots.txt</code> que responde <strong>404</strong> (não encontrado) quer dizer, para o robô, "pode visitar tudo".</dd>
+  <dt>Content-type: text/plain</dt><dd>O servidor avisa que é texto simples, como deve ser.</dd>
+  <dt>a linha em branco</dt><dd>Separa o cabeçalho do conteúdo, que vem logo depois: o arquivo exatamente como está na pasta.</dd>
+</dl>
+
+<h3>Perguntar a um robô: <code>urllib.robotparser</code></h3>
+<p>O Python já vem com um leitor de <code>robots.txt</code>, o mesmo tipo de peça que os robôs usam. A Ana escreveu um programinha que baixa o <code>robots.txt</code> do servidor local e responde, para cada endereço, se o robô pode visitar:</p>
+
+<pre class="file" data-file="robo.py">import sys
+from urllib.robotparser import RobotFileParser
+
+robo = RobotFileParser("http://localhost:8000/robots.txt")
+robo.read()
+nome = sys.argv[1]
+for caminho in sys.argv[2:]:
+    pode = robo.can_fetch(nome, "http://localhost:8000" + caminho)
+    print(nome, caminho, "→", "pode visitar" if pode else "proibido")
+print("Sitemap:", robo.site_maps())
+</pre>
+
+<pre class="term" data-cwd="~/site">$ python3 ~/robo.py Googlebot /bolo-de-cenoura.html /rascunhos/torta-nova.html /busca.html
+127.0.0.1 - - [17/Oct/2026 16:05:53] "GET /robots.txt HTTP/1.1" 200 -     « o robô baixou o robots.txt
+Googlebot /bolo-de-cenoura.html → pode visitar
+Googlebot /rascunhos/torta-nova.html → proibido
+Googlebot /busca.html → proibido
+Sitemap: ['https://ana.exemplo.com/sitemap.xml']
+$ python3 ~/robo.py GPTBot /bolo-de-cenoura.html
+127.0.0.1 - - [17/Oct/2026 16:05:53] "GET /robots.txt HTTP/1.1" 200 -
+GPTBot /bolo-de-cenoura.html → proibido
+Sitemap: ['https://ana.exemplo.com/sitemap.xml']
+$ kill %1
+[1]+  Terminado                  python3 -m http.server</pre>
+
+<p>O <code>Googlebot</code> não tem grupo próprio, então segue o grupo <code>*</code>: pode ver a receita, não pode ver os rascunhos nem a busca. O <code>GPTBot</code> tem o grupo dele, com <code>Disallow: /</code>: não pode nada. E a linha <code>Sitemap</code> foi encontrada.</p>
+
+<hr>
+
+<h2>4. O <code>sitemap.xml</code></h2>
+<p>O <strong>mapa do site</strong> (<em>sitemap</em>) é a lista das páginas que você quer que os buscadores conheçam. Os robôs acham as páginas seguindo links, mas uma página nova, ou sem nenhum link apontando para ela, pode demorar a ser achada. O mapa resolve isso. Ele é escrito em <strong>XML</strong> (<em>eXtensible Markup Language</em>), uma linguagem de marcação prima do HTML, com tags que você inventa, mas regras mais rígidas:</p>
+
+<pre class="file" data-file="sitemap.xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/&lt;/loc&gt;
+    &lt;lastmod&gt;2026-10-17&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/bolo-de-cenoura.html&lt;/loc&gt;
+    &lt;lastmod&gt;2026-10-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/torta-de-limao.html&lt;/loc&gt;
+    &lt;lastmod&gt;2026-09-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+&lt;/urlset&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</dt><dd>A <strong>declaração XML</strong>: "este é um arquivo XML, versão 1.0, com acentos em UTF-8". Vem na primeira linha, sem nada antes. Faz o papel do <code>&lt;!DOCTYPE html&gt;</code>.</dd>
+  <dt>&lt;urlset xmlns="…"&gt;</dt><dd>A raiz: "um conjunto de endereços". O <code>xmlns</code> (<em>XML namespace</em>, "espaço de nomes") diz que estas tags seguem o padrão sitemaps.org. Copie exatamente como está, com <code>http://</code>: é um nome, e não um endereço que alguém visita.</dd>
+  <dt>&lt;url&gt;</dt><dd>Uma página.</dd>
+  <dt>&lt;loc&gt;</dt><dd>De <em>location</em>, "localização": o endereço <strong>completo</strong> da página, com <code>https://</code>.</dd>
+  <dt>&lt;lastmod&gt;</dt><dd>De <em>last modified</em>, "última modificação": a data em que a página mudou de verdade, no formato <code>AAAA-MM-DD</code>. É opcional, mas ajuda o robô a saber o que visitar de novo.</dd>
+</dl>
+
+<p>Existem também as tags <code>&lt;changefreq&gt;</code> ("frequência de mudança") e <code>&lt;priority&gt;</code> ("prioridade"), que você vai ver em muitos mapas. O Google já disse que as ignora; pode deixar de fora.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Regras do XML que o HTML perdoa, e o XML não</th><th>Exemplo</th></tr>
+<tr><td>Toda tag aberta tem de ser fechada</td><td><code>&lt;loc&gt;…&lt;/loc&gt;</code>, nunca só <code>&lt;loc&gt;</code></td></tr>
+<tr><td>Maiúsculas e minúsculas contam</td><td><code>&lt;URL&gt;</code> não é <code>&lt;url&gt;</code></td></tr>
+<tr><td>O <code>&amp;</code> é sempre escrito <code>&amp;amp;</code></td><td><code>…/busca?q=bolo&amp;amp;p=2</code></td></tr>
+<tr><td>Um erro qualquer invalida o arquivo inteiro</td><td>o robô não lê nada</td></tr>
+</table>
+</div>
+
+<p>Um mapa pode ter até <strong>50.000</strong> endereços e 50 MB. Um site como o da Ana, com algumas dezenas de páginas, cabe com muita folga. Para avisar onde está o mapa, use a linha <code>Sitemap:</code> do <code>robots.txt</code> e, se quiser, envie o endereço dele no Google Search Console e no Bing Webmaster Tools (aula <a href="seo.html">HTML e SEO</a>).</p>
+
+<div class="tryhtml" data-goal="src:&lt;loc&gt;https://ana\.exemplo\.com/pao-de-queijo\.html&lt;/loc&gt;,src:&lt;lastmod&gt;2026-10-15&lt;/lastmod&gt;,src:&lt;/url&gt;\s*&lt;url&gt;,nsrc:&lt;loc&gt;pao">
+<p class="try-task"><strong>Missão:</strong> a Ana publicou a receita de pão de queijo em 15 de outubro de 2026. Acrescente um <code>&lt;url&gt;</code> ao mapa com o endereço completo <code>https://ana.exemplo.com/pao-de-queijo.html</code> e o <code>&lt;lastmod&gt;</code> certo. Feche todas as tags.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="sitemap.xml"&gt;Ver o sitemap.xml&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="script" data-file="sitemap.xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/bolo-de-cenoura.html&lt;/loc&gt;
+    &lt;lastmod&gt;2026-10-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+&lt;/urlset&gt;
+</pre>
+<pre class="solucao" data-file="sitemap.xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/bolo-de-cenoura.html&lt;/loc&gt;
+    &lt;lastmod&gt;2026-10-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/pao-de-queijo.html&lt;/loc&gt;
+    &lt;lastmod&gt;2026-10-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+&lt;/urlset&gt;
+</pre>
+</div>
+
+<h3>Conferir o XML no terminal</h3>
+<p>O <code>vnu</code> é validador de HTML; para o XML, a Ana usa o leitor de XML que vem no Python. Se o arquivo estiver bem formado, o programa diz quantas páginas achou; se não, ele mostra a linha e a coluna do erro:</p>
+
+<pre class="file" data-file="conferir_xml.py">import sys
+import xml.etree.ElementTree as ET
+
+arvore = ET.parse(sys.argv[1])
+ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+for loc in arvore.getroot().findall("s:url/s:loc", ns):
+    print(loc.text)
+</pre>
+
+<pre class="term" data-cwd="~/site">$ python3 ~/conferir_xml.py sitemap.xml
+https://ana.exemplo.com/
+https://ana.exemplo.com/bolo-de-cenoura.html
+https://ana.exemplo.com/torta-de-limao.html</pre>
+
+<hr>
+
+<h2>5. <code>robots.txt</code> × <code>noindex</code></h2>
+<p>Esta é a confusão mais comum do assunto. Os dois parecem fazer a mesma coisa, mas não fazem:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>Disallow</code> no <code>robots.txt</code></th><th><code>&lt;meta name="robots" content="noindex"&gt;</code></th></tr>
+<tr><td>Pede</td><td>"não <strong>visite</strong>"</td><td>"não <strong>mostre</strong> na busca"</td></tr>
+<tr><td>Onde fica</td><td>um arquivo na raiz do site</td><td>no <code>&lt;head&gt;</code> de cada página</td></tr>
+<tr><td>A página pode aparecer na busca?</td><td><strong>Sim</strong>: se outros sites apontam para ela, o buscador pode listar o endereço, sem o resumo, porque não leu a página</td><td>Não</td></tr>
+<tr><td>Protege dados?</td><td>Não</td><td>Não</td></tr>
+</table>
+</div>
+
+<div class="warning">
+<strong>Não use os dois juntos na mesma página</strong>
+<p>Se o <code>robots.txt</code> proíbe a visita, o robô <strong>nunca lê</strong> a página, e por isso nunca vê o <code>noindex</code> que está nela. Para tirar uma página da busca, deixe a visita liberada e use o <code>noindex</code>. E para esconder algo de verdade, só uma senha resolve: o <code>robots.txt</code> é público, qualquer pessoa pode lê-lo, e ele acaba avisando a todo mundo onde estão as pastas "secretas".</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>xml.etree.ElementTree.ParseError: not well-formed (invalid token)</code></strong>
+<p>Um endereço com <code>&amp;</code> cru no mapa:</p>
+<pre class="file" data-file="mapa-ecomercial.xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/busca.html?q=bolo&amp;pagina=2&lt;/loc&gt;
+  &lt;/url&gt;
+&lt;/urlset&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ python3 ~/conferir_xml.py mapa-ecomercial.xml
+Traceback (most recent call last):
+  File "/home/ana/conferir_xml.py", line 4, in &lt;module&gt;
+    arvore = ET.parse(sys.argv[1])
+  File "/usr/lib/python3.14/xml/etree/ElementTree.py", line 1214, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/xml/etree/ElementTree.py", line 577, in parse
+    self._root = parser._parse_whole(source)
+                 ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+xml.etree.ElementTree.ParseError: not well-formed (invalid token): line 4, column 57</pre>
+<p><strong>O que significa:</strong> "não está bem formado (sinal inválido)", na linha 4. O <code>&amp;</code> começa uma entidade, como no HTML (aula <a href="entidades.html">Entidades</a>); o Python leu <code>&amp;pagina</code> e, ao chegar no <code>=</code> (a coluna 57, contando a partir do zero), viu que aquilo não é uma entidade. O navegador perdoaria isso num HTML; o XML, não. As últimas linhas do erro são as que importam: o Python mostra antes o caminho por dentro do programa (o <em>traceback</em>).</p>
+<p><strong>Como consertar:</strong> <code>busca.html?q=bolo&amp;amp;pagina=2</code>. (E, de qualquer jeito, páginas de busca não deveriam estar no mapa.)</p>
+</div>
+
+<div class="cenario">
+<strong><code>mismatched tag</code></strong>
+<p>Uma tag fechada com outro nome, <code>&lt;loc&gt;…&lt;/Loc&gt;</code>:</p>
+<pre class="file" data-file="mapa-maiuscula.xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/&lt;/Loc&gt;
+  &lt;/url&gt;
+&lt;/urlset&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ python3 ~/conferir_xml.py mapa-maiuscula.xml
+Traceback (most recent call last):
+  File "/home/ana/conferir_xml.py", line 4, in &lt;module&gt;
+    arvore = ET.parse(sys.argv[1])
+  File "/usr/lib/python3.14/xml/etree/ElementTree.py", line 1214, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/xml/etree/ElementTree.py", line 577, in parse
+    self._root = parser._parse_whole(source)
+                 ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+xml.etree.ElementTree.ParseError: mismatched tag: line 4, column 35</pre>
+<p>"Tag que não combina", na linha 4, coluna 35 (o <code>&lt;/Loc&gt;</code>): no XML, <code>loc</code> e <code>Loc</code> são nomes diferentes. Escreva tudo em minúsculas, como no padrão.</p>
+</div>
+
+<div class="cenario">
+<strong>O site sumiu da busca: <code>Disallow: /</code> esquecido</strong>
+<p>Muita gente cria o site com um <code>robots.txt</code> que proíbe tudo enquanto ele está em construção, e esquece de trocar no lançamento. Nenhuma ferramenta reclama: é um arquivo válido, que pede exatamente o que diz. <strong>Como achar:</strong> <code>curl https://seu-site/robots.txt</code> depois de publicar, e o relatório de páginas do Search Console.</p>
+</div>
+
+<div class="cenario">
+<strong>Outros enganos que passam calados</strong>
+<ul>
+  <li>Nome com maiúscula ou fora da raiz: <code>Robots.txt</code>, <code>/receitas/robots.txt</code>. O robô pede <code>/robots.txt</code>, recebe 404 e entende "pode tudo".</li>
+  <li><code>Disallow: rascunhos/</code>, sem a barra do começo: o caminho tem de começar com <code>/</code>.</li>
+  <li><code>&lt;loc&gt;bolo-de-cenoura.html&lt;/loc&gt;</code>: no mapa, o endereço é sempre completo.</li>
+  <li>Um mapa com páginas proibidas no <code>robots.txt</code> ou com <code>noindex</code>: as duas instruções brigam. O mapa deve ter só as páginas que você quer na busca.</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>User-agent: *</code></td><td>As regras abaixo valem para todos os robôs</td></tr>
+<tr><td><code>User-agent: Googlebot</code></td><td>Vale só para o robô com esse nome</td></tr>
+<tr><td><code>Disallow: /pasta/</code></td><td>Não visite endereços que começam com <code>/pasta/</code></td></tr>
+<tr><td><code>Disallow: /</code> / <code>Disallow:</code></td><td>Nada pode / tudo pode</td></tr>
+<tr><td><code>Allow: /pasta/arquivo.html</code></td><td>Exceção dentro de uma pasta proibida</td></tr>
+<tr><td><code>Sitemap: https://…/sitemap.xml</code></td><td>Onde está o mapa (endereço completo)</td></tr>
+<tr><td><code># …</code></td><td>Comentário</td></tr>
+<tr><td><code>&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;</code></td><td>A raiz do mapa</td></tr>
+<tr><td><code>&lt;url&gt;&lt;loc&gt;https://…&lt;/loc&gt;&lt;lastmod&gt;AAAA-MM-DD&lt;/lastmod&gt;&lt;/url&gt;</code></td><td>Uma página do mapa</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A pasta proibida</h3>
+<p>Complete para pedir que nenhum robô visite a pasta <code>/admin/</code>:</p>
+<div class="ex-code">User-agent: *<br><input data-answer="Disallow" aria-label="regra">: /admin/</div>
+</div>
+
+<div class="exercise">
+<h3>2. O endereço no mapa</h3>
+<p>Complete o nome da tag que guarda o endereço de cada página no <code>sitemap.xml</code>:</p>
+<div class="ex-code">&lt;url&gt;&lt;<input data-answer="loc" aria-label="tag">&gt;https://ana.exemplo.com/&lt;/loc&gt;&lt;/url&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Onde o robô procura o <code>robots.txt</code> do site <code>https://ana.exemplo.com/receitas/bolo.html</code>?</p>
+<label><input type="radio" name="q3"> <code>https://ana.exemplo.com/receitas/robots.txt</code></label>
+<label><input type="radio" name="q3"> <code>https://ana.exemplo.com/robots.txt</code></label>
+<label><input type="radio" name="q3"> No <code>&lt;head&gt;</code> da página</label>
+<label><input type="radio" name="q3"> Em todas as pastas, uma por uma</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. A Ana pôs <code>Disallow: /particular/</code> para esconder fotos da família. O que acontece?</p>
+<label><input type="radio" name="q4"> As fotos ficam protegidas por senha</label>
+<label><input type="radio" name="q4"> O servidor recusa quem tentar abrir</label>
+<label><input type="radio" name="q4"> Os robôs apagam as fotos da internet</label>
+<label><input type="radio" name="q4"> Nada as protege: o pedido é público e qualquer pessoa ainda abre as fotos</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Para tirar uma página da lista do Google, o melhor é…</p>
+<label><input type="radio" name="q5"> <code>Disallow</code> no <code>robots.txt</code></label>
+<label><input type="radio" name="q5"> <code>Disallow</code> e <code>noindex</code> juntos</label>
+<label><input type="radio" name="q5"> deixar a visita liberada e usar <code>&lt;meta name="robots" content="noindex"&gt;</code></label>
+<label><input type="radio" name="q5"> tirar a página do <code>sitemap.xml</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. No <code>sitemap.xml</code>, como se escreve o endereço <code>busca.html?q=bolo&amp;p=2</code>?</p>
+<label><input type="radio" name="q6"> <code>…?q=bolo&amp;amp;p=2</code></label>
+<label><input type="radio" name="q6"> <code>…?q=bolo&amp;p=2</code></label>
+<label><input type="radio" name="q6"> <code>…?q=bolo+p=2</code></label>
+<label><input type="radio" name="q6"> Não dá para pôr <code>&amp;</code> num mapa</label>
+</div>
+
+<h3>Missão final: os dois arquivos da Ana</h3>
+
+<div class="tryhtml" data-goal="src:^User-agent:\s*\*,src:^Disallow:\s*/rascunhos/\s*$,src:^Disallow:\s*/busca\.html\s*$,src:^Sitemap:\s*https://ana\.exemplo\.com/sitemap\.xml,src:&lt;loc&gt;https://ana\.exemplo\.com/torta-de-limao\.html&lt;/loc&gt;,nsrc:&lt;loc&gt;(?!https://),nsrc:&lt;priority">
+<p class="try-task"><strong>Missão:</strong> arrume os dois arquivos. No <code>robots.txt</code>: para todos os robôs, proíba <code>/rascunhos/</code> e <code>/busca.html</code> e aponte o mapa <code>https://ana.exemplo.com/sitemap.xml</code>. No <code>sitemap.xml</code>: troque o endereço relativo da torta pelo completo (<code>https://ana.exemplo.com/torta-de-limao.html</code>) e apague o <code>&lt;priority&gt;</code>, que o Google ignora.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="robots.txt"&gt;robots.txt&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="sitemap.xml"&gt;sitemap.xml&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="script" data-file="robots.txt">User-agent: *
+Disallow:
+</pre>
+<pre class="script" data-file="sitemap.xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/bolo-de-cenoura.html&lt;/loc&gt;
+    &lt;lastmod&gt;2026-10-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;torta-de-limao.html&lt;/loc&gt;
+    &lt;priority&gt;1.0&lt;/priority&gt;
+  &lt;/url&gt;
+&lt;/urlset&gt;
+</pre>
+<pre class="solucao" data-file="robots.txt">User-agent: *
+Disallow: /rascunhos/
+Disallow: /busca.html
+
+Sitemap: https://ana.exemplo.com/sitemap.xml
+</pre>
+<pre class="solucao" data-file="sitemap.xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/bolo-de-cenoura.html&lt;/loc&gt;
+    &lt;lastmod&gt;2026-10-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://ana.exemplo.com/torta-de-limao.html&lt;/loc&gt;
+  &lt;/url&gt;
+&lt;/urlset&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <code>robots.txt</code> fica na <strong>raiz</strong> do endereço (<code>/robots.txt</code>) e diz aos robôs por onde não andar. Num site em subpasta, ele não vale.</li>
+  <li><code>User-agent</code> escolhe o robô (<code>*</code> = todos); <code>Disallow</code> proíbe caminhos que começam com o texto dado; <code>Allow</code> abre exceções; <code>Sitemap</code> aponta o mapa, com endereço completo.</li>
+  <li><code>Disallow: /</code> tira o site inteiro da busca. Confira com <code>curl</code> depois de publicar.</li>
+  <li>O <code>robots.txt</code> é um pedido público, não uma tranca. Para sair da busca, use <code>noindex</code> (com a visita liberada); para esconder, use senha.</li>
+  <li>O <code>sitemap.xml</code> lista as páginas com <code>&lt;url&gt;</code>, <code>&lt;loc&gt;</code> (endereço completo) e <code>&lt;lastmod&gt;</code> (AAAA-MM-DD). <code>changefreq</code> e <code>priority</code> são ignorados pelo Google.</li>
+  <li>XML não perdoa: toda tag fechada, maiúsculas contam, <code>&amp;</code> vira <code>&amp;amp;</code>. O Python mostra a linha e a coluna do erro.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
