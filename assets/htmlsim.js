@@ -738,7 +738,8 @@
   HS.validarW3C = validarW3C;
   function mostrarW3C(caixa, res, nomeAba) {
     var erros = res.msgs.filter(function (m) { return m.type === "error" || m.type === "non-document-error"; });
-    var avisos = res.msgs.filter(function (m) { return m.type === "info" && m.subType === "warning"; });
+    // num fragmento, "nenhum h1" vem do esqueleto que o editor pôs em volta, e não do código do leitor
+    var avisos = res.msgs.filter(function (m) { return m.type === "info" && m.subType === "warning" && !(res.fragmento && /computed heading level of 1/.test(m.message)); });
     var h = "<strong>Validador do W3C</strong> (" + escHtml(nomeAba) + "): ";
     h += erros.length ? '<span class="hs-e">' + erros.length + (erros.length === 1 ? " erro" : " erros") + "</span>" : '<span style="color:var(--ok);font-weight:700">✔ nenhum erro</span>';
     if (avisos.length) h += ", " + '<span class="hs-a">' + avisos.length + (avisos.length === 1 ? " aviso" : " avisos") + "</span>";
@@ -981,7 +982,8 @@
     resultados.push(r);
     if (naoDesenha(rotulo)) { console.warn("htmlsim: data-resultado desenha HTML, não " + rotulo); r.desenhar = function () { return Promise.resolve({ console: "", compat: "", modo: "" }); }; return r; }
     var caixa = el("div", { "class": "hs-res hs" },
-      '<div class="hs-barra"><span class="sim-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="hs-rot">Resultado</span><span class="hs-end"></span></div><div class="hs-frame-host"></div>');
+      '<div class="hs-barra"><span class="sim-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="hs-rot">Resultado</span><span class="hs-end"></span>' +
+      '<button type="button" class="hs-recarregar" title="Desenha o exemplo de novo (volta do link que você clicou)">↻</button></div><div class="hs-frame-host"></div>');
     pre.parentNode.insertBefore(caixa, pre.nextSibling);
     var painel = new Painel(caixa, false);
     var endTxt = caixa.querySelector(".hs-end");
@@ -994,6 +996,7 @@
       aoCarregar: function (info) { esperando.splice(0).forEach(function (f) { f(info); }); }
     });
     r.quadro = q;
+    caixa.querySelector(".hs-recarregar").addEventListener("click", function () { painel.limpar(); q.mostrar(nome); });
     r.desenhar = function () {
       if (r.pronto) return r.pronto;
       r.pronto = new Promise(function (ok) {
