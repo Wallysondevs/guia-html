@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Validar o HTML — o validador W3C on-line e o vnu no terminal | Guia HTML</title>
+<meta name="description" content="Como validar o HTML para quem nunca fez um site: por que o navegador não mostra os erros, o validador W3C on-line (endereço, envio de arquivo e texto), o vnu no terminal (instalar o Java, baixar o vnu.jar, criar o apelido), como ler as mensagens, error, info warning e código de saída, validar uma pasta inteira e as armadilhas do vnu calado.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Validar o HTML</span></h1>
+
+<p class="intro">Nas aulas anteriores você viu que o navegador quase nunca reclama: ele conserta sozinho o que está errado, às vezes do jeito que você queria, às vezes não. Para descobrir os erros, existe o <strong>validador</strong>: um programa que lê o seu HTML e lista tudo o que está fora das regras, com a linha e a coluna. Nesta aula você vai usar o validador oficial do W3C de dois jeitos: no site, sem instalar nada, e no terminal, com o <code>vnu</code>, instalado do zero. E vai aprender a ler as mensagens dele.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Por que validar, se a página "funciona" no navegador.</li>
+  <li>A usar o validador on-line (<code>validator.w3.org/nu</code>) com um endereço, um arquivo ou um código colado.</li>
+  <li>A instalar o <code>vnu</code> no seu computador: o Java, o arquivo <code>vnu.jar</code> e um apelido para digitar menos.</li>
+  <li>A ler uma mensagem: arquivo, linha, coluna, tipo (<code>error</code>, <code>info warning</code>, <code>info</code>) e descrição.</li>
+  <li>As opções mais úteis: <code>--verbose</code>, <code>--errors-only</code>, <code>--skip-non-html</code>, <code>--format text</code>, e como validar uma pasta inteira.</li>
+  <li>As armadilhas: o validador calado que não validou nada.</li>
+</ul>
+</div>
+
+<p>Tudo nesta aula foi feito na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>, Ubuntu), na pasta <code>~/site/lojinha</code>, com o <code>vnu</code> 26.10.12, a mesma versão que roda no site do W3C quando esta aula foi escrita. As mensagens do validador são em inglês: elas estão copiadas como saíram e explicadas em português.</p>
+
+<hr>
+
+<h2>A ideia: a revisão antes de entregar</h2>
+<p>Quando você escreve uma redação no computador, o corretor sublinha as palavras erradas. Ele não muda o texto sozinho: só aponta, e você decide. O navegador é o contrário: ele <strong>muda</strong> o texto sozinho, em silêncio, e nunca aponta nada.</p>
+
+<p>O validador é o corretor do HTML. Por que usar, se a página aparece?</p>
+<ul>
+  <li><strong>O conserto do navegador pode não ser o que você queria.</strong> Um <code>&lt;/strong&gt;</code> esquecido deixou o resto da página em negrito (aula <a href="aninhamento.html">Aninhamento</a>); uma aspa esquecida apagou a página (aula <a href="atributos.html">Atributos</a>).</li>
+  <li><strong>O erro pode estar escondido.</strong> Um <code>&lt;/h2&gt;</code> fechando um <code>&lt;h1&gt;</code> não muda nada na tela, mas está errado (aula <a href="elementos.html">Elementos e Tags</a>).</li>
+  <li><strong>Acessibilidade.</strong> O validador cobra o <code>alt</code> das imagens, o <code>title</code> da página e outras coisas que o leitor de tela precisa.</li>
+  <li><strong>Aprender.</strong> Cada mensagem ensina uma regra do HTML.</li>
+</ul>
+
+<p>O W3C (<em>World Wide Web Consortium</em>, o "consórcio da web", que cuida de vários padrões da web) mantém o validador oficial, chamado <strong>Nu Html Checker</strong> ("verificador de HTML Nu"). O programa por trás dele se chama <code>vnu</code> (<em>validator.nu</em>), e é o mesmo no site e no seu computador.</p>
+
+<hr>
+
+<h2>1. O validador on-line</h2>
+<p>O jeito mais rápido: abra <code>https://validator.w3.org/nu/</code> no navegador. A página tem um campo <strong>Check by</strong> ("verificar por") com três escolhas:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Check by</th><th>Quer dizer</th><th>Quando usar</th></tr>
+<tr><td><strong>address</strong></td><td>"endereço": você digita o endereço de uma página publicada (<code>https://…</code>)</td><td>o site já está na internet (aula <a href="publicar.html">Publicar no GitHub Pages</a>)</td></tr>
+<tr><td><strong>file upload</strong></td><td>"envio de arquivo": você escolhe um <code>.html</code> do seu computador</td><td>a página ainda está só no seu computador</td></tr>
+<tr><td><strong>text input</strong></td><td>"texto digitado": você cola o código numa caixa de texto</td><td>para testar um pedaço rápido</td></tr>
+</table>
+</div>
+
+<p>Depois de escolher, clique no botão <strong>Check</strong> ("verificar"). Se estiver tudo certo, aparece a frase <code>Document checking completed. No errors or warnings to show.</code> ("Verificação do documento concluída. Nenhum erro ou aviso para mostrar.").</p>
+
+<p>Se houver problemas, cada um aparece num bloco. A Ana enviou a página de contato da lojinha (o arquivo <code>contato.html</code>, que você vai ver inteiro na seção 3). O primeiro bloco foi este:</p>
+
+<pre class="file" data-file="o que o site do validador mostra (o primeiro bloco)">Error: Element head is missing a required instance of child element title.
+From line 5, column 1; to line 5, column 7
+</pre>
+
+<dl class="anatomy">
+  <dt>Error:</dt><dd>O tipo: um <strong>erro</strong>, algo fora das regras. Os avisos aparecem como <strong>Warning:</strong>, e as informações, como <strong>Info:</strong>.</dd>
+  <dt>Element head is missing a required instance of child element title.</dt><dd>A descrição: "o elemento <code>head</code> está sem uma ocorrência obrigatória do elemento filho <code>title</code>". Em outras palavras, faltou o <code>&lt;title&gt;</code>.</dd>
+  <dt>From line 5, column 1; to line 5, column 7</dt><dd>Onde: "da linha 5, coluna 1, até a linha 5, coluna 7". Embaixo, o site mostra o pedaço do código com o trecho marcado.</dd>
+</dl>
+
+<p>No site, os nomes dos elementos aparecem destacados, sem as aspas “ ” que você vai ver no terminal. No fim da lista aparece <code>There were errors.</code> ("Houve erros.").</p>
+
+<div class="note">
+<strong>No editor do guia</strong>
+<p>As caixas "Experimente" deste guia têm um botão para validar no W3C. Ele manda o código da aba aberta para o mesmo <code>validator.w3.org/nu</code>, mas só depois de você confirmar, porque o código vai para a internet. As mensagens aparecem embaixo, em inglês, com a linha e a coluna do seu código.</p>
+</div>
+
+<hr>
+
+<h2>2. O <code>vnu</code> no terminal</h2>
+<p>O site é ótimo para uma página de vez em quando. Quando o site tem muitas páginas, ou você quer validar toda vez que salva, é mais prático ter o validador no próprio computador. Ele funciona sem internet e valida uma pasta inteira de uma vez. Ele é escrito em <strong>Java</strong>, então são três passos: o Java, o validador e um apelido.</p>
+
+<p>Os comandos abaixo são para o terminal do Linux (no Guia Bash você aprende a usar o terminal). No Windows e no macOS, veja a dica no fim da seção.</p>
+
+<h3>Passo 1: o Java</h3>
+<p>Primeiro, confira se o Java já está instalado:</p>
+
+<pre class="term" data-cwd="~">$ java -version
+openjdk version "25.0.4.1" 2026-08-18
+OpenJDK Runtime Environment (build 25.0.4.1+1-1-26.04.4-Ubuntu)
+OpenJDK 64-Bit Server VM (build 25.0.4.1+1-1-26.04.4-Ubuntu, mixed mode, sharing)</pre>
+
+<p>O computador da Ana tem o OpenJDK 25, a versão livre do Java. Se aparecer <code>java: comando não encontrado</code>, instale com o gerenciador de pacotes do Ubuntu (ele pede a sua senha de administrador e baixa algumas dezenas de megabytes):</p>
+
+<pre class="file" data-file="instalar o Java no Ubuntu e no Debian">sudo apt install default-jre
+</pre>
+
+<dl class="anatomy">
+  <dt>sudo</dt><dd>Roda o comando como administrador (é preciso para instalar programas).</dd>
+  <dt>apt install</dt><dd>O instalador de programas do Ubuntu e do Debian: "instale".</dd>
+  <dt>default-jre</dt><dd>O pacote do Java "padrão" da sua versão do sistema. JRE = <em>Java Runtime Environment</em>, "ambiente para rodar Java": o necessário para usar programas em Java, sem as ferramentas de quem programa em Java.</dd>
+</dl>
+
+<p>Depois, rode <code>java -version</code> de novo para conferir.</p>
+
+<h3>Passo 2: baixar o <code>vnu.jar</code></h3>
+<p>O validador inteiro é um arquivo só, o <code>vnu.jar</code> (um <code>.jar</code> é um programa em Java empacotado). Ele fica na página de versões do projeto no GitHub (<code>github.com/validator/validator/releases</code>). A Ana criou uma pasta <code>~/ferramentas</code> e baixou a versão mais nova com o <code>curl</code>:</p>
+
+<pre class="term" data-cwd="~">$ mkdir -p ~/ferramentas &amp;&amp; cd ~/ferramentas
+$ curl -L -o vnu.jar https://github.com/validator/validator/releases/download/latest/vnu.jar
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+100 30.94M 100 30.94M   0      0 72.85M      0                              0
+$ ls -lh
+total 31M
+-rw-rw-r-- 1 ana ana 31M out 17 16:19 vnu.jar</pre>
+
+<dl class="anatomy">
+  <dt>curl</dt><dd>Um programa que baixa coisas da internet pelo terminal.</dd>
+  <dt>-L</dt><dd>"Siga os redirecionamentos": o endereço <code>…/latest/…</code> ("a mais recente") manda para a versão do dia, e o <code>-L</code> vai atrás.</dd>
+  <dt>-o vnu.jar</dt><dd>"Salve com o nome <code>vnu.jar</code>" (<em>output</em>, "saída").</dd>
+  <dt>https://github.com/…/latest/vnu.jar</dt><dd>O endereço do arquivo na página de versões.</dd>
+</dl>
+
+<p>A tabela que o <code>curl</code> mostra é o progresso do download: 100% de 30,94 MB (megabytes) recebidos. O arquivo tem uns 31 MB. Se preferir, baixe pelo navegador, na página de versões, e mova o arquivo para a pasta <code>~/ferramentas</code>.</p>
+
+<p>Pronto, já dá para validar. Confira a versão e valide a página de contato da lojinha:</p>
+
+<pre class="term" data-cwd="~/ferramentas">$ java -jar ~/ferramentas/vnu.jar --version
+26.10.12 (0a70d65)
+$ cd ~/site/lojinha
+$ java -jar ~/ferramentas/vnu.jar contato.html
+"file:/home/ana/site/lojinha/contato.html":5.1-5.7: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/site/lojinha/contato.html":7.12-7.16: error: End tag “h2” seen, but there were open elements.
+"file:/home/ana/site/lojinha/contato.html":8.1-8.28: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+"file:/home/ana/site/lojinha/contato.html":10.1-10.18: info warning: The “align” attribute on the “p” element is obsolete. Use CSS instead.</pre>
+
+<dl class="anatomy">
+  <dt>java</dt><dd>O Java, que vai rodar o validador.</dd>
+  <dt>-jar ~/ferramentas/vnu.jar</dt><dd>"Rode o programa que está neste <code>.jar</code>". O caminho completo funciona de qualquer pasta.</dd>
+  <dt>--version</dt><dd>Só mostra a versão do validador.</dd>
+  <dt>contato.html</dt><dd>O arquivo a validar. Pode ser mais de um: <code>index.html contato.html</code>.</dd>
+</dl>
+
+<h3>Passo 3: um apelido, para digitar só <code>vnu</code></h3>
+<p>Digitar <code>java -jar ~/ferramentas/vnu.jar</code> toda vez cansa. O Bash permite criar um <strong>apelido</strong> (<em>alias</em>). A Ana acrescentou o apelido no fim do arquivo <code>~/.bashrc</code>, que o terminal lê toda vez que abre, e recarregou o arquivo:</p>
+
+<pre class="term" data-cwd="~/site/lojinha">$ echo "alias vnu='java -jar ~/ferramentas/vnu.jar'" &gt;&gt; ~/.bashrc
+$ source ~/.bashrc
+$ type vnu
+vnu está apelidada para `java -jar ~/ferramentas/vnu.jar'</pre>
+
+<dl class="anatomy">
+  <dt>echo "alias vnu='…'"</dt><dd>Escreve a linha do apelido: "quando eu digitar <code>vnu</code>, rode <code>java -jar ~/ferramentas/vnu.jar</code>".</dd>
+  <dt>&gt;&gt; ~/.bashrc</dt><dd>Acrescenta essa linha no <strong>fim</strong> do <code>~/.bashrc</code>. Atenção: são <strong>dois</strong> <code>&gt;</code>. Um só apagaria o arquivo inteiro antes de escrever.</dd>
+  <dt>source ~/.bashrc</dt><dd>Lê o arquivo de novo, para o apelido valer já neste terminal (os próximos terminais já abrem com ele).</dd>
+  <dt>type vnu</dt><dd>Pergunta o que é <code>vnu</code>. Resposta: um apelido.</dd>
+</dl>
+
+<p>Daqui em diante, <code>vnu arquivo.html</code> basta. É o comando que todas as aulas deste guia usam.</p>
+
+<div class="tip">
+<strong>No Windows e no macOS</strong>
+<p>Na mesma página de versões há os arquivos <code>vnu.windows.zip</code> e <code>vnu.osx.zip</code>, que já trazem um Java embutido: descompacte e rode o programa <code>vnu</code> da pasta <code>vnu-runtime-image/bin</code> (no Windows, o <code>vnu.bat</code>), sem instalar o Java. Também dá para usar o <code>vnu.jar</code> do mesmo jeito que no Linux, depois de instalar um Java (por exemplo, o OpenJDK). Se você usa o WSL, o Linux dentro do Windows, siga os passos do Linux.</p>
+</div>
+
+<hr>
+
+<h2>3. Ler as mensagens</h2>
+<p>Esta é a página de contato que a Ana validou. Ela abre normalmente no navegador, mas tem quatro problemas:</p>
+
+<pre class="file" data-file="contato.html · erros de propósito">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Contato&lt;/h2&gt;
+&lt;img src="logo-lojinha.png"&gt;
+&lt;p&gt;Rua das Flores, 10&lt;br&gt;São Paulo&lt;/p&gt;
+&lt;p align="center"&gt;Aberto de segunda a sábado.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site/lojinha">$ vnu contato.html; echo "código de saída: $?"
+"file:/home/ana/site/lojinha/contato.html":5.1-5.7: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/site/lojinha/contato.html":7.12-7.16: error: End tag “h2” seen, but there were open elements.
+"file:/home/ana/site/lojinha/contato.html":8.1-8.28: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+"file:/home/ana/site/lojinha/contato.html":10.1-10.18: info warning: The “align” attribute on the “p” element is obsolete. Use CSS instead.
+código de saída: 1</pre>
+
+<p>Cada linha é uma mensagem, sempre com as mesmas partes. A primeira:</p>
+
+<dl class="anatomy">
+  <dt>"file:/home/ana/site/lojinha/contato.html"</dt><dd>O <strong>arquivo</strong>, com o caminho completo. O <code>file:</code> diz que é um arquivo do computador (e não um endereço da internet).</dd>
+  <dt>:5.1-5.7:</dt><dd>Onde: <strong>linha.coluna-linha.coluna</strong>. Da linha 5, coluna 1, até a linha 5, coluna 7. Na linha 5 está o <code>&lt;/head&gt;</code>, que tem exatamente 7 caracteres: foi ali que o validador percebeu que o <code>head</code> acabou sem <code>title</code>.</dd>
+  <dt>error:</dt><dd>O <strong>tipo</strong> da mensagem (tabela abaixo).</dd>
+  <dt>Element “head” is missing…</dt><dd>A <strong>descrição</strong>, com os nomes entre aspas tipográficas “ ”.</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tipo</th><th>No site</th><th>Quer dizer</th><th>Muda o código de saída?</th></tr>
+<tr><td><code>error</code></td><td>Error</td><td>Erro: está fora das regras do HTML. Conserte.</td><td>Sim: <code>1</code></td></tr>
+<tr><td><code>info warning</code></td><td>Warning</td><td>Aviso: é permitido, mas tem cara de engano ou está obsoleto.</td><td>Não</td></tr>
+<tr><td><code>info</code></td><td>Info</td><td>Só uma informação (como a barra de <code>&lt;br /&gt;</code>).</td><td>Não</td></tr>
+<tr><td><code>error fatal</code></td><td>(aparece junto dos erros)</td><td>O validador desistiu de continuar lendo o arquivo.</td><td>Sim</td></tr>
+</table>
+</div>
+
+<p>O <strong>código de saída</strong> (o <code>$?</code>) é como o programa conta ao terminal se deu certo: <code>0</code> = nenhum erro; <code>1</code> = pelo menos um <code>error</code>. Os avisos não contam. Isso é útil em scripts: <code>vnu *.html &amp;&amp; echo "tudo válido"</code> só mostra a frase se não houver erro.</p>
+
+<p>As outras três mensagens do <code>contato.html</code>: "tag de fechamento <code>h2</code> encontrada, mas havia elementos abertos" (o <code>&lt;h1&gt;</code> fechado com <code>&lt;/h2&gt;</code>, linha 7, colunas 12 a 16); "um elemento <code>img</code> precisa de um atributo <code>alt</code>, exceto em certas condições" (aula <a href="imagens-alt.html">Texto Alternativo</a>); e o aviso "o atributo <code>align</code> é obsoleto. Use CSS". As mensagens mais comuns estão todas explicadas em <a href="erros-comuns.html">Erros Comuns</a> e em <a href="ref-erros.html">Mensagens do Validador</a>.</p>
+
+<div class="tip">
+<strong>Conserte de cima para baixo, e valide de novo</strong>
+<p>Um erro pode causar outros (você viu isso em <a href="doctype.html">O DOCTYPE</a>, com seis mensagens para um erro só). Conserte o primeiro, rode o validador de novo e veja quantos sobraram.</p>
+</div>
+
+<div class="tryhtml" data-goal="texto:title=Contato,nsrc:&lt;/h2&gt;,texto:h1=Contato,attr:img[alt]=Lojinha da Ana">
+<p class="try-task"><strong>Missão:</strong> esta é a página de contato da Ana, já sem o <code>align</code>. Use as três mensagens de <code>error</code> acima para consertar o resto: (1) dê à página o <code>&lt;title&gt;</code> <code>Contato</code>; (2) feche o título com a tag certa; (3) dê ao logo o texto alternativo <code>Lojinha da Ana</code>. Se quiser, use o botão de validar no W3C da caixa para conferir.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Contato&lt;/h2&gt;
+&lt;img src="assets/midia/logo-lojinha-200.png" width="200" height="80"&gt;
+&lt;p&gt;Rua das Flores, 10&lt;br&gt;São Paulo&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Contato&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Contato&lt;/h1&gt;
+&lt;img src="assets/midia/logo-lojinha-200.png" width="200" height="80" alt="Lojinha da Ana"&gt;
+&lt;p&gt;Rua das Flores, 10&lt;br&gt;São Paulo&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Opções do <code>vnu</code></h2>
+<p>O <code>vnu</code> fica <strong>calado</strong> quando não acha nada. Às vezes você quer uma confirmação, às vezes quer menos barulho:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Opção</th><th>O que faz</th></tr>
+<tr><td><code>--verbose</code></td><td>"Falante": mostra o nome de cada arquivo que validou, mesmo sem erro</td></tr>
+<tr><td><code>--errors-only</code></td><td>"Só erros": esconde os avisos e as informações</td></tr>
+<tr><td><code>--skip-non-html</code></td><td>Ao validar uma pasta, pula o que não é <code>.html</code> (CSS, imagens…)</td></tr>
+<tr><td><code>--format text</code></td><td>Mostra as mensagens no formato do site (<code>Error:</code>, <code>From line…</code>)</td></tr>
+<tr><td><code>--Werror</code></td><td>Trata os avisos como erros (o código de saída vira <code>1</code> com qualquer aviso)</td></tr>
+<tr><td><code>--version</code></td><td>Mostra a versão</td></tr>
+<tr><td><code>--help</code></td><td>Lista todas as opções</td></tr>
+</table>
+</div>
+
+<pre class="term" data-cwd="~/site/lojinha">$ vnu --verbose index.html
+index.html
+$ vnu --errors-only contato.html
+"file:/home/ana/site/lojinha/contato.html":5.1-5.7: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/site/lojinha/contato.html":7.12-7.16: error: End tag “h2” seen, but there were open elements.
+"file:/home/ana/site/lojinha/contato.html":8.1-8.28: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+$ vnu --format text contato.html
+Error: Element “head” is missing a required instance of child element “title”.
+From line 5, column 1; to line 5, column 7 in resource file:/home/ana/site/lojinha/contato.html
+Error: End tag “h2” seen, but there were open elements.
+From line 7, column 12; to line 7, column 16 in resource file:/home/ana/site/lojinha/contato.html
+Error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+From line 8, column 1; to line 8, column 28 in resource file:/home/ana/site/lojinha/contato.html
+Warning: The “align” attribute on the “p” element is obsolete. Use CSS instead.
+From line 10, column 1; to line 10, column 18 in resource file:/home/ana/site/lojinha/contato.html
+Document checking completed.</pre>
+
+<p>Repare: com <code>--errors-only</code>, o aviso do <code>align</code> sumiu. Com <code>--format text</code>, cada mensagem ocupa duas linhas, igual ao site.</p>
+
+<h3>Validar o site inteiro</h3>
+<p>Em vez de um arquivo, passe uma <strong>pasta</strong>. O ponto (<code>.</code>) quer dizer "a pasta onde estou". A lojinha tem três arquivos e uma pasta <code>css</code>:</p>
+
+<pre class="term" data-cwd="~/site/lojinha">$ ls
+contato.html
+css
+english.html
+index.html
+$ vnu .
+"file:/home/ana/site/lojinha/./contato.html":5.1-5.7: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/site/lojinha/./contato.html":7.12-7.16: error: End tag “h2” seen, but there were open elements.
+"file:/home/ana/site/lojinha/./contato.html":8.1-8.28: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+"file:/home/ana/site/lojinha/./contato.html":10.1-10.18: info warning: The “align” attribute on the “p” element is obsolete. Use CSS instead.
+"file:/home/ana/site/lojinha/./css/estilo.css":1.1-1.22: error: Non-space characters found without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/lojinha/./css/estilo.css":1.1-1.22: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/site/lojinha/./css/estilo.css":1.1-1.22: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.</pre>
+
+<p>O <code>vnu</code> validou tudo o que achou na pasta, inclusive as subpastas, e tentou ler o arquivo de CSS <strong>como se fosse HTML</strong>: daí os erros estranhos em <code>css/estilo.css</code>. Os arquivos <code>index.html</code> e <code>english.html</code> não aparecem porque estão certos. Para validar só as páginas, use <code>--skip-non-html</code>:</p>
+
+<pre class="term" data-cwd="~/site/lojinha">$ vnu --skip-non-html .
+"file:/home/ana/site/lojinha/./contato.html":5.1-5.7: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/site/lojinha/./contato.html":7.12-7.16: error: End tag “h2” seen, but there were open elements.
+"file:/home/ana/site/lojinha/./contato.html":8.1-8.28: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+"file:/home/ana/site/lojinha/./contato.html":10.1-10.18: info warning: The “align” attribute on the “p” element is obsolete. Use CSS instead.</pre>
+
+<div class="note">
+<strong>E o CSS dentro do HTML?</strong>
+<p>O <code>vnu</code> também confere o CSS que está dentro de um <code>&lt;style&gt;</code> na página. Você viu isso em <a href="doctype.html">O DOCTYPE</a>, com a mensagem <code>CSS: “color”: “ff0000” is not a “color” value.</code>. No site do validador, o modo <strong>text input</strong> tem uma opção para conferir o texto colado como CSS.</p>
+</div>
+
+<h3>Sem instalar nada: o site pelo terminal</h3>
+<p>O validador on-line também aceita receber o arquivo pelo <code>curl</code>. A resposta vem no mesmo formato do <code>vnu</code>, só que sem o nome do arquivo (o site não sabe como ele se chama):</p>
+
+<pre class="term" data-cwd="~/site/lojinha">$ curl -s -H "Content-Type: text/html; charset=utf-8" --data-binary @contato.html "https://validator.w3.org/nu/?out=gnu"
+:5.1-5.7: error: Element “head” is missing a required instance of child element “title”.
+:7.12-7.16: error: End tag “h2” seen, but there were open elements.
+:8.1-8.28: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+:10.1-10.18: info warning: The “align” attribute on the “p” element is obsolete. Use CSS instead.</pre>
+
+<dl class="anatomy">
+  <dt>-s</dt><dd>"Silencioso": sem a tabela de progresso.</dd>
+  <dt>-H "Content-Type: text/html; charset=utf-8"</dt><dd>Avisa ao site que o que vai chegar é HTML em UTF-8.</dd>
+  <dt>--data-binary @contato.html</dt><dd>Envia o conteúdo do arquivo (o <code>@</code> quer dizer "o conteúdo deste arquivo").</dd>
+  <dt>"https://validator.w3.org/nu/?out=gnu"</dt><dd>O endereço do validador, pedindo a resposta no formato de linha de comando (<code>out=gnu</code>).</dd>
+</dl>
+
+<p>Lembre que, assim, o seu código vai para a internet. Para páginas com informações que não podem sair do seu computador, use o <code>vnu</code> instalado.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>O validador calado que não validou nada</strong>
+<pre class="term" data-cwd="~">$ vnu naoexiste.html; echo "código de saída: $?"
+código de saída: 0
+$ vnu --verbose naoexiste.html; echo "código de saída: $?"
+"file:/home/ana/naoexiste.html": info warning: File not found.
+código de saída: 0</pre>
+<p><strong>O que significa:</strong> a Ana errou o nome do arquivo (ou estava na pasta errada, aqui a <code>~</code>). O <code>vnu</code> não achou o arquivo, não disse nada e terminou com <code>0</code>, como se estivesse tudo certo! Só com <code>--verbose</code> aparece o aviso <code>File not found.</code> ("arquivo não encontrado"), e mesmo assim o código de saída continua <code>0</code>. <strong>Como evitar:</strong> quando o validador ficar calado e você desconfiar, rode com <code>--verbose</code> e confira se o nome do seu arquivo aparece na lista.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Error: Unable to access jarfile vnu.jar</code></strong>
+<pre class="term" data-cwd="~/site/lojinha">$ java -jar vnu.jar contato.html
+Error: Unable to access jarfile vnu.jar</pre>
+<p><strong>O que significa:</strong> "não consigo acessar o arquivo jar <code>vnu.jar</code>". Sem um caminho, o Java procura o <code>vnu.jar</code> na pasta <strong>atual</strong>, e a Ana estava em <code>~/site/lojinha</code>, não em <code>~/ferramentas</code>. <strong>Como consertar:</strong> use o caminho completo (<code>~/ferramentas/vnu.jar</code>) ou, melhor, o apelido do passo 3.</p>
+</div>
+
+<div class="cenario">
+<strong><code>vnu: comando não encontrado</code> ou <code>java: comando não encontrado</code></strong>
+<p><strong>O que significa:</strong> o terminal não conhece esse nome. Para o <code>vnu</code>: o apelido ainda não foi criado, ou você abriu um terminal antes de criá-lo e não rodou o <code>source ~/.bashrc</code>. Para o <code>java</code>: o Java não está instalado. <strong>Como consertar:</strong> refaça o passo 3 (para o <code>vnu</code>) ou o passo 1 (para o <code>java</code>). O <code>type vnu</code> diz se o apelido existe.</p>
+</div>
+
+<div class="cenario">
+<strong>"O validador acusa erro, mas no navegador está tudo certo"</strong>
+<p><strong>O que significa:</strong> é o caso mais comum, e o motivo de o validador existir. O navegador consertou o erro sozinho, e o conserto deu certo <em>neste</em> navegador, <em>nesta</em> página. <strong>Como consertar:</strong> conserte do mesmo jeito. Um código válido não depende da sorte nem do navegador.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Comando ou lugar</th><th>O que faz</th></tr>
+<tr><td><code>validator.w3.org/nu</code></td><td>Validador on-line: <strong>address</strong>, <strong>file upload</strong> ou <strong>text input</strong>, e o botão <strong>Check</strong></td></tr>
+<tr><td><code>java -version</code></td><td>Confere se o Java está instalado</td></tr>
+<tr><td><code>curl -L -o vnu.jar https://github.com/validator/validator/releases/download/latest/vnu.jar</code></td><td>Baixa o validador</td></tr>
+<tr><td><code>java -jar ~/ferramentas/vnu.jar arquivo.html</code></td><td>Valida sem apelido</td></tr>
+<tr><td><code>alias vnu='java -jar ~/ferramentas/vnu.jar'</code></td><td>O apelido (no <code>~/.bashrc</code>)</td></tr>
+<tr><td><code>vnu arquivo.html</code></td><td>Valida; calado = sem erros (confira com <code>--verbose</code>)</td></tr>
+<tr><td><code>vnu --skip-non-html .</code></td><td>Valida todas as páginas da pasta e das subpastas</td></tr>
+<tr><td><code>vnu --errors-only …</code></td><td>Só os erros</td></tr>
+<tr><td><code>"arquivo":5.1-5.7: error: …</code></td><td>Arquivo, linha.coluna-linha.coluna, tipo e descrição</td></tr>
+<tr><td><code>echo $?</code> depois do <code>vnu</code></td><td><code>0</code> = sem erros; <code>1</code> = com erros</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Onde está o erro</h3>
+<p>Na mensagem <code>"file:/home/ana/site/index.html":7.12-7.16: error: …</code>, em que <strong>linha</strong> está o problema?</p>
+<div class="ex-code"><input data-answer="7" aria-label="linha"></div>
+</div>
+
+<div class="exercise">
+<h3>2. Só os erros</h3>
+<p>Complete o comando para esconder os avisos:</p>
+<div class="ex-code">vnu <input data-answer="--errors-only" aria-label="opção"> contato.html</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Por que validar, se a página aparece certinha no navegador?</p>
+<label><input type="radio" name="q3"> Porque o navegador mostra os erros só depois de uma semana</label>
+<label><input type="radio" name="q3"> Não precisa: se aparece, está certo</label>
+<label><input type="radio" name="q3"> Porque o navegador conserta os erros em silêncio, e o conserto pode não ser o que você queria</label>
+<label><input type="radio" name="q3"> Porque o validador deixa a página mais rápida</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O <code>vnu</code> mostrou só uma linha com <code>info warning</code>. Qual é o código de saída?</p>
+<label><input type="radio" name="q4"> 1</label>
+<label><input type="radio" name="q4"> 0: avisos não contam como erro</label>
+<label><input type="radio" name="q4"> 2</label>
+<label><input type="radio" name="q4"> Depende do navegador</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. A Ana rodou <code>vnu pagina.html</code> e nada apareceu. O que isso garante?</p>
+<label><input type="radio" name="q5"> Que a página não tem nenhum erro, com certeza</label>
+<label><input type="radio" name="q5"> Que o validador travou</label>
+<label><input type="radio" name="q5"> Que a página está publicada</label>
+<label><input type="radio" name="q5"> Nada, por si só: se o arquivo não existir, o <code>vnu</code> também fica calado; o <code>--verbose</code> tira a dúvida</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Ao rodar <code>vnu .</code>, apareceram erros de DOCTYPE num arquivo <code>estilo.css</code>. O que fazer?</p>
+<label><input type="radio" name="q6"> Usar <code>vnu --skip-non-html .</code>, para pular o que não é HTML</label>
+<label><input type="radio" name="q6"> Colocar <code>&lt;!DOCTYPE html&gt;</code> no CSS</label>
+<label><input type="radio" name="q6"> Apagar o CSS</label>
+<label><input type="radio" name="q6"> Renomear o CSS para <code>.html</code></label>
+</div>
+
+<h3>Missão final: a página que passou no navegador</h3>
+
+<p>A Ana fez a página de receitas e rodou o validador. Esta foi a resposta:</p>
+
+<pre class="term" data-cwd="~/site/lojinha">$ vnu receitas.html
+"file:/home/ana/site/lojinha/receitas.html":8.1-8.22: error: Attribute “hreff” not allowed on element “a” at this point.
+"file:/home/ana/site/lojinha/receitas.html":10.1-10.4: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/lojinha/receitas.html":11.1-11.4: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/lojinha/receitas.html":12.1-12.62: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
+
+<div class="tryhtml" data-goal="attr:a[href]=index.html,nsel:[hreff]=0,nsel:ul &gt; li=2,nsel:body &gt; li=0,attr:img[alt]=Bolo de cenoura com cobertura de chocolate">
+<p class="try-task"><strong>Missão:</strong> conserte os quatro erros da resposta acima, um por um: o atributo do link (que deve levar a <code>index.html</code>), os dois itens de lista sem lista (coloque-os num <code>&lt;ul&gt;</code>) e o <code>alt</code> da imagem, que deve ser <code>Bolo de cenoura com cobertura de chocolate</code>. Os números de linha da resposta são os deste código.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;a hreff="index.html"&gt;Voltar para a lojinha&lt;/a&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;li&gt;Bolo de cenoura&lt;/li&gt;
+&lt;li&gt;Pudim de leite&lt;/li&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;a href="index.html"&gt;Voltar para a lojinha&lt;/a&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;Bolo de cenoura&lt;/li&gt;
+  &lt;li&gt;Pudim de leite&lt;/li&gt;
+&lt;/ul&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300" alt="Bolo de cenoura com cobertura de chocolate"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O navegador conserta os erros em silêncio; o <strong>validador</strong> aponta cada um, com arquivo, linha e coluna. Valide sempre.</li>
+  <li>On-line: <code>validator.w3.org/nu</code>, com <strong>address</strong>, <strong>file upload</strong> ou <strong>text input</strong>, e o botão <strong>Check</strong>. Sucesso: <code>Document checking completed. No errors or warnings to show.</code></li>
+  <li>No terminal: Java (<code>java -version</code>, <code>sudo apt install default-jre</code>), o <code>vnu.jar</code> baixado do GitHub, e o apelido <code>alias vnu='java -jar ~/ferramentas/vnu.jar'</code> no <code>~/.bashrc</code>.</li>
+  <li>Mensagem: <code>"arquivo":linha.coluna-linha.coluna: tipo: descrição</code>. <code>error</code> dá código de saída <code>1</code>; <code>info warning</code> e <code>info</code>, não.</li>
+  <li>Opções: <code>--verbose</code> (confirma o que foi validado), <code>--errors-only</code>, <code>--skip-non-html</code> (para pastas), <code>--format text</code>.</li>
+  <li>Cuidado: um arquivo que não existe também deixa o <code>vnu</code> calado, com código <code>0</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
