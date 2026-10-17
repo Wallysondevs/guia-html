@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Estrutura — DOCTYPE, html, head, meta charset, title e body | Guia HTML</title>
+<meta name="description" content="A estrutura de toda página HTML, linha por linha, para quem nunca fez um site: &lt;!DOCTYPE html&gt;, &lt;html lang=&quot;pt-BR&quot;&gt;, head, meta charset, title e body, a árvore da página, o recuo, as tags opcionais e a página mínima válida, e os erros reais do validador W3C quando falta o title, o DOCTYPE, o lang ou o charset.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Estrutura</span></h1>
+
+<p class="intro">Você já viu várias vezes aquelas linhas de cima e de baixo que toda página completa tem: <code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;body&gt;</code>… Elas são a <strong>estrutura</strong> da página, a moldura em que o conteúdo é encaixado, e são sempre as mesmas, de um blog pequeno a um site enorme. Nesta aula você entende cada uma, linha por linha, descobre o que o navegador faz quando alguma falta e vê a mensagem real do validador para cada esquecimento.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>As seis partes da estrutura: <code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html lang="pt-BR"&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;meta charset="utf-8"&gt;</code>, <code>&lt;title&gt;</code> e <code>&lt;body&gt;</code>.</li>
+  <li>A diferença entre o <code>head</code> (informações sobre a página) e o <code>body</code> (o que aparece na tela).</li>
+  <li>A árvore da página e o costume do recuo.</li>
+  <li>As tags que o HTML deixa omitir, e por que o guia escreve todas.</li>
+  <li>O que acontece sem <code>title</code>, sem DOCTYPE, sem <code>lang</code> e sem <code>charset</code>, e com conteúdo no lugar errado.</li>
+</ul>
+</div>
+
+<p>As mensagens do validador desta aula vieram do <code>vnu</code> na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), com o arquivo <code>~/site/index.html</code>. As árvores mostradas são as que um navegador de verdade (Chromium) montou. Os quadros <strong>Resultado</strong> são desenhados pelo seu navegador.</p>
+
+<hr>
+
+<h2>A ideia: o envelope e a carta</h2>
+<p>Pense numa carta pelo correio. Ela tem duas partes:</p>
+<ul>
+  <li>o <strong>envelope</strong>, com informações <strong>sobre</strong> a carta: para quem vai, de onde vem, o selo. O carteiro lê o envelope; quem recebe quase não presta atenção nele;</li>
+  <li>a <strong>carta</strong> em si, dentro do envelope: o que você quer dizer. É isso que a pessoa lê.</li>
+</ul>
+
+<p>Uma página HTML é igual. O <strong><code>head</code></strong> ("cabeça") é o envelope: o título da aba, o idioma, a codificação, os arquivos de estilo. O navegador, o Google e os leitores de tela leem o <code>head</code>; ele não aparece na página. O <strong><code>body</code></strong> ("corpo") é a carta: tudo o que aparece na tela. E o <strong><code>html</code></strong> é o pacote que embrulha os dois.</p>
+
+<hr>
+
+<h2>1. A página completa</h2>
+<p>Esta é a estrutura que o guia usa em toda página completa. São onze linhas, e o conteúdo de verdade são só as duas do meio:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Agora cada linha:</p>
+
+<dl class="anatomy">
+  <dt>&lt;!DOCTYPE html&gt;</dt><dd>A <strong>declaração do tipo de documento</strong> (<em>document type</em>). Diz ao navegador "esta é uma página do HTML de hoje; desenhe no modo padrão". Não é uma tag: não tem fechamento e vem sempre na primeira linha. Tem aula própria: <a href="doctype.html">O DOCTYPE</a>.</dd>
+  <dt>&lt;html lang="pt-BR"&gt;</dt><dd>Abre o elemento <code>html</code>, a <strong>raiz</strong>: todo o resto fica dentro dele. O atributo <code>lang</code> (<em>language</em>, "idioma") diz em que língua a página está: <code>pt-BR</code> = português do Brasil.</dd>
+  <dt>&lt;head&gt;</dt><dd>Abre o <strong>cabeçalho</strong> do documento: as informações sobre a página. Nada do que está aqui aparece no corpo da página.</dd>
+  <dt>&lt;meta charset="utf-8"&gt;</dt><dd>Declara a <strong>codificação</strong> do arquivo (<em>character set</em>, "conjunto de caracteres"): a tabela que transforma os bytes do arquivo em letras. Com <code>utf-8</code>, acentos e emojis aparecem certos. O <code>meta</code> é um elemento <strong>vazio</strong>: não tem conteúdo nem tag de fechamento.</dd>
+  <dt>&lt;title&gt;Receitas da Ana&lt;/title&gt;</dt><dd>O <strong>título</strong> da página: aparece na aba do navegador, nos favoritos e nos resultados do Google. É obrigatório.</dd>
+  <dt>&lt;/head&gt;</dt><dd>Fecha o cabeçalho.</dd>
+  <dt>&lt;body&gt;</dt><dd>Abre o <strong>corpo</strong>: tudo o que aparece na tela vem daqui até o <code>&lt;/body&gt;</code>.</dd>
+  <dt>&lt;h1&gt;… &lt;p&gt;…</dt><dd>O conteúdo: um título e um parágrafo. É a única parte que muda de uma página para outra.</dd>
+  <dt>&lt;/body&gt;</dt><dd>Fecha o corpo.</dd>
+  <dt>&lt;/html&gt;</dt><dd>Fecha a raiz. É a última linha do arquivo.</dd>
+</dl>
+
+<p>Repare na ordem de abrir e fechar: <code>html</code> abre primeiro e fecha por último; dentro dele, <code>head</code> abre e fecha, e só depois <code>body</code> abre e fecha. Nenhum se cruza com o outro. O validador aceita essa página sem nenhuma observação:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose index.html
+index.html</pre>
+
+<hr>
+
+<h2>2. A árvore da página</h2>
+<p>Como você viu em <a href="como-funciona.html">Como o Navegador Lê HTML</a>, o navegador transforma o arquivo numa árvore. A estrutura é o tronco e os galhos principais dessa árvore, e é sempre igual:</p>
+
+<pre class="file" data-file="a árvore (desenho)">html                     ← a raiz
+├── head                 ← informações sobre a página (não aparece)
+│   ├── meta charset
+│   └── title
+│       └── "Receitas da Ana"
+└── body                 ← o que aparece na tela
+    ├── h1
+    │   └── "Receitas da Ana"
+    └── p
+        └── "Bolo de cenoura com cobertura de chocolate."
+</pre>
+
+<p><code>head</code> e <code>body</code> são <strong>irmãos</strong>, os dois únicos filhos do <code>html</code>. O <code>meta</code> e o <code>title</code> são filhos do <code>head</code>; o <code>h1</code> e o <code>p</code>, filhos do <code>body</code>. Toda página tem exatamente um <code>head</code> e um <code>body</code>, nessa ordem.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>head</code></th><th><code>body</code></th></tr>
+<tr><td>Aparece na tela?</td><td>Não (o <code>title</code> aparece na aba, fora da página)</td><td>Sim</td></tr>
+<tr><td>Para quem é</td><td>O navegador, os buscadores, as redes sociais, os leitores de tela</td><td>As pessoas que visitam a página</td></tr>
+<tr><td>O que vai dentro</td><td><code>meta</code>, <code>title</code>, <code>link</code> (CSS, ícone), <code>style</code>, <code>script</code></td><td>Títulos, parágrafos, imagens, listas, tabelas, formulários…</td></tr>
+<tr><td>Onde aprender mais</td><td><a href="head.html">O head</a> e <a href="meta.html">title e meta</a></td><td>Todo o resto do guia</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>3. Cada parte com calma</h2>
+
+<h3>O <code>lang</code>: em que língua está a página</h3>
+<p>O <code>lang="pt-BR"</code> parece um detalhe, mas muita coisa depende dele:</p>
+<ul>
+  <li>os <strong>leitores de tela</strong>, usados por pessoas cegas, escolhem a voz e a pronúncia pelo <code>lang</code>. Com <code>lang="en"</code>, "Receitas da Ana" seria lido com sotaque de inglês, quase impossível de entender;</li>
+  <li>o navegador decide se oferece <strong>tradução</strong> automática;</li>
+  <li>o <strong>corretor ortográfico</strong> dos campos de formulário usa o dicionário certo;</li>
+  <li>os buscadores sabem para que público mostrar a página.</li>
+</ul>
+<p>O código tem duas partes: o idioma (<code>pt</code>, português) e, depois do hífen, a região (<code>BR</code>, Brasil). Para Portugal, seria <code>pt-PT</code>; só <code>pt</code> também vale. Sem o <code>lang</code>, o validador dá um aviso:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":1.16-2.6: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.</pre>
+
+<p>"Considere acrescentar um atributo <code>lang</code> à tag de abertura <code>html</code> para declarar o idioma deste documento." É um aviso (<code>info warning</code>), não um erro: a página continua válida. Mas o guia trata como obrigatório, pelos motivos acima.</p>
+
+<h3>O <code>meta charset</code>: a tabela das letras</h3>
+<p>O <code>&lt;meta charset="utf-8"&gt;</code> deve vir <strong>logo no começo do <code>head</code></strong>, antes do <code>title</code>: o navegador precisa saber a tabela das letras antes de ler qualquer texto com acento, e a regra do HTML exige que essa declaração esteja nos primeiros 1024 bytes do arquivo. O que acontece sem ela depende de como a página chega:</p>
+
+<pre class="term" data-cwd="~/site">$ cat index.html                     « a mesma página, sem o meta charset
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Pão de queijo e café com açúcar.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+$ vnu --verbose index.html
+index.html                           « o validador não reclamou</pre>
+
+<p>O validador, lendo o arquivo do disco, supôs UTF-8 e não reclamou. Aberto com dois cliques (<code>file://</code>), o Chromium também adivinhou certo. Mas, quando a mesma página veio de um servidor (o do Python, que você viu em <a href="como-funciona.html">Como o Navegador Lê HTML</a>), o cabeçalho da resposta não dizia a tabela:</p>
+
+<pre class="term" data-cwd="~/site">$ curl -s -I http://localhost:8000/index.html
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 19:11:09 GMT
+Content-type: text/html                      « nada de charset aqui
+Content-Length: 174
+Last-Modified: Sat, 17 Oct 2026 19:11:08 GMT</pre>
+
+<p>Sem nenhuma pista, nem no arquivo nem no servidor, o navegador usou uma tabela antiga, e este foi o parágrafo que ele montou:</p>
+
+<pre class="file" data-file="DOM montado pelo navegador (o parágrafo)">&lt;p&gt;PÃ£o de queijo e cafÃ© com aÃ§Ãºcar.&lt;/p&gt;</pre>
+
+<p>Cada letra acentuada virou duas letras estranhas. É o famoso "<code>Ã£</code> no lugar de <code>ã</code>", que você com certeza já viu em algum site. Com o <code>&lt;meta charset="utf-8"&gt;</code> no <code>head</code>, isso nunca acontece, venha a página de onde vier. Acentos e codificações têm aula própria: <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>.</p>
+
+<h3>O <code>title</code>: o nome da página</h3>
+<p>O título é o único elemento do <code>head</code> que é <strong>obrigatório</strong>. Ele aparece:</p>
+<ul>
+  <li>na <strong>aba</strong> do navegador (e na barra de título da janela);</li>
+  <li>nos <strong>favoritos</strong>, quando alguém salva a página;</li>
+  <li>como o link azul nos <strong>resultados do Google</strong>;</li>
+  <li>e é a primeira coisa que um leitor de tela anuncia ao abrir a página.</li>
+</ul>
+<p>Por isso ele deve ser curto e dizer do que é a página: <code>Bolo de cenoura | Receitas da Ana</code> é melhor que <code>Página 1</code>. Os detalhes estão em <a href="meta.html">title e meta</a>.</p>
+
+<div class="tryhtml" data-goal="src:^&lt;!DOCTYPE html&gt;,attr:html[lang]=pt-BR,texto:title=Bolo de cenoura">
+<p class="try-task"><strong>Experimente:</strong> a página da receita está com a estrutura incompleta: falta o DOCTYPE, o <code>html</code> está sem <code>lang</code> e o <code>head</code> está sem <code>title</code>. Complete: acrescente <code>&lt;!DOCTYPE html&gt;</code> na primeira linha, o <code>lang="pt-BR"</code> no <code>html</code> e um <code>&lt;title&gt;Bolo de cenoura&lt;/title&gt;</code> logo depois do <code>meta</code>. O resultado na tela não muda; a página é que fica completa (e válida).</p>
+<pre class="script" data-file="index.html">&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Rende 8 fatias.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Rende 8 fatias.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<h3>O <code>body</code>: tudo o que aparece</h3>
+<p>Tudo o que a pessoa vê fica entre <code>&lt;body&gt;</code> e <code>&lt;/body&gt;</code>: títulos, textos, imagens, links, formulários. Quase todo o resto do guia é sobre o que vai aqui dentro. Mais tarde, no Nível 2, você vai dividir o <code>body</code> em partes com significado (<code>header</code>, <code>main</code>, <code>footer</code>; seção <a href="semantica.html">Semântica</a>), mas a regra continua: um <code>body</code> por página, depois do <code>head</code>.</p>
+
+<hr>
+
+<h2>4. O recuo</h2>
+<p>O navegador ignora os espaços no começo das linhas, então o recuo é só para quem lê o código. Há dois costumes comuns, e os dois estão certos:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Sem recuo dentro do <code>html</code> (o do guia)</th><th>Com recuo em tudo (o do Emmet)</th></tr>
+<tr><td><pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></td><td><pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></td></tr>
+</table>
+</div>
+
+<p>O guia não recua o <code>head</code> e o <code>body</code> (eles são sempre os mesmos, e o recuo só empurraria tudo para a direita), mas recua o que fica <strong>dentro</strong> de listas, tabelas e outros elementos, para mostrar quem é filho de quem. O importante é escolher um costume e manter o mesmo no site inteiro. O "formatar" do editor faz isso por você (aula <a href="editores.html">Editores</a>).</p>
+
+<hr>
+
+<h2>5. As tags que podem faltar</h2>
+<p>Uma surpresa: as tags <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code> e <code>&lt;body&gt;</code> (de abertura e de fechamento) são <strong>opcionais</strong>. A regra do HTML deixa omiti-las, porque o navegador as cria sozinho de qualquer jeito. Esta página de quatro linhas é válida:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura.
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":1.16-2.7: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.</pre>
+
+<p>Nenhum erro, só o aviso do <code>lang</code> (que não tem onde ficar, porque não há tag <code>&lt;html&gt;</code>). E o navegador montou a árvore completa:</p>
+
+<pre class="file" data-file="DOM montado pelo navegador">&lt;html&gt;&lt;head&gt;&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura.
+&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</pre>
+
+<p>O <code>title</code> foi parar no <code>head</code>, o <code>h1</code> e o <code>p</code> no <code>body</code>, e o parágrafo foi fechado. O navegador sabe onde cada coisa vai: o <code>title</code> é coisa de cabeçalho, e o primeiro elemento "de corpo" (o <code>h1</code>) fecha o <code>head</code> e abre o <code>body</code>. Mesmo assim, o guia sempre escreve a estrutura completa:</p>
+<ul>
+  <li>o <code>lang</code> precisa da tag <code>&lt;html&gt;</code> para existir;</li>
+  <li>com todas as tags, o código-fonte e a árvore do F12 ficam iguais (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>), e fica fácil ver onde termina o cabeçalho;</li>
+  <li>é o que todo mundo espera encontrar, e o que os editores escrevem.</li>
+</ul>
+
+<h3>Formas de começar uma página</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>Como é</th><th>Quando usar</th></tr>
+<tr><td><strong>Completa</strong> (a do guia)</td><td>As onze linhas da seção 1</td><td>Sempre</td></tr>
+<tr><td><strong>Do Emmet</strong> (<code>!</code> no VS Code)</td><td>A completa, mais o <code>meta viewport</code>, com recuo; precisa trocar o <code>lang</code> e o <code>title</code></td><td>Para começar rápido no VS Code</td></tr>
+<tr><td><strong>Mínima</strong></td><td>Sem as tags <code>html</code>, <code>head</code> e <code>body</code></td><td>Para entender as regras. Num site, evite</td></tr>
+</table>
+</div>
+
+<div class="note">
+<strong>E o <code>meta viewport</code>?</strong>
+<p>As páginas deste guia, e as que o Emmet cria, têm mais uma linha no <code>head</code>: <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>. Ela faz a página usar a largura real da tela do celular, em vez de fingir que é um computador. Para os exemplos do Nível 1 ela não faz diferença; ela tem aula própria no Nível 2, <a href="meta-viewport.html">Celular (meta viewport)</a>, e a partir de lá entra em toda página.</p>
+</div>
+
+<hr>
+
+<h2>Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: Element “head” is missing a required instance of child element “title”.</code></strong>
+<p><strong>O que significa:</strong> "o elemento <code>head</code> está sem um filho obrigatório, o <code>title</code>". A página não tem título.</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":5.1-5.7: error: Element “head” is missing a required instance of child element “title”.</pre>
+<p>A posição <code>5.1-5.7</code> aponta o <code>&lt;/head&gt;</code>: foi ali, ao fechar o cabeçalho, que o validador percebeu que o título não tinha aparecido. O navegador mostra a página normalmente, e na aba aparece o nome do arquivo ou o endereço no lugar do título.</p>
+<p><strong>Como consertar:</strong> acrescente <code>&lt;title&gt;…&lt;/title&gt;</code> dentro do <code>head</code>, depois do <code>meta charset</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Start tag seen without seeing a doctype first.</code></strong>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":1.1-1.19: error: Start tag seen without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.</pre>
+<p><strong>O que significa:</strong> a primeira linha não é o <code>&lt;!DOCTYPE html&gt;</code>. Sem ele, o navegador desenha no <strong>modo quirks</strong>, que imita os navegadores dos anos 1990 (aula <a href="versoes.html">Versões do HTML</a>).</p>
+<p><strong>Como consertar:</strong> <code>&lt;!DOCTYPE html&gt;</code> na primeira linha, antes de tudo, inclusive de comentários.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: Consider adding a “lang” attribute to the “html” start tag…</code></strong>
+<p><strong>O que significa:</strong> o <code>html</code> está sem <code>lang</code>. A página é válida, mas leitores de tela e tradutores não sabem o idioma.</p>
+<p><strong>Como consertar:</strong> <code>&lt;html lang="pt-BR"&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Os acentos viraram <code>Ã£</code>, <code>Ã©</code>, <code>Ã§</code></strong>
+<p><strong>O que significa:</strong> falta o <code>&lt;meta charset="utf-8"&gt;</code>, e o navegador leu o arquivo UTF-8 com uma tabela antiga. Pode funcionar no seu computador e quebrar no servidor, como você viu na seção 3.</p>
+<p><strong>Como consertar:</strong> <code>&lt;meta charset="utf-8"&gt;</code> como primeira linha do <code>head</code>, e o arquivo salvo em UTF-8 (aula <a href="editores.html">Editores</a>).</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Stray end tag “head”.</code> (conteúdo dentro do <code>head</code>)</strong>
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que significa:</strong> a Ana pôs o <code>h1</code> dentro do <code>head</code>. O título aparece na tela mesmo assim, porque o navegador sabe que <code>h1</code> não é coisa de cabeçalho: ao encontrá-lo, ele <strong>fechou o <code>head</code> e abriu o <code>body</code></strong> sozinho. A árvore montada:</p>
+<pre class="file" data-file="DOM montado pelo navegador">&lt;html lang="pt-BR"&gt;&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+
+
+&lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+
+
+&lt;/body&gt;&lt;/html&gt;</pre>
+<p>Depois disso, o <code>&lt;/head&gt;</code> e o <code>&lt;body&gt;</code> do arquivo chegaram atrasados, e o validador reclama dos dois:</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":7.1-7.7: error: Stray end tag “head”.
+"file:/home/ana/site/index.html":8.1-8.6: error: Start tag “body” seen but an element of the same type was already open.</pre>
+<p>"Tag de fechamento <code>head</code> perdida" (o <code>head</code> já tinha sido fechado) e "vi a tag de abertura <code>body</code>, mas um elemento do mesmo tipo já estava aberto" (o <code>body</code> que o navegador criou).</p>
+<p><strong>Como consertar:</strong> no <code>head</code>, só informações (<code>meta</code>, <code>title</code>, <code>link</code>…). Tudo o que aparece vai no <code>body</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Stray start tag “p”.</code> (conteúdo depois do <code>&lt;/body&gt;</code>)</strong>
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;p&gt;Pudim de leite.&lt;/p&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que significa:</strong> o parágrafo ficou entre o <code>&lt;/body&gt;</code> e o <code>&lt;/html&gt;</code>. Ele aparece, porque o navegador o colocou de volta dentro do <code>body</code> (não existe outro lugar para conteúdo), mas o validador aponta a "tag de abertura perdida":</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":10.1-10.3: error: Stray start tag “p”.</pre>
+<p><strong>Como consertar:</strong> o <code>&lt;/body&gt;</code> e o <code>&lt;/html&gt;</code> são sempre as duas últimas linhas. Conteúdo novo entra <strong>antes</strong> do <code>&lt;/body&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Linha</th><th>O que faz</th><th>Obrigatória?</th></tr>
+<tr><td><code>&lt;!DOCTYPE html&gt;</code></td><td>Diz que é HTML de hoje (modo padrão)</td><td>Sim (sem ela: erro e modo quirks)</td></tr>
+<tr><td><code>&lt;html lang="pt-BR"&gt;</code> … <code>&lt;/html&gt;</code></td><td>A raiz, com o idioma</td><td>As tags são opcionais; o <code>lang</code>, o guia exige (sem ele: aviso)</td></tr>
+<tr><td><code>&lt;head&gt;</code> … <code>&lt;/head&gt;</code></td><td>Informações sobre a página</td><td>As tags são opcionais; o guia escreve sempre</td></tr>
+<tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>A codificação, para os acentos</td><td>O guia exige (sem ela: acentos podem quebrar)</td></tr>
+<tr><td><code>&lt;title&gt;…&lt;/title&gt;</code></td><td>O título da aba, dos favoritos e do Google</td><td>Sim (sem ele: erro)</td></tr>
+<tr><td><code>&lt;body&gt;</code> … <code>&lt;/body&gt;</code></td><td>Tudo o que aparece na tela</td><td>As tags são opcionais; o guia escreve sempre</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A primeira linha</h3>
+<p>Complete a primeira linha de toda página:</p>
+<div class="ex-code">&lt;!<input data-answer="DOCTYPE html|doctype html" aria-label="declaração">&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A codificação</h3>
+<p>Complete a linha que declara a codificação:</p>
+<div class="ex-code">&lt;meta <input data-answer="charset" aria-label="atributo">="utf-8"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. O idioma</h3>
+<p>Complete a tag de abertura da raiz para uma página em português do Brasil:</p>
+<div class="ex-code">&lt;html <input data-answer="lang=&quot;pt-BR&quot;" aria-label="atributo e valor">&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Onde fica o <code>title</code>?</p>
+<label><input type="radio" name="q4"> No <code>body</code>, antes do <code>h1</code></label>
+<label><input type="radio" name="q4"> No <code>head</code></label>
+<label><input type="radio" name="q4"> Antes do <code>&lt;!DOCTYPE html&gt;</code></label>
+<label><input type="radio" name="q4"> Depois do <code>&lt;/html&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Qual elemento do <code>head</code> é obrigatório, segundo o validador?</p>
+<label><input type="radio" name="q5"> <code>meta charset</code></label>
+<label><input type="radio" name="q5"> <code>meta viewport</code></label>
+<label><input type="radio" name="q5"> <code>title</code></label>
+<label><input type="radio" name="q5"> Nenhum</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. A página não tem <code>lang</code>. O que o validador diz?</p>
+<label><input type="radio" name="q6"> Um aviso (<code>info warning</code>), e a página continua válida</label>
+<label><input type="radio" name="q6"> Um erro, e a página fica inválida</label>
+<label><input type="radio" name="q6"> Nada</label>
+<label><input type="radio" name="q6"> Que a página está em inglês</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">7. Um arquivo tem só <code>&lt;!DOCTYPE html&gt;</code>, um <code>title</code> e um <code>h1</code>, sem <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code> nem <code>&lt;body&gt;</code>. O que acontece?</p>
+<label><input type="radio" name="q7"> A página fica em branco</label>
+<label><input type="radio" name="q7"> O validador acusa três erros</label>
+<label><input type="radio" name="q7"> O navegador mostra o código como texto</label>
+<label><input type="radio" name="q7"> O navegador cria o <code>html</code>, o <code>head</code> e o <code>body</code> sozinho, e o validador só avisa sobre o <code>lang</code></label>
+</div>
+
+<h3>Missão final: a página do pudim, do zero</h3>
+
+<div class="tryhtml" data-goal="src:^&lt;!DOCTYPE html&gt;,attr:html[lang]=pt-BR,sel:head > meta[charset],texto:title=Pudim de leite,sel:body > h1,src:&lt;head&gt;,src:&lt;/head&gt;,src:&lt;body&gt;,src:&lt;/body&gt;,src:&lt;/html&gt;\s*$">
+<p class="try-task"><strong>Missão:</strong> o conteúdo da página do pudim está pronto, mas sem estrutura nenhuma. Escreva a estrutura completa em volta dele, com todas as tags: <code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html lang="pt-BR"&gt;</code>, o <code>head</code> com <code>&lt;meta charset="utf-8"&gt;</code> e o título <code>Pudim de leite</code>, e o <code>body</code> com o conteúdo. Termine com <code>&lt;/html&gt;</code> na última linha.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Pudim de leite&lt;/h1&gt;
+&lt;p&gt;Rende 10 porções.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Pudim de leite&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pudim de leite&lt;/h1&gt;
+&lt;p&gt;Rende 10 porções.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Essa estrutura vai se repetir em toda página que você fizer. Guarde-a num arquivo, como modelo, ou deixe o Emmet escrever (e troque o <code>lang</code> e o <code>title</code>). Depois de completar, passe no validador: nenhuma mensagem.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Toda página completa tem a mesma estrutura: <code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html lang="pt-BR"&gt;</code>, <code>&lt;head&gt;</code> com <code>&lt;meta charset="utf-8"&gt;</code> e <code>&lt;title&gt;</code>, e <code>&lt;body&gt;</code> com o conteúdo.</li>
+  <li>O <code>head</code> é o envelope: informações para o navegador, os buscadores e os leitores de tela. O <code>body</code> é a carta: tudo o que aparece na tela. Os dois são os únicos filhos do <code>html</code>, nessa ordem.</li>
+  <li>O <code>lang</code> escolhe a pronúncia dos leitores de tela e a tradução (sem ele: aviso). O <code>meta charset</code> evita o <code>Ã£</code> (vem no começo do <code>head</code>). O <code>title</code> é obrigatório (sem ele: erro).</li>
+  <li>Sem DOCTYPE, erro e modo quirks.</li>
+  <li>As tags <code>html</code>, <code>head</code> e <code>body</code> são opcionais (o navegador as cria), mas o guia escreve todas.</li>
+  <li>Conteúdo no <code>head</code> ou depois do <code>&lt;/body&gt;</code> é consertado pelo navegador e acusado pelo validador (<code>Stray end tag “head”</code>, <code>Stray start tag “p”</code>).</li>
+  <li>Próximo passo: <a href="doctype.html">O DOCTYPE</a>, a primeira linha em detalhe.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
