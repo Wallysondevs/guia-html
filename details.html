@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML details e summary — abrir e fechar sem JavaScript | Guia HTML</title>
+<meta name="description" content="Os elementos details e summary do HTML para quem nunca fez um site: uma caixa que abre e fecha com um clique, o atributo open, perguntas frequentes, o grupo exclusivo com name, o que pode ir dentro do summary e os erros reais do validador W3C, com o resultado ao vivo e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">details</span> e <span class="hl">summary</span></h1>
+
+<p class="intro">Uma página de receita fica enorme quando mostra tudo de uma vez: a lista de ingredientes, o modo de preparo, as dicas, as perguntas dos leitores. Muitos sites escondem uma parte e mostram só um título: clicou, abriu; clicou de novo, fechou. Em HTML isso não precisa de nenhuma linha de JavaScript. Basta o par <code>&lt;details&gt;</code> e <code>&lt;summary&gt;</code>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como criar uma caixa que abre e fecha com <code>&lt;details&gt;</code> e <code>&lt;summary&gt;</code>.</li>
+  <li>Como deixá-la aberta desde o começo com o atributo <code>open</code>, e por que <code>open="false"</code> não fecha.</li>
+  <li>Como montar uma página de perguntas frequentes e um grupo em que só uma abre por vez (<code>name</code>).</li>
+  <li>O que pode e o que não pode ir dentro do <code>&lt;summary&gt;</code>.</li>
+  <li>O que o navegador faz (e o que o validador W3C diz) quando o <code>&lt;summary&gt;</code> falta, vem fora do lugar ou aparece duas vezes.</li>
+</ul>
+</div>
+
+<p>Os exemplos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), como na aula <a href="validar.html">Validar o HTML</a>. Os quadros "Resultado" são desenhados pelo seu próprio navegador: <strong>clique neles</strong> para abrir e fechar.</p>
+
+<hr>
+
+<h2>A ideia: uma gaveta com etiqueta</h2>
+<p>Pense numa cômoda. Na frente de cada gaveta tem uma etiqueta: "MEIAS", "CAMISETAS". Você lê as etiquetas sem abrir nada e só abre a gaveta que interessa.</p>
+<ul>
+  <li>A <strong>gaveta inteira</strong> é o <code>&lt;details&gt;</code> ("detalhes"): tudo o que está guardado.</li>
+  <li>A <strong>etiqueta</strong> é o <code>&lt;summary&gt;</code> ("resumo"): a única parte que aparece com a gaveta fechada, e é nela que você "puxa" (clica).</li>
+</ul>
+
+<hr>
+
+<h2>1. A primeira caixa</h2>
+
+<pre class="file" data-file="receita.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;details&gt;
+  &lt;summary&gt;Ingredientes&lt;/summary&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras médias&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;2 xícaras de açúcar&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/details&gt;
+&lt;p&gt;Rende 12 fatias.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;details&gt;</dt><dd>A caixa inteira. Começa <strong>fechada</strong>: só o <code>&lt;summary&gt;</code> aparece.</dd>
+  <dt>&lt;summary&gt;Ingredientes&lt;/summary&gt;</dt><dd>O título que fica sempre visível. Tem de ser o <strong>primeiro filho</strong> do <code>&lt;details&gt;</code>, ou seja, vir logo depois da tag de abertura. O navegador desenha um triângulo antes dele e faz dele um botão.</dd>
+  <dt>&lt;ul&gt;…&lt;/ul&gt;</dt><dd>O conteúdo escondido: qualquer coisa que caberia na página (parágrafos, listas, imagens, tabelas). Ele aparece quando a caixa abre.</dd>
+  <dt>&lt;/details&gt;</dt><dd>Fecha a caixa. O que vem depois (o "Rende 12 fatias") fica sempre visível.</dd>
+</dl>
+
+<p>Clique em "Ingredientes" no resultado: a lista aparece e o triângulo vira para baixo. Clique de novo: ela some. Sem JavaScript, sem CSS.</p>
+
+<ul>
+  <li><strong>Teclado:</strong> o <code>&lt;summary&gt;</code> recebe o foco com a tecla <kbd>Tab</kbd>, e <kbd>Enter</kbd> ou <kbd>Espaço</kbd> abrem e fecham. Quem não usa mouse consegue usar a caixa do mesmo jeito.</li>
+  <li><strong>Leitor de tela:</strong> o <code>&lt;summary&gt;</code> é anunciado como um botão, junto com o estado "recolhido" ou "expandido" (as palavras exatas mudam de um leitor para outro). Veja a aula <a href="leitores-tela.html">Leitores de Tela</a>.</li>
+  <li><strong>Aparência:</strong> o desenho do triângulo, o espaçamento e a cor mudam de um navegador para outro. Tudo isso pode ser trocado com CSS (assunto do futuro Guia CSS).</li>
+</ul>
+
+<div class="tryhtml" data-goal="sel:details > summary:first-child,texto:details > summary=Modo de preparo,sel:details > ol">
+<p class="try-task"><strong>Missão:</strong> o modo de preparo está sempre à mostra. Guarde-o numa caixa que abre e fecha: envolva o título e a lista com <code>&lt;details&gt;</code> e troque o <code>&lt;h2&gt;</code> por um <code>&lt;summary&gt;</code>. Depois clique no resultado para testar.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;h2&gt;Modo de preparo&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;Bata as cenouras, os ovos e o óleo no liquidificador.&lt;/li&gt;
+  &lt;li&gt;Misture o açúcar e a farinha.&lt;/li&gt;
+  &lt;li&gt;Asse por 40 minutos.&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;details&gt;
+  &lt;summary&gt;Modo de preparo&lt;/summary&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Bata as cenouras, os ovos e o óleo no liquidificador.&lt;/li&gt;
+    &lt;li&gt;Misture o açúcar e a farinha.&lt;/li&gt;
+    &lt;li&gt;Asse por 40 minutos.&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/details&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Começar aberta: o atributo <code>open</code></h2>
+<p>Às vezes a primeira caixa deve vir aberta, para o leitor já ver o conteúdo. Para isso existe o atributo <code>open</code> ("aberto"):</p>
+
+<pre class="file" data-file="receita.html" data-resultado>&lt;details open&gt;
+  &lt;summary&gt;Ingredientes&lt;/summary&gt;
+  &lt;p&gt;3 cenouras, 3 ovos, 2 xícaras de açúcar.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+  &lt;summary&gt;Cobertura de chocolate&lt;/summary&gt;
+  &lt;p&gt;1 xícara de chocolate em pó, 1 colher de manteiga.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>open</dt><dd>Um <strong>atributo booleano</strong>: ele não precisa de valor. Estar escrito na tag já quer dizer "sim, aberta"; não estar quer dizer "fechada" (aula <a href="atributos.html">Atributos</a>).</dd>
+</dl>
+
+<p>O <code>open</code> só decide como a caixa <strong>começa</strong>. O leitor continua podendo fechá-la. E, quando ele clica, o próprio navegador põe ou tira o <code>open</code> da tag. Você pode ver isso acontecer nas <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor (F12)</a>, na aba que mostra os elementos da página: o <code>open</code> aparece e some a cada clique.</p>
+
+<div class="warning">
+<strong><code>open="false"</code> deixa a caixa ABERTA</strong>
+<p>Num atributo booleano, o navegador olha só se o atributo <strong>existe</strong>, e nunca o valor. <code>open="false"</code>, <code>open="não"</code> e <code>open="0"</code> deixam a caixa aberta. Para começar fechada, <strong>apague</strong> o atributo. O validador avisa (veja em <a href="#errado">Quando dá errado</a>).</p>
+</div>
+
+<hr>
+
+<h2>3. Perguntas frequentes</h2>
+<p>O uso mais comum do <code>&lt;details&gt;</code> é a página de perguntas frequentes (o famoso "FAQ", de <em>Frequently Asked Questions</em>). Cada pergunta é uma caixa; a resposta fica escondida até o leitor clicar:</p>
+
+<pre class="file" data-file="faq.html" data-resultado>&lt;h1&gt;Perguntas frequentes&lt;/h1&gt;
+&lt;details&gt;
+  &lt;summary&gt;Posso trocar o açúcar por adoçante?&lt;/summary&gt;
+  &lt;p&gt;Pode, mas o bolo fica menos fofo. Use adoçante próprio para forno.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+  &lt;summary&gt;Quanto tempo o bolo dura?&lt;/summary&gt;
+  &lt;p&gt;Três dias fora da geladeira, bem fechado.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+  &lt;summary&gt;Dá para congelar?&lt;/summary&gt;
+  &lt;p&gt;Sim, sem a cobertura, por até um mês.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+
+<p>Cada caixa é independente: você pode abrir as três ao mesmo tempo.</p>
+
+<h3>Uma de cada vez: o atributo <code>name</code></h3>
+<p>Quer que, ao abrir uma pergunta, a que estava aberta feche sozinha? Dê o <strong>mesmo</strong> <code>name</code> ("nome") a todas as caixas do grupo:</p>
+
+<pre class="file" data-file="faq.html" data-resultado>&lt;details name="faq" open&gt;
+  &lt;summary&gt;Posso trocar o açúcar por adoçante?&lt;/summary&gt;
+  &lt;p&gt;Pode, mas o bolo fica menos fofo.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Quanto tempo o bolo dura?&lt;/summary&gt;
+  &lt;p&gt;Três dias fora da geladeira.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Dá para congelar?&lt;/summary&gt;
+  &lt;p&gt;Sim, sem a cobertura.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>name="faq"</dt><dd>O nome do grupo. Você escolhe o nome; o que importa é ser <strong>igual</strong> em todas as caixas. Abriu uma, o navegador fecha as outras do mesmo grupo. É o que os sites chamam de "sanfona" (<em>accordion</em>, em inglês).</dd>
+</dl>
+
+<ul>
+  <li>Abra a segunda pergunta no resultado: a primeira fecha sozinha.</li>
+  <li>Se você puser <code>open</code> em duas caixas do mesmo grupo, o navegador deixa aberta só a primeira.</li>
+  <li>O <code>name</code> no <code>&lt;details&gt;</code> é recente (chegou aos principais navegadores entre 2023 e 2024). Num navegador antigo, ele é ignorado e cada caixa abre independente, o que continua funcionando bem.</li>
+</ul>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> abra as perguntas e veja que só uma fica aberta. Depois apague o <code>name="faq"</code> de uma delas e teste de novo: ela passa a abrir sem fechar as outras. Por fim, acrescente uma quarta pergunta no mesmo grupo.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Perguntas frequentes&lt;/h1&gt;
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Vocês entregam?&lt;/summary&gt;
+  &lt;p&gt;Sim, no bairro, de terça a sábado.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Aceitam encomendas?&lt;/summary&gt;
+  &lt;p&gt;Com dois dias de antecedência.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Tem bolo sem glúten?&lt;/summary&gt;
+  &lt;p&gt;Às sextas-feiras.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. O que vai dentro do <code>&lt;summary&gt;</code></h2>
+<p>O <code>&lt;summary&gt;</code> é um título curto. Dentro dele podem ir:</p>
+<ul>
+  <li><strong>texto</strong> e elementos de texto, como <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;code&gt;</code> e <code>&lt;time&gt;</code>;</li>
+  <li><strong>um título</strong> (<code>&lt;h2&gt;</code> a <code>&lt;h6&gt;</code>), para a pergunta entrar na estrutura de títulos da página.</li>
+</ul>
+<p>Não podem ir elementos de bloco, como <code>&lt;p&gt;</code>, <code>&lt;ul&gt;</code> ou <code>&lt;div&gt;</code>: o <code>&lt;summary&gt;</code> é a etiqueta, e o conteúdo grande vai <strong>depois</strong> dele.</p>
+
+<pre class="file" data-file="faq.html" data-resultado>&lt;h1&gt;Perguntas frequentes&lt;/h1&gt;
+&lt;details&gt;
+  &lt;summary&gt;&lt;h2&gt;Entregas&lt;/h2&gt;&lt;/summary&gt;
+  &lt;p&gt;Entregamos no bairro, de terça a sábado.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+  &lt;summary&gt;Promoção até &lt;time datetime="2026-10-31"&gt;31 de outubro&lt;/time&gt;&lt;/summary&gt;
+  &lt;p&gt;Bolo de cenoura com &lt;strong&gt;10% de desconto&lt;/strong&gt;.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+
+<p>Repare que o <code>&lt;h2&gt;</code> dentro do <code>&lt;summary&gt;</code> é grande e, em vários navegadores, vai para a <strong>linha de baixo</strong> do triângulo, porque um título é um bloco. Ajustar isso é trabalho de CSS. Mesmo assim, ele vale a pena quando a pergunta é uma seção de verdade: quem usa leitor de tela costuma navegar pulando de título em título. O <code>&lt;time&gt;</code> da segunda caixa é o da aula <a href="time.html">time e data</a>.</p>
+
+<hr>
+
+<h2>Quando usar (e quando não usar)</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use <code>&lt;details&gt;</code>?</th></tr>
+<tr><td>Perguntas frequentes, "ver mais", dicas opcionais, detalhes técnicos</td><td>Sim</td></tr>
+<tr><td>Um spoiler ou a resposta de um exercício</td><td>Sim: só vê quem clicar</td></tr>
+<tr><td>Informação que <strong>todo mundo</strong> precisa ler (preço, aviso importante)</td><td>Não: deixe à mostra</td></tr>
+<tr><td>Uma janela que aparece por cima da página (confirmação, aviso)</td><td>Não: use o <a href="dialog.html"><code>&lt;dialog&gt;</code></a>, a próxima aula</td></tr>
+<tr><td>Um menu que abre e fecha</td><td>Funciona para menus simples; menus mais complexos são assunto de <a href="nav.html">nav</a> e <a href="popover.html">popover</a></td></tr>
+</table>
+</div>
+
+<div class="tip">
+<strong>A busca da página encontra o que está escondido</strong>
+<p>O texto dentro de um <code>&lt;details&gt;</code> fechado continua na página. Em navegadores como o Chrome, quando você procura uma palavra com <kbd>Ctrl</kbd>+<kbd>F</kbd> e ela está numa caixa fechada, a caixa abre sozinha para mostrar o resultado. Os buscadores também leem esse texto.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Todas as páginas abaixo começam com o mesmo esqueleto (<code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;head&gt;</code> com o título "Receitas da Ana" e <code>&lt;body&gt;</code>), ocupando as linhas 1 a 7. O trecho mostrado começa na <strong>linha 8</strong>. O navegador não mostra erro nenhum: ele dá um jeito em tudo, às vezes de um jeito estranho. A descrição do que ele faz foi conferida no Chromium; outros navegadores podem desenhar um pouco diferente.</p>
+
+<div class="cenario">
+<strong>Esqueceu o <code>&lt;summary&gt;</code></strong>
+<pre class="file" data-file="sem.html" data-resultado>&lt;details&gt;
+&lt;p&gt;3 cenouras, 3 ovos, 2 xícaras de açúcar.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> inventa uma etiqueta sozinho, na língua do navegador: "Detalhes" num navegador em português, "Details" num em inglês. O leitor não faz ideia do que tem dentro.</p>
+<pre class="term" data-cwd="~/receitas">$ vnu sem.html
+"file:/home/ana/receitas/sem.html":9.1-9.3: error: Element “details” is missing a required instance of child element “summary”.</pre>
+<p><strong>O validador diz:</strong> "O elemento <code>details</code> está sem o filho obrigatório <code>summary</code>". A posição <code>9.1-9.3</code> aponta a linha 9, onde ele percebeu a falta.</p>
+<p><strong>Como consertar:</strong> escreva o <code>&lt;summary&gt;</code> logo depois do <code>&lt;details&gt;</code>, com um título que diga o que tem dentro.</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>&lt;summary&gt;</code> no fim, depois do conteúdo</strong>
+<pre class="file" data-file="ordem.html" data-resultado>&lt;details&gt;
+&lt;p&gt;3 cenouras, 3 ovos, 2 xícaras de açúcar.&lt;/p&gt;
+&lt;summary&gt;Ingredientes&lt;/summary&gt;
+&lt;/details&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> funciona! O navegador procura o primeiro <code>&lt;summary&gt;</code> que encontrar entre os filhos e o desenha no topo. Por isso o erro passa despercebido.</p>
+<pre class="term" data-cwd="~/receitas">$ vnu ordem.html
+"file:/home/ana/receitas/ordem.html":9.1-9.3: error: Element “details” is missing a required instance of child element “summary”.
+"file:/home/ana/receitas/ordem.html":10.1-10.9: error: Element “summary” not allowed as child of element “details” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O validador diz:</strong> dois erros. Na linha 9 (o <code>&lt;p&gt;</code>), "falta o <code>summary</code>", porque ele tinha de ser o primeiro. Na linha 10, "elemento <code>summary</code> não permitido como filho de <code>details</code> neste contexto", porque ali, depois do conteúdo, ele já não pode estar. O final <em>Suppressing further errors from this subtree</em> quer dizer "deixando de avisar outros erros dentro deste trecho".</p>
+<p><strong>Como consertar:</strong> o <code>&lt;summary&gt;</code> é sempre o <strong>primeiro</strong> filho.</p>
+</div>
+
+<div class="cenario">
+<strong>Dois <code>&lt;summary&gt;</code> na mesma caixa</strong>
+<pre class="file" data-file="dois.html" data-resultado>&lt;details&gt;
+&lt;summary&gt;Ingredientes&lt;/summary&gt;
+&lt;summary&gt;Modo de preparo&lt;/summary&gt;
+&lt;p&gt;Bata tudo no liquidificador.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> usa só o primeiro como etiqueta. O segundo vira conteúdo comum: aparece como uma linha de texto quando a caixa abre.</p>
+<pre class="term" data-cwd="~/receitas">$ vnu dois.html
+"file:/home/ana/receitas/dois.html":10.1-10.9: error: Element “summary” not allowed as child of element “details” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>Como consertar:</strong> uma caixa, uma etiqueta. Se são dois assuntos, faça duas caixas.</p>
+</div>
+
+<div class="cenario">
+<strong><code>open="false"</code></strong>
+<pre class="file" data-file="falso.html" data-resultado>&lt;details open="false"&gt;
+&lt;summary&gt;Ingredientes&lt;/summary&gt;
+&lt;p&gt;3 cenouras, 3 ovos, 2 xícaras de açúcar.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> a caixa começa <strong>aberta</strong>, como mostra o resultado acima.</p>
+<pre class="term" data-cwd="~/receitas">$ vnu falso.html
+"file:/home/ana/receitas/falso.html":8.1-8.22: error: Bad value “false” for attribute “open” on element “details”.</pre>
+<p><strong>O validador diz:</strong> "Valor ruim <code>false</code> para o atributo <code>open</code>". Um atributo booleano só aceita ficar sem valor (<code>open</code>), vazio (<code>open=""</code>) ou com o próprio nome (<code>open="open"</code>).</p>
+<p><strong>Como consertar:</strong> para fechada, apague o <code>open</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>&lt;details&gt;</code> no meio de um parágrafo</strong>
+<pre class="file" data-file="dentro.html" data-resultado>&lt;p&gt;Dica: &lt;details&gt;&lt;summary&gt;ver dica&lt;/summary&gt;use cenouras bem laranjas&lt;/details&gt; e bom bolo!&lt;/p&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> um <code>&lt;details&gt;</code> não pode ficar dentro de um <code>&lt;p&gt;</code>. Ao encontrar o <code>&lt;details&gt;</code>, o navegador <strong>fecha o parágrafo</strong> antes dele. O "e bom bolo!" fica solto depois da caixa, e o <code>&lt;/p&gt;</code> do fim, sem par, vira um parágrafo vazio novo. O código que ele monta é este:</p>
+<pre class="file" data-file="dentro.html (como o navegador entendeu)">&lt;p&gt;Dica: &lt;/p&gt;&lt;details&gt;&lt;summary&gt;ver dica&lt;/summary&gt;use cenouras bem laranjas&lt;/details&gt; e bom bolo!&lt;p&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu dentro.html
+"file:/home/ana/receitas/dentro.html":8.93-8.96: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p><strong>O validador diz:</strong> "Nenhum elemento <code>p</code> aberto, mas uma tag de fechamento <code>&lt;/p&gt;</code> apareceu" (coluna 93: o <code>&lt;/p&gt;</code> do fim). O erro aponta para o fim da linha, mas a causa está no meio.</p>
+<p><strong>Como consertar:</strong> deixe o <code>&lt;details&gt;</code> fora do parágrafo, como um bloco próprio. Se quiser algo que abre no meio do texto, use um link para outra parte da página (aula <a href="ancoras.html">Âncoras</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>Um parágrafo dentro do <code>&lt;summary&gt;</code></strong>
+<pre class="file" data-file="titulo.html" data-resultado>&lt;details&gt;
+&lt;summary&gt;&lt;p&gt;Ingredientes&lt;/p&gt;&lt;/summary&gt;
+&lt;p&gt;3 cenouras, 3 ovos, 2 xícaras de açúcar.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> funciona, mas o triângulo costuma ficar sozinho numa linha e o título vai para a linha de baixo, porque o <code>&lt;p&gt;</code> é um bloco.</p>
+<pre class="term" data-cwd="~/receitas">$ vnu titulo.html
+"file:/home/ana/receitas/titulo.html":9.10-9.12: error: Element “p” not allowed as child of element “summary” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>Como consertar:</strong> texto direto no <code>&lt;summary&gt;</code> (ou um título <code>&lt;h2&gt;</code>…<code>&lt;h6&gt;</code>, se for uma seção).</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>&lt;summary&gt;</code> sem <code>&lt;details&gt;</code></strong>
+<pre class="file" data-file="solto.html" data-resultado>&lt;summary&gt;Ingredientes&lt;/summary&gt;
+&lt;p&gt;3 cenouras, 3 ovos, 2 xícaras de açúcar.&lt;/p&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> mostra "Ingredientes" como um texto comum, sem triângulo e sem abrir nem fechar nada. Quem faz a caixa funcionar é o <code>&lt;details&gt;</code>.</p>
+<pre class="term" data-cwd="~/receitas">$ vnu solto.html
+"file:/home/ana/receitas/solto.html":8.1-8.9: error: Element “summary” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>Como consertar:</strong> envolva o <code>&lt;summary&gt;</code> e o conteúdo com <code>&lt;details&gt;…&lt;/details&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;details&gt;…&lt;/details&gt;</code></td><td>Caixa que abre e fecha; começa fechada</td></tr>
+<tr><td><code>&lt;summary&gt;Título&lt;/summary&gt;</code></td><td>A etiqueta sempre visível; primeiro filho do <code>details</code></td></tr>
+<tr><td><code>&lt;details open&gt;</code></td><td>Começa aberta (booleano: <code>open="false"</code> também abre)</td></tr>
+<tr><td><code>&lt;details name="grupo"&gt;</code></td><td>Caixas com o mesmo <code>name</code>: só uma aberta por vez</td></tr>
+<tr><td><code>&lt;summary&gt;&lt;h2&gt;…&lt;/h2&gt;&lt;/summary&gt;</code></td><td>Título de seção como etiqueta (permitido)</td></tr>
+<tr><td><code>&lt;summary&gt;&lt;p&gt;…&lt;/p&gt;&lt;/summary&gt;</code></td><td>Inválido: blocos não vão no <code>summary</code></td></tr>
+<tr><td><kbd>Tab</kbd>, depois <kbd>Enter</kbd> ou <kbd>Espaço</kbd></td><td>Abre e fecha pelo teclado</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A etiqueta</h3>
+<p>Complete com o elemento que fica sempre visível:</p>
+<div class="ex-code">&lt;details&gt;&lt;<input data-answer="summary" aria-label="elemento">&gt;Dicas&lt;/summary&gt;&lt;p&gt;Use forma untada.&lt;/p&gt;&lt;/details&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Aberta desde o começo</h3>
+<p>Complete com o atributo que faz a caixa começar aberta:</p>
+<div class="ex-code">&lt;details <input data-answer="open" aria-label="atributo">&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Uma por vez</h3>
+<p>Complete com o atributo que agrupa as caixas para que só uma fique aberta:</p>
+<div class="ex-code">&lt;details <input data-answer="name" aria-label="atributo">="duvidas"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Como fica uma caixa com <code>&lt;details open="false"&gt;</code>?</p>
+<label><input type="radio" name="q4"> Fechada</label>
+<label><input type="radio" name="q4"> Não aparece</label>
+<label><input type="radio" name="q4"> Aberta, e o validador aponta <code>Bad value “false”</code></label>
+<label><input type="radio" name="q4"> Fechada, e não abre com o clique</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Onde o <code>&lt;summary&gt;</code> tem de ficar?</p>
+<label><input type="radio" name="q5"> Em qualquer lugar dentro do <code>&lt;details&gt;</code></label>
+<label><input type="radio" name="q5"> Como o primeiro filho do <code>&lt;details&gt;</code></label>
+<label><input type="radio" name="q5"> Antes do <code>&lt;details&gt;</code>, fora dele</label>
+<label><input type="radio" name="q5"> No <code>&lt;head&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. O que o navegador mostra num <code>&lt;details&gt;</code> sem <code>&lt;summary&gt;</code>?</p>
+<label><input type="radio" name="q6"> Uma etiqueta inventada por ele, como "Detalhes" ou "Details"</label>
+<label><input type="radio" name="q6"> Uma mensagem de erro</label>
+<label><input type="radio" name="q6"> Nada: a caixa inteira some</label>
+<label><input type="radio" name="q6"> O conteúdo sempre aberto, sem triângulo</label>
+</div>
+
+<h3>Missão final: o FAQ da lojinha</h3>
+
+<div class="tryhtml" data-goal="nsel:details[name='faq']=3,nsel:details > summary:first-child=3,nsel:details[open]=1,texto:details[open] > summary=Vocês entregam?">
+<p class="try-task"><strong>Missão:</strong> transforme as três perguntas em caixas <code>&lt;details&gt;</code>, cada uma com a pergunta num <code>&lt;summary&gt;</code> e a resposta no <code>&lt;p&gt;</code>. As três devem ficar no mesmo grupo <code>name="faq"</code>, e só a primeira, "Vocês entregam?", deve começar aberta.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Perguntas frequentes&lt;/h1&gt;
+
+&lt;h2&gt;Vocês entregam?&lt;/h2&gt;
+&lt;p&gt;Sim, no bairro, de terça a sábado.&lt;/p&gt;
+
+&lt;h2&gt;Aceitam encomendas?&lt;/h2&gt;
+&lt;p&gt;Com dois dias de antecedência.&lt;/p&gt;
+
+&lt;h2&gt;Tem bolo sem glúten?&lt;/h2&gt;
+&lt;p&gt;Às sextas-feiras.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Perguntas frequentes&lt;/h1&gt;
+
+&lt;details name="faq" open&gt;
+  &lt;summary&gt;Vocês entregam?&lt;/summary&gt;
+  &lt;p&gt;Sim, no bairro, de terça a sábado.&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Aceitam encomendas?&lt;/summary&gt;
+  &lt;p&gt;Com dois dias de antecedência.&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Tem bolo sem glúten?&lt;/summary&gt;
+  &lt;p&gt;Às sextas-feiras.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+</div>
+
+<p>Teste no resultado: abra a segunda pergunta e veja a primeira fechar. Se quiser a pergunta como título de seção, o <code>&lt;h2&gt;</code> pode ir <strong>dentro</strong> do <code>&lt;summary&gt;</code> (<code>&lt;summary&gt;&lt;h2&gt;Vocês entregam?&lt;/h2&gt;&lt;/summary&gt;</code>), e a missão também aceita.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;details&gt;</code> é uma caixa que abre e fecha com um clique, sem JavaScript. O <code>&lt;summary&gt;</code> é a etiqueta sempre visível e tem de ser o <strong>primeiro</strong> filho.</li>
+  <li><code>open</code> faz a caixa começar aberta. É booleano: <code>open="false"</code> também abre. Para fechar, apague o atributo.</li>
+  <li>Caixas com o mesmo <code>name</code> formam um grupo em que só uma fica aberta por vez.</li>
+  <li>No <code>&lt;summary&gt;</code> vai texto curto (ou um título <code>h2</code>…<code>h6</code>); blocos como <code>&lt;p&gt;</code> vão depois dele. E o <code>&lt;details&gt;</code> não pode ficar dentro de um <code>&lt;p&gt;</code>.</li>
+  <li>Funciona pelo teclado (<kbd>Tab</kbd> + <kbd>Enter</kbd>) e com leitores de tela. A aparência do triângulo muda de um navegador para outro.</li>
+  <li>Sem <code>&lt;summary&gt;</code>, o navegador inventa "Detalhes"/"Details", e o validador diz <code>missing a required instance of child element “summary”</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
