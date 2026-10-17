@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Quiz — 40 perguntas para testar o que você aprendeu | Guia HTML</title>
+<meta name="description" content="Quiz do Guia HTML: 40 perguntas de múltipla escolha, dos três níveis do guia (estrutura, texto, links, imagens, listas, tabelas, head, semântica, formulários, mídia, acessibilidade, SEO e desempenho), com correção na hora, explicação de cada resposta e o link para a aula do assunto.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Quiz</span></h1>
+
+<p class="intro">40 perguntas sobre o que você estudou no guia, divididas nos três níveis. Várias mostram um trecho de código e perguntam o que o navegador faz com ele, ou o que o validador diz: tente responder de cabeça. As respostas sobre o validador foram conferidas com o <code>vnu</code> 26.10.12 (o mesmo do validator.w3.org) na máquina da Ana. A correção é na hora; abra "Explicação" para entender o porquê, e o link "Revise" leva à aula do assunto.</p>
+
+<p>Acertos: <strong id="placar">0 de 40</strong></p>
+
+<div class="note">
+<strong>Como conferir uma resposta</strong>
+<p>Os trechos de código são pedaços do <code>body</code> de uma página. Para ver o que o seu navegador faz com um deles, cole-o numa caixa "Experimente" do guia, como a de <a href="ref-elementos.html#experimente">Todos os Elementos</a>, e use o botão "Validar no W3C" para ver a mensagem do validador.</p>
+</div>
+
+<p>Ir para: <a href="#nivel1">Nível 1</a> · <a href="#nivel2">Nível 2</a> · <a href="#nivel3">Nível 3</a></p>
+
+<h2 id="nivel1">Nível 1 · Iniciante</h2>
+<p>Estrutura, texto, entidades, links, imagens, listas e tabelas.</p>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">1. O que é o HTML?</p>
+<label><input type="radio" name="q1"> Uma linguagem de programação, como o JavaScript</label>
+<label><input type="radio" name="q1"> Um programa para abrir sites</label>
+<label><input type="radio" name="q1"> Uma linguagem de marcação: diz o que cada parte da página é (título, parágrafo, link…)</label>
+<label><input type="radio" name="q1"> Uma linguagem só para cores e fontes</label>
+<details><summary>Explicação</summary><p>HTML é "HyperText Markup Language", linguagem de <strong>marcação</strong> de hipertexto. Ele não faz contas nem toma decisões (isso é do JavaScript) e não cuida da aparência (isso é do CSS): marca o conteúdo.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="introducao.html">O que é HTML</a></p>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">2. Para que serve o <code>&lt;!DOCTYPE html&gt;</code> na primeira linha?</p>
+<label><input type="radio" name="q2"> Faz o navegador desenhar a página no modo padrão de hoje, e não no modo quirks</label>
+<label><input type="radio" name="q2"> Abre o elemento raiz da página</label>
+<label><input type="radio" name="q2"> Diz qual é a versão do navegador</label>
+<label><input type="radio" name="q2"> Não serve para nada; é só costume</label>
+<details><summary>Explicação</summary><p>O DOCTYPE não é uma tag: é um aviso. Sem ele, o navegador entra no "modo quirks", imitando navegadores antigos, e o validador dá o erro <code>Start tag seen without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.</code></p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="doctype.html">O DOCTYPE</a></p>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">3. Onde fica o texto que aparece na aba do navegador?</p>
+<label><input type="radio" name="q3"> Num <code>&lt;h1&gt;</code>, dentro do <code>body</code></label>
+<label><input type="radio" name="q3"> No atributo <code>title</code> do <code>&lt;body&gt;</code></label>
+<label><input type="radio" name="q3"> Numa <code>&lt;meta name="aba"&gt;</code></label>
+<label><input type="radio" name="q3"> No elemento <code>&lt;title&gt;</code>, dentro do <code>head</code></label>
+<details><summary>Explicação</summary><p>O <code>&lt;title&gt;</code> é obrigatório e vai no <code>head</code>. Ele aparece na aba, nos favoritos e como título do resultado de busca. Sem ele, o validador acusa <code>Element “head” is missing a required instance of child element “title”.</code></p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="meta.html">title e meta</a></p>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Qual destas linhas está aninhada corretamente?</p>
+<label><input type="radio" name="q4"> <code>&lt;p&gt;&lt;strong&gt;&lt;em&gt;Atenção&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;p&gt;&lt;strong&gt;&lt;em&gt;Atenção&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;p&gt;&lt;strong&gt;&lt;em&gt;Atenção&lt;/p&gt;&lt;/em&gt;&lt;/strong&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;strong&gt;&lt;p&gt;&lt;em&gt;Atenção&lt;/strong&gt;&lt;/p&gt;&lt;/em&gt;</code></label>
+<details><summary>Explicação</summary><p>O que abre por último fecha primeiro, como caixas uma dentro da outra. Na primeira opção, as tags se cruzam, e o validador diz <code>End tag “strong” violates nesting rules.</code></p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="aninhamento.html">Aninhamento</a></p>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Qual destes elementos é <strong>vazio</strong> (não tem tag de fechamento)?</p>
+<label><input type="radio" name="q5"> <code>&lt;p&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;span&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;br&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;li&gt;</code></label>
+<details><summary>Explicação</summary><p>Os vazios são 13: <code>area</code>, <code>base</code>, <code>br</code>, <code>col</code>, <code>embed</code>, <code>hr</code>, <code>img</code>, <code>input</code>, <code>link</code>, <code>meta</code>, <code>source</code>, <code>track</code> e <code>wbr</code>. Escrever <code>&lt;/br&gt;</code> é erro (<code>End tag “br”.</code>).</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="elementos.html">Elementos e Tags</a></p>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Como o navegador mostra este parágrafo?</p>
+<pre class="file">&lt;p&gt;Bolo      de
+      cenoura&lt;/p&gt;</pre>
+<label><input type="radio" name="q6"> <code>Bolo de cenoura</code>, numa linha, com um espaço só entre as palavras</label>
+<label><input type="radio" name="q6"> Com os espaços e a quebra de linha exatamente como no código</label>
+<label><input type="radio" name="q6"> <code>Bolodecenoura</code>, sem espaços</label>
+<label><input type="radio" name="q6"> Dá erro, porque o parágrafo tem duas linhas</label>
+<details><summary>Explicação</summary><p>O HTML junta qualquer sequência de espaços e quebras de linha num espaço só. Para manter os espaços como estão, existe o <code>&lt;pre&gt;</code>; para quebrar a linha, o <code>&lt;br&gt;</code>.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="espacos.html">Espaços e Quebras de Linha</a></p>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">7. Uma página tem um <code>&lt;h1&gt;</code> e, logo depois, um <code>&lt;h3&gt;</code>. O que o validador <code>vnu</code> 26.10 diz?</p>
+<label><input type="radio" name="q7"> Nada: os títulos podem vir em qualquer ordem</label>
+<label><input type="radio" name="q7"> Só uma nota (<code>info</code>)</label>
+<label><input type="radio" name="q7"> Que o <code>h3</code> é obsoleto</label>
+<label><input type="radio" name="q7"> Um erro: <code>…skipping 1 heading level.</code></label>
+<details><summary>Explicação</summary><p>A mensagem completa é <code>The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.</code> Pular um nível atrapalha quem navega pelos títulos com um leitor de tela. Para um título menor, use <code>h2</code> e mude o tamanho no CSS.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="titulos.html">Títulos (h1 a h6)</a></p>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">8. Na frase "<em>Cuidado: o forno está quente</em>", que elemento marca o "Cuidado" como <strong>importante</strong>?</p>
+<label><input type="radio" name="q8"> <code>&lt;b&gt;</code></label>
+<label><input type="radio" name="q8"> <code>&lt;strong&gt;</code></label>
+<label><input type="radio" name="q8"> <code>&lt;big&gt;</code></label>
+<label><input type="radio" name="q8"> <code>&lt;i&gt;</code></label>
+<details><summary>Explicação</summary><p>O <code>&lt;strong&gt;</code> significa importância, seriedade ou urgência. O <code>&lt;b&gt;</code> também fica em negrito, mas só chama a atenção, sem dar importância. O <code>&lt;big&gt;</code> é obsoleto.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="negrito-italico.html">Negrito e Itálico</a></p>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">9. A Ana quer que apareça na página, como texto, a tag <code>&lt;p&gt;</code>. O que ela escreve no código?</p>
+<label><input type="radio" name="q9"> <code>&lt;p&gt;</code></label>
+<label><input type="radio" name="q9"> <code>"&lt;p&gt;"</code>, entre aspas</label>
+<label><input type="radio" name="q9"> <code>&amp;lt;p&amp;gt;</code></label>
+<label><input type="radio" name="q9"> <code>\&lt;p\&gt;</code></label>
+<details><summary>Explicação</summary><p>O <code>&lt;</code> começa uma tag; para mostrá-lo, use a entidade <code>&amp;lt;</code> (e, por costume, <code>&amp;gt;</code> para o <code>&gt;</code>). Aspas e barras invertidas não escapam nada no HTML.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="entidades.html">Entidades</a></p>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">10. Para que serve o <code>&amp;nbsp;</code> em <code>R$&amp;nbsp;12,90</code>?</p>
+<label><input type="radio" name="q10"> Para o "R$" e o "12,90" nunca ficarem em linhas diferentes</label>
+<label><input type="radio" name="q10"> Para dar um espaço maior entre os dois</label>
+<label><input type="radio" name="q10"> Para o preço ficar em negrito</label>
+<label><input type="radio" name="q10"> Para o navegador entender que é dinheiro</label>
+<details><summary>Explicação</summary><p><code>&amp;nbsp;</code> é o "non-breaking space", o espaço que não quebra a linha. Ele tem a mesma largura de um espaço comum. Para afastar coisas na tela, use CSS, não vários <code>&amp;nbsp;</code>.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="entidades.html">Entidades</a> e a tabela de <a href="ref-entidades.html#espacos">espaços</a></p>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">11. No site da Ana, a página <code>receitas/bolo.html</code> precisa de um link para a página inicial, <code>index.html</code>, que está na pasta de cima. Qual <code>href</code> funciona?</p>
+<label><input type="radio" name="q11"> <code>href="index.html"</code></label>
+<label><input type="radio" name="q11"> <code>href="receitas/index.html"</code></label>
+<label><input type="radio" name="q11"> <code>href="C:\site\index.html"</code></label>
+<label><input type="radio" name="q11"> <code>href="../index.html"</code></label>
+<details><summary>Explicação</summary><p>Um caminho relativo parte da pasta da página atual (<code>receitas/</code>). O <code>../</code> sobe uma pasta. <code>index.html</code> sozinho procuraria <code>receitas/index.html</code>, e um caminho do Windows não funciona depois que o site é publicado.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="caminhos.html">Caminhos Relativos e Absolutos</a></p>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">12. Como fazer um link que leva à seção <code>&lt;section id="contato"&gt;</code> da mesma página?</p>
+<label><input type="radio" name="q12"> <code>&lt;a href="contato"&gt;</code></label>
+<label><input type="radio" name="q12"> <code>&lt;a href="#contato"&gt;</code></label>
+<label><input type="radio" name="q12"> <code>&lt;a name="contato"&gt;</code></label>
+<label><input type="radio" name="q12"> <code>&lt;a id="#contato"&gt;</code></label>
+<details><summary>Explicação</summary><p>O <code>#</code> no começo do <code>href</code> quer dizer "o elemento com este <code>id</code>, nesta página". O <code>name</code> no <code>&lt;a&gt;</code> é a forma antiga, obsoleta.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="ancoras.html">Âncoras na Mesma Página</a></p>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">13. O que o atributo <code>target="_blank"</code> faz num link?</p>
+<label><input type="radio" name="q13"> Deixa o link em branco, sem texto</label>
+<label><input type="radio" name="q13"> Baixa o arquivo em vez de abrir</label>
+<label><input type="radio" name="q13"> Abre o destino numa nova aba</label>
+<label><input type="radio" name="q13"> Impede o leitor de clicar</label>
+<details><summary>Explicação</summary><p><code>_blank</code> abre numa aba (ou janela) nova. Use com moderação: muita gente prefere decidir sozinha, com o botão do meio do mouse. Quem baixa arquivos é o atributo <code>download</code>.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="links-target.html">Nova Aba (target e rel)</a></p>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">14. O que o validador diz de <code>&lt;img src="bolo.jpg"&gt;</code>?</p>
+<label><input type="radio" name="q14"> Erro: falta o <code>alt</code></label>
+<label><input type="radio" name="q14"> Erro: falta o <code>&lt;/img&gt;</code></label>
+<label><input type="radio" name="q14"> Nada: está tudo certo</label>
+<label><input type="radio" name="q14"> Aviso: falta o <code>title</code></label>
+<details><summary>Explicação</summary><p>A mensagem é <code>An “img” element must have an “alt” attribute, except under certain conditions.</code> O <code>&lt;img&gt;</code> é vazio, então não tem <code>&lt;/img&gt;</code> (escrever um dá <code>Stray end tag “img”.</code>).</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="imagens-alt.html">Texto Alternativo (alt)</a></p>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">15. Uma imagem é só enfeite: um floreado entre duas seções, sem informação nenhuma. Qual é o melhor <code>alt</code>?</p>
+<label><input type="radio" name="q15"> <code>alt="imagem"</code></label>
+<label><input type="radio" name="q15"> <code>alt="floreado.png"</code></label>
+<label><input type="radio" name="q15"> Nenhum: apague o atributo</label>
+<label><input type="radio" name="q15"> <code>alt=""</code>, vazio</label>
+<details><summary>Explicação</summary><p>O <code>alt=""</code> diz ao leitor de tela "pode pular esta imagem". Sem o atributo, o validador dá erro, e alguns leitores de tela leem o nome do arquivo. <code>alt="imagem"</code> não informa nada.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="imagens-alt.html">Texto Alternativo (alt)</a></p>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">16. Qual é o jeito certo de dizer que uma imagem tem 400 pixels de largura?</p>
+<label><input type="radio" name="q16"> <code>width="400px"</code></label>
+<label><input type="radio" name="q16"> <code>width="400"</code></label>
+<label><input type="radio" name="q16"> <code>size="400"</code></label>
+<label><input type="radio" name="q16"> <code>width=400 pixels</code></label>
+<details><summary>Explicação</summary><p>Nos atributos <code>width</code> e <code>height</code>, o número é em pixels e vai <strong>sem</strong> unidade. Com <code>px</code>, o validador diz <code>Bad value “400px” for attribute “width” on element “img”: Expected a digit but saw “p” instead.</code></p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="imagens-tamanho.html">Largura e Altura</a></p>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">17. O que pode ficar <strong>direto</strong> dentro de um <code>&lt;ul&gt;</code>?</p>
+<label><input type="radio" name="q17"> Qualquer elemento</label>
+<label><input type="radio" name="q17"> Só texto</label>
+<label><input type="radio" name="q17"> Só elementos <code>&lt;li&gt;</code></label>
+<label><input type="radio" name="q17"> <code>&lt;li&gt;</code> e <code>&lt;p&gt;</code></label>
+<details><summary>Explicação</summary><p>Dentro de <code>ul</code> e <code>ol</code>, só <code>li</code> (e elementos de script). Um <code>&lt;p&gt;</code> ali dá <code>Element “p” not allowed as child of element “ul” in this context.</code> Dentro do <code>li</code>, sim, cabe quase tudo, até outra lista.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="listas.html">Listas com Marcadores (ul)</a></p>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">18. Que lista combina com o modo de preparo de uma receita (primeiro isto, depois aquilo)?</p>
+<label><input type="radio" name="q18"> <code>&lt;ol&gt;</code>, a lista numerada</label>
+<label><input type="radio" name="q18"> <code>&lt;ul&gt;</code>, a lista com marcadores</label>
+<label><input type="radio" name="q18"> <code>&lt;dl&gt;</code>, a lista de descrição</label>
+<label><input type="radio" name="q18"> Vários <code>&lt;p&gt;</code> com números digitados</label>
+<details><summary>Explicação</summary><p>Quando a ordem importa, <code>ol</code> ("ordered list"). Para os ingredientes, em que a ordem tanto faz, <code>ul</code>. O <code>dl</code> é para pares termo → explicação.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="listas-ordenadas.html">Listas Numeradas (ol)</a></p>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">19. Numa tabela, qual elemento marca uma célula de <strong>cabeçalho</strong> (o título de uma coluna)?</p>
+<label><input type="radio" name="q19"> <code>&lt;td&gt;</code></label>
+<label><input type="radio" name="q19"> <code>&lt;thead&gt;</code></label>
+<label><input type="radio" name="q19"> <code>&lt;caption&gt;</code></label>
+<label><input type="radio" name="q19"> <code>&lt;th&gt;</code></label>
+<details><summary>Explicação</summary><p><code>th</code> = "table header", célula de cabeçalho; <code>td</code> = célula de dado. O <code>thead</code> agrupa as linhas de cabeçalho, e o <code>caption</code> é o título da tabela inteira.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="tabelas-cabecalho.html">Cabeçalhos (th, thead, tbody, tfoot)</a></p>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">20. O que faz <code>&lt;td colspan="2"&gt;</code>?</p>
+<label><input type="radio" name="q20"> A célula ocupa duas linhas</label>
+<label><input type="radio" name="q20"> A célula ocupa duas colunas</label>
+<label><input type="radio" name="q20"> A tabela ganha duas colunas novas</label>
+<label><input type="radio" name="q20"> A célula fica com o dobro da largura do texto</label>
+<details><summary>Explicação</summary><p><code>colspan</code> junta colunas; <code>rowspan</code> junta linhas. O menor valor é 1: <code>colspan="0"</code> dá <code>Zero is not a positive integer.</code></p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="tabelas-mesclar.html">Mesclar Células (colspan e rowspan)</a></p>
+</div>
+
+<h2 id="nivel2">Nível 2 · Intermediário</h2>
+<p>O head, class e id, semântica, formulários e mídia.</p>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">21. O que faz <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>?</p>
+<label><input type="radio" name="q21"> Esconde a página em telas pequenas</label>
+<label><input type="radio" name="q21"> Proíbe o zoom</label>
+<label><input type="radio" name="q21"> Faz a página caber na largura da tela do celular, sem zoom no começo</label>
+<label><input type="radio" name="q21"> Diz ao Google que o site é para celular</label>
+<details><summary>Explicação</summary><p>Sem ela, o celular desenha a página como se fosse uma tela de computador, em miniatura. E não proíba o zoom (<code>user-scalable=no</code>): o validador avisa <code>Consider avoiding viewport values that prevent users from resizing documents.</code></p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="meta-viewport.html">Celular (meta viewport)</a></p>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">22. Onde deve ficar o <code>&lt;meta charset="utf-8"&gt;</code>?</p>
+<label><input type="radio" name="q22"> No começo do <code>head</code>, dentro dos primeiros 1024 bytes do arquivo</label>
+<label><input type="radio" name="q22"> No fim do <code>body</code></label>
+<label><input type="radio" name="q22"> Em qualquer lugar do <code>head</code></label>
+<label><input type="radio" name="q22"> Antes do <code>&lt;!DOCTYPE html&gt;</code></label>
+<details><summary>Explicação</summary><p>O navegador só procura a codificação no começo do arquivo. Muito para baixo, o validador acusa <code>A “charset” attribute on a “meta” element found after the first 1024 bytes.</code> O hábito do guia: a primeira linha do <code>head</code>.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a></p>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">23. Qual é a diferença entre <code>class</code> e <code>id</code>?</p>
+<label><input type="radio" name="q23"> Nenhuma: são sinônimos</label>
+<label><input type="radio" name="q23"> <code>class</code> é para o CSS e <code>id</code> é só para o JavaScript</label>
+<label><input type="radio" name="q23"> <code>id</code> aceita espaços; <code>class</code>, não</label>
+<label><input type="radio" name="q23"> Um <code>id</code> é único na página; a mesma <code>class</code> pode estar em vários elementos</label>
+<details><summary>Explicação</summary><p>Dois elementos com o mesmo <code>id</code> dão <code>Duplicate ID “…”.</code> no validador. Uma <code>class</code> pode ter vários nomes separados por espaço (<code>class="receita destaque"</code>); um <code>id</code> não pode ter espaço.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="class-id.html">class e id</a></p>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">24. Qual é a diferença entre <code>&lt;div&gt;</code> e <code>&lt;span&gt;</code>?</p>
+<label><input type="radio" name="q24"> O <code>div</code> é obsoleto</label>
+<label><input type="radio" name="q24"> Os dois não têm significado; o <code>div</code> é de bloco e o <code>span</code> é em linha</label>
+<label><input type="radio" name="q24"> O <code>span</code> deixa o texto em negrito</label>
+<label><input type="radio" name="q24"> O <code>div</code> só pode ter texto</label>
+<details><summary>Explicação</summary><p>São as "caixas genéricas" do HTML, para quando nenhum elemento com significado serve. O <code>div</code> começa numa linha nova e ocupa a largura toda; o <code>span</code> fica no meio do texto.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="div-span.html">div e span</a></p>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">25. Que elemento envolve o menu principal de links do site?</p>
+<label><input type="radio" name="q25"> <code>&lt;nav&gt;</code></label>
+<label><input type="radio" name="q25"> <code>&lt;menu&gt;</code></label>
+<label><input type="radio" name="q25"> <code>&lt;div class="menu"&gt;</code></label>
+<label><input type="radio" name="q25"> <code>&lt;aside&gt;</code></label>
+<details><summary>Explicação</summary><p><code>nav</code> marca um bloco de navegação; o leitor de tela anuncia e deixa pular direto para ele. O <code>&lt;menu&gt;</code> existe, mas é para uma lista de comandos (botões), e uma <code>div</code> não diz nada.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="nav.html">nav</a></p>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">26. Quantos <code>&lt;main&gt;</code> visíveis uma página pode ter?</p>
+<label><input type="radio" name="q26"> Quantos quiser</label>
+<label><input type="radio" name="q26"> Um por seção</label>
+<label><input type="radio" name="q26"> Um só</label>
+<label><input type="radio" name="q26"> Nenhum: <code>main</code> é obsoleto</label>
+<details><summary>Explicação</summary><p>O <code>main</code> é o conteúdo principal da página, e ele é um só. Dois dão <code>A document must not include more than one visible “main” element.</code></p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="main.html">main</a></p>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">27. Qual destas datas está no formato certo para o <code>datetime</code>?</p>
+<label><input type="radio" name="q27"> <code>&lt;time datetime="17/10/2026"&gt;</code></label>
+<label><input type="radio" name="q27"> <code>&lt;time datetime="2026-10-17"&gt;</code></label>
+<label><input type="radio" name="q27"> <code>&lt;time datetime="17 de outubro"&gt;</code></label>
+<label><input type="radio" name="q27"> <code>&lt;time datetime="10-17-2026"&gt;</code></label>
+<details><summary>Explicação</summary><p>O <code>datetime</code> é para máquinas: ano-mês-dia. O texto <strong>dentro</strong> do <code>time</code> pode ser o que você quiser ("17 de outubro"). Com <code>17/10/2026</code>, o validador diz <code>The literal did not satisfy the time-datetime format.</code></p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="time.html">time e data</a></p>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">28. O que acontece com este código no navegador?</p>
+<pre class="file">&lt;details&gt;
+  &lt;summary&gt;Dica da Ana&lt;/summary&gt;
+  &lt;p&gt;Bata as cenouras com os ovos.&lt;/p&gt;
+&lt;/details&gt;</pre>
+<label><input type="radio" name="q28"> A dica aparece sempre aberta</label>
+<label><input type="radio" name="q28"> Nada aparece sem JavaScript</label>
+<label><input type="radio" name="q28"> Aparece uma janela por cima da página</label>
+<label><input type="radio" name="q28"> Aparece só "Dica da Ana"; um clique abre e fecha o parágrafo, sem JavaScript</label>
+<details><summary>Explicação</summary><p>O <code>details</code> começa fechado, mostrando só o <code>summary</code>. Para começar aberto, use o atributo booleano <code>open</code>. A janela por cima é o <code>&lt;dialog&gt;</code>.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="details.html">details e summary</a></p>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">29. O que o <code>for</code> faz em <code>&lt;label for="email"&gt;E-mail&lt;/label&gt; &lt;input id="email" name="email"&gt;</code>?</p>
+<label><input type="radio" name="q29"> Liga o rótulo ao campo: clicar no rótulo põe o cursor no campo, e o leitor de tela diz o nome do campo</label>
+<label><input type="radio" name="q29"> Repete o campo várias vezes, como um laço</label>
+<label><input type="radio" name="q29"> Faz o campo ser obrigatório</label>
+<label><input type="radio" name="q29"> Envia o rótulo junto com o formulário</label>
+<details><summary>Explicação</summary><p>O valor do <code>for</code> é o <code>id</code> do campo. Se não existir campo com esse <code>id</code>, o validador diz <code>The value of the “for” attribute of the “label” element must be the ID of a non-hidden form control.</code></p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="label.html">label</a></p>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">30. Num formulário, um campo <code>&lt;input type="text" id="cidade"&gt;</code>, <strong>sem</strong> <code>name</code>, é preenchido com "Santos". O que é enviado?</p>
+<label><input type="radio" name="q30"> <code>cidade=Santos</code></label>
+<label><input type="radio" name="q30"> <code>text=Santos</code></label>
+<label><input type="radio" name="q30"> Nada desse campo</label>
+<label><input type="radio" name="q30"> O formulário não é enviado</label>
+<details><summary>Explicação</summary><p>O que vai no envio é <code>name=valor</code>. O <code>id</code> serve para o <code>label</code>, o CSS e o JavaScript, mas não dá nome ao dado. Sem <code>name</code>, o campo é ignorado no envio, sem nenhum aviso.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="formularios.html">Formulários</a></p>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">31. Num formulário com <code>method="get"</code>, para onde vão os dados?</p>
+<label><input type="radio" name="q31"> Para o e-mail de quem fez o site</label>
+<label><input type="radio" name="q31"> No endereço, depois do <code>?</code>: <code>busca.html?q=bolo</code></label>
+<label><input type="radio" name="q31"> Escondidos no corpo do pedido</label>
+<label><input type="radio" name="q31"> Para o <code>localStorage</code> do navegador</label>
+<details><summary>Explicação</summary><p>No GET, os dados aparecem no endereço (bom para buscas, que você pode guardar nos favoritos). No POST, vão no corpo do pedido (bom para cadastros e senhas, sempre com HTTPS).</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="enviar-formulario.html">Enviar (action, method, GET e POST)</a></p>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">32. A Ana escreveu <code>&lt;input name="nome" required="false"&gt;</code>. O campo é obrigatório?</p>
+<label><input type="radio" name="q32"> Não, porque o valor é <code>false</code></label>
+<label><input type="radio" name="q32"> Só no celular</label>
+<label><input type="radio" name="q32"> Depende do navegador</label>
+<label><input type="radio" name="q32"> Sim: atributo booleano liga só de estar escrito, e o validador dá erro no <code>="false"</code></label>
+<details><summary>Explicação</summary><p>O navegador não olha o valor de um atributo booleano, só se ele existe. O validador diz <code>Bad value “false” for attribute “required” on element “input”.</code> Para um campo opcional, apague o <code>required</code>.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="validacao.html">Validação (required, pattern, min…)</a></p>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">33. Três botões de rádio (Pequeno, Médio, Grande) devem permitir só <strong>uma</strong> escolha. O que eles precisam ter em comum?</p>
+<label><input type="radio" name="q33"> O mesmo <code>name</code></label>
+<label><input type="radio" name="q33"> O mesmo <code>id</code></label>
+<label><input type="radio" name="q33"> O mesmo <code>value</code></label>
+<label><input type="radio" name="q33"> Ficar dentro de um <code>&lt;select&gt;</code></label>
+<details><summary>Explicação</summary><p>Os rádios com o mesmo <code>name</code> formam um grupo: marcar um desmarca os outros. Cada um tem o seu <code>value</code> (o que é enviado) e, se tiver <code>id</code>, um diferente.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="checkbox-radio.html">checkbox e radio</a></p>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">34. Num <code>&lt;input type="date" name="festa"&gt;</code>, o leitor escolhe 17 de outubro de 2026. Como o valor é enviado?</p>
+<label><input type="radio" name="q34"> <code>festa=17/10/2026</code></label>
+<label><input type="radio" name="q34"> Depende do idioma do navegador</label>
+<label><input type="radio" name="q34"> <code>festa=2026-10-17</code></label>
+<label><input type="radio" name="q34"> <code>festa=17 de outubro de 2026</code></label>
+<details><summary>Explicação</summary><p>Na tela, a data aparece na ordem do idioma do navegador; no envio (e no atributo <code>value</code>), é sempre ano-mês-dia. Por isso <code>value="17/10/2026"</code> é erro de validação.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="tipos-input.html">Tipos de input</a> e <a href="ref-input.html">a referência</a></p>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">35. A Ana quer um vídeo de fundo que comece a tocar sozinho. O que, em geral, os navegadores exigem?</p>
+<label><input type="radio" name="q35"> Só o atributo <code>autoplay</code></label>
+<label><input type="radio" name="q35"> <code>autoplay</code> junto com <code>muted</code> (sem som)</label>
+<label><input type="radio" name="q35"> <code>autoplay="true"</code></label>
+<label><input type="radio" name="q35"> Um <code>&lt;script&gt;</code> obrigatório</label>
+<details><summary>Explicação</summary><p>Para não assustar ninguém com som, os navegadores costumam bloquear o vídeo que toca sozinho com som. Sem som (<code>muted</code>), ele toca. <code>autoplay="true"</code> é erro de validação: o atributo é booleano.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="video.html">Vídeo</a></p>
+</div>
+
+<h2 id="nivel3">Nível 3 · Avançado</h2>
+<p>Acessibilidade, SEO, desempenho e o validador.</p>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">36. Qual é a melhor forma de fazer um botão que o teclado e o leitor de tela entendem?</p>
+<label><input type="radio" name="q36"> <code>&lt;div onclick="…"&gt;Comprar&lt;/div&gt;</code></label>
+<label><input type="radio" name="q36"> <code>&lt;div role="botao"&gt;Comprar&lt;/div&gt;</code></label>
+<label><input type="radio" name="q36"> <code>&lt;span class="botao"&gt;Comprar&lt;/span&gt;</code></label>
+<label><input type="radio" name="q36"> <code>&lt;button type="button"&gt;Comprar&lt;/button&gt;</code></label>
+<details><summary>Explicação</summary><p>A primeira regra do ARIA: se existe um elemento HTML que faz o serviço, use o elemento. O <code>&lt;button&gt;</code> já recebe foco com <kbd>Tab</kbd>, funciona com Enter e espaço e é anunciado como botão. <code>role="botao"</code> nem existe (<code>Bad value “botao” for attribute “role”</code>).</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="aria.html">ARIA</a> e <a href="botoes.html">Botões</a></p>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">37. Sobre o <code>tabindex</code>, qual frase está certa?</p>
+<label><input type="radio" name="q37"> <code>tabindex="0"</code> põe o elemento na ordem normal do <kbd>Tab</kbd>; números maiores que 0 bagunçam a ordem e devem ser evitados</label>
+<label><input type="radio" name="q37"> Todo elemento precisa de um <code>tabindex</code> para receber foco</label>
+<label><input type="radio" name="q37"> <code>tabindex="-1"</code> põe o elemento em primeiro na ordem</label>
+<label><input type="radio" name="q37"> <code>tabindex</code> só funciona em imagens</label>
+<details><summary>Explicação</summary><p>Links, botões e campos já recebem foco sozinhos. <code>0</code> inclui na ordem natural; <code>-1</code> só permite o foco por JavaScript; valores positivos passam na frente de tudo e confundem quem navega pelo teclado.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="teclado.html">Teclado e Foco (tabindex)</a></p>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">38. Na meta <code>og:image</code> (a imagem do cartão nas redes sociais), como deve ser o endereço?</p>
+<label><input type="radio" name="q38"> Relativo: <code>img/bolo.jpg</code></label>
+<label><input type="radio" name="q38"> Só o nome do arquivo: <code>bolo.jpg</code></label>
+<label><input type="radio" name="q38"> Completo: <code>https://exemplo.com/img/bolo.jpg</code></label>
+<label><input type="radio" name="q38"> Tanto faz</label>
+<details><summary>Explicação</summary><p>Quem lê a meta é o aplicativo da rede social, fora do seu site: ele precisa do endereço inteiro, com <code>https://</code>. Lembre também que o <code>og:locale</code> usa sublinhado: <code>pt_BR</code>.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="open-graph.html">Open Graph (Redes Sociais)</a></p>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">39. O validador mostrou <code>Stray end tag “div”.</code> O que isso quer dizer?</p>
+<label><input type="radio" name="q39"> Faltou fechar uma <code>div</code></label>
+<label><input type="radio" name="q39"> Há um <code>&lt;/div&gt;</code> sobrando, sem uma <code>&lt;div&gt;</code> aberta para fechar</label>
+<label><input type="radio" name="q39"> A <code>div</code> é obsoleta</label>
+<label><input type="radio" name="q39"> A <code>div</code> está vazia</label>
+<details><summary>Explicação</summary><p><em>Stray</em> = perdida, solta. Quando falta fechar, a mensagem é outra: <code>Unclosed element “div”.</code> Nos dois casos, conserte a primeira mensagem e rode o validador de novo.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="ref-erros.html#tags">Mensagens do Validador</a> e <a href="validar.html">Validar o HTML</a></p>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">40. O que muda com <code>&lt;script src="receitas.js" defer&gt;&lt;/script&gt;</code> no <code>head</code>?</p>
+<label><input type="radio" name="q40"> O script nunca roda</label>
+<label><input type="radio" name="q40"> O navegador para de ler o HTML até o script terminar</label>
+<label><input type="radio" name="q40"> O script roda antes de tudo, até antes do <code>&lt;title&gt;</code></label>
+<label><input type="radio" name="q40"> O script é baixado sem parar a leitura do HTML e roda depois que a página toda foi lida, na ordem</label>
+<details><summary>Explicação</summary><p>Sem <code>defer</code> (e sem <code>async</code>), um <code>&lt;script src&gt;</code> no <code>head</code> trava a leitura da página enquanto baixa e roda. Com <code>defer</code>, a página aparece mais cedo, e o script já encontra todos os elementos prontos.</p></details>
+<p class="mc-q" style="font-weight:400;font-size:14px">Revise: <a href="preload.html">Desempenho (preload e defer)</a> e <a href="script.html">O Elemento script</a></p>
+</div>
+
+<h2>E agora?</h2>
+<p>Errou alguma? Abra a aula do "Revise", leia a seção do assunto e pratique nas caixas "Experimente". Para consultar rapidamente um termo, use o <a href="glossario.html">Glossário</a>; para um elemento ou atributo, as referências de <a href="ref-elementos.html">Todos os Elementos</a> e <a href="ref-atributos.html">Atributos</a>.</p>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
