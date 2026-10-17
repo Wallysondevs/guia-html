@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Erros Comuns — o que o navegador mostra e o que o validador diz | Guia HTML</title>
+<meta name="description" content="Os erros de HTML mais comuns de quem começa, cada um com o código errado, o resultado real desenhado pelo navegador, a mensagem real do validador W3C (vnu) e o conserto: DOCTYPE e title faltando, tags sem fechar, cruzadas ou fechadas errado, aspas esquecidas e aspas curvas, img sem alt, id repetido, &lt; e &amp; no texto, títulos pulando nível e elementos obsoletos.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Erros Comuns</span></h1>
+
+<p class="intro">Esta aula é um catálogo dos erros que quase todo mundo comete nas primeiras páginas. Para cada um, você vê o código errado, o que o navegador <strong>realmente</strong> desenha (o resultado ao vivo, logo abaixo do código), a mensagem <strong>real</strong> do validador W3C e o conserto. Use-a de dois jeitos: leia uma vez agora, para reconhecer os erros, e volte aqui quando o validador mostrar uma mensagem que você não entendeu.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Um método para consertar qualquer erro, sem se perder.</li>
+  <li>Os erros de <strong>estrutura</strong>: DOCTYPE, <code>&lt;title&gt;</code>, <code>lang</code> e conteúdo no lugar errado.</li>
+  <li>Os erros de <strong>tags</strong>: sem fechar, fechadas com o nome errado, cruzadas, no lugar errado e obsoletas.</li>
+  <li>Os erros de <strong>atributos</strong>: aspas esquecidas, sem aspas, aspas curvas, <code>alt</code> faltando, <code>id</code> repetido.</li>
+  <li>Os erros de <strong>texto</strong>: <code>&lt;</code> e <code>&amp;</code> soltos, títulos pulando nível.</li>
+  <li>Os erros que nem o validador vê.</li>
+</ul>
+</div>
+
+<p>Todos os arquivos foram validados com o <code>vnu</code> 26.10.12 (aula <a href="validar.html">Validar o HTML</a>) na máquina fictícia da Ana, na pasta <code>~/site/erros</code>. Quase todos os exemplos mostram só o miolo da página. No arquivo de verdade, esse miolo fica dentro do esqueleto completo (aula <a href="estrutura.html">Estrutura de uma Página</a>), que ocupa as linhas 1 a 7; por isso as mensagens falam da <strong>linha 8</strong> em diante. Os resultados são desenhados pelo seu navegador, então você vê o conserto que <strong>ele</strong> fez.</p>
+
+<hr>
+
+<h2>O método: um erro de cada vez</h2>
+<ol class="passo">
+  <li><strong>Valide.</strong> No site <code>validator.w3.org/nu</code>, no botão da caixa "Experimente" ou com <code>vnu pagina.html</code>.</li>
+  <li><strong>Leia só a primeira mensagem de <code>error</code>.</strong> As seguintes muitas vezes são consequência dela.</li>
+  <li><strong>Vá à linha e à coluna.</strong> Se a linha parece certa, olhe a de cima: o validador diz onde <em>percebeu</em> o problema, que pode vir de antes (uma tag aberta lá atrás, uma aspa esquecida).</li>
+  <li><strong>Procure a mensagem nesta página</strong> (<kbd>Ctrl</kbd>+<kbd>F</kbd> com um pedaço dela, como <code>Stray end tag</code>).</li>
+  <li><strong>Conserte e valide de novo.</strong> Repita até o validador ficar calado (e confira com <code>--verbose</code>).</li>
+</ol>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>A mensagem começa com…</th><th>Vá para</th></tr>
+<tr><td><code>Start tag seen without seeing a doctype first</code></td><td><a href="#e-doctype">1. Sem DOCTYPE</a></td></tr>
+<tr><td><code>Element “head” is missing a required instance of child element “title”</code></td><td><a href="#e-title">2. Sem title</a></td></tr>
+<tr><td><code>Stray start tag</code>, <code>Stray end tag “head”</code></td><td><a href="#e-lugar">3. Conteúdo no lugar errado</a></td></tr>
+<tr><td><code>Consider adding a “lang” attribute</code></td><td><a href="#e-lang">4. Sem lang</a></td></tr>
+<tr><td><code>Unclosed element</code>, <code>End tag for “body” seen, but there were unclosed elements</code></td><td><a href="#e-aberto">5. Tag sem fechar</a></td></tr>
+<tr><td><code>End tag “h2” seen, but there were open elements</code></td><td><a href="#e-nome">6. Fechamento com o nome errado</a></td></tr>
+<tr><td><code>violates nesting rules</code></td><td><a href="#e-cruzado">7. Tags cruzadas</a></td></tr>
+<tr><td><code>End tag “br”</code>, <code>Stray end tag “hr”</code></td><td><a href="#e-vazio">8. Elemento vazio fechado</a></td></tr>
+<tr><td><code>No “p” element in scope but a “p” end tag seen</code></td><td><a href="#e-bloco">9. Bloco dentro de parágrafo</a></td></tr>
+<tr><td><code>not allowed as child of element</code></td><td><a href="#e-filho">10. Elemento no lugar errado</a></td></tr>
+<tr><td><code>is obsolete. Use CSS instead</code></td><td><a href="#e-obsoleto">11. Elementos obsoletos</a></td></tr>
+<tr><td><code>End of file reached when inside an attribute value</code></td><td><a href="#e-aspa">12. Aspa esquecida</a></td></tr>
+<tr><td><code>Attribute “de” not allowed</code> (uma palavra do valor virou atributo)</td><td><a href="#e-semaspas">13. Valor sem aspas</a></td></tr>
+<tr><td><code>An “img” element must have an “alt” attribute</code></td><td><a href="#e-alt">15. Imagem sem alt</a></td></tr>
+<tr><td><code>Duplicate ID</code></td><td><a href="#e-id">16. id repetido</a></td></tr>
+<tr><td><code>Bad character “…” after “&lt;”</code></td><td><a href="#e-menor">17. &lt; no texto</a></td></tr>
+<tr><td><code>Named character reference was not terminated by a semicolon</code></td><td><a href="#e-ecomercial">18. Entidade sem ;</a></td></tr>
+<tr><td><code>The heading “h3” … skipping 1 heading level</code></td><td><a href="#e-titulos">19. Títulos pulando nível</a></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Erros de estrutura</h2>
+
+<div class="cenario" id="e-doctype">
+<strong>1. Sem DOCTYPE</strong>
+<pre class="file" data-file="sem-doctype.html · erro de propósito" data-resultado>&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu sem-doctype.html
+"file:/home/ana/site/erros/sem-doctype.html":1.1-1.19: error: Start tag seen without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.</pre>
+<p><strong>No navegador:</strong> parece normal, mas a página está no <strong>modo quirks</strong>, que imita os defeitos dos navegadores antigos. <strong>Conserto:</strong> <code>&lt;!DOCTYPE html&gt;</code> na linha 1. Detalhes em <a href="doctype.html">O DOCTYPE</a>.</p>
+</div>
+
+<div class="cenario" id="e-title">
+<strong>2. Sem <code>&lt;title&gt;</code></strong>
+<pre class="term" data-cwd="~/site/erros">$ vnu sem-title.html
+"file:/home/ana/site/erros/sem-title.html":5.1-5.7: error: Element “head” is missing a required instance of child element “title”.</pre>
+<p>"O elemento <code>head</code> está sem o filho obrigatório <code>title</code>", percebido na linha 5, no <code>&lt;/head&gt;</code>. <strong>No navegador:</strong> a página aparece normal, mas a <strong>aba</strong> mostra o nome do arquivo (ou o endereço) no lugar de um título. O título também é o que aparece nos favoritos, no histórico e no Google. <strong>Conserto:</strong> <code>&lt;title&gt;Receitas da Ana&lt;/title&gt;</code> dentro do <code>&lt;head&gt;</code> (aula <a href="meta.html">title e meta</a>).</p>
+</div>
+
+<div class="cenario" id="e-lugar">
+<strong>3. Conteúdo no lugar errado: no <code>&lt;head&gt;</code> ou depois do <code>&lt;/html&gt;</code></strong>
+<pre class="file" data-file="h1-no-head.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu h1-no-head.html
+"file:/home/ana/site/erros/h1-no-head.html":7.1-7.7: error: Stray end tag “head”.
+"file:/home/ana/site/erros/h1-no-head.html":8.1-8.6: error: Start tag “body” seen but an element of the same type was already open.
+$ tail -3 depois-html.html
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;p&gt;Feito pela Ana.&lt;/p&gt;
+$ vnu depois-html.html
+"file:/home/ana/site/erros/depois-html.html":11.1-11.3: error: Stray start tag “p”.
+"file:/home/ana/site/erros/depois-html.html":11.1-11.3: error fatal: Cannot recover after last error. Any further errors will be ignored.</pre>
+<p><strong>No navegador:</strong> o título aparece na tela, normal. O <code>&lt;head&gt;</code> só aceita informações sobre a página (<code>title</code>, <code>meta</code>, <code>link</code>…). Ao ver um <code>&lt;h1&gt;</code>, o navegador fechou o <code>head</code> e abriu o <code>body</code> sozinho, ali mesmo; o <code>&lt;/head&gt;</code> e o <code>&lt;body&gt;</code> que vêm depois ficaram "perdidos" (<em>stray</em>). O mesmo acontece com o parágrafo depois do <code>&lt;/html&gt;</code>: o navegador o coloca no fim do <code>body</code>. <strong>Conserto:</strong> tudo o que aparece na tela vai entre <code>&lt;body&gt;</code> e <code>&lt;/body&gt;</code>.</p>
+</div>
+
+<div class="cenario" id="e-lang">
+<strong>4. Sem <code>lang</code></strong>
+<pre class="term" data-cwd="~/site/erros">$ sed -n 2p sem-lang.html
+&lt;html&gt;
+$ vnu sem-lang.html; echo "código de saída: $?"
+"file:/home/ana/site/erros/sem-lang.html":1.16-2.6: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.
+código de saída: 0</pre>
+<p>"Considere acrescentar um atributo <code>lang</code> à tag <code>html</code> para declarar o idioma do documento". É só um aviso (código de saída <code>0</code>), mas faz diferença: sem ele, o leitor de tela pode ler o português com a pronúncia de outro idioma, e o tradutor do navegador não sabe de que língua partir. <strong>Conserto:</strong> <code>&lt;html lang="pt-BR"&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Erros de tags</h2>
+
+<div class="cenario" id="e-aberto">
+<strong>5. Tag sem fechar</strong>
+<pre class="file" data-file="sem-fechar.html · erro de propósito" data-resultado>&lt;h1&gt;Receitas da Ana
+&lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu sem-fechar.html
+"file:/home/ana/site/erros/sem-fechar.html":9.1-9.3: error: Element “p” not allowed as child of element “h1” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/erros/sem-fechar.html":10.1-10.7: error: End tag for  “body” seen, but there were unclosed elements.
+"file:/home/ana/site/erros/sem-fechar.html":8.1-8.4: error: Unclosed element “h1”.</pre>
+<p><strong>No navegador:</strong> o parágrafo ficou <strong>dentro</strong> do título, enorme e em negrito. <strong>Conserto:</strong> <code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code>. A causa está na <strong>última</strong> mensagem (<code>Unclosed element “h1”</code>, linha 8), e não na primeira. Detalhes em <a href="elementos.html">Elementos e Tags</a> e <a href="aninhamento.html">Aninhamento</a>.</p>
+</div>
+
+<div class="cenario" id="e-nome">
+<strong>6. Fechamento com o nome errado</strong>
+<pre class="file" data-file="fecha-errado.html · erro de propósito" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h2&gt;
+&lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu fecha-errado.html
+"file:/home/ana/site/erros/fecha-errado.html":8.20-8.24: error: End tag “h2” seen, but there were open elements.</pre>
+<p><strong>No navegador:</strong> perfeito, por sorte: um <code>&lt;/h2&gt;</code> fecha qualquer título aberto. Com outros elementos, o resultado pode ser bem pior. <strong>Conserto:</strong> o fechamento tem o mesmo nome da abertura, <code>&lt;/h1&gt;</code>.</p>
+</div>
+
+<div class="cenario" id="e-cruzado">
+<strong>7. Tags cruzadas</strong>
+<pre class="file" data-file="cruzado.html · erro de propósito" data-resultado>&lt;p&gt;&lt;strong&gt;Atenção: &lt;em&gt;forno quente&lt;/strong&gt; e assadeira pesada&lt;/em&gt;.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu cruzado.html
+"file:/home/ana/site/erros/cruzado.html":8.37-8.45: error: End tag “strong” violates nesting rules.</pre>
+<p><strong>No navegador:</strong> parece o que a Ana queria, mas, no <kbd>F12</kbd>, há <strong>dois</strong> <code>em</code>: o navegador fechou o primeiro junto com o <code>strong</code> e abriu outro para o resto. <strong>Conserto:</strong> o último a abrir é o primeiro a fechar (aula <a href="aninhamento.html">Aninhamento</a>).</p>
+</div>
+
+<div class="cenario" id="e-vazio">
+<strong>8. Elemento vazio fechado</strong>
+<pre class="file" data-file="br-fechado.html · erro de propósito" data-resultado>&lt;p&gt;Rua das Flores, 10&lt;br&gt;&lt;/br&gt;São Paulo&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu br-fechado.html
+"file:/home/ana/site/erros/br-fechado.html":8.26-8.30: error: End tag “br”.</pre>
+<p><strong>No navegador:</strong> uma linha em branco a mais, porque o <code>&lt;/br&gt;</code> vira um segundo <code>&lt;br&gt;</code>. <strong>Conserto:</strong> elementos vazios (<code>br</code>, <code>hr</code>, <code>img</code>, <code>input</code>, <code>meta</code>…) não se fecham (aula <a href="elementos.html">Elementos e Tags</a>).</p>
+</div>
+
+<div class="cenario" id="e-bloco">
+<strong>9. Bloco dentro de parágrafo</strong>
+<pre class="file" data-file="div-em-p.html · erro de propósito" data-resultado>&lt;p&gt;Modo de preparo: &lt;div&gt;Bata tudo.&lt;/div&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu div-em-p.html
+"file:/home/ana/site/erros/div-em-p.html":8.42-8.45: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p><strong>No navegador:</strong> "Bata tudo." foi para a linha de baixo, fora do parágrafo, e o <code>&lt;/p&gt;</code> que sobrou virou um parágrafo vazio. Um parágrafo não pode conter <code>div</code>, outro <code>p</code>, títulos ou listas. <strong>Conserto:</strong> feche o parágrafo antes do bloco (aula <a href="aninhamento.html">Aninhamento</a>).</p>
+</div>
+
+<div class="cenario" id="e-filho">
+<strong>10. Elemento no lugar errado: <code>li</code> sem lista, <code>button</code> dentro de link</strong>
+<pre class="file" data-file="li-solto.html · erro de propósito" data-resultado>&lt;li&gt;3 cenouras&lt;/li&gt;
+&lt;li&gt;3 ovos&lt;/li&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu li-solto.html
+"file:/home/ana/site/erros/li-solto.html":8.1-8.4: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/erros/li-solto.html":9.1-9.4: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+$ sed -n 8p button-a.html
+&lt;a href="contato.html"&gt;&lt;button&gt;Contato&lt;/button&gt;&lt;/a&gt;
+$ vnu button-a.html
+"file:/home/ana/site/erros/button-a.html":8.24-8.31: error: The element “button” must not appear as a descendant of the “a” element.</pre>
+<p><strong>No navegador:</strong> os itens soltos aparecem como texto comum, sem bolinha. O botão dentro do link aparece e até funciona com o mouse, mas quem navega pelo teclado passa por dois elementos clicáveis para a mesma coisa. <strong>Conserto:</strong> <code>&lt;ul&gt;</code> em volta dos <code>li</code>; um link <strong>ou</strong> um botão, nunca os dois um dentro do outro (aula <a href="botoes.html">Botões</a>).</p>
+</div>
+
+<div class="cenario" id="e-obsoleto">
+<strong>11. Elementos obsoletos: <code>&lt;center&gt;</code> e <code>&lt;font&gt;</code></strong>
+<pre class="file" data-file="center.html · erro de propósito" data-resultado>&lt;center&gt;Bolo de cenoura&lt;/center&gt;
+&lt;p&gt;&lt;font color="red"&gt;Promoção!&lt;/font&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu center.html
+"file:/home/ana/site/erros/center.html":8.1-8.8: error: The “center” element is obsolete. Use CSS instead.
+"file:/home/ana/site/erros/center.html":9.4-9.21: error: The “font” element is obsolete. Use CSS instead.</pre>
+<p><strong>No navegador:</strong> funciona: o texto fica centralizado e vermelho, porque os navegadores mantêm o comportamento antigo. Mas são <strong>erros</strong> (o <code>align</code> num <code>&lt;p&gt;</code> é só aviso; estes elementos inteiros, não). Eles vêm de tutoriais dos anos 1990. <strong>Conserto:</strong> a aparência vai no CSS (aula <a href="atributo-style.html">O Atributo style</a>; quer aprender mais? futuro Guia CSS).</p>
+</div>
+
+<hr>
+
+<h2>Erros de atributos</h2>
+
+<div class="cenario" id="e-aspa">
+<strong>12. Aspa esquecida</strong>
+<pre class="file" data-file="aspa-aberta.html · erro de propósito" data-resultado>&lt;p title="Bolo de cenoura&gt;Bolo de cenoura&lt;/p&gt;
+&lt;p&gt;Pudim de leite.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu aspa-aberta.html
+"file:/home/ana/site/erros/aspa-aberta.html":8.1-11.8: error: End of file reached when inside an attribute value. Ignoring tag.</pre>
+<p><strong>No navegador:</strong> o resultado está <strong>em branco</strong>. Sem a aspa de fechamento, todo o resto do arquivo virou o valor do <code>title</code>. <strong>Conserto:</strong> <code>title="Bolo de cenoura"</code> (aula <a href="atributos.html">Atributos</a>).</p>
+</div>
+
+<div class="cenario" id="e-semaspas">
+<strong>13. Valor sem aspas, com espaço</strong>
+<pre class="term" data-cwd="~/site/erros">$ sed -n 8p sem-aspas.html
+&lt;img src=bolo.jpg alt=Bolo de cenoura&gt;
+$ vnu sem-aspas.html
+"file:/home/ana/site/erros/sem-aspas.html":8.1-8.38: error: Attribute “de” not allowed on element “img” at this point.
+"file:/home/ana/site/erros/sem-aspas.html":8.1-8.38: error: Attribute “cenoura” not allowed on element “img” at this point.</pre>
+<p><strong>No navegador:</strong> o Chromium montou <code>&lt;img src="bolo.jpg" alt="Bolo" de="" cenoura=""&gt;</code>. Sem aspas, o valor acaba no primeiro espaço: o texto alternativo ficou só "Bolo", e "de" e "cenoura" viraram atributos. <strong>Conserto:</strong> aspas duplas sempre: <code>alt="Bolo de cenoura"</code>.</p>
+</div>
+
+<div class="cenario" id="e-curvas">
+<strong>14. Aspas curvas (copiadas do Word ou do celular): o validador não vê</strong>
+<pre class="file" data-file="aspas-curvas.html · erro de propósito" data-resultado>&lt;p&gt;&lt;a href=“contato.html”&gt;Contato&lt;/a&gt;&lt;/p&gt;
+&lt;p class=“nota”&gt;Bolo de cenoura.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu aspas-curvas.html; echo "código de saída: $?"
+código de saída: 0</pre>
+<p>Este é traiçoeiro. Editores de texto como o Word e o teclado do celular trocam as aspas retas <code>"</code> pelas curvas <code>“ ”</code>, mais bonitas. Para o HTML, as aspas curvas são letras comuns: o valor ficou <strong>sem aspas</strong>, e as aspas curvas viraram parte dele. O Chromium montou <code>href="“contato.html”"</code> e <code>class="“nota”"</code>. <strong>No navegador:</strong> o link aparece, mas leva a um arquivo chamado <code>“contato.html”</code>, com as aspas no nome, que não existe; e um CSS para a classe <code>nota</code> nunca vai funcionar. <strong>No validador:</strong> nada, porque esses valores são permitidos. <strong>Conserto:</strong> escreva o HTML num editor de código (aula <a href="editores.html">Editores</a>), nunca no Word, e desconfie de código copiado de mensagens.</p>
+</div>
+
+<div class="cenario" id="e-alt">
+<strong>15. Imagem sem <code>alt</code></strong>
+<pre class="term" data-cwd="~/site/erros">$ sed -n 8p img-sem-alt.html
+&lt;img src="bolo.jpg"&gt;
+$ vnu img-sem-alt.html
+"file:/home/ana/site/erros/img-sem-alt.html":8.1-8.20: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
+<p>"Um elemento <code>img</code> precisa de um atributo <code>alt</code>, exceto em certas condições. Para detalhes, consulte as orientações sobre alternativas em texto para imagens". <strong>No navegador:</strong> com a imagem carregando, nada muda para quem enxerga. Mas o leitor de tela não tem o que dizer sobre ela (alguns leem o nome do arquivo, "bolo ponto jpg"), e, se a imagem não carregar, não aparece texto nenhum no lugar. <strong>Conserto:</strong> <code>alt="Bolo de cenoura com cobertura de chocolate"</code>, descrevendo a imagem (aula <a href="imagens-alt.html">Texto Alternativo</a>).</p>
+</div>
+
+<div class="cenario" id="e-id">
+<strong>16. <code>id</code> repetido ou com espaço</strong>
+<pre class="term" data-cwd="~/site/erros">$ sed -n 8,9p id-repetido.html
+&lt;h2 id="bolo"&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;h2 id="bolo"&gt;Bolo de chocolate&lt;/h2&gt;
+$ vnu id-repetido.html
+"file:/home/ana/site/erros/id-repetido.html":9.1-9.14: error: Duplicate ID “bolo”.
+"file:/home/ana/site/erros/id-repetido.html":8.1-8.14: info warning: The first occurrence of ID “bolo” was here.
+"file:/home/ana/site/erros/id-repetido.html":8.1-8.14: info warning: This document has heading elements but none of them has a computed heading level of 1.
+$ vnu id-espaco.html
+"file:/home/ana/site/erros/id-espaco.html":8.1-8.25: error: Bad value “bolo de cenoura” for attribute “id” on element “h2”: An ID must not contain whitespace.
+"file:/home/ana/site/erros/id-espaco.html":8.1-8.25: info warning: This document has heading elements but none of them has a computed heading level of 1.</pre>
+<p>O <code>id</code> é um nome <strong>único</strong> na página, como um CPF (aula <a href="class-id.html">class e id</a>). "ID <code>bolo</code> repetido", "a primeira ocorrência foi aqui" e, no outro arquivo, "um ID não pode ter espaço". <strong>No navegador:</strong> nada muda na tela. Mas um link para <code>#bolo</code> (aula <a href="ancoras.html">Âncoras</a>) sempre leva ao primeiro, e um JavaScript que procura o <code>id</code> só acha o primeiro. A outra mensagem é um recado à parte: a página tem títulos, mas nenhum <code>h1</code>. <strong>Conserto:</strong> um <code>id</code> diferente para cada elemento, sem espaços: <code>id="bolo-cenoura"</code> e <code>id="bolo-chocolate"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Atributo com o nome errado</strong>
+<pre class="term" data-cwd="~/site/erros">$ sed -n 8p hreff.html
+&lt;p&gt;&lt;a hreff="contato.html"&gt;Contato&lt;/a&gt;&lt;/p&gt;
+$ vnu hreff.html
+"file:/home/ana/site/erros/hreff.html":8.4-8.27: error: Attribute “hreff” not allowed on element “a” at this point.</pre>
+<p><strong>No navegador:</strong> "Contato" aparece como texto comum, sem ser um link. <strong>Conserto:</strong> <code>href</code>. A mesma mensagem aparece para um atributo que existe, mas não naquele elemento (aula <a href="atributos.html">Atributos</a>).</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:a[href]=contato.html,attr:img[alt]=Bolo de cenoura com cobertura de chocolate,nsel:img[de]=0,nsel:[id=bolo]=0,nsel:h2[id]=2,attr:h2:first-of-type[id]=bolo-cenoura">
+<p class="try-task"><strong>Missão:</strong> a página tem três problemas de atributo desta seção. (1) O link tem aspas curvas: troque por aspas retas. (2) O <code>alt</code> da imagem está sem aspas: ele deve ser <code>Bolo de cenoura com cobertura de chocolate</code>. (3) Os dois títulos têm o mesmo <code>id</code>: use <code>bolo-cenoura</code> no primeiro e <code>bolo-chocolate</code> no segundo.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolos da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolos da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href=“contato.html”&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="bolo"&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300" alt=Bolo de cenoura com cobertura de chocolate&gt;
+&lt;h2 id="bolo"&gt;Bolo de chocolate&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolos da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolos da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="contato.html"&gt;Encomende o seu&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="bolo-cenoura"&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300" alt="Bolo de cenoura com cobertura de chocolate"&gt;
+&lt;h2 id="bolo-chocolate"&gt;Bolo de chocolate&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Erros de texto</h2>
+
+<div class="cenario" id="e-menor">
+<strong>17. <code>&lt;</code> no meio do texto</strong>
+<pre class="file" data-file="menor.html · erro de propósito" data-resultado>&lt;p&gt;Bolo por &lt;5 reais e pudim por &lt; 8 reais.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu menor.html
+"file:/home/ana/site/erros/menor.html":8.13-8.14: error: Bad character “5” after “&lt;”. Probable cause: Unescaped “&lt;”. Try escaping it as “&amp;lt;”.
+"file:/home/ana/site/erros/menor.html":8.34-8.35: error: Bad character “ ” after “&lt;”. Probable cause: Unescaped “&lt;”. Try escaping it as “&amp;lt;”.</pre>
+<p><strong>No navegador:</strong> aqui deu certo, porque um <code>&lt;</code> seguido de número ou espaço não pode começar uma tag. Mas com uma letra (<code>a&lt;b</code>) o navegador acharia que começou uma tag, e o texto sumiria. O <code>&lt;</code> é o caractere que começa as tags, então, para escrevê-lo como texto, use a <strong>entidade</strong> <code>&amp;lt;</code> (<em>less than</em>, "menor que"), como a própria mensagem sugere. O <code>&gt;</code> tem a sua: <code>&amp;gt;</code>. <strong>Conserto:</strong> <code>Bolo por &amp;lt;5 reais</code> (aula <a href="entidades.html">Entidades</a>).</p>
+</div>
+
+<div class="cenario" id="e-ecomercial">
+<strong>18. Entidade sem ponto e vírgula</strong>
+<pre class="file" data-file="ecomercial.html · erro de propósito" data-resultado>&lt;p&gt;Pão &amp; Cia, Ana&amp;Cia e &amp;copy 2026.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu ecomercial.html
+"file:/home/ana/site/erros/ecomercial.html":8.25-8.30: error: Named character reference was not terminated by a semicolon. (Or “&amp;” should have been escaped as “&amp;amp;”.)</pre>
+<p>Atenção ao código: ele tem <code>Pão &amp; Cia</code>, <code>Ana&amp;Cia</code> e <code>&amp;copy 2026</code>. Os dois primeiros <code>&amp;</code> são válidos: um <code>&amp;</code> que não forma o nome de uma entidade é só texto. O problema é o <code>&amp;copy</code>, o nome da entidade do ©, escrito sem o <code>;</code> (colunas 25 a 30). "Referência de caractere com nome não terminada por ponto e vírgula (ou o <code>&amp;</code> devia ter sido escrito como <code>&amp;amp;</code>)". <strong>No navegador:</strong> o © aparece mesmo assim, por tolerância. <strong>Conserto:</strong> <code>&amp;copy;</code>, com o ponto e vírgula; para mostrar um <code>&amp;</code> de verdade em qualquer lugar, <code>&amp;amp;</code> é sempre seguro (aula <a href="entidades.html">Entidades</a>).</p>
+</div>
+
+<div class="cenario" id="e-titulos">
+<strong>19. Títulos pulando nível</strong>
+<pre class="file" data-file="titulos.html · erro de propósito" data-resultado>&lt;h1&gt;Receitas&lt;/h1&gt;
+&lt;h3&gt;Bolo de cenoura&lt;/h3&gt;
+</pre>
+<pre class="term" data-cwd="~/site/erros">$ vnu titulos.html
+"file:/home/ana/site/erros/titulos.html":9.1-9.4: error: The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.</pre>
+<p>"O título <code>h3</code> (nível 3) vem depois do título <code>h1</code> (nível 1), pulando 1 nível". É comum escolher o <code>h3</code> porque ele é "do tamanho certo". Mas os títulos são o <strong>índice</strong> da página: quem usa leitor de tela navega por eles, e um nível pulado parece um capítulo faltando. <strong>No navegador:</strong> o <code>h3</code> aparece menor que um <code>h2</code>, só isso. <strong>Conserto:</strong> <code>h2</code> logo abaixo do <code>h1</code>; o tamanho se ajusta com CSS (aula <a href="titulos.html">Títulos</a>).</p>
+</div>
+
+<hr>
+
+<h2>Os erros que o validador não vê</h2>
+<p>Um HTML válido não é garantia de página certa. O validador confere as <strong>regras</strong>, não as suas <strong>intenções</strong>. Ele não reclama de:</p>
+<ul>
+  <li><strong>Aspas curvas</strong> (erro 14) e de <strong>links para arquivos que não existem</strong>: <code>href="contatto.html"</code> é válido. Clique em todos os links.</li>
+  <li><strong>Um <code>alt</code> que não descreve nada</strong>: <code>alt="imagem"</code> ou <code>alt="foto1.jpg"</code> passam no validador, mas não ajudam ninguém.</li>
+  <li><strong>Elementos escolhidos pela aparência</strong>: um <code>&lt;strong&gt;</code> só para deixar em negrito, um <code>&lt;blockquote&gt;</code> só pelo recuo.</li>
+  <li><strong>Texto que sumiu de verdade</strong>, como o que foi parar dentro de um comentário sem fim (aula <a href="comentarios.html">Comentários</a>): o validador avisa do comentário, mas não sabe que aquele texto era importante.</li>
+</ul>
+<p>Por isso, depois de validar, olhe a página no navegador, use o <kbd>F12</kbd> (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>) e, de vez em quando, navegue só com o teclado.</p>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem (começo)</th><th>Causa mais comum</th><th>Conserto</th></tr>
+<tr><td><code>Start tag seen without seeing a doctype first</code></td><td>faltou o DOCTYPE</td><td><code>&lt;!DOCTYPE html&gt;</code> na linha 1</td></tr>
+<tr><td><code>…missing a required instance of child element “title”</code></td><td>faltou o <code>&lt;title&gt;</code></td><td>um <code>&lt;title&gt;</code> no <code>&lt;head&gt;</code></td></tr>
+<tr><td><code>Stray start tag</code> / <code>Stray end tag</code></td><td>tag fora do lugar ou sobrando</td><td>conteúdo dentro do <code>&lt;body&gt;</code>; apague o que sobra</td></tr>
+<tr><td><code>Unclosed element</code></td><td>tag sem fechamento</td><td>feche-a</td></tr>
+<tr><td><code>End tag “x” seen, but there were open elements</code></td><td>fechamento com o nome errado ou um de dentro sem fechar</td><td>feche na ordem certa, com o mesmo nome</td></tr>
+<tr><td><code>violates nesting rules</code></td><td>tags cruzadas</td><td>o último a abrir é o primeiro a fechar</td></tr>
+<tr><td><code>End tag “br”</code></td><td><code>&lt;/br&gt;</code></td><td>apague-o</td></tr>
+<tr><td><code>No “p” element in scope</code></td><td>bloco dentro de <code>p</code>, ou <code>&lt;/p&gt;</code> sobrando</td><td>feche o <code>p</code> antes do bloco</td></tr>
+<tr><td><code>not allowed as child of element</code></td><td>elemento dentro de um pai que não o aceita</td><td>mude de lugar (ex.: <code>li</code> dentro de <code>ul</code>)</td></tr>
+<tr><td><code>is obsolete. Use CSS instead</code></td><td><code>center</code>, <code>font</code>, <code>align</code>…</td><td>CSS</td></tr>
+<tr><td><code>End of file reached when inside an attribute value</code></td><td>aspa sem fechar</td><td>feche a aspa</td></tr>
+<tr><td><code>Attribute “x” not allowed</code></td><td>nome errado, valor sem aspas ou atributo do elemento errado</td><td>confira o nome e use aspas</td></tr>
+<tr><td><code>An “img” element must have an “alt” attribute</code></td><td>imagem sem <code>alt</code></td><td><code>alt="descrição"</code></td></tr>
+<tr><td><code>Duplicate ID</code></td><td>dois elementos com o mesmo <code>id</code></td><td>um <code>id</code> diferente para cada um</td></tr>
+<tr><td><code>Bad character “…” after “&lt;”</code></td><td><code>&lt;</code> como texto, ou espaço depois do <code>&lt;</code></td><td><code>&amp;lt;</code>, ou tire o espaço</td></tr>
+<tr><td><code>…not terminated by a semicolon</code></td><td>entidade sem <code>;</code></td><td><code>&amp;copy;</code>, <code>&amp;amp;</code></td></tr>
+<tr><td><code>skipping 1 heading level</code></td><td><code>h1</code> seguido de <code>h3</code></td><td>use o nível seguinte (<code>h2</code>)</td></tr>
+</table>
+</div>
+
+<p>A lista completa, em ordem alfabética, está em <a href="ref-erros.html">Mensagens do Validador</a>.</p>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">1. O validador mostrou três erros. Qual você conserta primeiro?</p>
+<label><input type="radio" name="q1"> O último, que costuma ser o mais grave</label>
+<label><input type="radio" name="q1"> O primeiro, e depois valida de novo: os outros podem ser consequência dele</label>
+<label><input type="radio" name="q1"> Os três ao mesmo tempo, sem validar de novo</label>
+<label><input type="radio" name="q1"> Nenhum: se a página aparece, está bom</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">2. O link da Ana leva a uma página que não existe, mas o validador não reclamou. Qual destes pode ser o motivo?</p>
+<label><input type="radio" name="q2"> Faltou o DOCTYPE</label>
+<label><input type="radio" name="q2"> O <code>&lt;a&gt;</code> não foi fechado</label>
+<label><input type="radio" name="q2"> O <code>href</code> foi escrito <code>hreff</code></label>
+<label><input type="radio" name="q2"> O <code>href</code> foi escrito com aspas curvas, <code>“contato.html”</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">3. A página inteira ficou em branco no navegador. O validador diz <code>End of file reached when inside an attribute value</code>. O que procurar?</p>
+<label><input type="radio" name="q3"> Uma aspa de atributo sem fechamento</label>
+<label><input type="radio" name="q3"> Uma imagem sem <code>alt</code></label>
+<label><input type="radio" name="q3"> Um <code>id</code> repetido</label>
+<label><input type="radio" name="q3"> Um <code>&lt;/br&gt;</code></label>
+</div>
+
+<div class="exercise">
+<h3>4. O sinal de menor</h3>
+<p>Complete com a entidade certa para escrever "idade &lt; 12" como texto:</p>
+<div class="ex-code">&lt;p&gt;Meia-entrada para idade <input data-answer="&amp;lt;" aria-label="entidade"> 12.&lt;/p&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Depois de um <code>&lt;h1&gt;</code>, qual título vem a seguir sem erro de nível?</p>
+<label><input type="radio" name="q5"> <code>&lt;h3&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;h4&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;h2&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;h6&gt;</code></label>
+</div>
+
+<h3>Missão final: a página com sete erros</h3>
+
+<div class="tryhtml" data-goal="src:^&lt;!DOCTYPE html&gt;,texto:title=Lojinha da Ana,attr:html[lang]=pt-BR,nsel:h1 p=0,nsel:center=0,nsel:h3=0,nsel:h2=1,attr:img[alt]=Logo da Lojinha da Ana,src:&amp;lt;10,nsel:br=1">
+<p class="try-task"><strong>Missão:</strong> esta página tem sete erros desta aula. Conserte todos: (1) o DOCTYPE; (2) o <code>&lt;title&gt;</code>, que deve ser <code>Lojinha da Ana</code>; (3) o idioma <code>pt-BR</code>; (4) o título <code>h1</code> que não foi fechado; (5) o <code>&lt;center&gt;</code> obsoleto (troque por um parágrafo comum); (6) o <code>h3</code> que pula um nível; (7) o <code>alt</code> do logo, <code>Logo da Lojinha da Ana</code>. De quebra, escreva o <code>&lt;</code> do preço com a entidade e tire o <code>&lt;/br&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;img src="assets/midia/logo-lojinha-200.png" width="200" height="80"&gt;
+&lt;h1&gt;Lojinha da Ana
+&lt;center&gt;Doces feitos em casa&lt;/center&gt;
+&lt;h3&gt;Promoção&lt;/h3&gt;
+&lt;p&gt;Brigadeiros por &lt;10 reais o cento.&lt;/p&gt;
+&lt;p&gt;Rua das Flores, 10&lt;br&gt;&lt;/br&gt;São Paulo&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;img src="assets/midia/logo-lojinha-200.png" width="200" height="80" alt="Logo da Lojinha da Ana"&gt;
+&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;p&gt;Doces feitos em casa&lt;/p&gt;
+&lt;h2&gt;Promoção&lt;/h2&gt;
+&lt;p&gt;Brigadeiros por &amp;lt;10 reais o cento.&lt;/p&gt;
+&lt;p&gt;Rua das Flores, 10&lt;br&gt;São Paulo&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Depois de consertar, use o botão de validar no W3C da caixa: a resposta deve ser que não há erros. Se sobrar algum, volte ao método do começo da aula.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Método: valide, leia o <strong>primeiro</strong> erro, vá à linha (e à de cima), conserte, valide de novo.</li>
+  <li>Estrutura: DOCTYPE na linha 1, <code>&lt;title&gt;</code> no <code>&lt;head&gt;</code>, <code>lang="pt-BR"</code>, e tudo o que aparece na tela dentro do <code>&lt;body&gt;</code>.</li>
+  <li>Tags: feche tudo o que abrir, com o mesmo nome e na ordem certa; não feche os vazios; não ponha blocos em parágrafos; <code>li</code> só em listas; nada de <code>center</code> e <code>font</code>.</li>
+  <li>Atributos: aspas retas e duplas, sempre fechadas; <code>alt</code> em toda imagem; cada <code>id</code> único e sem espaço.</li>
+  <li>Texto: <code>&amp;lt;</code> para o sinal de menor, entidades com <code>;</code>, títulos sem pular nível.</li>
+  <li>O validador não vê tudo: aspas curvas, links quebrados e <code>alt</code> inúteis passam. Confira no navegador.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
