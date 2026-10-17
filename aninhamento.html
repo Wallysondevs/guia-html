@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Aninhamento — elementos dentro de elementos e tags cruzadas | Guia HTML</title>
+<meta name="description" content="Aninhamento no HTML para quem nunca fez um site: elementos dentro de elementos, pai, filho e irmão, a árvore do DOM, a regra do último a abrir é o primeiro a fechar, o que o navegador faz com tags cruzadas, parágrafo dentro de parágrafo e li fora de lista, com o DOM real do Chromium e as mensagens do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Aninhamento</span></h1>
+
+<p class="intro">Elementos podem ficar <strong>dentro</strong> de outros elementos: uma palavra em negrito dentro de um parágrafo, um link dentro de um item de lista, a lista dentro do corpo da página. Isso se chama <strong>aninhamento</strong> (de "ninho": um dentro do outro). Nesta aula você vai aprender a regra de ouro para fechar as tags na ordem certa, os nomes da "família" dos elementos e, principalmente, o que o navegador faz quando as tags se cruzam ou quando um elemento é colocado onde não pode ficar.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como colocar um elemento dentro de outro, e a regra "o último a abrir é o primeiro a fechar".</li>
+  <li>Os nomes da família: <strong>pai</strong>, <strong>filho</strong>, <strong>irmão</strong>, <strong>ancestral</strong> e <strong>descendente</strong>.</li>
+  <li>Como a página vira uma <strong>árvore</strong> (o DOM), que você vê no <kbd>F12</kbd>.</li>
+  <li>Por que indentar o código, e por que isso não muda o resultado.</li>
+  <li>O que o navegador faz com <strong>tags cruzadas</strong> (<code>&lt;strong&gt;&lt;em&gt;…&lt;/strong&gt;&lt;/em&gt;</code>).</li>
+  <li>Quais elementos não podem ficar dentro de quais: parágrafo dentro de parágrafo, <code>&lt;div&gt;</code> dentro de <code>&lt;p&gt;</code>, <code>&lt;li&gt;</code> fora de lista, link dentro de link.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code> 26.10.12, aula <a href="validar.html">Validar o HTML</a>) na máquina fictícia da Ana, na pasta <code>~/site/aninhamento</code>. O "que o navegador montou" de cada erro é o DOM real do Chromium, como aparece no <kbd>F12</kbd>. Os exemplos mostram só o que vai dentro do <code>&lt;body&gt;</code>.</p>
+
+<hr>
+
+<h2>A ideia: caixas dentro de caixas</h2>
+<p>A Ana vai mandar um presente pelo correio. Ela coloca o bolo numa caixinha, a caixinha numa caixa maior com papel de seda, e essa caixa no pacote do correio. Para fechar, ela fecha <strong>primeiro a caixinha</strong>, depois a caixa do meio, por último o pacote. Não dá para fechar o pacote com a caixinha ainda aberta lá dentro, aparecendo pela tampa.</p>
+
+<p>No HTML é igual. Quem conhece matemática já viu a mesma regra nos parênteses e colchetes: <code>[ 2 × ( 3 + 4 ) ]</code> está certo; <code>[ 2 × ( 3 + 4 ] )</code> não faz sentido. A regra de ouro:</p>
+
+<div class="tip">
+<strong>O último a abrir é o primeiro a fechar</strong>
+<p>Se você abriu <code>&lt;p&gt;</code> e depois <code>&lt;strong&gt;</code>, feche primeiro o <code>&lt;/strong&gt;</code> e depois o <code>&lt;/p&gt;</code>. Um elemento tem de ficar <strong>inteiro</strong> dentro do outro: abertura e fechamento.</p>
+</div>
+
+<hr>
+
+<h2>1. Um elemento dentro de outro</h2>
+<p>Na receita, a Ana quer destacar o tempo de forno. O <code>&lt;strong&gt;</code> ("forte", importante) fica dentro do parágrafo:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Asse por &lt;strong&gt;40 minutos&lt;/strong&gt;.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;p&gt;</dt><dd>Abre o parágrafo: a caixa de fora.</dd>
+  <dt>Asse por</dt><dd>Texto do parágrafo.</dd>
+  <dt>&lt;strong&gt;</dt><dd>Abre o destaque, <strong>dentro</strong> do parágrafo: a caixa de dentro.</dd>
+  <dt>40 minutos</dt><dd>Texto do destaque (e, portanto, também do parágrafo).</dd>
+  <dt>&lt;/strong&gt;</dt><dd>Fecha primeiro a caixa de dentro, a última que foi aberta.</dd>
+  <dt>.&lt;/p&gt;</dt><dd>O ponto final ainda é do parágrafo, e o <code>&lt;/p&gt;</code> fecha a caixa de fora.</dd>
+</dl>
+
+<p>Dá para ir mais fundo. Aqui um <code>&lt;em&gt;</code> (<em>emphasis</em>, "ênfase", em itálico) fica dentro do <code>&lt;strong&gt;</code>, que fica dentro do <code>&lt;p&gt;</code>. Repare na ordem dos fechamentos: <code>&lt;/em&gt;</code>, <code>&lt;/strong&gt;</code>, <code>&lt;/p&gt;</code>, o contrário das aberturas:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Asse por &lt;strong&gt;40 minutos, &lt;em&gt;sem abrir o forno&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+</pre>
+
+<p>No resultado, "sem abrir o forno" ficou em negrito <strong>e</strong> itálico: ele está dentro dos dois elementos e recebe o efeito dos dois. (O significado de <code>strong</code> e <code>em</code> está em <a href="negrito-italico.html">Negrito e Itálico</a>.)</p>
+
+<div class="tryhtml" data-goal="texto:p strong=40 minutos,nsel:strong=1,nsel:p=1">
+<p class="try-task"><strong>Missão:</strong> coloque <code>40 minutos</code> dentro de um <code>&lt;strong&gt;</code>, sem tirá-lo do parágrafo. Feche na ordem certa.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Asse por 40 minutos em forno médio.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Asse por &lt;strong&gt;40 minutos&lt;/strong&gt; em forno médio.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. A família: pai, filho e irmão</h2>
+<p>Para falar de elementos aninhados, programadores usam os nomes de uma árvore genealógica. Veja esta lista de ingredientes (as listas têm aula própria, <a href="listas.html">Listas</a>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ul&gt;
+  &lt;li&gt;3 cenouras&lt;/li&gt;
+  &lt;li&gt;3 ovos &lt;strong&gt;grandes&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;2 xícaras de &lt;a href="farinha.html"&gt;farinha&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<p>O navegador guarda a página como uma <strong>árvore</strong>: cada elemento é um galho, e o que está dentro dele são os galhos menores. Essa árvore se chama <strong>DOM</strong> (<em>Document Object Model</em>, "modelo de objetos do documento"), e é ela que aparece na aba de elementos do <kbd>F12</kbd> (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>), com setinhas para abrir e fechar cada galho:</p>
+
+<pre class="file" data-file="a árvore (DOM)">body
+└── ul
+    ├── li ── "3 cenouras"
+    ├── li ── "3 ovos "
+    │   └── strong ── "grandes"
+    └── li ── "2 xícaras de "
+        └── a ── "farinha"
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Nome</th><th>Quer dizer</th><th>No exemplo</th></tr>
+<tr><td><strong>pai</strong> (<em>parent</em>)</td><td>o elemento que está <strong>diretamente</strong> em volta</td><td>o <code>ul</code> é o pai de cada <code>li</code></td></tr>
+<tr><td><strong>filho</strong> (<em>child</em>)</td><td>um elemento <strong>diretamente</strong> dentro de outro</td><td>os três <code>li</code> são filhos do <code>ul</code></td></tr>
+<tr><td><strong>irmãos</strong> (<em>siblings</em>)</td><td>filhos do mesmo pai</td><td>os três <code>li</code> são irmãos</td></tr>
+<tr><td><strong>ancestral</strong></td><td>pai, avô, bisavô…: qualquer elemento em volta, perto ou longe</td><td>o <code>ul</code> e o <code>body</code> são ancestrais do <code>strong</code></td></tr>
+<tr><td><strong>descendente</strong></td><td>filho, neto…: qualquer elemento dentro, perto ou longe</td><td>o <code>a</code> é descendente do <code>ul</code> (é neto dele)</td></tr>
+</table>
+</div>
+
+<p>Esses nomes aparecem nas mensagens do validador (<code>not allowed as child of element</code> = "não permitido como <strong>filho</strong> do elemento") e, mais tarde, no CSS (quer aprender mais? futuro Guia CSS): <code>ul li</code> quer dizer "todo <code>li</code> descendente de um <code>ul</code>".</p>
+
+<h3>Indentação: os espaços do começo da linha</h3>
+<p>Repare que, na lista, cada <code>&lt;li&gt;</code> começa com dois espaços. Isso se chama <strong>indentar</strong> (de <em>indent</em>, "recuar"): cada nível de aninhamento anda um passo para a direita. A indentação é <strong>só para quem lê o código</strong>. O navegador não se importa (os espaços têm aula própria, <a href="espacos.html">Espaços e Quebras de Linha</a>), mas você enxerga a árvore no próprio código e acha um fechamento faltando muito mais rápido. O guia usa dois espaços por nível; quatro espaços também é comum. Os editores, como o VS Code, indentam sozinhos (aula <a href="editores.html">Editores</a>).</p>
+
+<hr>
+
+<h2>3. Tags cruzadas</h2>
+<p>Agora o erro mais clássico do aninhamento: fechar na ordem errada. A Ana abriu <code>&lt;strong&gt;</code>, depois <code>&lt;em&gt;</code>, e fechou primeiro o <code>&lt;/strong&gt;</code>:</p>
+
+<pre class="file" data-file="cruzado.html · erro de propósito">&lt;p&gt;Asse por &lt;strong&gt;&lt;em&gt;40 minutos&lt;/strong&gt;&lt;/em&gt;.&lt;/p&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site/aninhamento">$ vnu cruzado.html
+"file:/home/ana/site/aninhamento/cruzado.html":8.35-8.43: error: End tag “strong” violates nesting rules.
+"file:/home/ana/site/aninhamento/cruzado.html":8.44-8.48: error: No “em” element in scope but a “em” end tag seen.</pre>
+
+<dl class="anatomy">
+  <dt>End tag “strong” violates nesting rules.</dt><dd>"A tag de fechamento <code>strong</code> viola as regras de aninhamento": ela chegou com o <code>em</code>, aberto depois dela, ainda aberto.</dd>
+  <dt>No “em” element in scope but a “em” end tag seen.</dt><dd>"Nenhum elemento <code>em</code> aberto (<em>in scope</em>, "ao alcance"), mas um fechamento de <code>em</code> foi encontrado". É consequência do primeiro erro: ao consertar o <code>&lt;/strong&gt;</code>, o navegador já fechou o <code>em</code>, e este <code>&lt;/em&gt;</code> ficou sobrando.</dd>
+</dl>
+
+<p>E o navegador? Neste caso simples, o conserto saiu perfeito. O Chromium montou:</p>
+
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;Asse por &lt;strong&gt;&lt;em&gt;40 minutos&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+</pre>
+
+<p>Por isso tanta gente nunca percebe esse erro: a página parece certa. Mas nem sempre o conserto é tão limpo. Quando há texto entre os dois fechamentos, o navegador precisa <strong>dividir</strong> um elemento em dois:</p>
+
+<pre class="file" data-file="cruzado2.html · erro de propósito">&lt;p&gt;&lt;strong&gt;Atenção: &lt;em&gt;forno quente&lt;/strong&gt; e assadeira pesada&lt;/em&gt;.&lt;/p&gt;
+</pre>
+
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;&lt;strong&gt;Atenção: &lt;em&gt;forno quente&lt;/em&gt;&lt;/strong&gt;&lt;em&gt; e assadeira pesada&lt;/em&gt;.&lt;/p&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site/aninhamento">$ vnu cruzado2.html
+"file:/home/ana/site/aninhamento/cruzado2.html":8.37-8.45: error: End tag “strong” violates nesting rules.</pre>
+
+<p>Olhe o que aconteceu, passo a passo:</p>
+<ol class="passo">
+  <li>Ao ver o <code>&lt;/strong&gt;</code> com o <code>em</code> ainda aberto, o navegador fecha o <code>em</code> ali mesmo, e depois o <code>strong</code>.</li>
+  <li>Mas o <code>em</code> "devia" continuar, então o navegador abre um <strong>segundo</strong> <code>&lt;em&gt;</code>, novinho, para o resto do texto.</li>
+  <li>O <code>&lt;/em&gt;</code> do fim fecha esse segundo <code>em</code>.</li>
+</ol>
+
+<p>O resultado na tela até parece o que a Ana queria (negrito em "Atenção: forno quente", itálico em "forno quente e assadeira pesada"). Mas a página agora tem <strong>dois</strong> elementos <code>em</code> onde o código mostra um. Se um CSS ou um JavaScript contar com um <code>em</code> só, vai se confundir. Veja ao vivo nesta caixa livre: compare o código com o resultado e depois conserte a ordem:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;strong&gt;Atenção: &lt;em&gt;forno quente&lt;/strong&gt; e assadeira pesada&lt;/em&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<p>O jeito certo de escrever essa frase, sem cruzar nada, é decidir o que fica dentro de quê. Por exemplo: <code>&lt;p&gt;&lt;strong&gt;Atenção:&lt;/strong&gt; &lt;em&gt;forno quente e assadeira pesada&lt;/em&gt;.&lt;/p&gt;</code>.</p>
+
+<hr>
+
+<h2>4. Nem tudo cabe dentro de tudo</h2>
+<p>A regra de ouro (fechar na ordem) não é a única. O HTML também diz <strong>quais</strong> elementos podem ficar dentro de quais. A ideia geral:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Pode conter</th><th>Não pode conter</th></tr>
+<tr><td><code>&lt;p&gt;</code> (parágrafo)</td><td>texto e elementos "de frase": <code>strong</code>, <code>em</code>, <code>a</code>, <code>br</code>, <code>img</code>…</td><td>outro <code>p</code>, títulos (<code>h1</code>…<code>h6</code>), listas, <code>div</code>, tabelas</td></tr>
+<tr><td><code>&lt;ul&gt;</code> e <code>&lt;ol&gt;</code> (listas)</td><td>só <code>li</code> (e <code>script</code>/<code>template</code>)</td><td>texto solto, <code>p</code>, qualquer outro direto</td></tr>
+<tr><td><code>&lt;li&gt;</code> (item)</td><td>quase tudo: texto, <code>p</code>, outra lista…</td><td>ficar fora de <code>ul</code>, <code>ol</code> ou <code>menu</code></td></tr>
+<tr><td><code>&lt;a&gt;</code> (link)</td><td>texto, imagens e até blocos inteiros</td><td>outro <code>a</code>, botões, campos de formulário</td></tr>
+<tr><td><code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code></td><td>texto e outros elementos de frase</td><td><code>p</code>, títulos, listas, <code>div</code></td></tr>
+</table>
+</div>
+
+<p>Os elementos "de frase" (no padrão, <em>phrasing content</em>) são os que ficam no meio de uma linha de texto; os outros, como parágrafos, títulos e listas, formam blocos. Essa diferença tem aula própria: <a href="bloco-inline.html">Bloco × Em Linha</a>. Cada aula de elemento diz o que ele pode conter, e a lista completa está em <a href="ref-elementos.html">Todos os Elementos</a>.</p>
+
+<h3>Parágrafo dentro de parágrafo</h3>
+<p>Este é o caso mais surpreendente, porque o navegador <strong>não</strong> deixa o segundo parágrafo dentro do primeiro: ele fecha o primeiro antes de abrir o segundo.</p>
+
+<pre class="file" data-file="p-em-p.html · erro de propósito">&lt;p&gt;Ingredientes: &lt;p&gt;3 cenouras&lt;/p&gt;&lt;/p&gt;
+</pre>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;Ingredientes: &lt;/p&gt;&lt;p&gt;3 cenouras&lt;/p&gt;&lt;p&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/aninhamento">$ vnu p-em-p.html
+"file:/home/ana/site/aninhamento/p-em-p.html":8.35-8.38: error: No “p” element in scope but a “p” end tag seen.</pre>
+
+<p>Leia o DOM: o navegador fechou o "Ingredientes:" sozinho (lembra que o <code>&lt;/p&gt;</code> pode faltar? Aula <a href="elementos.html">Elementos e Tags</a>), fez o "3 cenouras" como um parágrafo <strong>irmão</strong>, e o último <code>&lt;/p&gt;</code>, que não tinha mais par, virou um terceiro parágrafo, <strong>vazio</strong>. O validador reclama só desse <code>&lt;/p&gt;</code> sobrando, na coluna 35: "nenhum <code>p</code> aberto, mas um fechamento de <code>p</code> encontrado". A mesma coisa acontece com um <code>&lt;div&gt;</code>, um título ou uma lista dentro de um parágrafo:</p>
+
+<pre class="term" data-cwd="~/site/aninhamento">$ sed -sn 8,12p div-em-p.html ul-em-p.html
+&lt;p&gt;Modo de preparo: &lt;div&gt;Bata tudo.&lt;/div&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;p&gt;Ingredientes:
+&lt;ul&gt;
+&lt;li&gt;3 cenouras&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+$ vnu div-em-p.html ul-em-p.html
+"file:/home/ana/site/aninhamento/div-em-p.html":8.42-8.45: error: No “p” element in scope but a “p” end tag seen.
+"file:/home/ana/site/aninhamento/ul-em-p.html":12.1-12.4: error: No “p” element in scope but a “p” end tag seen.</pre>
+
+<p>Em todos esses casos o navegador monta <code>&lt;p&gt;…&lt;/p&gt;</code>, depois o bloco (o <code>div</code>, a lista) <strong>fora</strong> do parágrafo e, no fim, um <code>&lt;p&gt;&lt;/p&gt;</code> vazio. Na tela, aparece um espaço a mais embaixo, de um parágrafo sem nada. <strong>Conserto:</strong> feche o parágrafo antes do bloco, ou troque o <code>&lt;p&gt;</code> de fora por um <code>&lt;div&gt;</code> (aula <a href="div-span.html">div e span</a>).</p>
+
+<h3>O contrário: bloco dentro de <code>strong</code></h3>
+<p>Já um parágrafo dentro de um <code>&lt;strong&gt;</code> o navegador deixa como está, e a página até fica em negrito. Mas é inválido:</p>
+
+<pre class="term" data-cwd="~/site/aninhamento">$ sed -n 8p p-em-strong.html
+&lt;strong&gt;&lt;p&gt;Atenção: forno quente.&lt;/p&gt;&lt;/strong&gt;
+$ vnu p-em-strong.html
+"file:/home/ana/site/aninhamento/p-em-strong.html":8.9-8.11: error: Element “p” not allowed as child of element “strong” in this context. (Suppressing further errors from this subtree.)</pre>
+
+<p>"O elemento <code>p</code> não é permitido como filho do elemento <code>strong</code> neste contexto". O conserto é inverter: o <code>strong</code> vai <strong>dentro</strong> do parágrafo, <code>&lt;p&gt;&lt;strong&gt;Atenção: forno quente.&lt;/strong&gt;&lt;/p&gt;</code>.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Esqueceu de fechar o de dentro: <code>End tag “p” seen, but there were open elements.</code></strong>
+<pre class="file" data-file="sem-fechar-strong.html · erro de propósito">&lt;p&gt;Asse por &lt;strong&gt;40 minutos.&lt;/p&gt;
+&lt;p&gt;Sirva gelado.&lt;/p&gt;
+</pre>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;Asse por &lt;strong&gt;40 minutos.&lt;/strong&gt;&lt;/p&gt;&lt;strong&gt;
+&lt;p&gt;Sirva gelado.&lt;/p&gt;
+&lt;/strong&gt;
+</pre>
+<pre class="term" data-cwd="~/site/aninhamento">$ vnu sem-fechar-strong.html
+"file:/home/ana/site/aninhamento/sem-fechar-strong.html":8.32-8.35: error: End tag “p” seen, but there were open elements.
+"file:/home/ana/site/aninhamento/sem-fechar-strong.html":8.13-8.20: error: Unclosed element “strong”.
+"file:/home/ana/site/aninhamento/sem-fechar-strong.html":9.1-9.3: error: Element “p” not allowed as child of element “strong” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/aninhamento/sem-fechar-strong.html":10.1-10.7: error: End tag for  “body” seen, but there were unclosed elements.</pre>
+<p><strong>O que significa:</strong> o <code>&lt;/p&gt;</code> chegou com o <code>strong</code> ainda aberto. O navegador fechou o <code>strong</code> junto com o parágrafo, mas, como ninguém mandou o destaque acabar, <strong>reabriu</strong> um <code>&lt;strong&gt;</code> logo depois, e ele engoliu o resto da página. <strong>No navegador:</strong> "Sirva gelado." aparece em <strong>negrito</strong>, e tudo o que vier depois também. A segunda mensagem aponta a causa: "elemento <code>strong</code> não fechado", na linha 8, colunas 13 a 20. <strong>Como consertar:</strong> <code>&lt;strong&gt;40 minutos&lt;/strong&gt;.&lt;/p&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Item de lista sem lista: <code>Element “li” not allowed as child of element “body”</code></strong>
+<pre class="term" data-cwd="~/site/aninhamento">$ sed -n 8,9p li-solto.html
+&lt;li&gt;3 cenouras&lt;/li&gt;
+&lt;li&gt;3 ovos&lt;/li&gt;
+$ vnu li-solto.html
+"file:/home/ana/site/aninhamento/li-solto.html":8.1-8.4: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/aninhamento/li-solto.html":9.1-9.4: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> todo <code>&lt;li&gt;</code> precisa de um pai <code>&lt;ul&gt;</code> ou <code>&lt;ol&gt;</code>. <strong>No navegador:</strong> o Chromium deixa os <code>li</code> soltos no <code>body</code>, e eles aparecem como linhas de texto comuns, sem a bolinha e sem o recuo de uma lista. O leitor de tela não anuncia "lista, 2 itens". <strong>Como consertar:</strong> coloque os itens dentro de <code>&lt;ul&gt;…&lt;/ul&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Texto solto dentro da lista: <code>Element “p” not allowed as child of element “ul”</code></strong>
+<pre class="term" data-cwd="~/site/aninhamento">$ sed -n 8,11p p-em-ul.html
+&lt;ul&gt;
+&lt;p&gt;Ingredientes&lt;/p&gt;
+&lt;li&gt;3 cenouras&lt;/li&gt;
+&lt;/ul&gt;
+$ vnu p-em-ul.html
+"file:/home/ana/site/aninhamento/p-em-ul.html":9.1-9.3: error: Element “p” not allowed as child of element “ul” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> o <code>&lt;ul&gt;</code> só aceita <code>&lt;li&gt;</code> como filho. A Ana quis pôr um título para a lista dentro dela. <strong>No navegador:</strong> o parágrafo fica lá dentro e aparece recuado, sem bolinha. <strong>Como consertar:</strong> o título vai <strong>antes</strong> da lista, fora dela: <code>&lt;p&gt;Ingredientes&lt;/p&gt;&lt;ul&gt;…&lt;/ul&gt;</code> (ou um <code>&lt;h2&gt;</code>).</p>
+</div>
+
+<div class="cenario">
+<strong>Link dentro de link: <code>Start tag “a” seen but an element of the same type was already open.</code></strong>
+<pre class="term" data-cwd="~/site/aninhamento">$ sed -n 8p a-em-a.html
+&lt;p&gt;&lt;a href="receitas.html"&gt;Todas as receitas e o &lt;a href="bolo.html"&gt;bolo&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
+$ vnu a-em-a.html
+"file:/home/ana/site/aninhamento/a-em-a.html":8.50-8.69: error: Start tag “a” seen but an element of the same type was already open.
+"file:/home/ana/site/aninhamento/a-em-a.html":8.78-8.81: error: Stray end tag “a”.</pre>
+<p><strong>O que significa:</strong> "tag de abertura <code>a</code> encontrada, mas um elemento do mesmo tipo já estava aberto" e "fechamento de <code>a</code> perdido". Um link não pode ficar dentro de outro: ao clicar, para onde iria? <strong>No navegador:</strong> o Chromium fecha o primeiro link antes de abrir o segundo e monta dois links <strong>irmãos</strong>: <code>&lt;a href="receitas.html"&gt;Todas as receitas e o &lt;/a&gt;&lt;a href="bolo.html"&gt;bolo&lt;/a&gt;</code>. O último <code>&lt;/a&gt;</code> é jogado fora. <strong>Como consertar:</strong> dois links separados, cada um com seu texto.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que acontece</th></tr>
+<tr><td><code>&lt;p&gt;…&lt;strong&gt;…&lt;/strong&gt;…&lt;/p&gt;</code></td><td>Certo: o de dentro fecha primeiro</td></tr>
+<tr><td><code>&lt;strong&gt;&lt;em&gt;…&lt;/strong&gt;&lt;/em&gt;</code></td><td>Cruzado: <code>violates nesting rules</code>; o navegador conserta, às vezes duplicando um elemento</td></tr>
+<tr><td><code>&lt;p&gt;…&lt;p&gt;…&lt;/p&gt;&lt;/p&gt;</code></td><td>O navegador fecha o primeiro <code>p</code>; o <code>&lt;/p&gt;</code> sobrando vira um <code>p</code> vazio</td></tr>
+<tr><td><code>&lt;p&gt;…&lt;div&gt;…&lt;/div&gt;&lt;/p&gt;</code></td><td>Igual: o <code>div</code> sai do parágrafo, e sobra um <code>p</code> vazio</td></tr>
+<tr><td><code>&lt;strong&gt;&lt;p&gt;…&lt;/p&gt;&lt;/strong&gt;</code></td><td>O navegador deixa, mas é inválido (<code>not allowed as child</code>)</td></tr>
+<tr><td><code>&lt;li&gt;</code> fora de <code>ul</code>/<code>ol</code></td><td>Inválido; aparece sem a estrutura de lista</td></tr>
+<tr><td><code>&lt;a&gt;</code> dentro de <code>&lt;a&gt;</code></td><td>O navegador separa em dois links irmãos</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A ordem dos fechamentos</h3>
+<p>Complete os fechamentos na ordem certa:</p>
+<div class="ex-code">&lt;p&gt;Asse por &lt;strong&gt;40 minutos<input data-answer="&lt;/strong&gt;&lt;/p&gt;" aria-label="fechamentos"></div>
+</div>
+
+<div class="exercise">
+<h3>2. O pai</h3>
+<p>Em <code>&lt;ul&gt;&lt;li&gt;3 ovos&lt;/li&gt;&lt;/ul&gt;</code>, qual elemento é o pai do <code>li</code>? (Escreva só o nome.)</p>
+<div class="ex-code"><input data-answer="ul" aria-label="pai"></div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Qual linha está aninhada certo?</p>
+<label><input type="radio" name="q3"> <code>&lt;p&gt;&lt;em&gt;Bolo&lt;/p&gt;&lt;/em&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;p&gt;&lt;em&gt;Bolo&lt;/em&gt;&lt;/p&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;em&gt;&lt;p&gt;Bolo&lt;/em&gt;&lt;/p&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;p&gt;&lt;em&gt;Bolo&lt;/p&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. A Ana escreveu <code>&lt;p&gt;Ingredientes: &lt;p&gt;3 cenouras&lt;/p&gt;&lt;/p&gt;</code>. Quantos parágrafos o navegador monta?</p>
+<label><input type="radio" name="q4"> 1, com o outro dentro</label>
+<label><input type="radio" name="q4"> 2</label>
+<label><input type="radio" name="q4"> 3: o último fica vazio</label>
+<label><input type="radio" name="q4"> Nenhum: a página fica em branco</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Em <code>&lt;body&gt;&lt;ul&gt;&lt;li&gt;&lt;a&gt;farinha&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;</code>, o que o <code>a</code> é do <code>ul</code>?</p>
+<label><input type="radio" name="q5"> Pai</label>
+<label><input type="radio" name="q5"> Filho</label>
+<label><input type="radio" name="q5"> Irmão</label>
+<label><input type="radio" name="q5"> Descendente (neto)</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. A Ana esqueceu o <code>&lt;/strong&gt;</code> no primeiro parágrafo, e o segundo parágrafo ficou todo em negrito. Por quê?</p>
+<label><input type="radio" name="q6"> O navegador reabriu o <code>strong</code> depois do primeiro parágrafo, e ele envolveu o resto da página</label>
+<label><input type="radio" name="q6"> Todo parágrafo depois de um <code>strong</code> fica em negrito</label>
+<label><input type="radio" name="q6"> O validador mudou o código</label>
+<label><input type="radio" name="q6"> O segundo parágrafo tem um <code>strong</code> escondido</label>
+</div>
+
+<h3>Missão final: o cartão de ingredientes</h3>
+
+<div class="tryhtml" data-goal="nsel:p:empty=0,nsel:em=1,nsel:strong=1,texto:strong em=sem abrir o forno,sel:ul &gt; li,nsel:body &gt; li=0,nsel:ul &gt; p=0,texto:p strong=40 minutos,nsrc:&lt;/strong&gt;\s*&lt;/em&gt;">
+<p class="try-task"><strong>Missão:</strong> o cartão da Ana tem três problemas de aninhamento. (1) O título "Ingredientes" está <strong>dentro</strong> da lista, e os itens estão fora dela. (2) Há um parágrafo dentro de outro, o que cria um parágrafo vazio. (3) No tempo de forno, o <code>strong</code> e o <code>em</code> estão cruzados. Conserte: o parágrafo "Ingredientes" antes da lista, os dois itens dentro do <code>&lt;ul&gt;</code>, nenhum parágrafo vazio e <code>sem abrir o forno</code> em itálico dentro do negrito de <code>40 minutos, sem abrir o forno</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;p&gt;Ingredientes&lt;/p&gt;
+&lt;/ul&gt;
+&lt;li&gt;3 cenouras&lt;/li&gt;
+&lt;li&gt;3 ovos&lt;/li&gt;
+&lt;p&gt;Modo de preparo: &lt;p&gt;bata tudo no liquidificador.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;Asse por &lt;strong&gt;40 minutos, &lt;em&gt;sem abrir o forno&lt;/strong&gt;&lt;/em&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Ingredientes&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Modo de preparo: bata tudo no liquidificador.&lt;/p&gt;
+&lt;p&gt;Asse por &lt;strong&gt;40 minutos, &lt;em&gt;sem abrir o forno&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Repare que, no tempo de forno, o resultado já parecia certo antes do conserto: como não há texto entre o <code>&lt;/strong&gt;</code> e o <code>&lt;/em&gt;</code>, o navegador consertou o cruzamento sem duplicar nada. Por isso uma das metas olha o <strong>código</strong> (<code>&lt;/strong&gt;</code> seguido de <code>&lt;/em&gt;</code> não pode aparecer): só o código, e o validador, mostram esse erro.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><strong>Aninhar</strong> é colocar um elemento inteiro (abertura e fechamento) dentro de outro. Regra de ouro: o último a abrir é o primeiro a fechar.</li>
+  <li>A página vira uma árvore, o <strong>DOM</strong>: cada elemento tem um <strong>pai</strong>, pode ter <strong>filhos</strong> e <strong>irmãos</strong>, <strong>ancestrais</strong> e <strong>descendentes</strong>. O <kbd>F12</kbd> mostra essa árvore.</li>
+  <li>Indente cada nível (2 espaços no guia): o navegador ignora, mas você enxerga a árvore no código.</li>
+  <li>Tags cruzadas (<code>violates nesting rules</code>) são consertadas pelo navegador, às vezes dividindo um elemento em dois.</li>
+  <li>Nem tudo cabe em tudo: <code>p</code> não contém blocos (outro <code>p</code>, <code>div</code>, listas, títulos); <code>ul</code>/<code>ol</code> só contêm <code>li</code>; <code>li</code> precisa de uma lista; <code>a</code> não contém outro <code>a</code>.</li>
+  <li>Um parágrafo com um bloco dentro é fechado antes do bloco, e o <code>&lt;/p&gt;</code> que sobra vira um parágrafo vazio (<code>No “p” element in scope</code>).</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
