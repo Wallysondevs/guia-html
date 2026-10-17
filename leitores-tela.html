@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Leitores de Tela — o que o NVDA e o Orca leem | Guia HTML</title>
+<meta name="description" content="Leitores de tela para quem nunca fez um site: o que é um leitor de tela, como o NVDA (Windows) e o Orca (Ubuntu) andam pela página com atalhos de títulos, links e regiões, a árvore de acessibilidade com papel, nome e estado, o idioma com lang, hidden, aria-hidden e texto só para o leitor, com as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Leitores de Tela</span></h1>
+
+<p class="intro">Uma pessoa cega usa a internet todos os dias: lê notícias, compra, manda mensagens. Quem lê a tela para ela é um programa, o <strong>leitor de tela</strong>. Ele não "olha" as cores nem o desenho da página: ele lê o <strong>HTML</strong>. Nesta aula você vai ver o que um leitor de tela recebe da sua página, como as pessoas andam por ela (quase nunca de cima a baixo) e por que um HTML bem escrito é a diferença entre um site que funciona e um site mudo.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é um leitor de tela e quais são os mais usados, com destaque para o <strong>NVDA</strong> (Windows) e o <strong>Orca</strong> (Ubuntu).</li>
+  <li>Como ligar cada um e os atalhos para pular entre títulos, links, regiões e campos.</li>
+  <li>A <strong>árvore de acessibilidade</strong>: o papel, o nome e o estado que o navegador tira de cada elemento.</li>
+  <li>Por que os títulos, os textos dos links e o <code>lang</code> importam tanto.</li>
+  <li>A diferença entre <code>hidden</code>, <code>aria-hidden="true"</code> e um texto escondido só da tela.</li>
+  <li>Os erros reais que o validador W3C mostra, e os que ele não vê.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, versão 26.10.12) na máquina fictícia da Ana, na pasta <code>~/site</code>. As falas dos leitores de tela <strong>não</strong> estão escritas palavra por palavra aqui, porque elas mudam com o leitor, a versão, a voz e as configurações. A aula descreve <em>que informação</em> é falada; para ouvir de verdade, ligue um leitor de tela e teste os exemplos.</p>
+
+<hr>
+
+<h2>A ideia: alguém lendo a página pelo telefone</h2>
+<p>Imagine que a Ana liga para a mãe e lê a página de receitas pelo telefone. Ela não diz "tem um texto grande, laranja, no alto". Ela diz: "o título é Bolo de cenoura; tem uma lista de ingredientes com 6 itens; tem um botão Comprar". Ou seja: ela diz <strong>o que cada coisa é</strong> e <strong>como ela se chama</strong>.</p>
+
+<p>O leitor de tela faz o mesmo. E a mãe da Ana não quer ouvir tudo: ela pede "pula para o modo de preparo", "quais são os links?". Os leitores de tela têm atalhos para isso, e eles só funcionam se o HTML disser onde estão os títulos, os links e as partes da página.</p>
+
+<hr>
+
+<h2>1. Os leitores de tela mais usados</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Leitor</th><th>Sistema</th><th>Como conseguir</th></tr>
+<tr><td><strong>NVDA</strong> (<em>NonVisual Desktop Access</em>, "acesso não visual ao computador")</td><td>Windows</td><td>Gratuito e de código aberto, baixado em nvaccess.org. É o mais usado no Brasil, junto com o JAWS.</td></tr>
+<tr><td><strong>JAWS</strong> (<em>Job Access With Speech</em>)</td><td>Windows</td><td>Pago.</td></tr>
+<tr><td><strong>Narrador</strong></td><td>Windows</td><td>Já vem no Windows.</td></tr>
+<tr><td><strong>Orca</strong></td><td>Linux (GNOME, Ubuntu)</td><td>Gratuito e de código aberto; já vem instalado no Ubuntu.</td></tr>
+<tr><td><strong>VoiceOver</strong></td><td>Mac, iPhone, iPad</td><td>Já vem no sistema da Apple.</td></tr>
+<tr><td><strong>TalkBack</strong></td><td>Android</td><td>Já vem na maioria dos celulares Android.</td></tr>
+</table>
+</div>
+
+<p>Todos fazem o mesmo trabalho básico: transformam a página em <strong>fala</strong> (uma voz sintética) ou em <strong>braile</strong>, numa linha braile ligada ao computador. Esta aula usa como exemplo os dois que você pode instalar de graça no seu computador: o NVDA e o Orca.</p>
+
+<h3>Orca, no Ubuntu</h3>
+<ol class="passo">
+  <li>Aperte <kbd>Super</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd> (a <kbd>Super</kbd> é a tecla com o logotipo do Windows). O Orca começa a falar. O mesmo atalho desliga. Você também encontra o leitor de tela nas <strong>Configurações</strong> do Ubuntu, na parte de <strong>Acessibilidade</strong>.</li>
+  <li>Abra a página no Firefox (é o navegador com que o Orca funciona melhor) e clique dentro dela.</li>
+  <li>A <strong>tecla Orca</strong>, usada em vários comandos, é o <kbd>Insert</kbd> no teclado de mesa ou o <kbd>Caps Lock</kbd> no teclado de notebook, conforme a configuração.</li>
+</ol>
+
+<h3>NVDA, no Windows</h3>
+<ol class="passo">
+  <li>Depois de instalado, o NVDA liga com <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd>.</li>
+  <li>A <strong>tecla NVDA</strong> é o <kbd>Insert</kbd> (e pode ser também o <kbd>Caps Lock</kbd>). Para desligar: tecla NVDA + <kbd>Q</kbd>.</li>
+  <li>Para fazer o NVDA calar a boca no meio de uma frase, aperte <kbd>Ctrl</kbd>. Você vai usar muito.</li>
+</ol>
+
+<div class="warning">
+<strong>Antes de ligar</strong>
+<p>Na primeira vez, o leitor de tela fala <strong>tudo</strong> o que acontece no computador, e isso assusta. Abaixe o volume, deixe a página de testes aberta e decore o atalho que desliga antes de ligar.</p>
+</div>
+
+<hr>
+
+<h2>2. Como as pessoas andam pela página</h2>
+<p>Pouca gente ouve uma página inteira, de cima a baixo. O normal é <strong>pular</strong>: ir de título em título até achar o assunto, abrir a lista de links, ir direto para o conteúdo principal. Para isso, os leitores de tela têm um "modo de leitura" (o NVDA chama de <em>modo de navegação</em>), em que cada letra do teclado leva a um tipo de elemento. Os atalhos do NVDA e do Orca são quase iguais:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Ir para o próximo…</th><th>NVDA</th><th>Orca</th><th>Precisa no HTML</th></tr>
+<tr><td>título</td><td><kbd>H</kbd></td><td><kbd>H</kbd></td><td><code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code></td></tr>
+<tr><td>título de nível 1 a 6</td><td><kbd>1</kbd> a <kbd>6</kbd></td><td><kbd>1</kbd> a <kbd>6</kbd></td><td>o nível certo de cada título</td></tr>
+<tr><td>link</td><td><kbd>K</kbd></td><td><kbd>K</kbd></td><td><code>&lt;a href&gt;</code></td></tr>
+<tr><td>região (<em>landmark</em>)</td><td><kbd>D</kbd></td><td><kbd>M</kbd></td><td><code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>…</td></tr>
+<tr><td>campo de formulário</td><td><kbd>F</kbd></td><td><kbd>F</kbd></td><td><code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>…</td></tr>
+<tr><td>botão</td><td><kbd>B</kbd></td><td><kbd>B</kbd></td><td><code>&lt;button&gt;</code></td></tr>
+<tr><td>lista</td><td><kbd>L</kbd></td><td><kbd>L</kbd></td><td><code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code></td></tr>
+<tr><td>tabela</td><td><kbd>T</kbd></td><td><kbd>T</kbd></td><td><code>&lt;table&gt;</code></td></tr>
+<tr><td>imagem</td><td><kbd>G</kbd></td><td><kbd>G</kbd></td><td><code>&lt;img alt&gt;</code></td></tr>
+</table>
+</div>
+
+<p>Com <kbd>Shift</kbd> junto, o leitor volta para o <strong>anterior</strong> (<kbd>Shift</kbd>+<kbd>H</kbd>: título anterior). Os dois também mostram uma <strong>lista</strong> de todos os títulos, links ou regiões da página: no NVDA, tecla NVDA + <kbd>F7</kbd>; no Orca, <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> (títulos), <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd> (links), <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd> (regiões).</p>
+
+<p>Repare na última coluna: <strong>cada atalho depende de um elemento HTML</strong>. Uma página feita só de <code>&lt;div&gt;</code> com letras grandes não tem nenhum título para o <kbd>H</kbd> achar. Para quem usa leitor de tela, ela é um bloco único de texto.</p>
+
+<div class="note">
+<strong>Modo de leitura e modo de foco</strong>
+<p>Quando o foco entra num campo de texto, as letras precisam ir para o campo, e não pular para títulos. Por isso o leitor troca sozinho para o <strong>modo de foco</strong> (ou modo de formulário) e volta ao modo de leitura quando você sai. No NVDA, a tecla NVDA + <kbd>Espaço</kbd> troca de modo na mão. Fora dos atalhos de leitura, a pessoa usa o mesmo <kbd>Tab</kbd> da aula <a href="teclado.html">Teclado e Foco</a>.</p>
+</div>
+
+<hr>
+
+<h2>3. O que o leitor recebe: a árvore de acessibilidade</h2>
+<p>O leitor de tela não lê o seu arquivo <code>.html</code>. O navegador lê o HTML, monta a página e, ao lado dela, monta uma segunda versão, só com o que interessa para quem não vê: a <strong>árvore de acessibilidade</strong>. Cada elemento importante vira um item com três informações principais:</p>
+
+<dl class="anatomy">
+  <dt>papel (<em>role</em>)</dt><dd><strong>O que é</strong>: botão, link, título de nível 2, lista, caixa de seleção, região principal. Vem do <strong>elemento</strong> que você escolheu: <code>&lt;button&gt;</code> dá "botão", <code>&lt;h2&gt;</code> dá "título de nível 2".</dd>
+  <dt>nome (<em>accessible name</em>, "nome acessível")</dt><dd><strong>Como se chama</strong>: o texto que identifica o elemento. Vem do texto de dentro (<code>&lt;button&gt;Comprar&lt;/button&gt;</code>), do <code>alt</code> de uma imagem, do <code>&lt;label&gt;</code> de um campo ou do <code>aria-label</code>.</dd>
+  <dt>estado (<em>state</em>)</dt><dd><strong>Como está agora</strong>: marcada ou não, aberto ou fechado, desativado, obrigatório, link já visitado.</dd>
+</dl>
+
+<p>Veja um trecho da página da Ana e, logo abaixo, o que cada parte vira:</p>
+
+<pre class="file" data-file="bolo.html" data-resultado>&lt;nav aria-label="Menu"&gt;
+  &lt;a href="index.html"&gt;Início&lt;/a&gt;
+  &lt;a href="bolos.html"&gt;Bolos&lt;/a&gt;
+&lt;/nav&gt;
+&lt;main&gt;
+  &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+  &lt;h2&gt;Ingredientes&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;2 xícaras de farinha&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;p&gt;
+    &lt;input type="checkbox" id="feito" checked&gt;
+    &lt;label for="feito"&gt;Já fiz esta receita&lt;/label&gt;
+  &lt;/p&gt;
+  &lt;details&gt;
+    &lt;summary&gt;Dica&lt;/summary&gt;
+    &lt;p&gt;Bata a cenoura com os ovos.&lt;/p&gt;
+  &lt;/details&gt;
+  &lt;button type="button"&gt;Comprar&lt;/button&gt;
+&lt;/main&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No código</th><th>Papel</th><th>Nome</th><th>Estado e extras</th></tr>
+<tr><td><code>&lt;nav aria-label="Menu"&gt;</code></td><td>navegação (região)</td><td>Menu</td><td>—</td></tr>
+<tr><td><code>&lt;a href="index.html"&gt;Início&lt;/a&gt;</code></td><td>link</td><td>Início</td><td>visitado ou não</td></tr>
+<tr><td><code>&lt;main&gt;</code></td><td>principal (região)</td><td>—</td><td>—</td></tr>
+<tr><td><code>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;</code></td><td>título</td><td>Bolo de cenoura</td><td>nível 1</td></tr>
+<tr><td><code>&lt;ul&gt;</code> com 3 <code>&lt;li&gt;</code></td><td>lista</td><td>—</td><td>3 itens</td></tr>
+<tr><td><code>&lt;input type="checkbox" … checked&gt;</code></td><td>caixa de seleção</td><td>Já fiz esta receita (do <code>&lt;label&gt;</code>)</td><td>marcada</td></tr>
+<tr><td><code>&lt;summary&gt;Dica&lt;/summary&gt;</code></td><td>botão (que abre o <code>details</code>)</td><td>Dica</td><td>recolhido ou expandido</td></tr>
+<tr><td><code>&lt;button&gt;Comprar&lt;/button&gt;</code></td><td>botão</td><td>Comprar</td><td>—</td></tr>
+</table>
+</div>
+
+<p>Ao chegar na caixa de seleção, um leitor de tela anuncia, com as palavras dele, o <strong>nome</strong> ("Já fiz esta receita"), o <strong>papel</strong> (caixa de seleção) e o <strong>estado</strong> (marcada). Ao entrar na lista, ele avisa que é uma lista e quantos itens ela tem. A ordem das palavras muda de leitor para leitor; a informação é a mesma, porque vem da mesma árvore.</p>
+
+<p>Clique na caixa do Resultado para desmarcá-la: o estado muda na árvore na mesma hora, e o leitor passa a anunciar "não marcada". Você não precisou escrever nada para isso: o elemento certo já traz papel, nome e estado.</p>
+
+<div class="tip">
+<strong>Veja a árvore você mesmo, com o F12</strong>
+<p>As ferramentas do desenvolvedor (aula <a href="ferramentas-dev.html">F12</a>) mostram a árvore de acessibilidade. No Chrome e no Edge, selecione um elemento na aba de elementos e procure o painel de acessibilidade ao lado dos estilos: ele mostra o papel (<em>Role</em>) e o nome (<em>Name</em>). No Firefox, há uma aba própria de acessibilidade. Os nomes exatos dos menus mudam com a versão e o idioma do navegador, mas os dois mostram papel, nome e estado.</p>
+</div>
+
+<hr>
+
+<h2>4. Títulos: o índice da página</h2>
+<p>Para quem usa leitor de tela, os títulos são o <strong>índice</strong> da página. A pessoa abre a lista de títulos, escuta "Bolo de cenoura, nível 1; Ingredientes, nível 2; Modo de preparo, nível 2" e já sabe como a página está organizada. Por isso:</p>
+<ul>
+  <li>Use <code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code> para títulos de verdade, e não para deixar um texto grande (aula <a href="titulos.html">Títulos</a>).</li>
+  <li>Não pule níveis: depois do <code>&lt;h1&gt;</code> vem o <code>&lt;h2&gt;</code>, e não o <code>&lt;h3&gt;</code>. Quem ouve "nível 3" logo depois de "nível 1" pensa que perdeu alguma coisa.</li>
+</ul>
+
+<p>O validador atual pega o nível pulado. A Ana escreveu esta página:</p>
+
+<pre class="file" data-file="titulos.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolos da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolos da Ana&lt;/h1&gt;
+&lt;h3&gt;Bolo de cenoura&lt;/h3&gt;
+&lt;p&gt;O mais pedido da casa.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu titulos.html
+"file:/home/ana/site/titulos.html":9.1-9.4: error: The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.</pre>
+
+<p>"O título <code>h3</code> (com nível calculado 3) vem depois do título <code>h1</code> (nível 1), pulando 1 nível." O conserto é trocar o <code>&lt;h3&gt;</code> por <code>&lt;h2&gt;</code>. Se o problema era o tamanho da letra, isso é trabalho do CSS.</p>
+
+<hr>
+
+<h2>5. Links que fazem sentido sozinhos</h2>
+<p>Lembra da lista de links (tecla NVDA + <kbd>F7</kbd>, ou <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd> no Orca)? Nela, cada link aparece <strong>sozinho</strong>, sem o texto em volta. Uma página com três "Clique aqui" vira uma lista com "Clique aqui, Clique aqui, Clique aqui". O validador não reclama, porque o HTML está correto. Quem reclama é a pessoa.</p>
+
+<div class="tryhtml" data-goal="nsel:a=3,nsrc:clique aqui,texto:a=cenoura">
+<p class="try-task"><strong>Missão:</strong> reescreva os três links para que cada um diga, sozinho, para onde vai. O primeiro deve conter a palavra "cenoura". Não use "clique aqui".</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Para a receita do bolo de cenoura, &lt;a href="cenoura.html"&gt;clique aqui&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Para a receita da torta de limão, &lt;a href="torta.html"&gt;clique aqui&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Para falar com a Ana, &lt;a href="contato.html"&gt;clique aqui&lt;/a&gt;.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Veja a &lt;a href="cenoura.html"&gt;receita do bolo de cenoura&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Veja a &lt;a href="torta.html"&gt;receita da torta de limão&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="contato.html"&gt;Fale com a Ana&lt;/a&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Bônus: links com texto bom também ajudam quem enxerga, porque o olho bate no texto sublinhado antes de ler a frase toda.</p>
+
+<hr>
+
+<h2>6. O idioma: <code>lang</code></h2>
+<p>O leitor de tela escolhe a <strong>voz</strong> pelo idioma da página. Com <code>&lt;html lang="pt-BR"&gt;</code>, ele usa a voz em português do Brasil. Sem o <code>lang</code>, ele usa o idioma configurado no computador da pessoa, e uma pessoa que deixou o leitor em inglês ouve "Bolo de cenoura" com sotaque americano, quase incompreensível.</p>
+
+<p>O validador lembra do <code>lang</code> que falta com um aviso do tipo <code>info warning</code> (aviso informativo, que não muda o código de saída):</p>
+
+<pre class="file" data-file="semlang.html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolos da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Bolo de cenoura&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu semlang.html
+"file:/home/ana/site/semlang.html":1.16-2.6: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.
+$ echo $?
+0                        « só um aviso: o código de saída continua 0</pre>
+
+<p>"Considere adicionar um atributo <code>lang</code> à tag de abertura <code>html</code> para declarar o idioma deste documento." E quando um trecho está em <strong>outro idioma</strong>, marque só aquele trecho com <code>lang</code>, para o leitor trocar de voz ali e voltar depois:</p>
+
+<div class="tryhtml" data-goal="attr:q[lang]=en">
+<p class="try-task"><strong>Missão:</strong> a citação está em inglês. Marque o <code>&lt;q&gt;</code> com <code>lang="en"</code> (inglês) para o leitor de tela ler com a voz certa.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;A avó da Ana dizia: &lt;q&gt;Practice makes perfect&lt;/q&gt;, a prática leva à perfeição.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;A avó da Ana dizia: &lt;q lang="en"&gt;Practice makes perfect&lt;/q&gt;, a prática leva à perfeição.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Os códigos de idioma são curtos e padronizados: <code>pt-BR</code>, <code>pt-PT</code>, <code>en</code>, <code>es</code>, <code>fr</code>. Uma palavra estrangeira que todo mundo já fala em português ("mouse", "site") não precisa de <code>lang</code>.</p>
+
+<hr>
+
+<h2>7. Esconder: da tela, do leitor ou dos dois</h2>
+<p>Às vezes você quer que alguma coisa apareça só para quem vê, ou só para quem ouve. Existem três jeitos, e eles são bem diferentes:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Na tela</th><th>No leitor de tela</th><th>Para quê</th></tr>
+<tr><td><code>hidden</code></td><td>escondido</td><td>escondido</td><td>coisa que ainda não deve aparecer para ninguém (um aviso, uma etapa)</td></tr>
+<tr><td><code>aria-hidden="true"</code></td><td>aparece</td><td>escondido</td><td>enfeite repetido ou que não diz nada: um ícone ao lado de um texto que já diz tudo</td></tr>
+<tr><td>CSS que esconde só da tela (a classe que muitos sites chamam de <code>visualmente-oculto</code> ou <code>sr-only</code>)</td><td>escondido</td><td>aparece</td><td>uma explicação a mais para quem ouve</td></tr>
+</table>
+</div>
+
+<p>Veja os três na mesma página. No Resultado, o emoji aparece, mas um leitor de tela o pula; o texto "(abre o carrinho)" não aparece, mas é lido; e a última frase não existe para ninguém:</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> com um leitor de tela ligado, passe pelo botão e pelos parágrafos. Depois apague o <code>aria-hidden="true"</code> do emoji e ouça de novo: o leitor passa a falar o nome do emoji, além de "Carrinho".</p>
+<pre class="script" data-file="index.html">&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;button type="button"&gt;
+  &lt;span aria-hidden="true"&gt;🛒&lt;/span&gt; Carrinho
+  &lt;span class="visualmente-oculto"&gt;(abre o carrinho)&lt;/span&gt;
+&lt;/button&gt;
+&lt;p&gt;Frete grátis acima de R$ 100.&lt;/p&gt;
+&lt;p hidden&gt;Esta frase ainda não vale.&lt;/p&gt;
+</pre>
+<pre class="script" data-file="estilo.css">/* Some da tela, mas continua na árvore de acessibilidade */
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+</pre>
+</div>
+
+<div class="warning">
+<strong>Nunca use <code>aria-hidden="true"</code> em algo que recebe foco</strong>
+<p>Um botão com <code>aria-hidden="true"</code> continua recebendo foco pelo <kbd>Tab</kbd>, mas o leitor não tem nada para dizer: a pessoa cai num lugar "mudo". E o validador <strong>não</strong> reclama de <code>&lt;button aria-hidden="true"&gt;</code>. O <code>aria-hidden</code> é para enfeites, nunca para controles. O mesmo vale para <code>display: none</code> no CSS: esconde de todos, como o <code>hidden</code>, e não serve para "texto só do leitor".</p>
+</div>
+
+<hr>
+
+<h2>8. Imagens e botões sem texto</h2>
+<p>Duas coisas que o leitor de tela <strong>não consegue</strong> adivinhar: o que uma imagem mostra e o que um botão de ícone faz.</p>
+<ul>
+  <li>Toda <code>&lt;img&gt;</code> precisa de <code>alt</code>: uma descrição curta se a imagem diz alguma coisa, ou <code>alt=""</code> (vazio) se ela é só enfeite, para o leitor pular (aula <a href="imagens-alt.html">Texto Alternativo</a>). Sem nenhum <code>alt</code>, alguns leitores leem o <strong>nome do arquivo</strong>, como "IMG_2024_0315.jpg".</li>
+  <li>Um botão que é só um ícone (🔍, ☰, ✕) precisa de um nome: um texto escondido só da tela ou um <code>aria-label</code> (aula <a href="aria.html">ARIA</a>).</li>
+</ul>
+
+<pre class="file" data-file="busca.html" data-resultado>&lt;button type="button" aria-label="Buscar"&gt;🔍&lt;/button&gt;
+&lt;button type="button" aria-label="Fechar"&gt;✕&lt;/button&gt;
+</pre>
+
+<p>Na tela, só os símbolos. Na árvore de acessibilidade, dois botões chamados "Buscar" e "Fechar". Sem o <code>aria-label</code>, o nome de cada botão seria o próprio símbolo, e cada leitor fala um símbolo de um jeito (o nome do emoji, "multiplicação", ou nada).</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>An “img” element must have an “alt” attribute, except under certain conditions.</code></strong>
+<pre class="file" data-file="foto.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Foto&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;img src="IMG_2024_0315.jpg"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu foto.html
+"file:/home/ana/site/foto.html":8.1-8.29: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
+<p><strong>O que o leitor faz:</strong> sem <code>alt</code>, o leitor fica sem nome para a imagem; muitos leem o nome do arquivo, outros só dizem que há uma imagem.</p>
+<p><strong>O que o validador diz:</strong> "um elemento <code>img</code> precisa ter um atributo <code>alt</code>, a não ser em certas condições", e sugere consultar o guia de textos alternativos.</p>
+<p><strong>Como consertar:</strong> <code>alt="Bolo de cenoura com cobertura de chocolate"</code>, ou <code>alt=""</code> se a foto for só enfeite.</p>
+</div>
+
+<div class="cenario">
+<strong><code>The “aria-label” attribute must not be specified on any “span” element unless…</code></strong>
+<p>A Ana quis que o leitor dissesse "cinco estrelas" em vez de ler cinco asteriscos, e pôs um <code>aria-label</code> numa <code>&lt;span&gt;</code>:</p>
+<pre class="file" data-file="nota.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Nota&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Nota: &lt;span aria-label="cinco estrelas"&gt;*****&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu nota.html
+"file:/home/ana/site/nota.html":8.10-8.43: error: The “aria-label” attribute must not be specified on any “span” element unless the element has a “role” value other than “caption”, “code”, “deletion”, “emphasis”, “generic”, “insertion”, “paragraph”, “presentation”, “strong”, “subscript”, or “superscript”.</pre>
+<p><strong>O que o leitor faz:</strong> muitos leitores <strong>ignoram</strong> o <code>aria-label</code> numa <code>&lt;span&gt;</code> comum e lê os asteriscos mesmo. Uma <code>&lt;span&gt;</code> não tem papel nenhum (o papel dela é <code>generic</code>, "genérico"), e o nome só vale para elementos com papel.</p>
+<p><strong>O que o validador diz:</strong> "o <code>aria-label</code> não pode ser usado num <code>span</code>, a não ser que ele tenha um <code>role</code> diferente de" uma lista de papéis sem nome (genérico, parágrafo, ênfase…).</p>
+<p><strong>Como consertar:</strong> o jeito mais simples é usar texto escondido só da tela e esconder os asteriscos do leitor: <code>&lt;span aria-hidden="true"&gt;*****&lt;/span&gt;&lt;span class="visualmente-oculto"&gt;5 de 5 estrelas&lt;/span&gt;</code>. Outro jeito é dar um papel à <code>&lt;span&gt;</code> com <code>role="img"</code>, que aceita nome.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Bad value “english” for attribute “lang”</code></strong>
+<p>O <code>lang</code> escrito por extenso (<code>lang="english"</code>, <code>lang="portugues"</code>) não é um código de idioma. O validador diz que "english" não é uma parte válida de uma etiqueta de idioma do registro da IANA (a organização que mantém a lista de códigos), e o leitor de tela não sabe que voz usar. Use o código: <code>en</code>, <code>pt-BR</code>.</p>
+</div>
+
+<h3>O que o validador não vê</h3>
+<p>Esta página passa no validador sem nenhuma mensagem, e é quase toda muda para um leitor de tela:</p>
+
+<pre class="file" data-file="mudo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Mudo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;a href="carrinho.html"&gt;&lt;/a&gt;
+&lt;button type="button"&gt;&lt;/button&gt;
+&lt;img src="logo.png" alt="foto"&gt;
+&lt;button type="button" aria-hidden="true"&gt;Comprar&lt;/button&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose mudo.html
+mudo.html                « nenhuma mensagem
+$ echo $?
+0</pre>
+
+<div class="cenario">
+<strong>Nenhum erro, e nada funciona</strong>
+<ul>
+  <li>Um link e um botão <strong>vazios</strong>: sem texto, eles não têm nome. O leitor anuncia só "link" e "botão" (ou o endereço do link).</li>
+  <li><code>alt="foto"</code>: tem <code>alt</code>, então o validador fica feliz, mas "foto" não diz nada sobre a imagem.</li>
+  <li><code>aria-hidden="true"</code> num botão: ele recebe foco e não tem nada para dizer.</li>
+</ul>
+<p><strong>Como achar:</strong> ligue um leitor de tela e use a página sem olhar, ou pelo menos abra o painel de acessibilidade do F12 e confira o <strong>nome</strong> de cada link, botão e imagem. Um nome vazio ou sem sentido é um problema.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que o leitor de tela recebe</th></tr>
+<tr><td><code>&lt;html lang="pt-BR"&gt;</code></td><td>A voz em português do Brasil</td></tr>
+<tr><td><code>&lt;span lang="en"&gt;…&lt;/span&gt;</code></td><td>Troca de voz só no trecho</td></tr>
+<tr><td><code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code></td><td>Títulos com nível: o índice da página (tecla <kbd>H</kbd>)</td></tr>
+<tr><td><code>&lt;a href&gt;texto&lt;/a&gt;</code></td><td>Link com nome (tecla <kbd>K</kbd>)</td></tr>
+<tr><td><code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code></td><td>Regiões (<kbd>D</kbd> no NVDA, <kbd>M</kbd> no Orca)</td></tr>
+<tr><td><code>&lt;img alt="…"&gt;</code> / <code>alt=""</code></td><td>Imagem com nome / imagem pulada</td></tr>
+<tr><td><code>&lt;label for&gt;</code></td><td>O nome de um campo</td></tr>
+<tr><td><code>aria-label="…"</code></td><td>Um nome para um elemento com papel (botão de ícone, região)</td></tr>
+<tr><td><code>aria-hidden="true"</code></td><td>Esconde do leitor (só para enfeites)</td></tr>
+<tr><td><code>hidden</code></td><td>Esconde da tela e do leitor</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O idioma</h3>
+<p>Complete para o leitor de tela usar a voz em português do Brasil:</p>
+<div class="ex-code">&lt;html lang="<input data-answer="pt-BR|pt-br" aria-label="código do idioma">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Enfeite fora do leitor</h3>
+<p>Complete para o leitor de tela pular o emoji, que continua aparecendo na tela:</p>
+<div class="ex-code">&lt;span <input data-answer="aria-hidden" aria-label="atributo">="true"&gt;🎂&lt;/span&gt; Aniversário</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Quais são as três informações principais que o leitor de tela recebe de um elemento?</p>
+<label><input type="radio" name="q3"> Cor, tamanho e posição</label>
+<label><input type="radio" name="q3"> Papel, nome e estado</label>
+<label><input type="radio" name="q3"> Tag, classe e id</label>
+<label><input type="radio" name="q3"> Fonte, idioma e voz</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Com o NVDA ou o Orca no modo de leitura, o que a tecla <kbd>H</kbd> faz?</p>
+<label><input type="radio" name="q4"> Abre a ajuda</label>
+<label><input type="radio" name="q4"> Volta para o início da página</label>
+<label><input type="radio" name="q4"> Vai para o próximo título</label>
+<label><input type="radio" name="q4"> Esconde o elemento</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Qual destes o validador W3C <strong>não</strong> acusa?</p>
+<label><input type="radio" name="q5"> Um botão vazio, <code>&lt;button&gt;&lt;/button&gt;</code></label>
+<label><input type="radio" name="q5"> Uma <code>&lt;img&gt;</code> sem <code>alt</code></label>
+<label><input type="radio" name="q5"> Um <code>&lt;h3&gt;</code> logo depois de um <code>&lt;h1&gt;</code></label>
+<label><input type="radio" name="q5"> <code>aria-label</code> numa <code>&lt;span&gt;</code> comum</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Um texto deve sumir da tela, mas continuar sendo lido pelo leitor de tela. O que usar?</p>
+<label><input type="radio" name="q6"> <code>hidden</code></label>
+<label><input type="radio" name="q6"> <code>aria-hidden="true"</code></label>
+<label><input type="radio" name="q6"> <code>display: none</code> no CSS</label>
+<label><input type="radio" name="q6"> O CSS "visualmente oculto" (<code>clip-path</code>, 1px…)</label>
+</div>
+
+<h3>Missão final: a página da Ana para quem ouve</h3>
+
+<div class="tryhtml" data-goal="nsel:h3=0,nsel:h2=2,attr:button[aria-label]=Buscar,sel:label[for='q'],attr:span.estrelas[aria-hidden]=true">
+<p class="try-task"><strong>Missão:</strong> deixe a página boa para um leitor de tela. (1) Os dois <code>&lt;h3&gt;</code> pulam um nível: troque-os por <code>&lt;h2&gt;</code>. (2) Dê ao botão 🔍 o nome "Buscar" com <code>aria-label</code>. (3) O campo de busca só tem <code>placeholder</code>: crie um <code>&lt;label for="q"&gt;</code> para ele. (4) Esconda do leitor as estrelas da <code>span.estrelas</code> com <code>aria-hidden="true"</code> (a frase "Nota 5 de 5" já diz tudo).</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Nota 5 de 5 &lt;span class="estrelas"&gt;★★★★★&lt;/span&gt;&lt;/p&gt;
+&lt;h3&gt;Ingredientes&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Outras receitas&lt;/h3&gt;
+&lt;p&gt;
+  &lt;input id="q" type="search" placeholder="Buscar"&gt;
+  &lt;button type="button"&gt;🔍&lt;/button&gt;
+&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Nota 5 de 5 &lt;span class="estrelas" aria-hidden="true"&gt;★★★★★&lt;/span&gt;&lt;/p&gt;
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Outras receitas&lt;/h2&gt;
+&lt;p&gt;
+  &lt;label for="q"&gt;Buscar receitas&lt;/label&gt;
+  &lt;input id="q" type="search" placeholder="Buscar"&gt;
+  &lt;button type="button" aria-label="Buscar"&gt;🔍&lt;/button&gt;
+&lt;/p&gt;
+</pre>
+</div>
+
+<p>Agora a lista de títulos fica "Bolo de cenoura, nível 1; Ingredientes, nível 2; Outras receitas, nível 2", o campo tem nome, o botão tem nome e as estrelas não são lidas uma por uma. Na tela, quase nada mudou: só apareceu o rótulo do campo. Quase tudo o que um leitor de tela precisa já vem do HTML certo.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O leitor de tela transforma a página em fala ou braile. O NVDA (Windows, liga com <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd>) e o Orca (Ubuntu, <kbd>Super</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd>) são gratuitos.</li>
+  <li>As pessoas pulam pela página: <kbd>H</kbd> para títulos, <kbd>K</kbd> para links, <kbd>D</kbd> (NVDA) ou <kbd>M</kbd> (Orca) para regiões, <kbd>F</kbd> para campos. Cada atalho depende do elemento HTML certo.</li>
+  <li>O navegador monta a <strong>árvore de acessibilidade</strong>: papel (o que é), nome (como se chama) e estado (como está). O F12 mostra essa árvore.</li>
+  <li>Títulos em ordem (o validador acusa nível pulado), links que fazem sentido sozinhos, <code>alt</code> em toda imagem, nome em todo botão e todo campo.</li>
+  <li><code>lang</code> escolhe a voz: <code>lang="pt-BR"</code> na página e <code>lang="en"</code> num trecho em inglês.</li>
+  <li><code>hidden</code> esconde de todos; <code>aria-hidden="true"</code> esconde só do leitor (nunca num controle); o CSS "visualmente oculto" esconde só da tela.</li>
+  <li>O validador não vê link vazio, <code>alt</code> sem sentido nem botão mudo: o teste final é ouvir a página.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
