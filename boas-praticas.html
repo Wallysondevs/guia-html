@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Boas Práticas — a lista de conferência de uma página bem feita | Guia HTML</title>
+<meta name="description" content="Boas práticas de HTML para quem está terminando o primeiro site: o esqueleto completo, semântica e títulos em ordem, acessibilidade (alt, label, button), código legível, HTML para conteúdo e CSS e JS em arquivos, imagens com largura e altura, e o que o validador W3C pega e o que só você pode conferir, com mensagens reais do vnu 26.10.12.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Boas Práticas</span></h1>
+
+<p class="intro">Duas páginas podem aparecer <strong>iguaizinhas</strong> na tela e ser muito diferentes por dentro. Uma funciona com teclado, é lida direito por um leitor de tela, aparece bem no buscador e é fácil de mudar daqui a um ano. A outra só funciona no mouse da pessoa que a fez. Esta aula junta as boas práticas que apareceram ao longo do guia numa <strong>lista de conferência</strong>, com o porquê de cada item, e separa o que o validador pega do que só você pode conferir.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O esqueleto que toda página deve ter, e o que o validador diz quando falta uma parte.</li>
+  <li>Por que usar o elemento certo (semântica) e manter os títulos em ordem.</li>
+  <li>Os cuidados de acessibilidade que mais fazem diferença: <code>alt</code>, <code>label</code> e <code>&lt;button&gt;</code>.</li>
+  <li>Como deixar o código legível e separar o conteúdo (HTML) da aparência (CSS) e do comportamento (JS).</li>
+  <li>O que o validador <strong>não</strong> pega, e como conferir o resto.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram conferidos no <strong>validador W3C</strong> (<code>vnu</code> 26.10.12, o mesmo do validator.w3.org) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/boas</code>, e o comportamento no <strong>Chromium 155</strong>. Os quadros "Resultado" são desenhados pelo seu navegador.</p>
+
+<hr>
+
+<h2>A ideia: a receita bem escrita</h2>
+<p>Duas pessoas escrevem a mesma receita de bolo. A primeira anota tudo num guardanapo, sem ordem, com "aquela farinha" e "o tempo de sempre". A segunda escreve o título, a lista de ingredientes com as quantidades e o modo de preparo em passos numerados. As duas sabem fazer o bolo. Mas só a segunda receita serve para <strong>outra pessoa</strong>: a vizinha, a filha, a própria autora daqui a cinco anos.</p>
+
+<p>Boas práticas de HTML são isso: escrever para quem vem depois. E quem vem depois são muitos: o navegador, o leitor de tela, o buscador, o celular, o validador, e você mesmo, quando for mudar o site.</p>
+
+<hr>
+
+<h2>1. A página que tem tudo, e a que não tem</h2>
+<p>A Ana achou uma página antiga, de quando ela estava começando:</p>
+
+<pre class="file" data-file="ruim.html">&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;font size="5"&gt;&lt;b&gt;Receitas da Ana&lt;/b&gt;&lt;/font&gt;&lt;/center&gt;
+&lt;div onclick="location.href='bolo.html'"&gt;Bolo de cenoura&lt;/div&gt;
+&lt;img src="bolo.jpg"&gt;
+&lt;h3&gt;Ingredientes&lt;/h3&gt;
+&lt;p&gt;Nome: &lt;input type="text" name="nome"&gt;&lt;/p&gt;
+&lt;a href="pudim.html"&gt;clique aqui&lt;/a&gt;
+&lt;p style="color: red"&gt;Promoção!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/boas">$ vnu ruim.html
+"file:/home/ana/boas/ruim.html":1.1-1.6: error: Start tag seen without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/boas/ruim.html":3.1-3.7: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/boas/ruim.html":5.1-5.8: error: The “center” element is obsolete. Use CSS instead.
+"file:/home/ana/boas/ruim.html":5.9-5.23: error: The “font” element is obsolete. Use CSS instead.
+"file:/home/ana/boas/ruim.html":7.1-7.20: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+"file:/home/ana/boas/ruim.html":1.1-1.6: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.
+"file:/home/ana/boas/ruim.html":8.1-8.4: info warning: This document has heading elements but none of them has a computed heading level of 1.</pre>
+
+<p>Cinco erros e dois avisos. Mas repare no que o validador <strong>não</strong> disse nada: o <code>&lt;div onclick&gt;</code> fingindo ser link, o campo sem <code>&lt;label&gt;</code>, o link "clique aqui", o <code>style</code> no meio do HTML. Para o validador, tudo isso é HTML válido. As seções a seguir passam por cada problema, os que ele pega e os que ele não pega.</p>
+
+<hr>
+
+<h2>2. O esqueleto completo, sempre</h2>
+<p>Toda página começa igual (aulas <a href="estrutura.html">Estrutura de uma Página</a> e <a href="head.html">O head</a>):</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura | Receitas da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura fofinho com cobertura de chocolate, em 40 minutos."&gt;
+  &lt;link rel="stylesheet" href="css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  …
+  &lt;script src="js/script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Parte</th><th>Por quê</th><th>Sem ela, o validador diz</th></tr>
+<tr><td><code>&lt;!DOCTYPE html&gt;</code></td><td>Põe o navegador no modo padrão, e não no "modo de compatibilidade" com páginas dos anos 90 (aula <a href="doctype.html">O DOCTYPE</a>)</td><td><code>Start tag seen without seeing a doctype first.</code></td></tr>
+<tr><td><code>lang="pt-BR"</code></td><td>O leitor de tela lê com a pronúncia certa, o corretor confere em português, o tradutor automático sabe a língua</td><td><code>Consider adding a “lang” attribute…</code> (aviso)</td></tr>
+<tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>Os acentos aparecem certos (aula <a href="acentos-utf8.html">Acentos e UTF-8</a>)</td><td>depende de como o arquivo chega ao validador; não conte com o aviso</td></tr>
+<tr><td><code>&lt;meta name="viewport"&gt;</code></td><td>A página cabe na tela do celular (aula <a href="meta-viewport.html">Celular</a>)</td><td>nada</td></tr>
+<tr><td><code>&lt;title&gt;</code></td><td>O nome da aba, dos favoritos e do resultado no buscador</td><td><code>Element “head” is missing a required instance of child element “title”.</code></td></tr>
+<tr><td><code>&lt;meta name="description"&gt;</code></td><td>O resumo que os buscadores costumam mostrar (aula <a href="seo.html">HTML e SEO</a>)</td><td>nada</td></tr>
+</table>
+</div>
+
+<p>Repare na última coluna: o <code>viewport</code> e a <code>description</code> não são obrigatórios para o validador. Esquecê-los não dá erro, só uma página pior no celular e no buscador. Copie o esqueleto inteiro para cada página nova.</p>
+
+<hr>
+
+<h2>3. O elemento certo para cada coisa</h2>
+<p>Use o elemento que <strong>diz o que o conteúdo é</strong>, e não o que deixa a tela do jeito que você quer (aula <a href="semantica.html">HTML Semântico</a>). A aparência é trabalho do CSS.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Em vez de…</th><th>Use…</th><th>Porque…</th></tr>
+<tr><td><code>&lt;center&gt;&lt;font size="5"&gt;&lt;b&gt;Receitas da Ana&lt;/b&gt;&lt;/font&gt;&lt;/center&gt;</code></td><td><code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code> (e CSS para centralizar)</td><td>É o título da página. <code>&lt;center&gt;</code> e <code>&lt;font&gt;</code> são obsoletos: <code>The “center” element is obsolete. Use CSS instead.</code></td></tr>
+<tr><td><code>&lt;div onclick="location.href='bolo.html'"&gt;</code></td><td><code>&lt;a href="bolo.html"&gt;</code></td><td>Leva a outra página: é um link (seção 4)</td></tr>
+<tr><td><code>&lt;div class="menu"&gt;</code>, <code>&lt;div class="rodape"&gt;</code></td><td><code>&lt;nav&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code></td><td>O leitor de tela deixa pular direto para cada região (aula <a href="main.html">main</a>)</td></tr>
+<tr><td>Vários <code>&lt;br&gt;</code> para dar espaço</td><td>parágrafos (<code>&lt;p&gt;</code>) e CSS (<code>margin</code>)</td><td>O <code>&lt;br&gt;</code> é para quebra de linha que faz parte do texto, como num endereço (aula <a href="quebras.html">Quebras</a>)</td></tr>
+<tr><td><code>&lt;b&gt;</code> para destacar algo importante</td><td><code>&lt;strong&gt;</code></td><td>O <code>&lt;strong&gt;</code> diz "importante"; o <code>&lt;b&gt;</code> só chama a atenção visualmente (aula <a href="negrito-italico.html">Negrito e Itálico</a>)</td></tr>
+<tr><td>Uma <code>&lt;table&gt;</code> para arrumar colunas na tela</td><td>CSS</td><td>Tabela é para dados em linhas e colunas (aula <a href="tabelas.html">Tabelas</a>)</td></tr>
+</table>
+</div>
+
+<h3>Títulos em ordem</h3>
+<p>Os títulos (<code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code>) formam o <strong>sumário</strong> da página: quem usa leitor de tela navega pulando de título em título. Por isso: um <code>&lt;h1&gt;</code> com o assunto da página, e depois <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>… sem pular degraus (aula <a href="titulos.html">Títulos</a>). Escolha o nível pelo lugar no sumário, nunca pelo tamanho da letra. O validador 26.10.12 já confere isso:</p>
+
+<pre class="file" data-file="pulo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Pulo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas&lt;/h1&gt;
+&lt;h3&gt;Ingredientes&lt;/h3&gt;
+&lt;section&gt;&lt;p&gt;sem título&lt;/p&gt;&lt;/section&gt;
+&lt;img src="bolo.jpg" alt=""&gt;
+&lt;img src="bolo.jpg" alt="bolo.jpg"&gt;
+&lt;img src="bolo.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/boas">$ vnu pulo.html
+"file:/home/ana/boas/pulo.html":10.1-10.9: info warning: Section lacks heading. Consider using “h2”-“h6” elements to add identifying headings to all sections, or else use a “div” element instead for any cases where no heading is needed.
+"file:/home/ana/boas/pulo.html":9.1-9.4: error: The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.</pre>
+
+<ul>
+  <li><strong>Linha 9</strong>: "o título <code>h3</code> vem depois do <code>h1</code>, pulando 1 nível". O conserto é <code>&lt;h2&gt;Ingredientes&lt;/h2&gt;</code>.</li>
+  <li><strong>Linha 10</strong>: "seção sem título. Use <code>h2</code>–<code>h6</code> para identificar cada seção, ou use uma <code>div</code> onde não precisar de título". Um <code>&lt;section&gt;</code> é uma parte com assunto próprio, e assunto tem nome (aula <a href="section-article.html">section e article</a>).</li>
+  <li><strong>Linhas 11 e 12</strong> passaram, e é aqui que mora o perigo da seção 4.</li>
+</ul>
+
+<hr>
+
+<h2>4. Acessibilidade: o que o validador não vê</h2>
+<p>Na tela, as versões abaixo parecem quase iguais. Por dentro, não:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;div onclick="location.href='#bolo'"&gt;Bolo de cenoura (div)&lt;/div&gt;
+&lt;p&gt;&lt;a href="#bolo"&gt;Bolo de cenoura (link)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Nome: &lt;input type="text" name="nome"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;Nome: &lt;input type="text" name="nome2"&gt;&lt;/label&gt;&lt;/p&gt;
+</pre>
+
+<p>Faça o teste no Resultado: aperte <kbd>Tab</kbd> algumas vezes. O foco pula a <code>&lt;div&gt;</code> e para no link. Clique na palavra "Nome:" das duas linhas: só a segunda leva o cursor para o campo. No Chromium 155, a <code>&lt;div onclick&gt;</code> não aceitou o foco (<code>tabIndex</code> = <code>-1</code>), o link e um <code>&lt;button&gt;</code> aceitaram, o primeiro campo ficou sem nenhum rótulo (<code>labels.length</code> = <code>0</code>) e o clique no <code>&lt;label&gt;</code> levou o foco ao segundo.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Cuidado</th><th>Ruim</th><th>Bom</th><th>O validador pega?</th></tr>
+<tr><td>Toda imagem com <code>alt</code> (aula <a href="imagens-alt.html">Texto Alternativo</a>)</td><td><code>&lt;img src="bolo.jpg"&gt;</code></td><td><code>alt="Bolo de cenoura com cobertura de chocolate"</code></td><td>Sim, quando falta o <code>alt</code></td></tr>
+<tr><td>O <code>alt</code> descreve a imagem</td><td><code>alt="bolo.jpg"</code>, <code>alt="imagem"</code></td><td>o que a imagem mostra, para quem não a vê; <code>alt=""</code> só para enfeites</td><td><strong>Não</strong></td></tr>
+<tr><td>Todo campo com <code>&lt;label&gt;</code> (aula <a href="label.html">label</a>)</td><td><code>Nome: &lt;input&gt;</code></td><td><code>&lt;label&gt;Nome: &lt;input&gt;&lt;/label&gt;</code></td><td><strong>Não</strong></td></tr>
+<tr><td>Ação é <code>&lt;button&gt;</code>, ir para outra página é <code>&lt;a&gt;</code></td><td><code>&lt;div onclick&gt;</code></td><td><code>&lt;a href&gt;</code> ou <code>&lt;button type="button"&gt;</code></td><td><strong>Não</strong></td></tr>
+<tr><td>Texto do link diz aonde ele leva</td><td><code>clique aqui</code>, <code>saiba mais</code></td><td><code>receita de pudim</code></td><td><strong>Não</strong></td></tr>
+<tr><td>Títulos em ordem</td><td><code>&lt;h1&gt;</code> → <code>&lt;h3&gt;</code></td><td><code>&lt;h1&gt;</code> → <code>&lt;h2&gt;</code></td><td>Sim (26.10.12)</td></tr>
+<tr><td>Cor não é a única informação</td><td>"os campos em vermelho são obrigatórios"</td><td>escreva "(obrigatório)" ou use <code>required</code></td><td><strong>Não</strong></td></tr>
+</table>
+</div>
+
+<p>O "clique aqui" merece uma explicação: leitores de tela podem listar todos os links da página, fora do texto em volta. Uma lista com cinco "clique aqui" não diz nada. A aula <a href="acessibilidade.html">Acessibilidade</a> e as que vêm depois dela aprofundam cada item.</p>
+
+<div class="tryhtml" data-goal="sel:h2,nsel:div[onclick]=0,sel:a[href='pudim.html'],nsel:img:not([alt])=0,sel:label input[name=nome]">
+<p class="try-task"><strong>Missão:</strong> conserte o trecho sem mudar o que ele mostra: o título "Sobremesas" vira um <code>&lt;h2&gt;</code>; a <code>&lt;div&gt;</code> clicável vira um link de verdade para <code>pudim.html</code>; a imagem ganha um <code>alt</code> que a descreva; e o campo de nome ganha um <code>&lt;label&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;b&gt;Sobremesas&lt;/b&gt;&lt;/p&gt;
+&lt;div onclick="location.href='pudim.html'"&gt;Pudim de leite&lt;/div&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300"&gt;
+&lt;p&gt;Nome: &lt;input type="text" name="nome"&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Sobremesas&lt;/h2&gt;
+&lt;p&gt;&lt;a href="pudim.html"&gt;Pudim de leite&lt;/a&gt;&lt;/p&gt;
+&lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+&lt;p&gt;&lt;label&gt;Nome: &lt;input type="text" name="nome"&gt;&lt;/label&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. Código que outra pessoa consegue ler</h2>
+<p>O navegador não se importa com espaços, maiúsculas e aspas; as pessoas sim. Estes dois trechos dão <strong>o mesmo resultado</strong>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;UL&gt;&lt;LI&gt;&lt;A HREF=bolo.html&gt;Bolo&lt;/A&gt;&lt;LI&gt;&lt;A href='pudim.html'&gt;Pudim&lt;/a&gt;&lt;/UL&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="bolo.html"&gt;Bolo&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="pudim.html"&gt;Pudim&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<p>Mas só o segundo é fácil de ler, de achar um erro e de mudar. As regras de costume:</p>
+<ul>
+  <li><strong>Tudo em minúsculas</strong>: tags e atributos (<code>&lt;ul&gt;</code>, <code>href</code>).</li>
+  <li><strong>Atributos sempre entre aspas duplas</strong>: <code>href="bolo.html"</code>. Sem aspas funciona até o dia em que o valor tiver um espaço (aula <a href="atributos.html">Atributos</a>).</li>
+  <li><strong>Feche o que você abre</strong>, mesmo quando o HTML deixaria omitir (<code>&lt;/li&gt;</code>, <code>&lt;/p&gt;</code>): fica claro onde cada coisa termina.</li>
+  <li><strong>Indente</strong> (recue com espaços) o que está dentro de outro elemento, sempre com a mesma quantidade (2 espaços é o mais comum). Os editores fazem isso sozinhos (aula <a href="editores.html">Editores</a>).</li>
+  <li><strong>Comente o que não é óbvio</strong>, e só isso (aula <a href="comentarios.html">Comentários</a>). E lembre: comentários são públicos (aula <a href="seguranca.html">Segurança</a>).</li>
+  <li><strong>Nomes de arquivos, <code>class</code> e <code>id</code></strong> que descrevem o conteúdo: <code>class="ingredientes"</code>, e não <code>class="caixa2"</code> nem <code>class="vermelho"</code> (aula <a href="class-id.html">class e id</a>).</li>
+</ul>
+
+<hr>
+
+<h2>6. Cada um no seu arquivo: HTML, CSS e JS</h2>
+<p>O HTML diz <strong>o que</strong> é o conteúdo; o CSS, <strong>como ele aparece</strong>; o JavaScript, <strong>o que ele faz</strong>. Misturar os três no mesmo lugar funciona, mas cobra caro depois:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Misturado</th><th>Separado</th><th>Ganho</th></tr>
+<tr><td><code>&lt;p style="color: red"&gt;Promoção!&lt;/p&gt;</code></td><td><code>&lt;p class="promocao"&gt;</code> + <code>.promocao { color: red; }</code> no <code>css/estilo.css</code></td><td>Mudar a cor de todas as promoções do site num lugar só (aula <a href="atributo-style.html">O Atributo style</a>)</td></tr>
+<tr><td><code>&lt;button onclick="comprar()"&gt;</code></td><td><code>&lt;button id="comprar"&gt;</code> + <code>addEventListener</code> no <code>js/script.js</code></td><td>Funciona com uma CSP que bloqueia script dentro da página (aula <a href="seguranca.html">Segurança</a>)</td></tr>
+<tr><td><code>&lt;style&gt;</code> copiado em cada página</td><td>um <code>&lt;link rel="stylesheet"&gt;</code> para o mesmo arquivo</td><td>O navegador baixa o CSS uma vez e reaproveita nas outras páginas (aula <a href="ligar-css.html">Ligar CSS</a>)</td></tr>
+<tr><td><code>&lt;script&gt;</code> no começo do <code>&lt;head&gt;</code>, sem nada</td><td><code>&lt;script src="js/script.js" defer&gt;</code> no <code>&lt;head&gt;</code>, ou o <code>&lt;script&gt;</code> no fim do <code>&lt;body&gt;</code></td><td>A página aparece antes de o script terminar de baixar (aula <a href="preload.html">Desempenho</a>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>7. Imagens que não atrapalham</h2>
+<ul>
+  <li><strong><code>width</code> e <code>height</code></strong> em toda <code>&lt;img&gt;</code>: o navegador reserva o espaço antes de a imagem chegar, e o texto não "pula" quando ela carrega (aula <a href="imagens-tamanho.html">Largura e Altura</a>).</li>
+  <li><strong>O tamanho certo</strong>: não mande uma foto de 4000 pixels para mostrar em 400. Para telas diferentes, <code>srcset</code> (aula <a href="imagens-responsivas.html">Imagens Responsivas</a>).</li>
+  <li><strong>O formato certo</strong>: foto em JPG, WebP ou AVIF; logotipo e ícone em SVG (aula <a href="formatos-imagem.html">Formatos</a>).</li>
+  <li><strong><code>loading="lazy"</code></strong> nas imagens que ficam lá embaixo da página (aula <a href="lazy-loading.html">Carregamento Preguiçoso</a>).</li>
+</ul>
+
+<hr>
+
+<h2>8. O que conferir antes de dar a página por pronta</h2>
+<p>O validador é o primeiro passo, não o último. A lista completa:</p>
+
+<ol class="passo">
+  <li><strong>Validador</strong> sem erros: <code>vnu</code> no laboratório ou validator.w3.org/nu (aula <a href="validar.html">Validar o HTML</a>). Leia também os <code>warning</code> e os <code>info</code>.</li>
+  <li><strong>Só o teclado</strong>: largue o mouse e use <kbd>Tab</kbd>, <kbd>Shift</kbd>+<kbd>Tab</kbd> e <kbd>Enter</kbd>. Dá para chegar em todo link, botão e campo? Dá para ver onde está o foco? (aula <a href="teclado.html">Teclado e Foco</a>)</li>
+  <li><strong>Sem imagens</strong>: os <code>alt</code> fazem sentido lidos em voz alta?</li>
+  <li><strong>O sumário</strong>: lendo só os títulos, dá para entender a página?</li>
+  <li><strong>No celular</strong>: o F12 tem um modo que simula telas pequenas (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>); melhor ainda, abra no seu celular.</li>
+  <li><strong>Num servidor local</strong>, sem nenhum <code>404</code> no registro (aula <a href="servidor-local.html">Servidor Local</a>).</li>
+  <li><strong>Em mais de um navegador</strong>: pelo menos dois diferentes, como Chrome e Firefox, ou Safari no iPhone.</li>
+  <li><strong>Os links</strong>: clique em todos. Nenhum leva a um 404?</li>
+</ol>
+
+<hr>
+
+<h2>Práticas e quem confere: qual ferramenta para cada uma</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Prática</th><th>Quem confere</th></tr>
+<tr><td>Esqueleto, tags fechadas, atributos válidos, elementos obsoletos, <code>alt</code> faltando, títulos pulando nível</td><td>O <strong>validador</strong></td></tr>
+<tr><td>Foco, <code>label</code>, botões e links de verdade, ordem do <kbd>Tab</kbd></td><td><strong>Você</strong>, com o teclado; o F12 ajuda (aula <a href="leitores-tela.html">Leitores de Tela</a>)</td></tr>
+<tr><td>Qualidade do <code>alt</code> e do texto dos links</td><td><strong>Você</strong>, lendo como se não visse a página</td></tr>
+<tr><td>Caminhos, nomes de arquivos, 404</td><td>O <strong>servidor local</strong> e o registro dele</td></tr>
+<tr><td>Celular, navegadores diferentes</td><td>O <strong>F12</strong> e aparelhos de verdade</td></tr>
+<tr><td>Código legível, separação de HTML, CSS e JS</td><td><strong>Você</strong>, relendo o código uma semana depois</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>"O validador não deu nenhum erro, então está tudo certo"</strong>
+<p><strong>O que significa:</strong> está tudo certo <strong>com a escrita do HTML</strong>. O validador não sabe se o <code>alt</code> descreve a imagem, se o link diz aonde vai, se a <code>&lt;div onclick&gt;</code> funciona com o teclado ou se a página cabe no celular. Na página antiga da Ana, quatro dos problemas passaram sem uma palavra.</p>
+<p><strong>Como consertar:</strong> depois do validador, passe pela lista da seção 8.</p>
+</div>
+
+<div class="cenario">
+<strong><code>The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.</code></strong>
+<p><strong>O que significa:</strong> "o título <code>h3</code> vem logo depois de um <code>h1</code>, pulando um nível". Quase sempre, o <code>h3</code> foi escolhido pelo tamanho da letra.</p>
+<p><strong>Como consertar:</strong> escolha o nível pelo lugar no sumário (<code>h2</code>) e ajuste o tamanho com CSS.</p>
+</div>
+
+<div class="cenario">
+<strong><code>The “center” element is obsolete. Use CSS instead.</code></strong>
+<p><strong>O que significa:</strong> "o elemento <code>center</code> é obsoleto; use CSS". O mesmo para <code>&lt;font&gt;</code>, <code>&lt;marquee&gt;</code>, <code>&lt;big&gt;</code> e outros do HTML antigo. Os navegadores ainda mostram, mas eles não fazem mais parte do HTML.</p>
+<p><strong>Como consertar:</strong> o elemento que diz o que o conteúdo é (<code>&lt;h1&gt;</code>, <code>&lt;p&gt;</code>) e o CSS para a aparência.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: This document has heading elements but none of them has a computed heading level of 1.</code></strong>
+<p><strong>O que significa:</strong> "o documento tem títulos, mas nenhum de nível 1". A página não tem um <code>&lt;h1&gt;</code> dizendo qual é o assunto dela.</p>
+<p><strong>Como consertar:</strong> um <code>&lt;h1&gt;</code> por página, com o assunto principal, antes dos <code>&lt;h2&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência: a lista de conferência</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Item</th><th>Como fica</th></tr>
+<tr><td>Esqueleto</td><td><code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html lang="pt-BR"&gt;</code>, <code>&lt;meta charset="utf-8"&gt;</code>, <code>viewport</code>, <code>&lt;title&gt;</code>, <code>description</code></td></tr>
+<tr><td>Regiões</td><td><code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code> (um só), <code>&lt;footer&gt;</code></td></tr>
+<tr><td>Títulos</td><td>um <code>&lt;h1&gt;</code>; depois <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>… sem pular</td></tr>
+<tr><td>Imagens</td><td><code>alt</code> que descreve (ou <code>alt=""</code> se for enfeite), <code>width</code>, <code>height</code></td></tr>
+<tr><td>Formulários</td><td><code>&lt;label&gt;</code> em todo campo, <code>name</code>, <code>&lt;button&gt;</code></td></tr>
+<tr><td>Links</td><td><code>&lt;a href&gt;</code> com texto que diz aonde vai; <code>rel="noopener"</code> com <code>target="_blank"</code></td></tr>
+<tr><td>Código</td><td>minúsculas, aspas duplas, tags fechadas, indentação, nomes que descrevem</td></tr>
+<tr><td>Separação</td><td>CSS em <code>.css</code>, JS em <code>.js</code> (com <code>defer</code>), nada de <code>style</code> e <code>onclick</code> espalhados</td></tr>
+<tr><td>Antes de publicar</td><td>validador, teclado, celular, servidor local, dois navegadores</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A língua da página</h3>
+<p>Complete o atributo que diz que a página está em português do Brasil:</p>
+<div class="ex-code">&lt;html <input data-answer="lang=&quot;pt-BR&quot;|lang=&quot;pt-br&quot;" aria-label="atributo"> &gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O título certo</h3>
+<p>Depois do <code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code>, qual elemento usar para a seção "Ingredientes"?</p>
+<div class="ex-code">&lt;<input data-answer="h2" aria-label="elemento">&gt;Ingredientes&lt;/…&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Qual destes problemas o validador W3C <strong>pega</strong>?</p>
+<label><input type="radio" name="q3"> Um link com o texto "clique aqui"</label>
+<label><input type="radio" name="q3"> Um campo sem <code>&lt;label&gt;</code></label>
+<label><input type="radio" name="q3"> Uma <code>&lt;img&gt;</code> sem o atributo <code>alt</code></label>
+<label><input type="radio" name="q3"> <code>alt="foto.jpg"</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. A Ana quer um texto clicável que leva para <code>pudim.html</code>. O que usar?</p>
+<label><input type="radio" name="q4"> <code>&lt;div onclick="location.href='pudim.html'"&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;a href="pudim.html"&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;span style="cursor: pointer"&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;button onclick="location.href='pudim.html'"&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Por que escrever a cor das promoções no <code>css/estilo.css</code> e não em <code>style=""</code> em cada parágrafo?</p>
+<label><input type="radio" name="q5"> Para mudar a cor de todas num lugar só, e manter o HTML só com o conteúdo</label>
+<label><input type="radio" name="q5"> Porque o validador proíbe o atributo <code>style</code></label>
+<label><input type="radio" name="q5"> Porque o <code>style</code> não funciona no celular</label>
+<label><input type="radio" name="q5"> Porque o CSS em arquivo é obrigatório</label>
+</div>
+
+<h3>Missão final: a página antiga da Ana, consertada</h3>
+
+<div class="tryhtml" data-goal="attr:html[lang]=pt-BR,sel:head title,sel:meta[name=viewport],sel:main h1,nsel:center=0,nsel:font=0,nsel:img:not([alt])=0,sel:label input,nsel:div[onclick]=0,nsrc:clique aqui">
+<p class="try-task"><strong>Missão:</strong> reescreva a página antiga da Ana com as boas práticas desta aula: a língua no <code>&lt;html&gt;</code>; <code>&lt;title&gt;</code> e <code>viewport</code> no <code>&lt;head&gt;</code>; o conteúdo dentro de um <code>&lt;main&gt;</code>; o título num <code>&lt;h1&gt;</code>, sem <code>&lt;center&gt;</code> nem <code>&lt;font&gt;</code>; a <code>&lt;div&gt;</code> clicável como link; <code>alt</code> na imagem; <code>&lt;label&gt;</code> no campo; e um texto de link que diga aonde ele leva, sem "clique aqui". O conteúdo continua o mesmo.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;font size="5"&gt;&lt;b&gt;Receitas da Ana&lt;/b&gt;&lt;/font&gt;&lt;/center&gt;
+&lt;div onclick="location.href='bolo.html'"&gt;Bolo de cenoura&lt;/div&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300"&gt;
+&lt;h3&gt;Receba as receitas por e-mail&lt;/h3&gt;
+&lt;p&gt;Nome: &lt;input type="text" name="nome"&gt;&lt;/p&gt;
+&lt;p&gt;Para a receita de pudim, &lt;a href="pudim.html"&gt;clique aqui&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;&lt;a href="bolo.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/p&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+  &lt;h2&gt;Receba as receitas por e-mail&lt;/h2&gt;
+  &lt;p&gt;&lt;label&gt;Nome: &lt;input type="text" name="nome"&gt;&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;Veja também a &lt;a href="pudim.html"&gt;receita de pudim&lt;/a&gt;.&lt;/p&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Toda página: <code>&lt;!DOCTYPE html&gt;</code>, <code>lang="pt-BR"</code>, <code>charset</code>, <code>viewport</code>, <code>&lt;title&gt;</code> e <code>description</code>. O validador cobra só parte disso.</li>
+  <li>O elemento certo para cada coisa: títulos em ordem (um <code>&lt;h1&gt;</code>, sem pular nível), regiões com <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>, nada de elementos obsoletos.</li>
+  <li>Acessibilidade: <code>alt</code> que descreve, <code>&lt;label&gt;</code> em todo campo, <code>&lt;a&gt;</code> para ir e <code>&lt;button&gt;</code> para agir, links com texto que diz aonde vão. O validador não pega quase nada disso: teste com o teclado.</li>
+  <li>Código legível: minúsculas, aspas duplas, tags fechadas, indentação, nomes que descrevem.</li>
+  <li>HTML para o conteúdo, CSS em <code>.css</code>, JS em <code>.js</code>. Imagens com <code>width</code>, <code>height</code> e o tamanho certo.</li>
+  <li>Antes de publicar: validador, teclado, celular, servidor local e dois navegadores.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
