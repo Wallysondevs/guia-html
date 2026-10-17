@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutorial HTML — aprenda a fazer sites do zero, como numa escola | Guia HTML</title>
+<meta name="description" content="Curso de HTML (HTML Living Standard) do zero ao avançado, em português, para quem nunca fez um site: cada tag explicada, cada exemplo desenhado de verdade pelo seu navegador, editor Experimente com missões, projetos e exercícios. Todo o código conferido com o validador oficial do W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="hero">
+<h1>Tutorial HTML</h1>
+<p>Aprenda <strong>HTML do zero</strong>, como numa escola: cada pedacinho de código é explicado, você vê o resultado de verdade logo embaixo e pratica num editor aqui mesmo na página. Os resultados não são imagens: quem desenha cada exemplo é o <strong>seu próprio navegador</strong>, na hora. O guia ensina o <strong>HTML Living Standard</strong>, o "HTML5" de hoje, e todo o código foi conferido com o <strong>validador oficial do W3C</strong>. Você só precisa de um navegador e de um editor de texto, em qualquer sistema: Windows, macOS, Linux ou até um Chromebook.</p>
+<a class="btn btn-lg" href="introducao.html">Comece pelo Nível 1 &#10095;</a>
+</div>
+
+<div class="pager"></div>
+
+<h2>Experimente agora</h2>
+<p>A caixa abaixo é o editor <strong>Experimente</strong> do guia. Em cima fica o código; embaixo, o resultado, desenhado pelo seu navegador a partir desse código. Mude o código e veja o resultado mudar junto. Nada do que você fizer aqui mexe no seu computador, e você não precisa instalar nada.</p>
+
+<div class="tryhtml" data-goal="texto:h1=Receitas da Ana">
+<p class="try-task"><strong>Missão:</strong> troque o texto <code>Meu primeiro site</code> por <code>Receitas da Ana</code>. Mexa só no texto entre <code>&lt;h1&gt;</code> e <code>&lt;/h1&gt;</code>; os sinais <code>&lt;</code> e <code>&gt;</code> ficam como estão.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Meu primeiro site&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+</pre>
+</div>
+
+<p>O que aconteceu: o navegador leu o seu texto e encontrou duas <strong>marcações</strong>. O <code>&lt;h1&gt;</code> diz "aqui começa um título principal" e o <code>&lt;/h1&gt;</code>, com a barra, diz "aqui ele termina". O <code>&lt;p&gt;</code> e o <code>&lt;/p&gt;</code> fazem o mesmo para um parágrafo. As marcações não aparecem no resultado: elas só dizem ao navegador <strong>o que cada pedaço de texto é</strong>, e ele decide como mostrar (o título sai grande e em negrito). Essas marcações se chamam <strong>tags</strong>, e é exatamente isso que o HTML é: texto com tags. A aula <a href="introducao.html">O que é HTML</a> conta essa história com calma.</p>
+
+<p>Se você apagou um <code>&lt;</code> sem querer, viu a tag aparecer escrita no resultado, como texto comum. O navegador nunca mostra uma mensagem de erro: ele faz o melhor que pode com o que recebeu. Isso é bom (a página sempre abre) e é ruim (o erro passa despercebido). Por isso o guia ensina, desde o começo, a usar o <strong>validador</strong>, que aponta cada erro com a linha e a coluna (aula <a href="validar.html">Validar o HTML</a>).</p>
+
+<h3>Uma lista de compras</h3>
+<p>Listas aparecem em quase todo site: menus, ingredientes, produtos. Em HTML, a lista com marcadores é o <code>&lt;ul&gt;</code> (de <em>unordered list</em>, "lista não ordenada"), e cada item fica dentro de um <code>&lt;li&gt;</code> (<em>list item</em>, "item da lista"). Você vai aprender listas na aula <a href="listas.html">Listas com Marcadores</a>; por enquanto, basta copiar o padrão.</p>
+
+<div class="tryhtml" data-goal="nsel:li=3,texto:li:nth-child(3)=Açúcar">
+<p class="try-task"><strong>Missão:</strong> a Ana esqueceu o açúcar. Acrescente um terceiro item, <code>Açúcar</code>, depois de <code>Ovos</code>. Copie a linha do <code>&lt;li&gt;</code> dos ovos e troque só o texto.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Lista de compras&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;Farinha&lt;/li&gt;
+  &lt;li&gt;Ovos&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Lista de compras&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;Farinha&lt;/li&gt;
+  &lt;li&gt;Ovos&lt;/li&gt;
+  &lt;li&gt;Açúcar&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<p>Repare que você não desenhou nenhuma bolinha: escreveu só "isto é uma lista, e estes são os itens". O navegador pôs os marcadores e o recuo sozinho. Essa é a ideia central do HTML: você diz <strong>o que</strong> cada coisa é, e não <strong>como</strong> ela deve parecer. A aparência (cores, fontes, tamanhos) é trabalho de outra linguagem, o CSS (quer aprender mais? futuro Guia CSS).</p>
+
+<hr>
+
+<h2>O que é este guia</h2>
+<p>O <strong>HTML</strong> (<em>HyperText Markup Language</em>, "linguagem de marcação de hipertexto") é a linguagem em que as páginas da Web são escritas. Toda página que você já abriu, de um blog pequeno a uma loja enorme, chega ao seu navegador como um arquivo de texto com tags HTML. Ele foi criado por volta de 1990, por Tim Berners-Lee, junto com a própria Web, e hoje é mantido por um grupo das empresas que fazem os navegadores (a história está em <a href="versoes.html">Versões do HTML</a>).</p>
+
+<p>Quem aprende HTML consegue:</p>
+<ul>
+  <li>criar páginas com títulos, parágrafos, listas, imagens, tabelas e links para outras páginas;</li>
+  <li>montar formulários de contato, de cadastro e de pesquisa;</li>
+  <li>colocar áudio, vídeo e mapas numa página;</li>
+  <li>fazer páginas que funcionam bem no celular, que pessoas cegas conseguem usar com um leitor de tela e que o Google entende;</li>
+  <li>publicar um site de verdade, de graça, no GitHub Pages;</li>
+  <li>dar o primeiro passo para o CSS (a aparência) e o JavaScript (o comportamento), porque os dois trabalham em cima do HTML.</li>
+</ul>
+
+<p>O guia é para quem <strong>nunca fez um site</strong>. Ele começa do zero absoluto (o que é uma tag? como o navegador lê um arquivo?) e vai até acessibilidade, SEO, formulários completos, Web Components e a publicação do site. O HTML tem fama de fácil, e é mesmo o melhor lugar para começar. Mas ele tem uma armadilha: o navegador <strong>aceita quase tudo</strong> e conserta os erros em silêncio, às vezes de um jeito estranho. Por isso as aulas mostram, em todo assunto, o que o navegador fez com o código errado e o que o validador diz sobre ele.</p>
+
+<hr>
+
+<h2>Como as aulas funcionam</h2>
+<p>Nenhum código aparece "seco". Toda aula segue o mesmo caminho:</p>
+<ol class="passo">
+  <li><strong>A ideia primeiro.</strong> Antes do código, você entende o problema que ele resolve, com uma comparação do dia a dia.</li>
+  <li><strong>Anatomia.</strong> Cada parte de uma tag nova é separada e explicada: o nome, os sinais, os atributos e o que vai dentro.</li>
+  <li><strong>O resultado real.</strong> Logo abaixo de cada exemplo aparece um quadro "Resultado", desenhado pelo seu navegador a partir daquele código. Não é uma foto: se o seu navegador desenhar diferente, você vê a diferença.</li>
+  <li><strong>Experimente.</strong> Pelo menos duas caixas por aula para você mudar o código e ver o resultado na hora, muitas com uma <strong>missão</strong> que confere sozinha se você acertou.</li>
+  <li><strong>Várias formas de fazer.</strong> Quase sempre há mais de um caminho, e uma tabela "qual usar" mostra quando escolher cada um.</li>
+  <li><strong>Quando dá errado.</strong> O código com erro, o que o navegador realmente mostra e a mensagem real do validador W3C, traduzida e explicada.</li>
+  <li><strong>Exercícios e resumo.</strong> Perguntas com correção na hora e uma lista curta do que levar da aula.</li>
+</ol>
+
+<h3>Exemplo: a anatomia de uma linha</h3>
+<p>Veja como as aulas desmontam uma linha de HTML. Primeiro o código, com o resultado embaixo:</p>
+
+<pre class="file" data-file="trecho" data-resultado>&lt;p&gt;Bolo de cenoura com &lt;strong&gt;cobertura de chocolate&lt;/strong&gt;.&lt;/p&gt;
+</pre>
+
+<p>Agora cada parte:</p>
+
+<dl class="anatomy">
+  <dt>&lt;p&gt;</dt><dd>A <strong>tag de abertura</strong> do parágrafo (<code>p</code> de <em>paragraph</em>). Os sinais <code>&lt;</code> e <code>&gt;</code> dizem ao navegador "isto é uma marcação, não é texto para mostrar".</dd>
+  <dt>Bolo de cenoura com</dt><dd>O <strong>conteúdo</strong>: o texto que aparece na página.</dd>
+  <dt>&lt;strong&gt;</dt><dd>Abre outra tag, dentro do parágrafo: <code>strong</code> ("forte") marca um trecho <strong>importante</strong>. O navegador mostra em negrito (aula <a href="negrito-italico.html">Negrito e Itálico</a>).</dd>
+  <dt>cobertura de chocolate</dt><dd>O conteúdo do <code>strong</code>.</dd>
+  <dt>&lt;/strong&gt;</dt><dd>A <strong>tag de fechamento</strong>: a mesma palavra, com uma barra <code>/</code> antes. Aqui termina o trecho importante.</dd>
+  <dt>.&lt;/p&gt;</dt><dd>O ponto final ainda faz parte do parágrafo; depois dele, o <code>&lt;/p&gt;</code> fecha o parágrafo. Repare na ordem: quem abriu por último (<code>strong</code>) fecha primeiro (aula <a href="aninhamento.html">Aninhamento</a>).</dd>
+</dl>
+
+<p>O conjunto "tag de abertura + conteúdo + tag de fechamento" se chama <strong>elemento</strong>. A linha acima tem dois elementos, um dentro do outro: um <code>p</code> com um <code>strong</code> dentro. Elementos e tags têm aula própria: <a href="elementos.html">Elementos e Tags</a>.</p>
+
+<h3>Exemplo: o terminal e o validador</h3>
+<p>Além do editor, as aulas mostram o <strong>terminal</strong> da máquina fictícia do guia: um computador chamado <code>notebook</code>, da usuária <code>ana</code>, com Linux em português. Lá, a Ana guarda as páginas na pasta <code>~/site</code> e confere cada uma com o <strong>validador do W3C</strong> (o comando <code>vnu</code>, de <em>Nu Html Checker</em>, o mesmo programa que roda no site validator.w3.org):</p>
+
+<pre class="term" data-cwd="~/site">$ cat index.html                    « mostra o conteúdo do arquivo
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+$ vnu --verbose index.html           « confere o arquivo e diz o nome dele se estiver tudo certo
+index.html
+$ echo $?
+0                                    « código de saída 0: nenhum erro</pre>
+
+<p>Esse arquivo é uma página completa. As linhas de cima (<code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>…) são a moldura que toda página precisa ter; a aula <a href="estrutura.html">Estrutura de uma Página</a> explica cada uma. Agora veja o que acontece quando a Ana fecha o título com a tag errada, <code>&lt;/h2&gt;</code> em vez de <code>&lt;/h1&gt;</code>:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.20-8.24: error: End tag “h2” seen, but there were open elements.
+$ echo $?
+1                                    « 1: o validador achou erro</pre>
+
+<p>A mensagem sai em inglês: "vi a tag de fechamento <code>h2</code>, mas havia elementos abertos". O <code>8.20-8.24</code> é a posição do problema: linha 8, das colunas 20 a 24, exatamente onde está o <code>&lt;/h2&gt;</code>. O guia traduz e explica cada mensagem assim. E o navegador? Veja o resultado do código errado:</p>
+
+<pre class="file" data-file="index.html · erro de propósito" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h2&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+</pre>
+
+<p>Parece tudo certo. O navegador percebeu o engano e fechou o título sozinho. Dessa vez deu sorte; na aula <a href="como-funciona.html">Como o Navegador Lê HTML</a> você vai ver erros que o navegador "conserta" de um jeito que ninguém queria. É por isso que "no meu navegador está aparecendo certo" não quer dizer que o código está certo.</p>
+
+<hr>
+
+<h2>Escolha sua trilha</h2>
+<p>O guia tem três níveis, uma seção de projetos e uma de referência. Os níveis foram pensados para serem feitos em ordem: cada aula usa o que as anteriores ensinaram.</p>
+<div class="trilhas">
+  <div class="trilha n1">
+    <h3>Nível 1 · Iniciante</h3>
+    <p>HTML do zero.</p>
+    <ul>
+      <li><a href="introducao.html">Começando</a>: o que é HTML, como o navegador lê uma página, editores, o primeiro arquivo e o F12</li>
+      <li><a href="estrutura.html">Primeiros Passos</a>: a estrutura da página, elementos, atributos, comentários e o validador</li>
+      <li><a href="titulos.html">Texto</a>: títulos, parágrafos, negrito, citações, entidades e acentos</li>
+      <li><a href="links.html">Links</a> e <a href="imagens.html">Imagens</a>: caminhos, âncoras, texto alternativo, formatos e imagens responsivas</li>
+      <li><a href="listas.html">Listas</a> e <a href="tabelas.html">Tabelas</a></li>
+    </ul>
+    <a class="btn" href="introducao.html">Começar &#10095;</a>
+  </div>
+  <div class="trilha n2">
+    <h3>Nível 2 · Intermediário</h3>
+    <p>Páginas completas, semântica e formulários.</p>
+    <ul>
+      <li><a href="head.html">A Página por Dentro</a>: <code>head</code>, <code>meta</code>, favicon, ligar CSS, <code>class</code> e <code>id</code>, <code>div</code> e <code>span</code></li>
+      <li><a href="semantica.html">Semântica</a>: <code>header</code>, <code>nav</code>, <code>main</code>, <code>article</code>, <code>details</code>, <code>dialog</code></li>
+      <li><a href="formularios.html">Formulários</a>: <code>input</code>, <code>label</code>, botões, validação, GET e POST</li>
+      <li><a href="audio.html">Mídia</a>: áudio, vídeo, legendas e <code>iframe</code></li>
+    </ul>
+    <a class="btn" href="head.html">Começar &#10095;</a>
+  </div>
+  <div class="trilha n3">
+    <h3>Nível 3 · Avançado</h3>
+    <p>HTML profissional.</p>
+    <ul>
+      <li><a href="acessibilidade.html">Acessibilidade</a>: ARIA, teclado, leitores de tela</li>
+      <li><a href="seo.html">SEO e Compartilhamento</a>: Open Graph, dados estruturados, <code>robots.txt</code></li>
+      <li><a href="svg.html">Gráficos</a> (SVG e <code>canvas</code>) e <a href="atributos-globais.html">HTML Moderno</a>: <code>template</code>, Web Components, <code>popover</code>, desempenho</li>
+      <li><a href="organizar-arquivos.html">Publicar</a>: servidor local, GitHub Pages, segurança e boas práticas</li>
+    </ul>
+    <a class="btn" href="acessibilidade.html">Começar &#10095;</a>
+  </div>
+  <div class="trilha proj">
+    <h3>Projetos</h3>
+    <p>Páginas completas, construídas passo a passo.</p>
+    <ul>
+      <li><a href="projeto-curriculo.html">Currículo pessoal</a> e <a href="projeto-receita.html">página de receita</a></li>
+      <li><a href="projeto-cardapio.html">Cardápio</a> com tabela e <a href="projeto-cadastro.html">formulário de cadastro</a></li>
+      <li><a href="projeto-blog.html">Blog semântico</a> e <a href="projeto-portfolio.html">portfólio com várias páginas</a></li>
+      <li><a href="projeto-produto.html">Página de produto</a> da lojinha</li>
+    </ul>
+    <a class="btn" href="projetos.html">Ver projetos &#10095;</a>
+  </div>
+  <div class="trilha ref">
+    <h3>Referência</h3>
+    <p>Consulta rápida para quando você já sabe o que procura.</p>
+    <ul>
+      <li><a href="ref-elementos.html">Todos os elementos</a>, <a href="ref-atributos.html">atributos</a> e <a href="ref-input.html">tipos de input</a></li>
+      <li><a href="ref-entidades.html">Entidades</a> e <a href="ref-meta.html">metas do head</a></li>
+      <li><a href="ref-erros.html">Mensagens do validador</a>, traduzidas</li>
+      <li><a href="glossario.html">Glossário</a> e <a href="quiz.html">quiz</a></li>
+    </ul>
+    <a class="btn" href="ref-elementos.html">Consultar &#10095;</a>
+  </div>
+</div>
+
+<hr>
+
+<h2>Como estudar</h2>
+<p>Fazer sites se aprende fazendo, como andar de bicicleta. Para cada aula, siga estes quatro passos:</p>
+<ol class="passo">
+  <li><strong>Leia com calma.</strong> Leia a ideia, a anatomia e o resultado. Não pule a parte "Quando dá errado": quem sabe por que o navegador fez uma coisa estranha conserta o problema em minutos.</li>
+  <li><strong>Mexa nos exemplos.</strong> Em toda caixa Experimente, mude um texto, apague uma tag de propósito e veja o que o navegador faz. Não tem como estragar nada.</li>
+  <li><strong>Faça as missões.</strong> As caixas com <strong>Missão</strong> conferem sozinhas se você acertou. Tente de verdade antes de abrir a solução; se abrir, digite a solução você mesmo em vez de só olhar.</li>
+  <li><strong>Repita no seu computador.</strong> Crie a pasta do seu site, escreva os arquivos no seu editor e abra no navegador. É assim que se faz um site "de verdade", e algumas aulas (o F12, o servidor local, a publicação) só funcionam ali.</li>
+</ol>
+
+<div class="tip">
+<strong>A regra de ouro</strong>
+<p>Ler não basta: digite cada exemplo. Copiar e colar ensina pouco; digitar faz você reparar em cada <code>&lt;</code>, cada barra e cada aspa. Para escolher onde escrever, veja <a href="editores.html">Editores</a>; para criar o primeiro arquivo e abri-lo no navegador, <a href="primeiro-arquivo.html">Criar e Abrir um Arquivo .html</a>. Se ainda não quiser instalar nada, tudo bem: quase todo o Nível 1 pode ser feito só nas caixas Experimente.</p>
+</div>
+
+<h3>O editor do guia</h3>
+<p>As caixas Experimente não imitam um navegador: o resultado é desenhado pelo <strong>seu</strong> navegador, num quadro separado do resto da página, a partir do código que está na caixa naquele momento. Algumas caixas têm várias <strong>abas</strong>, uma para cada arquivo (<code>index.html</code>, <code>estilo.css</code>, <code>sobre.html</code>…), e os links entre elas funcionam dentro do quadro. Quando um exemplo usa um pouco de JavaScript, o que ele escreve aparece num console embaixo do resultado. A aula <a href="simulador.html">O Editor do Guia</a> mostra tudo isso com calma.</p>
+
+<hr>
+
+<h2>Como ler este guia</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>O que significa</th></tr>
+<tr><td>Caixa com o nome <code>index.html</code> no canto</td><td>O conteúdo de um arquivo. O nome no canto é o nome do arquivo. Quando aparece <code>trecho</code>, é só um pedaço de página, não um arquivo inteiro.</td></tr>
+<tr><td>Quadro <strong>Resultado</strong> embaixo do código</td><td>O que o seu navegador desenha a partir daquele código, na hora. É o resultado real, não uma imagem.</td></tr>
+<tr><td><code>· erro de propósito</code> no nome do arquivo</td><td>Código com um erro colocado para você ver o que acontece. Não copie para o seu site.</td></tr>
+<tr><td><code>ana@notebook:~/site$</code></td><td>O prompt do terminal: usuária <code>ana</code>, na máquina <code>notebook</code>, na pasta <code>~/site</code> (a pasta <code>site</code> dentro da pasta pessoal). O que vem depois é o comando digitado.</td></tr>
+<tr><td>Linhas sem prompt</td><td>A resposta do computador: o conteúdo de um arquivo ou a mensagem do validador.</td></tr>
+<tr><td><span class="t-a">← etiqueta</span></td><td>Uma explicação do guia sobre aquela linha. Não aparece no terminal real.</td></tr>
+<tr><td><code>error:</code> e <code>warning:</code></td><td>Mensagens do validador. <code>error</code> é um erro de verdade no HTML; <code>warning</code> (aviso) é uma recomendação. As mensagens são copiadas exatamente como saíram, em inglês, e explicadas em português.</td></tr>
+</table>
+</div>
+
+<div class="note">
+<strong>Versão de referência: HTML Living Standard</strong>
+<p>O guia segue o <strong>HTML Living Standard</strong>, a especificação mantida pelo WHATWG e usada por todos os navegadores atuais. Ele não tem número de versão: é atualizado continuamente, e é o que as pessoas chamam de "HTML5". As mensagens de erro foram conferidas com o validador oficial do W3C, o <code>vnu</code> versão 26.10.12, o mesmo do site validator.w3.org, num Linux (Ubuntu 26.04) em português do Brasil. O que o navegador faz com código errado foi conferido num navegador de verdade (Chromium); como todos os navegadores atuais leem HTML com as mesmas regras, o resultado é o mesmo no Chrome, no Firefox, no Edge e no Safari.</p>
+</div>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
