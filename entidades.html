@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Entidades — &amp;lt;, &amp;amp;, &amp;nbsp; e &amp;copy; | Guia HTML</title>
+<meta name="description" content="Entidades em HTML para quem nunca fez um site: como mostrar &lt; e &amp; na página com &amp;lt; e &amp;amp;, o espaço que não quebra (&amp;nbsp;), símbolos como &amp;copy; e &amp;euro;, referências numéricas (&amp;#169; e &amp;#x1F382;), aspas dentro de atributos, e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Entidades</span></h1>
+
+<p class="intro">A Ana quer escrever, no blog dela, uma frase simples: "Use a tag &lt;strong&gt; para negrito." Ela digita isso no HTML e a frase some pela metade, com o resto em negrito. O motivo: para o navegador, o sinal <code>&lt;</code> não é um sinal de "menor que", é o <strong>começo de uma tag</strong>. Para mostrar esses caracteres especiais na tela, o HTML tem um código próprio, as <strong>entidades</strong>: <code>&amp;lt;</code>, <code>&amp;amp;</code>, <code>&amp;nbsp;</code> e companhia. Nesta aula você vai aprender a usá-las, e a reconhecer quando faltou uma.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Por que <code>&lt;</code> e <code>&amp;</code> são caracteres "reservados" no HTML.</li>
+  <li>A forma de uma entidade: <code>&amp;</code> + nome + <code>;</code>, como <code>&amp;lt;</code>.</li>
+  <li>As cinco essenciais: <code>&amp;lt;</code>, <code>&amp;gt;</code>, <code>&amp;amp;</code>, <code>&amp;quot;</code> e <code>&amp;apos;</code>.</li>
+  <li>O espaço que não quebra a linha, <code>&amp;nbsp;</code>, e quando usá-lo.</li>
+  <li>Símbolos (<code>&amp;copy;</code>, <code>&amp;euro;</code>, <code>&amp;rarr;</code>) e as referências <strong>numéricas</strong> (<code>&amp;#169;</code>, <code>&amp;#x1F382;</code>).</li>
+  <li>Entidades dentro de atributos: aspas e o <code>&amp;</code> dos endereços.</li>
+  <li>Os erros reais do validador quando falta o <code>;</code>, quando um <code>&lt;</code> fica solto, e o erro que ele <strong>não</strong> pega.</li>
+</ul>
+</div>
+
+<p>Os resultados desta aula são desenhados pelo <strong>seu</strong> navegador, logo abaixo de cada código. As mensagens de erro são do validador W3C (<code>vnu</code>, a mesma ferramenta do <a href="validar.html">validator.w3.org</a>), rodado na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: palavras reservadas e o código secreto</h2>
+<p>Num jogo de tabuleiro, algumas casas têm um significado especial: cair nelas faz você voltar ou pular. No HTML é parecido: dois caracteres têm um significado especial para o navegador.</p>
+<ul>
+  <li><code>&lt;</code> quer dizer "aqui começa uma tag", como em <code>&lt;p&gt;</code>.</li>
+  <li><code>&amp;</code> quer dizer "aqui começa uma entidade", como em <code>&amp;lt;</code>.</li>
+</ul>
+<p>Se você quiser esses caracteres <strong>como texto</strong>, na tela, precisa escrevê-los de outro jeito, com um "código" que o navegador traduz. Esse código é a <strong>entidade</strong> (o nome oficial é <em>character reference</em>, "referência de caractere"). Programadores chamam isso de <strong>escapar</strong> o caractere: tirá-lo do significado especial.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer ver na tela</th><th>Você escreve no HTML</th><th>Nome em inglês</th></tr>
+<tr><td><code>&lt;</code></td><td><code>&amp;lt;</code></td><td><em>less than</em>, "menor que"</td></tr>
+<tr><td><code>&gt;</code></td><td><code>&amp;gt;</code></td><td><em>greater than</em>, "maior que"</td></tr>
+<tr><td><code>&amp;</code></td><td><code>&amp;amp;</code></td><td><em>ampersand</em>, o "e comercial"</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. A primeira entidade: <code>&amp;lt;</code></h2>
+<p>Primeiro, o problema da Ana. Ela escreveu a tag como texto comum:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Use a tag &lt;strong&gt; para negrito.&lt;/p&gt;
+</pre>
+
+<p>A palavra <code>&lt;strong&gt;</code> sumiu, e "para negrito." ficou em negrito. O navegador leu <code>&lt;strong&gt;</code> como uma tag de verdade e obedeceu. Agora, com entidades:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Use a tag &amp;lt;strong&amp;gt; para negrito.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&amp;</dt><dd>Avisa o navegador: "o que vem agora é um código, não texto comum".</dd>
+  <dt>lt</dt><dd>O <strong>nome</strong> do caractere: <em>lt</em>, de <em>less than</em> ("menor que"). Os nomes são em minúsculas, e a diferença importa (seção 4).</dd>
+  <dt>;</dt><dd>O ponto e vírgula termina a entidade. Não esqueça dele (veja <a href="#errado">Quando dá errado</a>).</dd>
+  <dt>&amp;gt;</dt><dd>O <code>&gt;</code> (<em>greater than</em>, "maior que"). Aqui ele não era obrigatório, porque um <code>&gt;</code> sozinho não abre nada; mas escrever o par <code>&amp;lt;…&amp;gt;</code> deixa o código mais fácil de ler.</dd>
+</dl>
+
+<p>O navegador troca cada entidade pelo caractere antes de desenhar a página. O texto que aparece na tela, e que o leitor copia e cola, é <code>Use a tag &lt;strong&gt; para negrito.</code>, com os sinais de verdade.</p>
+
+<div class="tip">
+<strong>É assim que este guia mostra código</strong>
+<p>Todos os exemplos de HTML deste guia são escritos com entidades por dentro. Para você ver <code>&lt;p&gt;</code> na tela, o arquivo desta página tem <code>&amp;lt;p&amp;gt;</code>. E para mostrar a própria entidade <code>&amp;lt;</code>, como neste parágrafo, o arquivo tem <code>&amp;amp;lt;</code>: o <code>&amp;amp;</code> vira <code>&amp;</code>, e o resto (<code>lt;</code>) fica como texto.</p>
+</div>
+
+<div class="tryhtml" data-goal="texto:p=&lt;strong&gt;,nsel:p strong=0">
+<p class="try-task"><strong>Missão:</strong> conserte a frase da Ana para que a tag <code>&lt;strong&gt;</code> apareça <strong>escrita</strong> na tela, e não vire negrito. Troque o <code>&lt;</code> por <code>&amp;lt;</code> e o <code>&gt;</code> por <code>&amp;gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Use a tag &lt;strong&gt; para negrito.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Use a tag &amp;lt;strong&amp;gt; para negrito.&lt;/p&gt;
+</pre>
+</div>
+
+<h3>Quando um <code>&lt;</code> solto passa (e quando não passa)</h3>
+<p>O navegador só começa uma tag quando o <code>&lt;</code> vem seguido de uma <strong>letra</strong> (ou de <code>/</code> e <code>!</code>). Em <code>5 &lt; 10</code>, com espaço depois, ele percebe que não é tag e mostra o sinal. Mas o validador reclama mesmo assim:</p>
+
+<pre class="file" data-file="menor.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Conta&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;5 &lt; 10&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu menor.html
+"file:/home/ana/site/menor.html":8.6-8.7: error: Bad character “ ” after “&lt;”. Probable cause: Unescaped “&lt;”. Try escaping it as “&amp;lt;”.</pre>
+
+<p>"Caractere inválido (o espaço) depois de <code>&lt;</code>. Causa provável: um <code>&lt;</code> sem escape. Tente escapá-lo como <code>&amp;lt;</code>." O próprio validador ensina o conserto. Já <code>x&lt;y</code>, sem espaço, vira uma tag <code>&lt;y&gt;</code> inventada e some da tela. Regra simples: <strong>todo <code>&lt;</code> de texto vira <code>&amp;lt;</code></strong>, sem pensar se "passaria".</p>
+
+<hr>
+
+<h2>2. O <code>&amp;</code> e o <code>&amp;amp;</code></h2>
+<p>O nome do blog da Ana é "Bolos &amp; Doces". Como o <code>&amp;</code> começa uma entidade, o jeito seguro de escrevê-lo é <code>&amp;amp;</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolos &amp;amp; Doces&lt;/h1&gt;
+&lt;p&gt;Receitas de P&amp;amp;D: pesquisa e degustação.&lt;/p&gt;
+</pre>
+
+<p>E se ela escrever o <code>&amp;</code> sozinho? Depende do que vem depois, e aí mora o perigo:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No HTML</th><th>Na tela</th><th>Validador</th></tr>
+<tr><td><code>Bolos &amp; Doces</code> (espaço depois)</td><td>Bolos &amp; Doces</td><td>Sem erro: um <code>&amp;</code> seguido de espaço não pode ser entidade</td></tr>
+<tr><td><code>P&amp;D;</code></td><td>P&amp;D;</td><td><code>error: “&amp;” did not start a character reference.</code></td></tr>
+<tr><td><code>&amp;copy 2026</code></td><td>&copy; 2026 (virou o símbolo!)</td><td><code>error: Named character reference was not terminated by a semicolon.</code></td></tr>
+<tr><td><code>Bolos &amp;amp; Doces</code></td><td>Bolos &amp; Doces</td><td>Sem erro</td></tr>
+</table>
+</div>
+
+<p>O terceiro caso é o mais traiçoeiro: por compatibilidade com sites antigos, algumas entidades funcionam até <strong>sem</strong> o <code>;</code>, e o navegador transforma um pedaço do seu texto num símbolo. Escrevendo sempre <code>&amp;amp;</code>, nada disso acontece.</p>
+
+<hr>
+
+<h2>3. O espaço que não quebra: <code>&amp;nbsp;</code></h2>
+<p>Quando uma linha não cabe, o navegador quebra o texto num espaço. Às vezes isso separa coisas que deveriam ficar juntas: o "R$" numa linha e o "25,90" na outra. O <code>&amp;nbsp;</code> (<em>non-breaking space</em>, "espaço que não quebra") é um espaço que <strong>gruda</strong> as duas palavras:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p style="width: 9em; border: 1px solid gray"&gt;Bolo de fubá por R$ 25,90&lt;/p&gt;
+&lt;p style="width: 9em; border: 1px solid gray"&gt;Bolo de fubá por R$&amp;nbsp;25,90&lt;/p&gt;
+</pre>
+
+<p>O <code>style</code> só deixa as caixas estreitas para forçar a quebra (aula <a href="atributo-style.html">O Atributo style</a>). Conforme a fonte do seu navegador, a primeira caixa pode separar o "R$" do valor; na segunda, "R$&nbsp;25,90" sempre fica junto, e vai inteiro para a linha de baixo se não couber.</p>
+
+<dl class="anatomy">
+  <dt>R$&amp;nbsp;25,90</dt><dd>Na tela, parece um espaço comum. Para o navegador, é um caractere diferente, que não pode virar quebra de linha.</dd>
+</dl>
+
+<p>Bons lugares para o <code>&amp;nbsp;</code>: entre o símbolo e o valor (<code>R$&amp;nbsp;10</code>), entre o número e a unidade (<code>200&amp;nbsp;g</code>, <code>180&amp;nbsp;°C</code>), em datas e nomes curtos que não devem ser separados (<code>15&amp;nbsp;de março</code>).</p>
+
+<div class="warning">
+<strong>O <code>&amp;nbsp;</code> não é para dar espaço</strong>
+<p>Como o HTML junta vários espaços seguidos num só (aula <a href="espacos.html">Espaços e Quebras de Linha</a>), muita gente empilha <code>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;</code> para afastar um texto do outro. Funciona na sua tela e quebra em outras: no celular, com outra fonte, no leitor de tela. Espaçamento é trabalho do CSS (futuro Guia CSS). O <code>&amp;nbsp;</code> serve para <strong>impedir uma quebra</strong>, e só.</p>
+</div>
+
+<div class="tryhtml" data-goal="src:R\$(&amp;nbsp;|&amp;#160;|&amp;#xA0;)25,src:200(&amp;nbsp;|&amp;#160;|&amp;#xA0;)g">
+<p class="try-task"><strong>Missão:</strong> na etiqueta da lojinha, o "R$" e o valor, e o "200" e o "g", não podem se separar. Troque esses dois espaços por <code>&amp;nbsp;</code>. Na tela, nada muda até a linha ficar estreita.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Bolo de fubá (fatia de 200 g): R$ 25,90&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Bolo de fubá (fatia de 200&amp;nbsp;g): R$&amp;nbsp;25,90&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Símbolos com nome</h2>
+<p>Além dos caracteres reservados, o HTML tem nome para mais de dois mil símbolos. Alguns que aparecem muito:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&amp;copy; 2026 Bolos &amp;amp; Doces. Receitas Ana&amp;trade;.&lt;/p&gt;
+&lt;p&gt;Preço: &amp;euro;&amp;nbsp;4,50. Forno a 180&amp;deg;C.&lt;/p&gt;
+&lt;p&gt;Rende &amp;frac12; forma. Bata 2 &amp;times; por dia.&lt;/p&gt;
+&lt;p&gt;Leia mais &amp;rarr; &amp;laquo;Bolo de fubá&amp;raquo; &amp;mdash; a receita da avó.&lt;/p&gt;
+</pre>
+
+<p>Os nomes são em inglês e <strong>diferenciam maiúsculas de minúsculas</strong>: <code>&amp;eacute;</code> é <code>é</code> e <code>&amp;Eacute;</code> é <code>É</code>; já <code>&amp;Copy;</code> não existe e aparece na tela como texto, letra por letra. A lista completa está em <a href="ref-entidades.html">Referência: Entidades</a>.</p>
+
+<div class="note">
+<strong>E os acentos?</strong>
+<p>Sites antigos escreviam <code>a&amp;ccedil;&amp;atilde;o</code> para mostrar "ação". Isso ainda funciona, mas hoje não é preciso: com <code>&lt;meta charset="utf-8"&gt;</code> e o arquivo salvo em UTF-8, você digita <code>ação</code>, <code>©</code> e até emojis direto no código. As entidades ficam para os caracteres reservados (<code>&amp;lt;</code>, <code>&amp;amp;</code>), para o <code>&amp;nbsp;</code> (que é invisível no código) e para símbolos que você não consegue digitar. A aula seguinte, <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>, explica o porquê.</p>
+</div>
+
+<hr>
+
+<h2>5. Referências numéricas: <code>&amp;#169;</code> e <code>&amp;#x1F382;</code></h2>
+<p>Todo caractere do mundo tem um <strong>número</strong> no catálogo Unicode: o <code>©</code> é o 169, o <code>€</code> é o 8364, o emoji de bolo 🎂 é o 127874. Com esse número, você escreve qualquer caractere, mesmo os que não têm nome:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Decimal: &amp;#169; &amp;#8364; &amp;#127874;&lt;/p&gt;
+&lt;p&gt;Hexadecimal: &amp;#xA9; &amp;#x20AC; &amp;#x1F382;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&amp;#</dt><dd>O <code>#</code> depois do <code>&amp;</code> avisa: "em vez de um nome, vem um número".</dd>
+  <dt>169</dt><dd>O número em <strong>decimal</strong>, o jeito de contar do dia a dia.</dd>
+  <dt>&amp;#x</dt><dd>Com <code>x</code>, o número vem em <strong>hexadecimal</strong> (base 16, com os dígitos 0 a 9 e A a F). É o jeito que as tabelas do Unicode usam: o <code>©</code> aparece lá como <code>U+00A9</code>, e você escreve <code>&amp;#xA9;</code>.</dd>
+  <dt>;</dt><dd>Termina a referência, como nas entidades com nome.</dd>
+</dl>
+
+<p>As duas linhas mostram os mesmos três caracteres. O decimal e o hexadecimal são só duas formas de escrever o mesmo número, como "dez" e "10".</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> troque os números e descubra outros caracteres. Tente <code>&amp;#x1F370;</code>, <code>&amp;#x2615;</code>, <code>&amp;#9733;</code> e <code>&amp;#x1F44D;</code>. Depois escreva o seu nome inteiro só com referências numéricas: o <code>A</code> é o <code>&amp;#65;</code>, e as letras seguintes vêm em ordem.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Sobremesa do dia: &amp;#x1F382;&lt;/p&gt;
+&lt;p&gt;Nota: &amp;#9733;&amp;#9733;&amp;#9733;&amp;#9733;&amp;#9734;&lt;/p&gt;
+&lt;p&gt;&amp;#65;&amp;#110;&amp;#97;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>6. Entidades dentro de atributos</h2>
+<p>Dentro do valor de um atributo, o navegador também traduz entidades. Dois casos aparecem muito.</p>
+
+<h3>Aspas dentro de aspas: <code>&amp;quot;</code></h3>
+<p>O valor de um atributo fica entre aspas (aula <a href="atributos.html">Atributos</a>). Se o próprio texto tiver aspas, elas fecham o valor antes da hora. Há dois consertos:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p title="A Ana disse &amp;quot;delícia&amp;quot;"&gt;Passe o mouse aqui (1)&lt;/p&gt;
+&lt;p title='A Ana disse "delícia"'&gt;Passe o mouse aqui (2)&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&amp;quot;</dt><dd>As aspas duplas <code>"</code> (<em>quotation mark</em>). Dentro de um valor entre aspas duplas, elas precisam virar <code>&amp;quot;</code>.</dd>
+  <dt>'…'</dt><dd>O outro jeito: abrir o valor com aspas <strong>simples</strong>. Aí as duplas podem ficar dentro. Se o texto tiver aspas simples, use <code>&amp;apos;</code> (<em>apostrophe</em>) ou volte às duplas.</dd>
+</dl>
+
+<p>Passe o mouse (ou segure o dedo, no celular) sobre as duas linhas: as duas dicas mostram <code>A Ana disse "delícia"</code>.</p>
+
+<h3>O <code>&amp;</code> nos endereços</h3>
+<p>Endereços de busca têm <code>&amp;</code> entre as partes: <code>busca.html?sabor=fuba&amp;tipo=bolo</code>. No <code>href</code> de um link (aula <a href="links.html">Links</a>), o certo é escrever <code>&amp;amp;</code>, e o navegador entrega o endereço com o <code>&amp;</code> normal:</p>
+
+<pre class="file" data-file="index.html">&lt;a href="busca.html?sabor=fuba&amp;amp;tipo=bolo"&gt;Bolos de fubá&lt;/a&gt;
+</pre>
+
+<p>O <code>&amp;tipo</code> sem o <code>amp;</code> também funciona e o validador aceita, porque <code>tipo</code> não é nome de nenhuma entidade. Mas um endereço com <code>&amp;copy=1</code> ou <code>&amp;lt=5</code> já entra no território das regras de compatibilidade. Com <code>&amp;amp;</code>, você não precisa decorar nenhuma delas.</p>
+
+<hr>
+
+<h2>7. Qual forma usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Caractere</th><th>Use</th><th>Por quê</th></tr>
+<tr><td><code>&lt;</code> e <code>&amp;</code> no texto</td><td><code>&amp;lt;</code> e <code>&amp;amp;</code>, <strong>sempre</strong></td><td>São reservados; sem escape, viram tag ou entidade</td></tr>
+<tr><td><code>&gt;</code> no texto</td><td><code>&amp;gt;</code> (recomendado) ou <code>&gt;</code></td><td>Um <code>&gt;</code> solto é válido, mas o par <code>&amp;lt;…&amp;gt;</code> lê melhor</td></tr>
+<tr><td><code>"</code> dentro de um valor entre <code>"…"</code></td><td><code>&amp;quot;</code>, ou aspas simples por fora</td><td>Senão fecha o valor</td></tr>
+<tr><td>Espaço que não quebra</td><td><code>&amp;nbsp;</code></td><td>É invisível: digitado direto, ninguém vê que está ali</td></tr>
+<tr><td>Acentos, <code>©</code>, <code>€</code>, emojis</td><td>Digite direto (com UTF-8)</td><td>O código fica legível: <code>ação</code> em vez de <code>a&amp;ccedil;&amp;atilde;o</code></td></tr>
+<tr><td>Símbolo que você não consegue digitar</td><td>O nome (<code>&amp;rarr;</code>) ou o número (<code>&amp;#x2192;</code>)</td><td>O nome é mais fácil de lembrar; o número existe para todos</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Uma tag escrita como texto vira tag de verdade</strong>
+<p>O exemplo da seção 1, numa página completa:</p>
+<pre class="file" data-file="tag.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Dica&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Use a tag &lt;strong&gt; para negrito.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> abre um <code>strong</code> de verdade, a palavra some e o resto da frase fica em negrito. Como esse <code>strong</code> nunca é fechado, o navegador ainda abre <strong>outro</strong> <code>strong</code> depois do parágrafo, para continuar o negrito: se houvesse mais texto embaixo, ele também sairia em negrito.</p>
+<pre class="term" data-cwd="~/site">$ vnu tag.html
+"file:/home/ana/site/tag.html":8.36-8.39: error: End tag “p” seen, but there were open elements.
+"file:/home/ana/site/tag.html":8.14-8.21: error: Unclosed element “strong”.
+"file:/home/ana/site/tag.html":9.1-9.7: error: End tag for  “body” seen, but there were unclosed elements.</pre>
+<p>O validador não sabe que você queria texto: ele vê um <code>strong</code> que não foi fechado ("elemento <code>strong</code> não fechado", na coluna 14). Três erros por causa de um caractere.</p>
+<p><strong>Como consertar:</strong> <code>&amp;lt;strong&amp;gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Faltou o <code>;</code>: <code>Named character reference was not terminated by a semicolon</code></strong>
+<pre class="file" data-file="rodape.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Rodapé&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;&amp;copy 2026 Ana&lt;/p&gt;
+&lt;p&gt;Bolos &amp;amp Doces&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu rodape.html
+"file:/home/ana/site/rodape.html":8.4-8.9: error: Named character reference was not terminated by a semicolon. (Or “&amp;” should have been escaped as “&amp;amp;”.)
+"file:/home/ana/site/rodape.html":9.10-9.14: error: Named character reference was not terminated by a semicolon. (Or “&amp;” should have been escaped as “&amp;amp;”.)</pre>
+<p><strong>O que significa:</strong> "a referência de caractere com nome não terminou com ponto e vírgula (ou o <code>&amp;</code> deveria ter sido escapado como <code>&amp;amp;</code>)". O navegador até mostra <code>© 2026 Ana</code> e <code>Bolos &amp; Doces</code>, porque <code>copy</code> e <code>amp</code> são nomes antigos que ele aceita sem o <code>;</code>. Muitos outros nomes não funcionam sem ele: <code>&amp;rarr</code> aparece na tela como texto, letra por letra, e nesse caso o validador nem avisa.</p>
+<p><strong>Como consertar:</strong> <code>&amp;copy;</code> e <code>&amp;amp;</code>, com o ponto e vírgula.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>&amp;</code> que não começa nada: <code>“&amp;” did not start a character reference</code></strong>
+<p>Com <code>&lt;p&gt;P&amp;D;&lt;/p&gt;</code> na linha 8, o validador avisa (o navegador mostra <code>P&amp;D;</code> como está):</p>
+<pre class="term" data-cwd="~/site">$ vnu pd.html
+"file:/home/ana/site/pd.html":8.5-8.5: error: “&amp;” did not start a character reference. (“&amp;” probably should have been escaped as “&amp;amp;”.)</pre>
+<p>"O <code>&amp;</code> não começou uma referência de caractere (provavelmente deveria ter sido escapado como <code>&amp;amp;</code>)". O texto <code>&amp;D;</code> tem cara de entidade, mas <code>D</code> não é nome de nenhuma.</p>
+<p><strong>Como consertar:</strong> <code>P&amp;amp;D;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Nome errado: o erro que o validador não pega</strong>
+<p>A Ana digitou <code>R$&amp;nbps;25</code> (trocou o <code>s</code> de lugar). Na tela aparece, literalmente, <code>R$&amp;nbps;25</code>. E o validador:</p>
+<pre class="term" data-cwd="~/site">$ vnu --verbose preco.html
+preco.html</pre>
+<p>Nenhum erro: com <code>--verbose</code>, ele só mostra o nome do arquivo, o sinal de que achou tudo certo. O validador só reclama de alguns nomes desconhecidos (como o <code>&amp;D;</code> do cenário anterior), não de todos. <code>&amp;nbsx;</code>, <code>&amp;copi;</code>, <code>&amp;Nbsp;</code> e o <code>&amp;rarr</code> sem <code>;</code> também passam calados.</p>
+<p><strong>Como consertar:</strong> olhe a página no navegador. Uma entidade que aparece na tela com <code>&amp;</code> e <code>;</code>, em vez do símbolo, está com o nome errado. Confira na <a href="ref-entidades.html">referência</a>.</p>
+</div>
+
+<div class="cenario">
+<strong>Aspas dentro de um atributo: <code>Quote “"” in attribute name</code></strong>
+<pre class="file" data-file="aspas.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Aspas&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p title="Ela disse "oi""&gt;Oi&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu aspas.html
+"file:/home/ana/site/aspas.html":8.1-8.22: error: No space between attributes.
+"file:/home/ana/site/aspas.html":8.1-8.24: error: Quote “"” in attribute name. Probable cause: Matching quote missing somewhere earlier.
+"file:/home/ana/site/aspas.html":8.1-8.25: error: Quote “"” in attribute name. Probable cause: Matching quote missing somewhere earlier.
+"file:/home/ana/site/aspas.html":8.1-8.26: error: Attribute “oi""” not allowed on element “p” at this point.</pre>
+<p><strong>O que significa:</strong> as aspas antes de <code>oi</code> fecharam o valor. Para o navegador, o <code>title</code> vale só <code>Ela disse </code>, e <code>oi""</code> virou o nome de um <strong>atributo novo</strong>, inventado. Daí as quatro mensagens: "sem espaço entre atributos", "aspas no nome de um atributo" (duas vezes) e "o atributo <code>oi""</code> não é permitido no elemento <code>p</code>".</p>
+<p><strong>Como consertar:</strong> <code>title="Ela disse &amp;quot;oi&amp;quot;"</code> ou <code>title='Ela disse "oi"'</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O travessão de outro sistema: <code>A numeric character reference expanded to the C1 controls range</code></strong>
+<p>Textos copiados de sistemas antigos às vezes trazem <code>&amp;#150;</code> para um travessão. Em <code>&lt;p&gt;Pão &amp;#150; 2 unidades&lt;/p&gt;</code>, na linha 8:</p>
+<pre class="term" data-cwd="~/site">$ vnu travessao.html
+"file:/home/ana/site/travessao.html":8.8-8.13: error: A numeric character reference expanded to the C1 controls range.</pre>
+<p><strong>O que significa:</strong> o 150 é o número do travessão numa tabela antiga do Windows (a Windows-1252), e não no Unicode. No Unicode, a faixa de 128 a 159 é de caracteres de controle invisíveis (a "faixa C1"). O navegador adivinha e mostra <code>–</code>, mas o validador avisa que o número está errado.</p>
+<p><strong>Como consertar:</strong> use o número do Unicode, <code>&amp;#8211;</code>, o nome <code>&amp;ndash;</code>, ou digite <code>–</code> direto.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escreva</th><th>Aparece</th><th>Número</th><th>O que é</th></tr>
+<tr><td><code>&amp;lt;</code></td><td>&lt;</td><td><code>&amp;#60;</code></td><td>menor que (abre tag)</td></tr>
+<tr><td><code>&amp;gt;</code></td><td>&gt;</td><td><code>&amp;#62;</code></td><td>maior que</td></tr>
+<tr><td><code>&amp;amp;</code></td><td>&amp;</td><td><code>&amp;#38;</code></td><td>e comercial (abre entidade)</td></tr>
+<tr><td><code>&amp;quot;</code></td><td>&quot;</td><td><code>&amp;#34;</code></td><td>aspas duplas</td></tr>
+<tr><td><code>&amp;apos;</code></td><td>&apos;</td><td><code>&amp;#39;</code></td><td>aspas simples (apóstrofo)</td></tr>
+<tr><td><code>&amp;nbsp;</code></td><td>(espaço)</td><td><code>&amp;#160;</code></td><td>espaço que não quebra</td></tr>
+<tr><td><code>&amp;copy;</code></td><td>&copy;</td><td><code>&amp;#169;</code></td><td>direitos autorais</td></tr>
+<tr><td><code>&amp;reg;</code></td><td>&reg;</td><td><code>&amp;#174;</code></td><td>marca registrada</td></tr>
+<tr><td><code>&amp;trade;</code></td><td>&trade;</td><td><code>&amp;#8482;</code></td><td>marca (<em>trademark</em>)</td></tr>
+<tr><td><code>&amp;euro;</code></td><td>&euro;</td><td><code>&amp;#8364;</code></td><td>euro</td></tr>
+<tr><td><code>&amp;deg;</code></td><td>&deg;</td><td><code>&amp;#176;</code></td><td>grau</td></tr>
+<tr><td><code>&amp;ordm;</code> / <code>&amp;ordf;</code></td><td>&ordm; / &ordf;</td><td><code>&amp;#186;</code> / <code>&amp;#170;</code></td><td>ordinal (1º, 2ª)</td></tr>
+<tr><td><code>&amp;times;</code> / <code>&amp;divide;</code></td><td>&times; / &divide;</td><td><code>&amp;#215;</code> / <code>&amp;#247;</code></td><td>vezes / dividido</td></tr>
+<tr><td><code>&amp;frac12;</code></td><td>&frac12;</td><td><code>&amp;#189;</code></td><td>meio</td></tr>
+<tr><td><code>&amp;ndash;</code> / <code>&amp;mdash;</code></td><td>&ndash; / &mdash;</td><td><code>&amp;#8211;</code> / <code>&amp;#8212;</code></td><td>traço médio / travessão</td></tr>
+<tr><td><code>&amp;hellip;</code></td><td>&hellip;</td><td><code>&amp;#8230;</code></td><td>reticências</td></tr>
+<tr><td><code>&amp;laquo;</code> / <code>&amp;raquo;</code></td><td>&laquo; / &raquo;</td><td><code>&amp;#171;</code> / <code>&amp;#187;</code></td><td>aspas angulares</td></tr>
+<tr><td><code>&amp;larr;</code> / <code>&amp;rarr;</code></td><td>&larr; / &rarr;</td><td><code>&amp;#8592;</code> / <code>&amp;#8594;</code></td><td>setas</td></tr>
+<tr><td><code>&amp;#xNNNN;</code></td><td>qualquer um</td><td>—</td><td>o número do Unicode em hexadecimal (<code>U+NNNN</code>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Mostrar uma tag</h3>
+<p>Complete para que a tela mostre <code>&lt;p&gt;</code>:</p>
+<div class="ex-code"><input data-answer="&amp;lt;" aria-label="menor que">p&amp;gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O e comercial</h3>
+<p>Complete o título para que a tela mostre <code>Bolos &amp; Doces</code> do jeito seguro:</p>
+<div class="ex-code">&lt;h1&gt;Bolos <input data-answer="&amp;amp;|&amp;#38;|&amp;#x26;" aria-label="e comercial"> Doces&lt;/h1&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Espaço grudado</h3>
+<p>Qual entidade impede que "200" e "g" fiquem em linhas diferentes?</p>
+<div class="ex-code">200<input data-answer="&amp;nbsp;|&amp;#160;|&amp;#xA0;" aria-label="entidade">g</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que a tela mostra para <code>&amp;amp;lt;</code>?</p>
+<label><input type="radio" name="q4"> <code>&lt;</code></label>
+<label><input type="radio" name="q4"> <code>&amp;lt;</code></label>
+<label><input type="radio" name="q4"> <code>&amp;amp;lt;</code></label>
+<label><input type="radio" name="q4"> Nada</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. <code>&amp;#169;</code> e <code>&amp;#xA9;</code> mostram:</p>
+<label><input type="radio" name="q5"> Dois símbolos diferentes</label>
+<label><input type="radio" name="q5"> Um erro, porque falta o nome</label>
+<label><input type="radio" name="q5"> O mesmo <code>©</code>: 169 em decimal é A9 em hexadecimal</label>
+<label><input type="radio" name="q5"> O número 169 e o texto xA9</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. A Ana escreveu <code>&amp;rarr</code> (sem <code>;</code>) e <code>&amp;nbps;</code> (nome trocado). O que é verdade?</p>
+<label><input type="radio" name="q6"> As duas aparecem como texto na tela, e o validador não reclama de nenhuma: é preciso olhar a página</label>
+<label><input type="radio" name="q6"> As duas viram símbolos</label>
+<label><input type="radio" name="q6"> O validador reclama das duas, com <code>not terminated by a semicolon</code></label>
+<label><input type="radio" name="q6"> O navegador mostra uma mensagem de erro</label>
+</div>
+
+<h3>Missão final: o rodapé do blog</h3>
+
+<div class="tryhtml" data-goal="texto:footer=© 2026 Bolos &amp; Doces,texto:footer code=&lt;br&gt;,nsel:footer br=0,src:Bolos &amp;amp; Doces,src:&amp;lt;br">
+<p class="try-task"><strong>Missão:</strong> conserte o rodapé do blog. A primeira linha deve mostrar <code>© 2026 Bolos &amp; Doces</code>, com o <code>&amp;</code> escrito como <code>&amp;amp;</code> (e o <code>©</code> com <code>&amp;copy;</code> ou digitado direto). A segunda deve mostrar a tag <code>&lt;br&gt;</code> <strong>escrita</strong>, dentro do <code>&lt;code&gt;</code>, sem criar uma quebra de linha de verdade.</p>
+<pre class="script" data-file="index.html">&lt;footer&gt;
+  &lt;p&gt;&amp;copy 2026 Bolos &amp; Doces&lt;/p&gt;
+  &lt;p&gt;Dica da semana: a tag &lt;code&gt;&lt;br&gt;&lt;/code&gt; quebra a linha.&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;footer&gt;
+  &lt;p&gt;&amp;copy; 2026 Bolos &amp;amp; Doces&lt;/p&gt;
+  &lt;p&gt;Dica da semana: a tag &lt;code&gt;&amp;lt;br&amp;gt;&lt;/code&gt; quebra a linha.&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<p>Repare que o código inicial até mostrava <code>© 2026 Bolos &amp; Doces</code> certinho na tela: o <code>&amp;copy</code> sem <code>;</code> funcionou por compatibilidade, e o <code>&amp;</code> seguido de espaço passou. "Aparece certo" não quer dizer "está certo": o validador reclamaria do <code>&amp;copy</code>.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;</code> abre tags e <code>&amp;</code> abre entidades. Para mostrá-los como texto, escreva <code>&amp;lt;</code> e <code>&amp;amp;</code>, sempre. O <code>&gt;</code> vira <code>&amp;gt;</code> por clareza.</li>
+  <li>Uma entidade é <code>&amp;</code> + nome + <code>;</code>. Os nomes diferenciam maiúsculas (<code>&amp;eacute;</code> é <code>é</code>, <code>&amp;Eacute;</code> é <code>É</code>).</li>
+  <li><code>&amp;nbsp;</code> é o espaço que não quebra: <code>R$&amp;nbsp;25,90</code>, <code>200&amp;nbsp;g</code>. Não é ferramenta de espaçamento.</li>
+  <li>Referências numéricas escrevem qualquer caractere pelo número do Unicode: <code>&amp;#169;</code> (decimal) ou <code>&amp;#xA9;</code> (hexadecimal).</li>
+  <li>Em atributos: <code>&amp;quot;</code> para aspas dentro de aspas, <code>&amp;amp;</code> entre as partes de um endereço.</li>
+  <li>Com UTF-8, acentos, <code>©</code> e emojis podem ser digitados direto; entidades ficam para os reservados, o <code>&amp;nbsp;</code> e o que não dá para digitar.</li>
+  <li>Validador: <code>not terminated by a semicolon</code> (faltou o <code>;</code>), <code>did not start a character reference</code> (<code>&amp;</code> solto), <code>Bad character … after “&lt;”</code> (<code>&lt;</code> solto). Um nome errado como <code>&amp;nbps;</code> pode passar calado: confira a tela.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
