@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML checkbox e radio — caixas de marcar e botões de opção | Guia HTML</title>
+<meta name="description" content="checkbox e radio em HTML para quem nunca fez um site: caixas de marcar, botões de opção e grupos pelo name, o value que é enviado (e o &quot;on&quot; de quem esquece), checked, required, label clicável, com o resultado real no seu navegador, as mensagens reais do validador W3C e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">checkbox e radio</span></h1>
+
+<p class="intro">Na ficha de encomenda da Ana há dois tipos de pergunta. "Quer vela e cartão?" aceita nenhuma, uma ou as duas respostas. "Qual o tamanho do bolo?" aceita <strong>uma só</strong>: ninguém encomenda um bolo pequeno e grande ao mesmo tempo. Para o primeiro tipo, o HTML tem a <strong>caixa de marcar</strong> (<code>checkbox</code>); para o segundo, o <strong>botão de opção</strong> (<code>radio</code>). Os dois são um <code>&lt;input&gt;</code> com um <code>type</code> diferente. Nesta aula você vai montar os dois, entender como o navegador forma os grupos e o que é enviado, e conhecer os erros que o validador pega e os que ele deixa passar.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como criar uma caixa de marcar (<code>type="checkbox"</code>) e um botão de opção (<code>type="radio"</code>).</li>
+  <li>Como o <code>name</code> junta os botões de opção num <strong>grupo</strong>, em que só um fica marcado.</li>
+  <li>O que é enviado: o <code>value</code> de cada item marcado, e o <code>on</code> de quem esquece o <code>value</code>.</li>
+  <li>Como deixar marcado de saída (<code>checked</code>) e como tornar obrigatório (<code>required</code>).</li>
+  <li>Como ligar o texto ao item com <code>&lt;label&gt;</code>, para clicar no texto também.</li>
+  <li>Os erros mais comuns e as mensagens reais do validador W3C.</li>
+</ul>
+</div>
+
+<p>Você vai precisar de <a href="input.html">O Elemento input</a> e <a href="label.html">label</a>. Os exemplos com o resultado embaixo são desenhados pelo <strong>seu</strong> navegador: marque e desmarque à vontade. O que é enviado foi conferido no <strong>Chromium 155</strong>, e as validações com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: a lista de compras e o rádio do carro</h2>
+<p>Numa <strong>lista de compras</strong> de papel, cada item tem um quadradinho. Você marca quantos quiser: nenhum, um, todos. Cada quadradinho é independente dos outros. Esse é o <strong>checkbox</strong> (<em>check</em> = "marcar", <em>box</em> = "caixa").</p>
+<p>Os rádios antigos de carro tinham uma fileira de botões, um para cada estação. Apertar um fazia o outro <strong>saltar</strong> para fora: só uma estação tocava por vez. Daí vem o nome <strong>radio button</strong>, "botão de rádio". No formulário, ele é a pergunta de resposta única.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>checkbox</th><th>radio</th></tr>
+<tr><td>Formato comum</td><td>um quadradinho ☐</td><td>uma bolinha ○</td></tr>
+<tr><td>Quantos marcados</td><td>nenhum, um ou vários</td><td>um só por grupo</td></tr>
+<tr><td>Clicar de novo</td><td>desmarca</td><td>não desmarca (só marcar outro troca)</td></tr>
+<tr><td>Pergunta típica</td><td>"Quer vela?", "Aceito os termos"</td><td>"Qual o tamanho?"</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. A caixa de marcar: <code>type="checkbox"</code></h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;input type="checkbox" id="vela" name="vela" value="sim"&gt;
+&lt;label for="vela"&gt;Quero vela de aniversário&lt;/label&gt;
+</pre>
+
+<p>Clique no quadradinho: ele marca. Clique de novo: desmarca. Agora clique no <strong>texto</strong> "Quero vela de aniversário": também marca, por causa do <code>&lt;label&gt;</code>.</p>
+
+<dl class="anatomy">
+  <dt>&lt;input type="checkbox"&gt;</dt><dd>Uma caixa de marcar. Como todo <code>&lt;input&gt;</code>, não tem tag de fechamento.</dd>
+  <dt>id="vela"</dt><dd>A identificação usada pelo <code>&lt;label for="vela"&gt;</code>.</dd>
+  <dt>name="vela"</dt><dd>O nome com que a resposta é enviada.</dd>
+  <dt>value="sim"</dt><dd>O valor enviado <strong>quando a caixa está marcada</strong>.</dd>
+  <dt>&lt;label for="vela"&gt;…&lt;/label&gt;</dt><dd>O texto da caixa. Nas caixas e bolinhas, o rótulo costuma vir <strong>depois</strong> do item (nos campos de texto, vem antes). O clique no texto marca a caixa, e isso importa: o quadradinho é pequeno, difícil de acertar com o dedo no celular.</dd>
+</dl>
+
+<h3>O que é enviado</h3>
+<p>Uma caixa marcada é enviada como <code>name=value</code>. Uma caixa <strong>desmarcada não é enviada</strong>: nem o nome aparece. Para quem recebe, "não marcou" é a falta do par.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>A caixa</th><th>Marcada</th><th>Desmarcada</th></tr>
+<tr><td><code>&lt;input type="checkbox" name="vela" value="sim"&gt;</code></td><td><code>vela=sim</code></td><td>nada</td></tr>
+<tr><td><code>&lt;input type="checkbox" name="vela"&gt;</code> (sem <code>value</code>)</td><td><code>vela=on</code></td><td>nada</td></tr>
+</table>
+</div>
+
+<p>Sem <code>value</code>, o navegador envia a palavra <code>on</code> ("ligado"). Testamos no Chromium 155: uma caixa marcada sem <code>value</code> foi enviada como <code>vela=on</code>. Para uma caixa sozinha, isso funciona, mas o <code>value</code> deixa claro o que significa.</p>
+
+<h3>Já marcada: <code>checked</code></h3>
+<p>O atributo booleano <code>checked</code> ("marcado") deixa a caixa marcada quando a página abre. Como todo atributo booleano, basta escrever a palavra (aula <a href="atributos.html">Atributos</a>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;input type="checkbox" id="novidades" name="novidades" value="sim" checked&gt;
+&lt;label for="novidades"&gt;Quero receber as novidades da padaria&lt;/label&gt;
+</pre>
+
+<div class="warning">
+<strong>Não marque por ela</strong>
+<p>Caixa de "quero receber propaganda" já marcada é uma armadilha: muita gente não lê e envia. No Brasil, a LGPD (a lei de proteção de dados) pede que o consentimento seja uma escolha clara da pessoa. Use <code>checked</code> para preferências óbvias, e não para pedir permissão.</p>
+</div>
+
+<hr>
+
+<h2>2. Várias caixas com o mesmo nome</h2>
+<p>Quando as caixas respondem à <strong>mesma pergunta</strong> ("Adicionais"), elas podem ter o mesmo <code>name</code>, cada uma com seu <code>value</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Adicionais:&lt;/p&gt;
+&lt;input type="checkbox" id="granulado" name="adicionais" value="granulado"&gt;
+&lt;label for="granulado"&gt;Granulado&lt;/label&gt;
+&lt;input type="checkbox" id="morango" name="adicionais" value="morango"&gt;
+&lt;label for="morango"&gt;Morangos&lt;/label&gt;
+&lt;input type="checkbox" id="cartao" name="adicionais" value="cartao"&gt;
+&lt;label for="cartao"&gt;Cartão&lt;/label&gt;
+</pre>
+
+<p>Repare: o <code>name</code> se repete, mas cada <code>id</code> é diferente. O <code>id</code> nunca pode repetir na página (veja em <a href="#errado">Quando dá errado</a>). Cada caixa marcada vira um par, todos com o mesmo nome. Testamos no Chromium 155 com Granulado e Morangos marcados: <code>adicionais=granulado&amp;adicionais=morango</code>. Mesmo com o mesmo nome, as caixas continuam <strong>independentes</strong>: marcar uma não desmarca a outra.</p>
+
+<hr>
+
+<h2>3. O botão de opção: <code>type="radio"</code></h2>
+<p>Agora a pergunta de resposta única. Os botões de opção de uma mesma pergunta formam um <strong>grupo</strong>, e quem forma o grupo é o <code>name</code>: todos os <code>radio</code> com o mesmo <code>name</code> no mesmo formulário são um grupo só.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Tamanho do bolo:&lt;/p&gt;
+&lt;input type="radio" id="tam-p" name="tamanho" value="p"&gt;
+&lt;label for="tam-p"&gt;Pequeno&lt;/label&gt;
+&lt;input type="radio" id="tam-m" name="tamanho" value="m" checked&gt;
+&lt;label for="tam-m"&gt;Médio&lt;/label&gt;
+&lt;input type="radio" id="tam-g" name="tamanho" value="g"&gt;
+&lt;label for="tam-g"&gt;Grande&lt;/label&gt;
+</pre>
+
+<p>Marque Pequeno: Médio desmarca sozinho. Tente desmarcar Pequeno clicando nele de novo: não dá. Num grupo de rádio, a única forma de tirar a marca é marcar outro. Com o teclado, chegue no grupo com <kbd>Tab</kbd> e use as <strong>setas</strong> para trocar: o <kbd>Tab</kbd> pula o grupo inteiro de uma vez.</p>
+
+<dl class="anatomy">
+  <dt>name="tamanho"</dt><dd>O mesmo nos três: é isso que faz deles um grupo. É também o nome do envio.</dd>
+  <dt>value="p"</dt><dd>O valor enviado se este for o escolhido: <code>tamanho=p</code>. No rádio, o <code>value</code> é <strong>indispensável</strong>: sem ele, os três enviariam o mesmo <code>tamanho=on</code>, e ninguém saberia qual foi.</dd>
+  <dt>checked</dt><dd>O marcado de saída. No máximo um por grupo.</dd>
+  <dt>id="tam-p"</dt><dd>Cada um tem o seu, para o seu <code>&lt;label&gt;</code>.</dd>
+</dl>
+
+<p>E se nenhum tiver <code>checked</code>? O grupo começa <strong>sem nada marcado</strong> e, se a pessoa não escolher, nada é enviado. Depois que ela marca um, não consegue mais voltar ao "nada".</p>
+
+<div class="note">
+<strong>O texto "Tamanho do bolo:" num <code>&lt;p&gt;</code>?</strong>
+<p>Funciona para a vista, mas o leitor de tela não liga esse parágrafo ao grupo: ele anuncia "Pequeno, botão de opção" sem dizer que é o tamanho. O jeito certo de dar um título a um grupo é o <code>&lt;fieldset&gt;</code> com <code>&lt;legend&gt;</code>, a próxima aula: <a href="fieldset.html">fieldset e legend</a>.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:input[type=radio][name=entrega]=2,sel:input[name=entrega][value=retirar],sel:input[name=entrega][value=casa],nsel:input[type=radio]:not([name=entrega])=0">
+<p class="try-task"><strong>Missão:</strong> estes dois botões deveriam ser um grupo, mas cada um tem um <code>name</code> diferente. Marque os dois no resultado e veja o problema. Depois conserte: os dois com <code>name="entrega"</code>, e com os valores <code>retirar</code> e <code>casa</code>. Teste de novo: agora só um fica marcado.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Como você quer receber?&lt;/p&gt;
+&lt;input type="radio" id="retirar" name="retirar"&gt;
+&lt;label for="retirar"&gt;Retirar na padaria&lt;/label&gt;
+&lt;input type="radio" id="casa" name="casa"&gt;
+&lt;label for="casa"&gt;Entregar em casa&lt;/label&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Como você quer receber?&lt;/p&gt;
+&lt;input type="radio" id="retirar" name="entrega" value="retirar"&gt;
+&lt;label for="retirar"&gt;Retirar na padaria&lt;/label&gt;
+&lt;input type="radio" id="casa" name="entrega" value="casa"&gt;
+&lt;label for="casa"&gt;Entregar em casa&lt;/label&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. O rótulo por fora ou por dentro</h2>
+<p>Até aqui, o <code>&lt;label&gt;</code> veio ao lado, ligado pelo <code>for</code> e pelo <code>id</code>. Existe outra forma: pôr o item <strong>dentro</strong> do rótulo. Aí não precisa de <code>for</code> nem de <code>id</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label&gt;&lt;input type="radio" name="cobertura" value="chocolate"&gt; Chocolate&lt;/label&gt;
+&lt;label&gt;&lt;input type="radio" name="cobertura" value="brigadeiro"&gt; Brigadeiro&lt;/label&gt;
+&lt;label&gt;&lt;input type="radio" name="cobertura" value="nenhuma"&gt; Sem cobertura&lt;/label&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>Escrita</th><th>Quando</th></tr>
+<tr><td>Por fora</td><td><code>&lt;input id="x" …&gt; &lt;label for="x"&gt;Texto&lt;/label&gt;</code></td><td>Quando o texto fica longe do item (numa tabela, numa coluna separada).</td></tr>
+<tr><td>Por dentro</td><td><code>&lt;label&gt;&lt;input …&gt; Texto&lt;/label&gt;</code></td><td>Quando o texto fica colado no item. Menos atributos para errar.</td></tr>
+</table>
+</div>
+
+<p>As duas funcionam igual: o clique no texto marca o item, e o leitor de tela lê o texto. O que não pode é pôr <strong>dois</strong> itens dentro do mesmo rótulo (você vai ver o erro adiante).</p>
+
+<hr>
+
+<h2>5. Obrigatório: <code>required</code></h2>
+<p>O <code>required</code> ("obrigatório") funciona diferente em cada tipo:</p>
+<ul>
+  <li>Numa <strong>caixa de marcar</strong>, ele exige que <strong>aquela</strong> caixa esteja marcada. Serve para "Li e aceito as regras da encomenda".</li>
+  <li>Num <strong>grupo de rádio</strong>, basta escrever <code>required</code> em um dos botões, e o grupo inteiro passa a exigir uma escolha. No Chromium 155, com <code>required</code> só no primeiro botão, o grupo ficou inválido com nada marcado e válido assim que marcamos o <strong>segundo</strong>. Para quem lê o código, o costume é escrever <code>required</code> no primeiro.</li>
+</ul>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form&gt;
+  &lt;p&gt;Pagamento:&lt;/p&gt;
+  &lt;label&gt;&lt;input type="radio" name="pagamento" value="pix" required&gt; Pix&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="pagamento" value="dinheiro"&gt; Dinheiro&lt;/label&gt;
+  &lt;p&gt;&lt;label&gt;&lt;input type="checkbox" name="regras" value="aceito" required&gt; Li e aceito as regras da encomenda&lt;/label&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Clique em <strong>Enviar pedido</strong> sem marcar nada: o navegador não envia e mostra um balão no primeiro item que falta. O texto do balão é do navegador e muda de um para outro. A aula <a href="validacao.html">Validação</a> conta tudo sobre essas mensagens.</p>
+
+<hr>
+
+<h2>Formas diferentes: qual usar?</h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>A pergunta</th><th>Use</th></tr>
+<tr><td>Sim ou não, sozinha ("Quero vela")</td><td>uma caixa <code>checkbox</code></td></tr>
+<tr><td>Várias respostas possíveis, poucas opções</td><td>caixas <code>checkbox</code> com o mesmo <code>name</code></td></tr>
+<tr><td>Uma resposta, de 2 a uns 5 opções</td><td>um grupo de <code>radio</code> (tudo à vista)</td></tr>
+<tr><td>Uma resposta, muitas opções (estado, bairro)</td><td><a href="select.html"><code>&lt;select&gt;</code></a></td></tr>
+<tr><td>Várias respostas, muitas opções</td><td><code>&lt;select multiple&gt;</code> ou caixas em colunas</td></tr>
+</table>
+</div>
+
+<p>Uma dica de desenho: uma caixa sozinha deve fazer sentido marcada <strong>e</strong> desmarcada. "Quero vela" funciona; "Sim" e "Não" como duas caixas, não (a pessoa pode marcar as duas). Para "sim ou não" com duas opções, use dois rádios.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos desta seção são páginas completas com o mesmo começo de 7 linhas (<code>&lt;!DOCTYPE html&gt;</code> até <code>&lt;body&gt;</code>, como em <a href="estrutura.html">Estrutura de uma Página</a>). O código mostrado começa na <strong>linha 8</strong>. Atenção: vários erros desta aula <strong>não</strong> aparecem no validador, porque o HTML está correto e o problema é de sentido.</p>
+
+<div class="cenario">
+<strong>Rádios com nomes diferentes: dá para marcar todos</strong>
+<p>Como na primeira missão: cada botão com um <code>name</code> é um grupo de um botão só. A pessoa marca dois, três, e não consegue desmarcar nenhum. O validador não reclama: para ele, são vários grupos de uma opção.</p>
+<p><strong>Como consertar:</strong> o mesmo <code>name</code> em todos os botões da mesma pergunta.</p>
+</div>
+
+<div class="cenario">
+<strong>Rádio sem <code>value</code>: chega <code>on</code></strong>
+<p>Com <code>&lt;input type="radio" name="tamanho"&gt;</code> nos três botões, o envio é sempre <code>tamanho=on</code>, qualquer que seja o escolhido. O validador não reclama: <code>value</code> não é obrigatório.</p>
+<p><strong>Como consertar:</strong> cada rádio com o seu <code>value</code>: <code>value="p"</code>, <code>value="m"</code>, <code>value="g"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Dois <code>checked</code> no mesmo grupo</strong>
+<p>Com <code>checked</code> em Pequeno e em Grande, o validador fica quieto, e o navegador marca o <strong>último</strong>: no Chromium 155, só Grande ficou marcado, e o envio foi <code>tamanho=g</code>. Quem lê o código acha que é Pequeno.</p>
+<p><strong>Como consertar:</strong> <code>checked</code> em um só.</p>
+</div>
+
+<div class="cenario">
+<strong><code>checked="false"</code> continua marcado</strong>
+<pre class="file" data-file="falso.html">&lt;input type="checkbox" name="vela" checked="false"&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu falso.html
+"file:/home/ana/site/falso.html":8.1-8.51: error: Bad value “false” for attribute “checked” on element “input”.</pre>
+<p><strong>O que significa:</strong> "valor ruim, <code>false</code>, para o atributo <code>checked</code>". Um atributo booleano vale pela <strong>presença</strong>, e não pelo valor. Os únicos valores aceitos são nenhum (<code>checked</code>), vazio (<code>checked=""</code>) ou o próprio nome (<code>checked="checked"</code>).</p>
+<p><strong>O que o navegador faz:</strong> vê que o atributo existe e marca a caixa. No Chromium 155, essa caixa veio marcada e foi enviada como <code>vela=on</code>. O <code>"false"</code> foi ignorado.</p>
+<p><strong>Como consertar:</strong> para desmarcada, <strong>apague</strong> o atributo.</p>
+</div>
+
+<div class="cenario">
+<strong>Dois itens dentro do mesmo rótulo</strong>
+<pre class="file" data-file="rotulo.html">&lt;label&gt;Tamanho &lt;input type="radio" name="tam" value="p"&gt; P &lt;input type="radio" name="tam" value="g"&gt; G&lt;/label&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu rotulo.html
+"file:/home/ana/site/rotulo.html":8.60-8.100: error: The “label” element may contain at most one “button”, “input”, “meter”, “output”, “progress”, “select”, or “textarea” descendant.
+"file:/home/ana/site/rotulo.html":8.1-8.7: info warning: “label” element with multiple labelable descendants.</pre>
+<p><strong>O que significa:</strong> o erro diz "o elemento <code>label</code> pode ter no máximo um <code>button</code>, <code>input</code>, … dentro dele" e aponta o segundo rádio (coluna 60). A linha <code>info warning</code> é um <strong>aviso informativo</strong>, que não conta como erro: "<code>label</code> com vários elementos rotuláveis dentro", apontando o começo do rótulo.</p>
+<p><strong>O que o navegador faz:</strong> liga o rótulo só ao <strong>primeiro</strong> item. Clicar em "G" marca o P.</p>
+<p><strong>Como consertar:</strong> um <code>&lt;label&gt;</code> para cada item: <code>&lt;label&gt;&lt;input type="radio" name="tam" value="p"&gt; P&lt;/label&gt;</code> e outro para o G. O título "Tamanho" vai num <code>&lt;legend&gt;</code> (aula <a href="fieldset.html">fieldset e legend</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>id</code> copiado e colado</strong>
+<pre class="file" data-file="copiado.html">&lt;input type="checkbox" id="vela" name="vela"&gt;&lt;label for="vela"&gt;Vela&lt;/label&gt;
+&lt;input type="checkbox" id="vela" name="cartao"&gt;&lt;label for="vela"&gt;Cartão&lt;/label&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu copiado.html
+"file:/home/ana/site/copiado.html":9.1-9.47: error: Duplicate ID “vela”.
+"file:/home/ana/site/copiado.html":8.1-8.45: info warning: The first occurrence of ID “vela” was here.</pre>
+<p><strong>O que significa:</strong> "<code>id</code> repetido: <code>vela</code>", e o aviso informativo mostra onde ele apareceu pela primeira vez (linha 8). É o erro clássico de quem copia uma linha e troca só o <code>name</code>.</p>
+<p><strong>O que o navegador faz:</strong> o <code>for="vela"</code> sempre encontra o <strong>primeiro</strong> <code>id="vela"</code>. Clicar em "Cartão" marca e desmarca a caixa da <strong>vela</strong>.</p>
+<p><strong>Como consertar:</strong> <code>id="cartao"</code> e <code>for="cartao"</code> na segunda linha. Ao copiar, troque <code>id</code>, <code>name</code> (se for outra pergunta), <code>value</code> e <code>for</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;input type="checkbox" name="n" value="v"&gt;</code></td><td>Caixa de marcar; marcada, envia <code>n=v</code>; desmarcada, nada</td></tr>
+<tr><td><code>&lt;input type="radio" name="n" value="v"&gt;</code></td><td>Botão de opção; os do mesmo <code>name</code> formam um grupo de resposta única</td></tr>
+<tr><td>sem <code>value</code></td><td>Envia <code>n=on</code></td></tr>
+<tr><td><code>checked</code></td><td>Vem marcado; num grupo de rádio, só um</td></tr>
+<tr><td><code>required</code></td><td>Na caixa: tem de ser marcada. No rádio: o grupo exige uma escolha</td></tr>
+<tr><td><code>disabled</code></td><td>Desliga o item; ele não é enviado (aula <a href="atributos-input.html">placeholder, value, autocomplete…</a>)</td></tr>
+<tr><td><code>&lt;input id="x"&gt;&lt;label for="x"&gt;…&lt;/label&gt;</code></td><td>Rótulo por fora, ligado pelo <code>id</code></td></tr>
+<tr><td><code>&lt;label&gt;&lt;input …&gt; Texto&lt;/label&gt;</code></td><td>Rótulo por dentro, um item por rótulo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O tipo</h3>
+<p>Complete para criar a caixa de "aceito as regras":</p>
+<div class="ex-code">&lt;input type="<input data-answer="checkbox" aria-label="tipo">" name="regras" value="aceito"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Já marcado</h3>
+<p>Complete para o botão Médio vir marcado:</p>
+<div class="ex-code">&lt;input type="radio" name="tamanho" value="m" <input data-answer="checked|checked=&quot;&quot;|checked=&quot;checked&quot;" aria-label="atributo">&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. O que forma um grupo de botões de opção, em que só um fica marcado?</p>
+<label><input type="radio" name="q3"> O mesmo <code>id</code></label>
+<label><input type="radio" name="q3"> O mesmo <code>name</code></label>
+<label><input type="radio" name="q3"> O mesmo <code>value</code></label>
+<label><input type="radio" name="q3"> Estarem dentro do mesmo <code>&lt;p&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. Uma caixa <code>&lt;input type="checkbox" name="cartao" value="sim"&gt;</code> está <strong>desmarcada</strong>. O que é enviado?</p>
+<label><input type="radio" name="q4"> <code>cartao=nao</code></label>
+<label><input type="radio" name="q4"> <code>cartao=off</code></label>
+<label><input type="radio" name="q4"> <code>cartao=</code></label>
+<label><input type="radio" name="q4"> Nada</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Três rádios <code>name="cor"</code> sem <code>value</code>. A pessoa escolhe o segundo. O que é enviado?</p>
+<label><input type="radio" name="q5"> <code>cor=on</code></label>
+<label><input type="radio" name="q5"> <code>cor=2</code></label>
+<label><input type="radio" name="q5"> o texto do rótulo do segundo</label>
+<label><input type="radio" name="q5"> nada</label>
+</div>
+
+<h3>Missão final: tamanho e adicionais</h3>
+
+<div class="tryhtml" data-goal="nsel:input[type=radio][name=tamanho]=3,sel:input[type=radio][name=tamanho][value=m][checked],nsel:input[type=radio][name=tamanho][checked]=1,nsel:input[type=checkbox][name=adicionais]=2,sel:input[type=checkbox][value=vela],sel:input[type=checkbox][value=cartao],nsel:input:not([type=radio]):not([type=checkbox])=0,nsel:label input=5">
+<p class="try-task"><strong>Missão:</strong> monte as duas perguntas da ficha, cada item <strong>dentro</strong> do seu <code>&lt;label&gt;</code>:</p>
+<ul class="try-task">
+  <li>Tamanho: três rádios com <code>name="tamanho"</code> e os valores <code>p</code>, <code>m</code> e <code>g</code> (Pequeno, Médio, Grande), com o Médio já marcado;</li>
+  <li>Adicionais: duas caixas com <code>name="adicionais"</code> e os valores <code>vela</code> e <code>cartao</code> (Vela, Cartão), as duas desmarcadas.</li>
+</ul>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;Tamanho:&lt;/p&gt;
+  &lt;!-- três rádios aqui --&gt;
+
+  &lt;p&gt;Adicionais:&lt;/p&gt;
+  &lt;!-- duas caixas aqui --&gt;
+
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;Tamanho:&lt;/p&gt;
+  &lt;label&gt;&lt;input type="radio" name="tamanho" value="p"&gt; Pequeno&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="tamanho" value="m" checked&gt; Médio&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="tamanho" value="g"&gt; Grande&lt;/label&gt;
+
+  &lt;p&gt;Adicionais:&lt;/p&gt;
+  &lt;label&gt;&lt;input type="checkbox" name="adicionais" value="vela"&gt; Vela&lt;/label&gt;
+  &lt;label&gt;&lt;input type="checkbox" name="adicionais" value="cartao"&gt; Cartão&lt;/label&gt;
+
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>Com Médio e Vela marcados, este formulário enviaria <code>tamanho=m&amp;adicionais=vela</code>. Na próxima aula, os dois parágrafos "Tamanho:" e "Adicionais:" viram <code>&lt;legend&gt;</code> de verdade.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>type="checkbox"</code>: caixa de marcar, independente das outras. <code>type="radio"</code>: botão de opção, um só marcado por grupo.</li>
+  <li>O grupo de rádio é formado pelo <strong>mesmo <code>name</code></strong>. Nomes diferentes = grupos diferentes = dá para marcar todos.</li>
+  <li>Marcado, o item envia <code>name=value</code>; desmarcado, não envia nada. Sem <code>value</code>, vai <code>on</code>: no rádio, o <code>value</code> é indispensável.</li>
+  <li><code>checked</code> marca de saída (no rádio, um por grupo); é booleano, e <code>checked="false"</code> continua marcado.</li>
+  <li><code>required</code> na caixa obriga a marcá-la; em um rádio, obriga o grupo a ter uma escolha.</li>
+  <li>Todo item tem o seu <code>&lt;label&gt;</code>, por fora (<code>for</code>/<code>id</code>, sem repetir <code>id</code>) ou por dentro (um item por rótulo).</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
