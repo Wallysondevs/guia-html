@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Quebras — br e hr | Guia HTML</title>
+<meta name="description" content="Quebras em HTML para quem nunca fez um site: br para pular uma linha dentro do mesmo texto (poemas, endereços), hr para marcar uma mudança de assunto, elementos vazios sem fechamento, a barra de br/, o wbr para palavras compridas e os erros reais do validador W3C com &lt;/br&gt;, &lt;hr&gt;&lt;/hr&gt; e hr dentro de parágrafo, com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Quebras</span></h1>
+
+<p class="intro">Na aula de <a href="paragrafos.html">Parágrafos</a> você viu que o navegador ignora as quebras de linha do código. Mas às vezes a linha nova faz parte do texto: num poema, cada verso tem a sua linha; num endereço, a rua vem numa linha e a cidade em outra. Para isso existe o <code>&lt;br&gt;</code>. E quando a página muda de assunto, como no fim de uma receita e no começo de outra, existe o <code>&lt;hr&gt;</code>, que desenha uma linha horizontal. Os dois são <strong>elementos vazios</strong>: não têm conteúdo nem tag de fechamento.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O <code>&lt;br&gt;</code>: pular uma linha <strong>dentro</strong> do mesmo texto, e quando usá-lo (poemas, endereços) ou não (espaçamento, listas).</li>
+  <li>O <code>&lt;hr&gt;</code>: marcar uma <strong>mudança de assunto</strong>, e não só desenhar uma linha.</li>
+  <li>O que é um elemento vazio, e por que <code>&lt;/br&gt;</code> e <code>&lt;hr&gt;&lt;/hr&gt;</code> estão errados.</li>
+  <li>A barra de <code>&lt;br/&gt;</code> e <code>&lt;br /&gt;</code>: de onde ela vem e o que o validador diz dela.</li>
+  <li>O <code>&lt;wbr&gt;</code>, um "pode quebrar aqui" para palavras compridas.</li>
+  <li>O que o navegador faz com um <code>&lt;hr&gt;</code> dentro de um parágrafo, e os atributos antigos do <code>hr</code>.</li>
+</ul>
+</div>
+
+<p>Os exemplos são desenhados <strong>pelo seu navegador</strong>, no quadro "Resultado". As mensagens do validador saíram do <code>vnu</code> (o validador do W3C) na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: o "Enter" e a linha pontilhada</h2>
+<p>Pense num caderno. Quando você copia um poema, aperta o "Enter" no fim de cada verso: o poema continua sendo um texto só, mas cada verso começa numa linha nova. Esse "Enter" é o <code>&lt;br&gt;</code> (de <em>break</em>, "quebra"; em inglês, <em>line break</em> é "quebra de linha").</p>
+
+<p>Quando você termina um assunto e começa outro no mesmo caderno, talvez faça um traço de um lado a outro da página, para mostrar que dali em diante é outra coisa. Esse traço é o <code>&lt;hr&gt;</code> (de <em>horizontal rule</em>, "linha horizontal"; o HTML de hoje o chama de <em>thematic break</em>, "quebra de assunto").</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>No caderno</th><th>Quer dizer</th></tr>
+<tr><td><code>&lt;br&gt;</code></td><td>O "Enter" no fim de um verso</td><td>"Continue na linha de baixo, no mesmo texto"</td></tr>
+<tr><td><code>&lt;hr&gt;</code></td><td>O traço entre dois assuntos</td><td>"Aqui termina um assunto e começa outro"</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O <code>&lt;br&gt;</code>: pular uma linha</h2>
+<p>Esta quadrinha popular foi digitada com um verso por linha. Sem <code>&lt;br&gt;</code>, o navegador junta tudo, como você viu em <a href="paragrafos.html">Parágrafos</a>:</p>
+
+<pre class="file" data-file="sem-br.html" data-resultado>&lt;p&gt;Batatinha quando nasce
+espalha a rama pelo chão.
+Menininha quando dorme
+põe a mão no coração.&lt;/p&gt;
+</pre>
+
+<p>Agora com um <code>&lt;br&gt;</code> no fim de cada verso (menos no último):</p>
+
+<pre class="file" data-file="com-br.html" data-resultado>&lt;p&gt;Batatinha quando nasce&lt;br&gt;
+espalha a rama pelo chão.&lt;br&gt;
+Menininha quando dorme&lt;br&gt;
+põe a mão no coração.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;br&gt;</dt><dd>"Quebre a linha aqui." O texto que vem depois começa na linha de baixo, <strong>sem</strong> o espaço maior que fica entre dois parágrafos.</dd>
+  <dt>(sem &lt;/br&gt;)</dt><dd>O <code>&lt;br&gt;</code> não tem tag de fechamento, porque não tem nada dentro: ele é a quebra. Elementos assim se chamam <strong>elementos vazios</strong> (<em>void elements</em>).</dd>
+  <dt>a quebra de linha do código</dt><dd>Continua sendo ignorada. Ela está ali só para o código ficar fácil de ler; quem quebra a linha na tela é o <code>&lt;br&gt;</code>. Você poderia escrever os quatro versos numa linha só do código, com os <code>&lt;br&gt;</code> no meio, e o resultado seria o mesmo.</dd>
+  <dt>&lt;p&gt;…&lt;/p&gt;</dt><dd>O poema inteiro continua sendo <strong>um</strong> parágrafo. O <code>&lt;br&gt;</code> fica dentro do <code>&lt;p&gt;</code>, no meio do texto.</dd>
+</dl>
+
+<div class="tryhtml" data-goal="nsel:p=1,nsel:p br=3">
+<p class="try-task"><strong>Experimente:</strong> o poema abaixo saiu numa linha só. Coloque um <code>&lt;br&gt;</code> no fim de cada verso, menos no último, para cada verso ficar na sua linha. Tudo dentro do mesmo parágrafo.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Fui ao mercado comprar café,
+a formiguinha subiu no meu pé.
+Eu sacudi, sacudi, sacudi,
+mas a formiguinha não parava de subir.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Fui ao mercado comprar café,&lt;br&gt;
+a formiguinha subiu no meu pé.&lt;br&gt;
+Eu sacudi, sacudi, sacudi,&lt;br&gt;
+mas a formiguinha não parava de subir.&lt;/p&gt;
+</pre>
+</div>
+
+<h3>Quando usar o <code>&lt;br&gt;</code></h3>
+<p>Use o <code>&lt;br&gt;</code> quando a quebra de linha <strong>faz parte do texto</strong>, ou seja, quando o texto ficaria errado sem ela:</p>
+<ul>
+  <li>versos de poemas e letras de música;</li>
+  <li>as linhas de um endereço (o endereço de contato tem elemento próprio, o <code>&lt;address&gt;</code>, na aula <a href="endereco.html">Endereço</a>, e lá dentro o <code>&lt;br&gt;</code> também é usado);</li>
+  <li>a assinatura no fim de uma mensagem ("Um abraço,<code>&lt;br&gt;</code>Ana").</li>
+</ul>
+
+<pre class="file" data-file="endereco.html" data-resultado>&lt;p&gt;Lojinha da Ana&lt;br&gt;
+Rua das Flores, 123&lt;br&gt;
+Centro – São Paulo&lt;/p&gt;
+</pre>
+
+<h3>Quando <strong>não</strong> usar</h3>
+<p>O <code>&lt;br&gt;</code> não é ferramenta de espaçamento nem de organização. Os usos errados mais comuns:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O erro</th><th>Por que é ruim</th><th>O certo</th></tr>
+<tr><td><code>&lt;br&gt;&lt;br&gt;</code> para separar dois parágrafos</td><td>Vira um parágrafo só, com um buraco no meio. Quem usa leitor de tela não fica sabendo que ali começa outro assunto.</td><td>Dois <code>&lt;p&gt;</code></td></tr>
+<tr><td>Vários <code>&lt;br&gt;</code> seguidos para "dar espaço"</td><td>O tamanho do espaço muda com a letra, e o código fica cheio de tags sem significado.</td><td>Margem com CSS (quer aprender mais? futuro Guia CSS)</td></tr>
+<tr><td>Uma "lista" de itens separados por <code>&lt;br&gt;</code></td><td>Para o navegador e para o leitor de tela, é um texto corrido, sem itens.</td><td>Uma lista de verdade (aula <a href="listas.html">Listas com Marcadores</a>)</td></tr>
+</table>
+</div>
+
+<p>O validador <strong>não</strong> reclama desses usos: três <code>&lt;br&gt;</code> seguidos entre dois parágrafos passam sem nenhuma mensagem. É uma questão de bom senso, que o validador não consegue julgar. Veja como a "lista" feita com <code>&lt;br&gt;</code> parece certa na tela, mas para o navegador é só um parágrafo:</p>
+
+<pre class="file" data-file="lista-br.html" data-resultado>&lt;p&gt;Ingredientes:&lt;br&gt;
+3 cenouras&lt;br&gt;
+3 ovos&lt;br&gt;
+1 xícara de óleo&lt;/p&gt;
+</pre>
+
+<hr>
+
+<h2>2. O <code>&lt;hr&gt;</code>: mudança de assunto</h2>
+<p>A página de sobremesas da Ana tem duas receitas. Entre uma e outra, um <code>&lt;hr&gt;</code>:</p>
+
+<pre class="file" data-file="sobremesas.html" data-resultado>&lt;h1&gt;Sobremesas&lt;/h1&gt;
+&lt;h2&gt;Pudim de leite&lt;/h2&gt;
+&lt;p&gt;Leite condensado, leite, ovos e calda de açúcar.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Mousse de maracujá&lt;/h2&gt;
+&lt;p&gt;Suco de maracujá, leite condensado e creme de leite.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;hr&gt;</dt><dd>Uma quebra de assunto. O navegador a desenha como uma linha horizontal, de um lado a outro, com um espaço em cima e embaixo.</dd>
+  <dt>(sem &lt;/hr&gt;)</dt><dd>Também é um elemento vazio: nada de fechamento.</dd>
+  <dt>fora do &lt;p&gt;</dt><dd>O <code>&lt;hr&gt;</code> é um bloco e fica <strong>entre</strong> os parágrafos, nunca dentro de um (veja em <a href="#errado">Quando dá errado</a>).</dd>
+</dl>
+
+<p>O nome antigo era "linha horizontal", e muita gente ainda o usa só para enfeitar. Mas, no HTML de hoje, o <code>&lt;hr&gt;</code> tem um <strong>significado</strong>: "aqui muda o assunto". Os leitores de tela costumam anunciá-lo como um separador. Use-o:</p>
+<ul>
+  <li>entre duas receitas, duas notícias curtas ou duas partes independentes da mesma página;</li>
+  <li>numa história, para marcar uma mudança de cena ("Três anos depois…");</li>
+  <li>antes do rodapé de uma mensagem, separando o texto principal das observações.</li>
+</ul>
+
+<div class="tip">
+<strong>Título já separa</strong>
+<p>Se o novo assunto começa com um título (<code>&lt;h2&gt;</code>), o título já mostra a mudança, e o <code>&lt;hr&gt;</code> é opcional. Ele brilha onde não há título: entre cenas de um conto, entre dois avisos curtos. Uma linha só de enfeite (uma borda colorida embaixo do cabeçalho, por exemplo) é trabalho do CSS.</p>
+</div>
+
+<p>Este guia usa <code>&lt;hr&gt;</code> entre as partes de cada aula: repare nas linhas desta página.</p>
+
+<hr>
+
+<h2>3. Elementos vazios e a barra de <code>&lt;br/&gt;</code></h2>
+<p>O <code>&lt;br&gt;</code> e o <code>&lt;hr&gt;</code> fazem parte de um grupo pequeno de elementos que nunca têm conteúdo. Você já conhece ou vai conhecer outros: <code>&lt;img&gt;</code> (imagem), <code>&lt;meta&gt;</code>, <code>&lt;link&gt;</code>, <code>&lt;input&gt;</code> (campo de formulário) e o <code>&lt;wbr&gt;</code> da seção 4. Para todos eles, a regra é a mesma: <strong>só a tag de abertura</strong>.</p>
+
+<p>Em muitos sites e tutoriais você vai ver <code>&lt;br/&gt;</code> ou <code>&lt;br /&gt;</code>, com uma barra no fim. Essa barra vem do <strong>XHTML</strong>, uma versão antiga e mais rígida do HTML (aula <a href="versoes.html">Versões do HTML</a>), que exigia "fechar" todo elemento vazio. No HTML de hoje, a barra é permitida, mas não faz nada:</p>
+
+<pre class="file" data-file="barra.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Rua das Flores, 123&lt;br/&gt;
+Centro&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu barra.html
+"file:/home/ana/site/barra.html":8.23-8.27: info: Trailing slash on void elements has no effect and interacts badly with unquoted attribute values.
+$ echo $?
+0                        « não é erro</pre>
+
+<dl class="anatomy">
+  <dt>info:</dt><dd>Uma <strong>informação</strong>, o nível mais leve de mensagem. O código de saída continua 0: o HTML é válido.</dd>
+  <dt>Trailing slash on void elements has no effect</dt><dd>"A barra no fim de elementos vazios não tem efeito." O navegador monta exatamente o mesmo <code>&lt;br&gt;</code>, com ou sem barra.</dd>
+  <dt>and interacts badly with unquoted attribute values</dt><dd>"e se dá mal com valores de atributo sem aspas." Um exemplo: em <code>&lt;img src=foto.jpg/&gt;</code>, sem aspas, a barra vira parte do endereço (<code>foto.jpg/</code>), e a imagem não aparece. Com aspas (<code>src="foto.jpg"</code>), como o guia sempre escreve, o problema não existe.</dd>
+</dl>
+
+<p>Este guia escreve <code>&lt;br&gt;</code> e <code>&lt;hr&gt;</code>, sem barra. Se você trabalhar num projeto que usa a barra, tudo bem: mantenha o estilo do projeto.</p>
+
+<hr>
+
+<h2>4. <code>&lt;wbr&gt;</code>: "pode quebrar aqui"</h2>
+<p>O navegador quebra as linhas nos espaços entre as palavras. Uma palavra enorme, sem espaço nenhum, não tem onde quebrar e pode <strong>vazar</strong> para fora da caixa onde está, principalmente na tela estreita de um celular. O <code>&lt;wbr&gt;</code> (de <em>word break opportunity</em>, "oportunidade de quebra de palavra") marca os pontos onde a palavra <strong>pode</strong> ser quebrada, se faltar espaço. Se couber, nada muda.</p>
+
+<p>No exemplo, o atributo <code>style</code> só serve para desenhar uma caixa estreita, de borda cinza, onde a palavra não cabe (CSS tem aula própria: <a href="atributo-style.html">O Atributo style</a>). A primeira palavra vaza da caixa; a segunda, com <code>&lt;wbr&gt;</code>, quebra nos pontos marcados:</p>
+
+<pre class="file" data-file="wbr.html" data-resultado>&lt;p style="width: 10em; border: 1px solid gray;"&gt;pneumoultramicroscopicossilicovulcanoconiótico&lt;/p&gt;
+&lt;p style="width: 10em; border: 1px solid gray;"&gt;pneumo&lt;wbr&gt;ultra&lt;wbr&gt;microscopico&lt;wbr&gt;ssilico&lt;wbr&gt;vulcano&lt;wbr&gt;coniótico&lt;/p&gt;
+</pre>
+
+<p>A diferença para o <code>&lt;br&gt;</code>: o <code>&lt;br&gt;</code> <strong>sempre</strong> quebra a linha; o <code>&lt;wbr&gt;</code> só quebra <strong>se precisar</strong>, e sem colocar hífen. É raro precisar dele; serve para palavras muito compridas e endereços de sites longos escritos no meio do texto.</p>
+
+<hr>
+
+<h2>5. Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>Um assunto novo, em bloco próprio</td><td>Um novo <code>&lt;p&gt;</code> (aula <a href="paragrafos.html">Parágrafos</a>)</td></tr>
+<tr><td>Uma linha nova dentro do mesmo texto (verso, linha de endereço)</td><td><code>&lt;br&gt;</code></td></tr>
+<tr><td>Uma mudança de assunto ou de cena, sem título</td><td><code>&lt;hr&gt;</code></td></tr>
+<tr><td>Uma parte nova com título</td><td>O título (<code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>…); o <code>&lt;hr&gt;</code> é opcional</td></tr>
+<tr><td>Itens um embaixo do outro (ingredientes, tarefas)</td><td>Uma lista: <code>&lt;ul&gt;</code> ou <code>&lt;ol&gt;</code></td></tr>
+<tr><td>Uma palavra comprida que pode quebrar</td><td><code>&lt;wbr&gt;</code></td></tr>
+<tr><td>Mais espaço, uma linha decorativa</td><td>CSS</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O navegador conserta tudo sem mostrar erro. Em cada caso, veja o que ele fez de verdade e o que o validador diz.</p>
+
+<div class="cenario">
+<strong><code>&lt;/br&gt;</code>: fechar o que não fecha</strong>
+<pre class="file" data-file="fechabr.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Rua das Flores, 123&lt;/br&gt;
+Centro&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> uma curiosidade do HTML. Um <code>&lt;/br&gt;</code> solto é tratado <strong>como se fosse um <code>&lt;br&gt;</code></strong>: a linha quebra do mesmo jeito. Por isso esse erro passa despercebido.</p>
+<pre class="term" data-cwd="~/site">$ vnu fechabr.html
+"file:/home/ana/site/fechabr.html":8.23-8.27: error: End tag “br”.</pre>
+<p>"Tag de fechamento <code>br</code>." Curta e direta: <code>br</code> não tem fechamento. As colunas 23 a 27 da linha 8 são o <code>&lt;/br&gt;</code>.</p>
+<p>E o par <code>&lt;br&gt;&lt;/br&gt;</code>, de quem acha que todo elemento precisa fechar? Como o <code>&lt;/br&gt;</code> vira um <code>&lt;br&gt;</code>, o navegador monta <strong>duas</strong> quebras de linha, e uma linha em branco aparece no texto. O validador dá o mesmo <code>error: End tag “br”.</code></p>
+<p><strong>Como consertar:</strong> escreva só <code>&lt;br&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;hr&gt;&lt;/hr&gt;</code></strong>
+<pre class="file" data-file="hrfecha.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Fim da receita do bolo.&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
+&lt;p&gt;Agora, a torta.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> ignora o <code>&lt;/hr&gt;</code>. Na tela, uma linha só, como se ele não existisse.</p>
+<pre class="term" data-cwd="~/site">$ vnu hrfecha.html
+"file:/home/ana/site/hrfecha.html":9.5-9.9: error: Stray end tag “hr”.</pre>
+<p>"Tag de fechamento <code>hr</code> perdida." <em>Stray</em> quer dizer "perdida", "sem dono": é uma tag de fechamento que não fecha nada.</p>
+<p><strong>Como consertar:</strong> só <code>&lt;hr&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;hr&gt;</code> dentro de um parágrafo</strong>
+<pre class="file" data-file="hrp.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Fim da receita do bolo.
+&lt;hr&gt;
+Agora, a torta.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> o <code>&lt;hr&gt;</code> é um bloco e não cabe dentro de um parágrafo. Então o navegador <strong>fecha o parágrafo</strong> antes da linha. O texto "Agora, a torta." fica solto, fora de qualquer parágrafo, e o <code>&lt;/p&gt;</code> do fim vira um parágrafo vazio. A página que o navegador montou ficou assim:</p>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;Fim da receita do bolo.
+&lt;/p&gt;&lt;hr&gt;
+Agora, a torta.&lt;p&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu hrp.html
+"file:/home/ana/site/hrp.html":10.16-10.19: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p>"Nenhum elemento <code>p</code> aberto, mas foi vista uma tag de fechamento <code>p</code>" (a mesma mensagem da aula <a href="paragrafos.html#errado">Parágrafos</a>). O validador aponta o <code>&lt;/p&gt;</code> da linha 10, que sobrou; a causa é o <code>&lt;hr&gt;</code> da linha 9.</p>
+<p><strong>Como consertar:</strong> o <code>&lt;hr&gt;</code> fica <strong>entre</strong> dois parágrafos: <code>&lt;p&gt;Fim da receita do bolo.&lt;/p&gt;</code>, <code>&lt;hr&gt;</code>, <code>&lt;p&gt;Agora, a torta.&lt;/p&gt;</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:p=2,nsel:p:empty=0,nsel:hr=1,texto:p + hr + p=Agora, a torta">
+<p class="try-task"><strong>Missão:</strong> o <code>&lt;hr&gt;</code> está dentro do parágrafo, e o navegador deixou "Agora, a torta." solto e criou um parágrafo vazio. Conserte para ficarem dois parágrafos com o <code>&lt;hr&gt;</code> entre eles.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Fim da receita do bolo.
+&lt;hr&gt;
+Agora, a torta.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Fim da receita do bolo.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Agora, a torta.&lt;/p&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Os atributos antigos do <code>&lt;hr&gt;</code></strong>
+<p>Páginas antigas controlavam a linha com atributos: espessura, largura, cor, alinhamento.</p>
+<pre class="file" data-file="hrattr.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;hr size="3" width="50%" noshade color="red" align="center"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> ainda obedece (por isso a linha sai vermelha e pela metade), para não quebrar sites antigos.</p>
+<pre class="term" data-cwd="~/site">$ vnu hrattr.html
+"file:/home/ana/site/hrattr.html":8.1-8.60: info warning: The “size” attribute on the “hr” element is obsolete. Use CSS instead.
+"file:/home/ana/site/hrattr.html":8.1-8.60: info warning: The “width” attribute on the “hr” element is obsolete. Use CSS instead.
+"file:/home/ana/site/hrattr.html":8.1-8.60: info warning: The “noshade” attribute on the “hr” element is obsolete. Use CSS instead.
+"file:/home/ana/site/hrattr.html":8.1-8.60: info warning: The “color” attribute on the “hr” element is obsolete. Use CSS instead.
+"file:/home/ana/site/hrattr.html":8.1-8.60: info warning: The “align” attribute on the “hr” element is obsolete. Use CSS instead.</pre>
+<p>Uma mensagem por atributo: "o atributo … no elemento <code>hr</code> é obsoleto. Use CSS no lugar." São avisos informativos (código de saída 0), mas o conselho vale: a aparência fica no CSS. O mesmo vale para o antigo <code>&lt;br clear="all"&gt;</code>, que dá <code>info warning: The “clear” attribute on the “br” element is obsolete. Use CSS instead.</code></p>
+<p><strong>Como consertar:</strong> escreva só <code>&lt;hr&gt;</code> e mude a aparência com CSS (quer aprender mais? futuro Guia CSS).</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;br&gt;</code></td><td>Quebra a linha dentro do mesmo texto (elemento vazio, sem fechamento)</td></tr>
+<tr><td><code>&lt;hr&gt;</code></td><td>Mudança de assunto; aparece como uma linha horizontal (elemento vazio, bloco)</td></tr>
+<tr><td><code>&lt;wbr&gt;</code></td><td>Ponto onde uma palavra comprida pode quebrar, se faltar espaço</td></tr>
+<tr><td><code>&lt;br/&gt;</code>, <code>&lt;br /&gt;</code></td><td>O mesmo que <code>&lt;br&gt;</code>; a barra não tem efeito (estilo do XHTML)</td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem do validador</th><th>Quer dizer</th></tr>
+<tr><td><code>End tag “br”.</code></td><td>Escreveu <code>&lt;/br&gt;</code>; o navegador o transforma num <code>&lt;br&gt;</code> (error)</td></tr>
+<tr><td><code>Stray end tag “hr”.</code></td><td>Escreveu <code>&lt;/hr&gt;</code>; o navegador o ignora (error)</td></tr>
+<tr><td><code>No “p” element in scope but a “p” end tag seen.</code></td><td>Um <code>&lt;hr&gt;</code> (ou outro bloco) dentro do parágrafo fechou o parágrafo antes (error)</td></tr>
+<tr><td><code>Trailing slash on void elements has no effect…</code></td><td>A barra de <code>&lt;br/&gt;</code> não faz nada (info)</td></tr>
+<tr><td><code>The “size” attribute on the “hr” element is obsolete. Use CSS instead.</code></td><td>Atributo antigo (info warning)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Pular uma linha</h3>
+<p>Complete para "Centro" ficar na linha de baixo, no mesmo parágrafo:</p>
+<div class="ex-code">&lt;p&gt;Rua das Flores, 123&lt;<input data-answer="br" aria-label="tag">&gt;Centro&lt;/p&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Mudança de assunto</h3>
+<p>Complete com a tag que marca a mudança de assunto entre as duas cenas de um conto:</p>
+<div class="ex-code">&lt;p&gt;E a Ana dormiu cedo naquela noite.&lt;/p&gt;<br>&lt;<input data-answer="hr" aria-label="tag">&gt;<br>&lt;p&gt;Três anos depois, a lojinha abriu as portas.&lt;/p&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Qual é a forma correta de escrever uma quebra de linha no HTML de hoje?</p>
+<label><input type="radio" name="q3"> <code>&lt;br&gt;&lt;/br&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;br&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;/br&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;break&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. A Ana separou os ingredientes do bolo com <code>&lt;br&gt;</code>, um por linha. Na tela ficou certo. Qual é o problema?</p>
+<label><input type="radio" name="q4"> O validador dá erro</label>
+<label><input type="radio" name="q4"> O navegador não mostra as quebras</label>
+<label><input type="radio" name="q4"> Para o navegador e para o leitor de tela, é um texto corrido, e não uma lista de itens</label>
+<label><input type="radio" name="q4"> Nenhum: <code>&lt;br&gt;</code> é o jeito certo de fazer listas</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. O que o navegador faz com <code>&lt;p&gt;Bolo.&lt;hr&gt;Torta.&lt;/p&gt;</code>?</p>
+<label><input type="radio" name="q5"> Fecha o parágrafo antes do <code>&lt;hr&gt;</code>; "Torta." fica fora de parágrafo, e o <code>&lt;/p&gt;</code> vira um parágrafo vazio</label>
+<label><input type="radio" name="q5"> Desenha a linha dentro do parágrafo, sem problema</label>
+<label><input type="radio" name="q5"> Ignora o <code>&lt;hr&gt;</code></label>
+<label><input type="radio" name="q5"> Mostra uma mensagem de erro</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. O validador mostrou <code>info: Trailing slash on void elements has no effect…</code> para um <code>&lt;br/&gt;</code>. O que isso quer dizer?</p>
+<label><input type="radio" name="q6"> A página é inválida e precisa ser corrigida</label>
+<label><input type="radio" name="q6"> O <code>&lt;br/&gt;</code> não quebra a linha</label>
+<label><input type="radio" name="q6"> Falta o <code>&lt;/br&gt;</code></label>
+<label><input type="radio" name="q6"> É só uma informação: a barra não faz nada, e a página continua válida</label>
+</div>
+
+<h3>Missão final: o cartão da lojinha</h3>
+
+<div class="tryhtml" data-goal="texto:h1=Lojinha da Ana,nsel:p=2,nsel:p br=2,nsel:hr=1,sel:p + hr + p,nsel:p:empty=0">
+<p class="try-task"><strong>Missão:</strong> monte o cartão de visita da lojinha. No primeiro parágrafo, o endereço tem três linhas: coloque um <code>&lt;br&gt;</code> no fim de cada uma, menos na última. Depois, coloque um <code>&lt;hr&gt;</code> entre o endereço e o horário, que é outro assunto. No fim, devem ser dois parágrafos com o <code>&lt;hr&gt;</code> entre eles.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;p&gt;Rua das Flores, 123
+Centro
+São Paulo – SP&lt;/p&gt;
+&lt;p&gt;Aberto de segunda a sábado, das 9h às 18h.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;p&gt;Rua das Flores, 123&lt;br&gt;
+Centro&lt;br&gt;
+São Paulo – SP&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Aberto de segunda a sábado, das 9h às 18h.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;br&gt;</code> quebra a linha <strong>dentro</strong> do mesmo texto: versos, linhas de endereço, assinatura. Não use para separar parágrafos, dar espaço ou fazer listas.</li>
+  <li><code>&lt;hr&gt;</code> marca uma <strong>mudança de assunto</strong> e aparece como uma linha horizontal. É um bloco: fica entre parágrafos, nunca dentro de um.</li>
+  <li>Os dois são <strong>elementos vazios</strong>: sem conteúdo e sem fechamento. <code>&lt;/br&gt;</code> dá <code>End tag “br”.</code> (e o navegador o transforma num <code>&lt;br&gt;</code>); <code>&lt;/hr&gt;</code> dá <code>Stray end tag “hr”.</code></li>
+  <li>A barra de <code>&lt;br/&gt;</code> vem do XHTML, não faz nada e só gera um <code>info</code> do validador. O guia escreve <code>&lt;br&gt;</code>.</li>
+  <li><code>&lt;wbr&gt;</code> marca onde uma palavra comprida pode quebrar, se faltar espaço.</li>
+  <li>Espessura, cor e largura do <code>&lt;hr&gt;</code> e espaços entre blocos são aparência: CSS.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
