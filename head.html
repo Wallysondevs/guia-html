@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML head — a parte da página que não aparece | Guia HTML</title>
+<meta name="description" content="O elemento head do HTML para quem nunca fez um site: o que é, onde fica, o que pode ir nele (title, meta, link, style, script, base), a única coisa obrigatória, a ordem recomendada e o que o navegador faz quando você põe conteúdo visível no head, com os erros reais do validador W3C e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">head</span></h1>
+
+<p class="intro">Toda página HTML tem duas partes: o <strong>corpo</strong> (<code>&lt;body&gt;</code>), com tudo o que aparece na tela, e a <strong>cabeça</strong> (<code>&lt;head&gt;</code>), com informações <em>sobre</em> a página: o título da aba, a codificação das letras, o arquivo de estilo, os scripts. Quase nada do <code>head</code> aparece na página, mas ele decide muita coisa: se os acentos saem certos, se o site fica legível no celular, o que o Google mostra nos resultados. Nesta aula você vai conhecer o <code>head</code> por inteiro: onde ele fica, o que pode ir nele e o que acontece quando alguma coisa vai para o lugar errado.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <code>head</code> e onde ele fica no arquivo.</li>
+  <li>Quais elementos podem ir no <code>head</code> e para que serve cada um.</li>
+  <li>A única coisa obrigatória no <code>head</code>: o <code>title</code>.</li>
+  <li>A ordem recomendada dos elementos.</li>
+  <li>Por que o navegador cria um <code>head</code> mesmo quando você não escreve um.</li>
+  <li>O que acontece quando um <code>&lt;h1&gt;</code> ou um texto solto vai parar no <code>head</code>, com os erros reais do validador W3C.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do site validator.w3.org) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. Se você ainda não sabe validar uma página, veja <a href="validar.html">Validar o HTML</a>. A estrutura geral (<code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;body&gt;</code>) foi apresentada em <a href="estrutura.html">Estrutura de uma Página</a>; aqui você vai olhar o <code>head</code> de perto.</p>
+
+<hr>
+
+<h2>A ideia: o envelope e a carta</h2>
+<p>Pense numa carta pelo correio. O <strong>envelope</strong> tem o nome de quem recebe, o endereço, o remetente e o selo. A <strong>carta</strong>, lá dentro, é o que a pessoa vai ler. O carteiro só olha o envelope; quem abre a carta só lê a carta.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Correio</th><th>Página HTML</th><th>Exemplos</th></tr>
+<tr><td>O envelope</td><td><code>&lt;head&gt;</code></td><td>o título da aba, a codificação das letras, o resumo para o Google, o arquivo de estilo</td></tr>
+<tr><td>A carta</td><td><code>&lt;body&gt;</code></td><td>os títulos, os parágrafos, as imagens, os links</td></tr>
+<tr><td>O carteiro</td><td>O navegador, o Google, as redes sociais</td><td>leem o <code>head</code> para saber o que fazer com a página</td></tr>
+</table>
+</div>
+
+<p>Por isso as informações do <code>head</code> se chamam <strong>metadados</strong>: "dados sobre os dados". Elas descrevem a página, mas não fazem parte do texto dela.</p>
+
+<hr>
+
+<h2>1. Onde fica o head</h2>
+<p>O <code>head</code> é o primeiro filho do <code>&lt;html&gt;</code>, logo antes do <code>&lt;body&gt;</code>. Este é o menor <code>head</code> correto:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;head&gt;</dt><dd>Abre a cabeça da página. Vem logo depois do <code>&lt;html&gt;</code>.</dd>
+  <dt>&lt;meta charset="utf-8"&gt;</dt><dd>Diz ao navegador como as letras foram gravadas no arquivo (UTF-8), para os acentos saírem certos. Tem aula própria: <a href="meta.html">title e meta</a>.</dd>
+  <dt>&lt;title&gt;…&lt;/title&gt;</dt><dd>O título da página: aparece na <strong>aba</strong> do navegador, nos favoritos e nos resultados do Google. Não aparece dentro da página.</dd>
+  <dt>&lt;/head&gt;</dt><dd>Fecha a cabeça. Depois dela vem o <code>&lt;body&gt;</code>.</dd>
+</dl>
+
+<p>Olhe o <strong>Resultado</strong>: só o título <code>h1</code> e o parágrafo aparecem. Nada do <code>head</code> foi desenhado. O texto "Receitas da Ana" do <code>title</code> aparece na <strong>aba</strong> quando você abre o arquivo no navegador (veja em <a href="primeiro-arquivo.html">Criar e Abrir um Arquivo .html</a>). O quadro de resultado fica dentro desta página, então não tem aba própria.</p>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose index.html
+index.html                « só o nome do arquivo: nenhum erro
+$ echo $?
+0</pre>
+
+<p>O validador não reclamou de nada. Com <code>--verbose</code>, ele mostra o nome de cada arquivo que conferiu; sem nenhuma linha <code>error:</code> embaixo, está tudo certo. O <code>echo $?</code> mostra o código de saída: <code>0</code> é "deu certo".</p>
+
+<div class="tip">
+<strong>O head tem de vir antes do body</strong>
+<p>O navegador lê o arquivo de cima para baixo. As informações do <code>head</code> (a codificação das letras, o estilo) precisam chegar <strong>antes</strong> do conteúdo, para que o conteúdo já seja desenhado do jeito certo. É como o envelope: o carteiro precisa ler o endereço antes de entregar a carta.</p>
+</div>
+
+<hr>
+
+<h2>2. O que pode ir no head</h2>
+<p>O <code>head</code> aceita só elementos de <strong>metadados</strong>. São poucos, e cada um tem uma função:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Aula</th></tr>
+<tr><td><code>&lt;title&gt;</code></td><td>O título da página (aba, favoritos, Google). <strong>Obrigatório</strong>, e só um.</td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>&lt;meta&gt;</code></td><td>Informações em pares "nome = valor": a codificação (<code>charset</code>), o resumo (<code>description</code>), a autoria (<code>author</code>), o ajuste para o celular (<code>viewport</code>).</td><td><a href="meta.html">title e meta</a>, <a href="meta-viewport.html">Celular</a></td></tr>
+<tr><td><code>&lt;link&gt;</code></td><td>Liga a página a <strong>outro arquivo</strong>: a folha de estilo (CSS), o ícone da aba.</td><td><a href="ligar-css.html">Ligar CSS</a>, <a href="favicon.html">Ícone da Aba</a></td></tr>
+<tr><td><code>&lt;style&gt;</code></td><td>CSS escrito dentro da própria página.</td><td><a href="ligar-css.html">Ligar CSS</a></td></tr>
+<tr><td><code>&lt;script&gt;</code></td><td>Um programa em JavaScript (ou o endereço de um arquivo <code>.js</code>).</td><td><a href="script.html">O Elemento script</a></td></tr>
+<tr><td><code>&lt;base&gt;</code></td><td>Muda o endereço de partida de todos os links relativos da página. Raro, e perigoso para iniciantes: um <code>base</code> errado quebra todos os links de uma vez.</td><td><a href="caminhos.html">Caminhos</a></td></tr>
+<tr><td><code>&lt;noscript&gt;</code></td><td>O que fazer quando o JavaScript está desligado.</td><td><a href="script.html">O Elemento script</a></td></tr>
+<tr><td><code>&lt;template&gt;</code></td><td>Um pedaço de HTML guardado para o JavaScript usar depois.</td><td><a href="template.html">template e slot</a></td></tr>
+</table>
+</div>
+
+<p>Repare no que <strong>não</strong> está na lista: <code>h1</code>, <code>p</code>, <code>img</code>, <code>div</code>, texto solto. Tudo o que aparece na tela vai no <code>body</code>. A seção 6 mostra o que acontece quando você esquece essa regra.</p>
+
+<h3>Um head de verdade</h3>
+<p>Este é o <code>head</code> completo que a Ana usa no site de receitas. Não se preocupe com os detalhes de cada linha agora: cada uma tem a sua aula neste mesmo grupo.</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de Cenoura | Receitas da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura fofinho com cobertura de chocolate, pronto em 50 minutos."&gt;
+  &lt;meta name="author" content="Ana"&gt;
+  &lt;link rel="icon" href="favicon.svg" type="image/svg+xml"&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+  &lt;script src="script.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de Cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>meta charset</dt><dd>A codificação das letras. Sempre a primeira linha do <code>head</code> (seção 4).</dd>
+  <dt>meta viewport</dt><dd>Faz a página caber na tela do celular: <a href="meta-viewport.html">Celular (meta viewport)</a>.</dd>
+  <dt>title</dt><dd>O título da aba: o nome da receita primeiro, o nome do site depois.</dd>
+  <dt>meta description</dt><dd>O resumo que o Google costuma mostrar embaixo do título nos resultados.</dd>
+  <dt>meta author</dt><dd>Quem escreveu a página.</dd>
+  <dt>link rel="icon"</dt><dd>O iconezinho da aba: <a href="favicon.html">Ícone da Aba</a>.</dd>
+  <dt>link rel="stylesheet"</dt><dd>O arquivo de estilo, com as cores e as fontes: <a href="ligar-css.html">Ligar CSS</a>.</dd>
+  <dt>script defer</dt><dd>O programa em JavaScript, que roda depois que a página foi lida: <a href="script.html">O Elemento script</a>.</dd>
+</dl>
+
+<p>Oito linhas de <code>head</code> para uma linha de <code>body</code>. Num site de verdade, a proporção muda (o <code>body</code> cresce muito), mas o <code>head</code> continua quase igual em todas as páginas do site: em geral, só o <code>title</code> e a <code>description</code> mudam de uma página para outra.</p>
+
+<hr>
+
+<h2>3. A única obrigação: o title</h2>
+<p>De tudo o que pode ir no <code>head</code>, só uma coisa é obrigatória: o <code>title</code>. Veja o que o validador diz de um <code>head</code> sem ele:</p>
+
+<pre class="file" data-file="sem-title.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu sem-title.html
+"file:/home/ana/site/sem-title.html":5.1-5.7: error: Element “head” is missing a required instance of child element “title”.
+$ echo $?
+1</pre>
+
+<dl class="anatomy">
+  <dt>"file:/home/ana/site/sem-title.html"</dt><dd>O arquivo conferido.</dd>
+  <dt>5.1-5.7</dt><dd>Linha 5, da coluna 1 à coluna 7: é o <code>&lt;/head&gt;</code>. O validador só percebe que faltou o <code>title</code> quando o <code>head</code> fecha.</dd>
+  <dt>error:</dt><dd>Um erro de verdade (não um aviso). Por isso o código de saída foi <code>1</code>.</dd>
+  <dt>Element “head” is missing a required instance of child element “title”.</dt><dd>"O elemento <code>head</code> está sem um filho obrigatório: o elemento <code>title</code>."</dd>
+</dl>
+
+<p>E o navegador? Ele mostra a página normalmente. Na aba, em vez de um título, aparece o <strong>nome do arquivo</strong> (ou o endereço). O erro não quebra nada que você veja, e é justamente por isso que é fácil esquecer: a página "funciona", mas fica sem nome nos favoritos, no histórico e nos resultados de busca, e o leitor de tela (o programa que lê a página em voz alta para quem não enxerga) não tem como anunciar onde a pessoa chegou.</p>
+
+<div class="tryhtml" data-goal="texto:head title=Receitas da Ana">
+<p class="try-task"><strong>Missão:</strong> esta página está sem <code>title</code>. Acrescente, dentro do <code>head</code> e depois do <code>meta</code>, um <code>&lt;title&gt;</code> com o texto <code>Receitas da Ana</code>. Repare que o Resultado não muda: o título não aparece dentro da página.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. A ordem dentro do head</h2>
+<p>Para o validador, a ordem dos elementos no <code>head</code> quase não importa. Para o navegador, importa um pouco, porque ele lê de cima para baixo e vai usando o que encontra. A ordem que os sites profissionais usam, e que este guia recomenda:</p>
+
+<ol class="passo">
+  <li><code>&lt;meta charset="utf-8"&gt;</code>: <strong>sempre primeiro</strong>. O navegador precisa saber a codificação antes de ler qualquer letra com acento. A regra oficial diz que ela tem de estar nos primeiros 1024 bytes do arquivo (detalhes em <a href="meta.html">title e meta</a>).</li>
+  <li><code>&lt;meta name="viewport" …&gt;</code>: o ajuste para o celular, antes de qualquer coisa que dependa da largura da tela.</li>
+  <li><code>&lt;title&gt;</code>: o título.</li>
+  <li>As outras <code>&lt;meta&gt;</code>: <code>description</code>, <code>author</code>.</li>
+  <li>Os <code>&lt;link&gt;</code>: ícone e folhas de estilo.</li>
+  <li>Os <code>&lt;script&gt;</code>, de preferência com <code>defer</code> (aula <a href="script.html">O Elemento script</a>).</li>
+</ol>
+
+<p>Por que o estilo vem antes do script? Porque, sem o estilo, o navegador não sabe desenhar a página, e por isso ele espera o arquivo de CSS chegar. Pôr o CSS cedo faz a página aparecer já arrumada, sem "piscar" sem cores primeiro.</p>
+
+<hr>
+
+<h2>5. O navegador cria o head sozinho</h2>
+<p>Uma surpresa: as tags <code>&lt;head&gt;</code>, <code>&lt;/head&gt;</code>, <code>&lt;body&gt;</code> e <code>&lt;/body&gt;</code> são <strong>opcionais</strong> no HTML. Este arquivo não tem nenhuma delas, e mesmo assim é válido:</p>
+
+<pre class="file" data-file="sem-head.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose sem-head.html
+sem-head.html             « válido!
+$ echo $?
+0</pre>
+
+<p>Como? Ao ler o arquivo, o navegador monta uma "árvore" com todos os elementos, o <strong>DOM</strong> (<em>Document Object Model</em>, "modelo de objetos do documento"; aula <a href="como-funciona.html">Como o Navegador Lê HTML</a>). E toda árvore de página tem um <code>head</code> e um <code>body</code>, escritos ou não. A regra é simples:</p>
+<ul>
+  <li>Enquanto aparecem elementos de metadados (<code>meta</code>, <code>title</code>, <code>link</code>…), o navegador os põe num <code>head</code> que ele mesmo abriu.</li>
+  <li>No primeiro elemento que <strong>não</strong> é de metadados (aqui, o <code>&lt;h1&gt;</code>), ele fecha o <code>head</code>, abre um <code>body</code> e continua ali.</li>
+</ul>
+
+<p>Esta é a árvore que o navegador montou para o <code>sem-head.html</code>, do jeito que aparece no painel de elementos das <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor (F12)</a>:</p>
+
+<pre class="file" data-file="o que o navegador montou">&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="note">
+<strong>Válido não quer dizer recomendado</strong>
+<p>Omitir o <code>head</code> é permitido e aparece em alguns sites que querem economizar bytes. Mas, para quem está aprendendo, escrever <code>&lt;head&gt;</code> e <code>&lt;body&gt;</code> deixa claro onde cada coisa vai. Neste guia, toda página completa tem os dois.</p>
+</div>
+
+<p>Essa regra "fecha o <code>head</code> no primeiro elemento visível" vale <strong>também</strong> quando você escreve o <code>&lt;head&gt;</code>. E é aí que mora a armadilha.</p>
+
+<hr>
+
+<h2>6. Conteúdo visível no head</h2>
+<p>A Ana pôs o título da página <strong>dentro</strong> do <code>head</code>, achando que "cabeçalho" e "cabeça" eram a mesma coisa:</p>
+
+<pre class="file" data-file="h1-no-head.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Aberta no navegador, a página parece normal: o <code>h1</code> aparece. Mas não porque ele estava no <code>head</code>, e sim porque o navegador o <strong>tirou</strong> de lá. Ao encontrar o <code>&lt;h1&gt;</code>, ele fez o mesmo que na seção 5: fechou o <code>head</code> e abriu um <code>body</code>. Depois, o <code>&lt;/head&gt;</code> e o <code>&lt;body&gt;</code> que a Ana escreveu chegaram tarde e foram <strong>ignorados</strong>. A árvore ficou assim:</p>
+
+<pre class="file" data-file="o que o navegador montou">&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+    &lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O validador, que lê o arquivo com as mesmas regras do navegador, aponta exatamente as duas tags que chegaram tarde:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu h1-no-head.html
+"file:/home/ana/site/h1-no-head.html":7.1-7.7: error: Stray end tag “head”.
+"file:/home/ana/site/h1-no-head.html":8.1-8.6: error: Start tag “body” seen but an element of the same type was already open.</pre>
+
+<dl class="anatomy">
+  <dt>7.1-7.7: Stray end tag “head”.</dt><dd>"Tag de fechamento <code>head</code> perdida" (<em>stray</em> = "perdida", "desgarrada"). Na linha 7, o <code>head</code> já estava fechado havia tempo, então esse <code>&lt;/head&gt;</code> não fecha nada.</dd>
+  <dt>8.1-8.6: Start tag “body” seen but an element of the same type was already open.</dt><dd>"Tag de abertura <code>body</code> encontrada, mas um elemento do mesmo tipo já estava aberto": o navegador já tinha aberto o <code>body</code> por conta própria no <code>&lt;h1&gt;</code>.</dd>
+</dl>
+
+<p>Repare que o validador <strong>não</strong> diz "h1 no lugar errado". Ele aponta as linhas 7 e 8, que você escreveu certo. Quando aparecerem esses dois erros juntos, procure, <strong>acima</strong> do <code>&lt;/head&gt;</code>, um elemento que não é de metadados.</p>
+
+<h3>Pior: um texto solto no head</h3>
+<p>Agora um caso em que o estrago aparece. A Ana deixou uma palavra perdida no <code>head</code>, <strong>antes</strong> do <code>title</code> (talvez sobra de uma cópia):</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> veja no Resultado onde foi parar a palavra "Receitas". Depois apague essa palavra e veja o Resultado de novo.</p>
+<pre class="script" data-file="texto-head.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  Receitas
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>A palavra "Receitas" aparece na página, acima do título. Texto é conteúdo visível, então o navegador fechou o <code>head</code> ali e levou para o <code>body</code> tudo o que veio depois, inclusive o <code>title</code>:</p>
+
+<pre class="file" data-file="o que o navegador montou">&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    Receitas
+    &lt;title&gt;Receitas da Ana&lt;/title&gt;
+    &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu texto-head.html
+"file:/home/ana/site/texto-head.html":4.25-6.2: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/site/texto-head.html":6.3-6.9: error: Element “title” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/texto-head.html":7.1-7.7: error: Stray end tag “head”.
+"file:/home/ana/site/texto-head.html":8.1-8.6: error: Start tag “body” seen but an element of the same type was already open.</pre>
+
+<dl class="anatomy">
+  <dt>missing a required instance of child element “title”</dt><dd>"O <code>head</code> está sem <code>title</code>." Mas a Ana escreveu um! Ele só não ficou no <code>head</code>.</dd>
+  <dt>Element “title” not allowed as child of element “body” in this context.</dt><dd>"O elemento <code>title</code> não é permitido como filho do <code>body</code> neste contexto." O <em>Suppressing further errors from this subtree</em> quer dizer "não vou mostrar mais erros de dentro deste elemento".</dd>
+  <dt>Stray end tag “head”. / Start tag “body” seen…</dt><dd>Os mesmos dois erros do <code>h1</code> no <code>head</code>.</dd>
+</dl>
+
+<p>Quatro erros por causa de <strong>uma palavra</strong>. Por sorte, o título da aba continua certo: o navegador usa o primeiro <code>title</code> da página, esteja onde estiver. Mas qualquer ferramenta que procure o título no <code>head</code> (como as que montam a prévia de um link nas redes sociais) não vai achá-lo.</p>
+
+<div class="tryhtml" data-goal="sel:head title,sel:head meta[name=description],sel:body h1">
+<p class="try-task"><strong>Missão:</strong> a Ana pôs o <code>&lt;h1&gt;</code> no <code>head</code>, e por isso a <code>meta</code> de descrição e o <code>title</code>, que vieram depois dele, foram parar no <code>body</code>. Mova o <code>&lt;h1&gt;</code> para dentro do <code>body</code>, antes do parágrafo. O Resultado quase não muda, mas a árvore fica certa.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;h1&gt;Bolo de Cenoura&lt;/h1&gt;
+  &lt;meta name="description" content="Bolo de cenoura com cobertura de chocolate."&gt;
+  &lt;title&gt;Bolo de Cenoura | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;p&gt;Rende 12 pedaços.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="description" content="Bolo de cenoura com cobertura de chocolate."&gt;
+  &lt;title&gt;Bolo de Cenoura | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de Cenoura&lt;/h1&gt;
+  &lt;p&gt;Rende 12 pedaços.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>7. Metadados fora do head</h2>
+<p>O contrário também dá errado: um <code>title</code> ou uma <code>meta name="…"</code> no <code>body</code>. Aqui o navegador <strong>não</strong> conserta: ele deixa os elementos no <code>body</code>, onde não servem para nada.</p>
+
+<pre class="file" data-file="meta-body.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;meta name="description" content="Receitas"&gt;
+  &lt;title&gt;Outro título&lt;/title&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu meta-body.html
+"file:/home/ana/site/meta-body.html":8.3-8.46: error: Attribute “name” not allowed on element “meta” at this point.
+"file:/home/ana/site/meta-body.html":8.3-8.46: error: Element “meta” is missing one or more of the following attributes: “itemprop”, “property”.
+"file:/home/ana/site/meta-body.html":9.3-9.9: error: Element “title” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)</pre>
+
+<ul>
+  <li><em>Attribute “name” not allowed on element “meta” at this point</em>: "o atributo <code>name</code> não é permitido no <code>meta</code> <strong>neste lugar</strong>". A <code>meta name</code> só vale no <code>head</code>.</li>
+  <li><em>Element “meta” is missing one or more of the following attributes: “itemprop”, “property”</em>: no <code>body</code>, uma <code>meta</code> só é aceita com <code>itemprop</code> ou <code>property</code>, atributos de dados estruturados (aula <a href="dados-estruturados.html">Dados Estruturados</a>). Não é o seu caso: o conserto é levar a <code>meta</code> para o <code>head</code>.</li>
+  <li><em>Element “title” not allowed as child of element “body”</em>: o <code>title</code> só vai no <code>head</code>. O segundo título é ignorado pela aba, que continua mostrando "Receitas da Ana".</li>
+</ul>
+
+<h3>Dois heads</h3>
+<p>Uma página tem <strong>um</strong> <code>head</code>. Um segundo <code>&lt;head&gt;</code> é ignorado, e é o único caso desta aula em que o validador <strong>desiste</strong> de continuar:</p>
+
+<pre class="file" data-file="dois-head.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;head&gt;
+  &lt;meta name="description" content="Receitas"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu dois-head.html
+"file:/home/ana/site/dois-head.html":7.1-7.6: error: Stray start tag “head”.
+"file:/home/ana/site/dois-head.html":8.3-8.46: error: “meta” element between “head” and “body”.
+"file:/home/ana/site/dois-head.html":8.3-8.46: error fatal: Cannot recover after last error. Any further errors will be ignored.</pre>
+
+<ul>
+  <li><em>Stray start tag “head”</em>: "tag de abertura <code>head</code> perdida": já houve um <code>head</code>, este não abre nada.</li>
+  <li><em>“meta” element between “head” and “body”</em>: "elemento <code>meta</code> entre o <code>head</code> e o <code>body</code>". O navegador, generoso, ainda o enfia de volta no primeiro <code>head</code>.</li>
+  <li><em>error fatal: Cannot recover after last error. Any further errors will be ignored.</em>: "erro fatal: não consigo me recuperar do último erro; os próximos erros serão ignorados". O validador parou de procurar. Conserte este e valide de novo, porque pode haver mais erros escondidos.</li>
+</ul>
+
+<p>O conserto é juntar tudo num <code>head</code> só.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: Element “head” is missing a required instance of child element “title”.</code></strong>
+<p><strong>O que significa:</strong> o <code>head</code> terminou sem nenhum <code>title</code>. Ou você esqueceu o título, ou ele existe mas foi parar no <code>body</code> (veja o próximo cenário). No navegador, a aba mostra o nome do arquivo.</p>
+<p><strong>Como consertar:</strong> ponha um <code>&lt;title&gt;</code> com um nome descritivo dentro do <code>head</code>. Se ele já está lá, procure um texto solto ou um elemento visível <strong>antes</strong> dele.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Stray end tag “head”.</code> + <code>Start tag “body” seen but an element of the same type was already open.</code></strong>
+<p><strong>O que significa:</strong> um elemento visível (<code>h1</code>, <code>p</code>, <code>img</code>, <code>div</code>…) ou um texto solto apareceu dentro do <code>head</code>. O navegador fechou o <code>head</code> ali mesmo e abriu o <code>body</code>; o seu <code>&lt;/head&gt;</code> e o seu <code>&lt;body&gt;</code> chegaram tarde. Tudo o que vinha depois, inclusive <code>meta</code>, <code>link</code> e <code>title</code>, foi para o <code>body</code>.</p>
+<p><strong>Como consertar:</strong> olhe <strong>acima</strong> da linha do <code>&lt;/head&gt;</code> e mova para o <code>body</code> tudo o que não é <code>meta</code>, <code>title</code>, <code>link</code>, <code>style</code>, <code>script</code>, <code>base</code>, <code>noscript</code> ou <code>template</code>. Para ver o estrago, abra o painel de elementos no F12: o navegador mostra onde cada coisa foi parar.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “title” not allowed as child of element “body” in this context.</code></strong>
+<p><strong>O que significa:</strong> há um <code>title</code> no <code>body</code>. Ou você o escreveu ali, ou ele foi arrastado para lá por um conteúdo visível no <code>head</code>.</p>
+<p><strong>Como consertar:</strong> deixe um <code>title</code> só, dentro do <code>head</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Attribute “name” not allowed on element “meta” at this point.</code></strong>
+<p><strong>O que significa:</strong> uma <code>&lt;meta name="…"&gt;</code> está no <code>body</code>. Ela não tem efeito nenhum ali: o Google, por exemplo, procura a <code>description</code> no <code>head</code>.</p>
+<p><strong>Como consertar:</strong> mova a linha para o <code>head</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Stray start tag “head”.</code> e <code>error fatal: Cannot recover after last error.</code></strong>
+<p><strong>O que significa:</strong> a página tem dois <code>&lt;head&gt;</code> (muitas vezes porque um pedaço de outra página foi colado no meio). O validador parou no primeiro problema.</p>
+<p><strong>Como consertar:</strong> junte o conteúdo dos dois num <code>head</code> só, apague o segundo e valide de novo.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;head&gt; … &lt;/head&gt;</code></td><td>A cabeça da página: metadados, entre o <code>&lt;html&gt;</code> e o <code>&lt;body&gt;</code>. Um por página.</td></tr>
+<tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>A codificação das letras. Primeira linha do <code>head</code>.</td></tr>
+<tr><td><code>&lt;title&gt;Nome&lt;/title&gt;</code></td><td>O título da aba. Obrigatório, um só.</td></tr>
+<tr><td><code>&lt;meta name="…" content="…"&gt;</code></td><td>Uma informação sobre a página (<code>description</code>, <code>author</code>, <code>viewport</code>).</td></tr>
+<tr><td><code>&lt;link rel="…" href="…"&gt;</code></td><td>Liga outro arquivo: <code>stylesheet</code> (CSS), <code>icon</code> (ícone da aba).</td></tr>
+<tr><td><code>&lt;style&gt; … &lt;/style&gt;</code></td><td>CSS dentro da página.</td></tr>
+<tr><td><code>&lt;script src="…" defer&gt;&lt;/script&gt;</code></td><td>Um programa em JavaScript.</td></tr>
+<tr><td>Tags <code>&lt;head&gt;</code>/<code>&lt;/head&gt;</code> omitidas</td><td>Válido: o navegador cria o <code>head</code> sozinho (o guia sempre as escreve).</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O obrigatório</h3>
+<p>Complete o nome do único elemento obrigatório dentro do <code>head</code>:</p>
+<div class="ex-code">&lt;<input data-answer="title" aria-label="elemento">&gt;Receitas da Ana&lt;/title&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A primeira linha</h3>
+<p>Complete a linha que deve vir <strong>primeiro</strong> dentro do <code>head</code>:</p>
+<div class="ex-code">&lt;meta <input data-answer="charset=&quot;utf-8&quot;|charset=&quot;UTF-8&quot;|charset=utf-8" aria-label="atributo">&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Qual destes elementos <strong>não</strong> pode ir no <code>head</code>?</p>
+<label><input type="radio" name="q3"> <code>&lt;link&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;style&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;p&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;script&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O validador mostrou <code>Stray end tag “head”</code> e <code>Start tag “body” seen but an element of the same type was already open</code>. O que é mais provável?</p>
+<label><input type="radio" name="q4"> Faltou o <code>title</code></label>
+<label><input type="radio" name="q4"> Há um elemento visível ou um texto solto dentro do <code>head</code></label>
+<label><input type="radio" name="q4"> O <code>&lt;/head&gt;</code> está escrito errado</label>
+<label><input type="radio" name="q4"> O <code>&lt;body&gt;</code> deveria vir antes do <code>&lt;head&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Uma página sem as tags <code>&lt;head&gt;</code> e <code>&lt;/head&gt;</code>, mas com <code>meta charset</code> e <code>title</code> logo depois do <code>&lt;html&gt;</code>, é…</p>
+<label><input type="radio" name="q5"> Válida: o navegador cria o <code>head</code> sozinho</label>
+<label><input type="radio" name="q5"> Inválida: o validador acusa a falta do <code>head</code></label>
+<label><input type="radio" name="q5"> Válida, mas o <code>title</code> é ignorado</label>
+<label><input type="radio" name="q5"> Inválida, e o navegador mostra a página em branco</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Onde o navegador mostra o texto do <code>&lt;title&gt;</code>?</p>
+<label><input type="radio" name="q6"> No topo da página, em letras grandes</label>
+<label><input type="radio" name="q6"> Em lugar nenhum: é só para o Google</label>
+<label><input type="radio" name="q6"> No rodapé da página</label>
+<label><input type="radio" name="q6"> Na aba, nos favoritos e no histórico</label>
+</div>
+
+<h3>Missão final: o head da lojinha</h3>
+
+<div class="tryhtml" data-goal="sel:head &gt; meta[charset]:first-child,texto:head title=Lojinha da Ana,sel:head meta[name=author],sel:body h1,sel:body p,nsrc:Bem-vindo\s*&lt;title">
+<p class="try-task"><strong>Missão:</strong> a página da lojinha está toda bagunçada: o <code>title</code>, a <code>meta</code> de autoria e o <code>h1</code> estão misturados, e há um texto solto ("Bem-vindo") no <code>head</code>. Arrume: no <code>head</code>, deixe só o <code>meta charset</code> (primeiro), o <code>title</code> com o texto <code>Lojinha da Ana</code> e a <code>meta name="author"</code>. No <code>body</code>, o <code>h1</code> e um parágrafo com o "Bem-vindo".</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  Bem-vindo
+  &lt;title&gt;Lojinha da Ana&lt;/title&gt;
+  &lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+  &lt;meta name="author" content="Ana"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Lojinha da Ana&lt;/title&gt;
+  &lt;meta name="author" content="Ana"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+  &lt;p&gt;Bem-vindo!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Abra o painel de elementos no F12 de qualquer site que você conhece e procure o <code>&lt;head&gt;</code>: você vai reconhecer o <code>title</code>, várias <code>meta</code> e vários <code>link</code>. Daqui para a frente, cada aula deste grupo explica uma dessas linhas.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <code>head</code> é o "envelope" da página: guarda <strong>metadados</strong>, informações sobre a página que quase nunca aparecem nela. Fica entre o <code>&lt;html&gt;</code> e o <code>&lt;body&gt;</code>, e há um só.</li>
+  <li>Pode conter só <code>title</code>, <code>meta</code>, <code>link</code>, <code>style</code>, <code>script</code>, <code>base</code>, <code>noscript</code> e <code>template</code>. O que aparece na tela vai no <code>body</code>.</li>
+  <li>O <code>title</code> é obrigatório (<code>Element “head” is missing a required instance of child element “title”</code>). A ordem recomendada: <code>meta charset</code>, <code>viewport</code>, <code>title</code>, outras <code>meta</code>, <code>link</code>, <code>script</code>.</li>
+  <li>As tags do <code>head</code> são opcionais: o navegador sempre monta um <code>head</code> e um <code>body</code> no DOM.</li>
+  <li>Um elemento visível ou um texto solto no <code>head</code> faz o navegador fechar o <code>head</code> ali; o resto vai para o <code>body</code> (<code>Stray end tag “head”</code>). Metadados no <code>body</code> ficam lá, sem efeito.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
