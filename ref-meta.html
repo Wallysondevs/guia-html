@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Metas do head — charset, viewport, description, robots, Open Graph | Guia HTML</title>
+<meta name="description" content="Referência dos elementos meta do HTML: charset, viewport (e os valores do content), description, author, robots, theme-color, color-scheme, referrer, os http-equiv (refresh, content-security-policy), as metas de Open Graph e do X/Twitter, os outros elementos do head e as mensagens reais do validador W3C para cada erro.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Metas do head</span></h1>
+
+<p class="intro">O elemento <code>&lt;meta&gt;</code> guarda informações <strong>sobre</strong> a página: a codificação dos caracteres, como ela se ajusta ao celular, o resumo que aparece no Google, a imagem que aparece quando alguém compartilha o link. Nada disso aparece na tela, mas faz muita diferença. Esta página de consulta reúne as metas que você vai usar, os valores de cada uma e os erros mais comuns, com a mensagem real do validador W3C. Para aprender com calma, veja as aulas <a href="head.html">O head</a> e <a href="meta.html">title e meta</a>.</p>
+
+<div class="note">
+<strong>Como usar esta página</strong>
+<ul>
+  <li>Todas as metas vão dentro do <code>&lt;head&gt;</code>. O <code>&lt;meta&gt;</code> é um elemento <strong>vazio</strong>: não tem <code>&lt;/meta&gt;</code>.</li>
+  <li>As mensagens do validador saíram do <code>vnu</code> na máquina da Ana (pasta <code>~/ref</code>, arquivos <code>meta1.html</code> a <code>meta4.html</code>).</li>
+  <li>Como as metas não aparecem na página, os exemplos desta página não têm quadro "Resultado". Para ver as metas de um site de verdade, abra o código-fonte dele (<kbd>Ctrl</kbd>+<kbd>U</kbd> na maioria dos navegadores de computador) ou as <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>.</li>
+</ul>
+</div>
+
+<p>Atalhos: <a href="#anatomia">Anatomia</a> · <a href="#essenciais">As essenciais</a> · <a href="#name">Metas com name</a> · <a href="#viewport">Valores do viewport</a> · <a href="#robots">Valores do robots</a> · <a href="#http-equiv">http-equiv</a> · <a href="#og">Open Graph e X</a> · <a href="#outros">Outros elementos do head</a> · <a href="#completo">Um head completo</a> · <a href="#erros">Mensagens do validador</a> · <a href="#experimente">Experimente</a></p>
+
+<hr>
+
+<h2 id="anatomia">Anatomia: as quatro formas de um meta</h2>
+<pre class="file" data-file="index.html">&lt;meta charset="utf-8"&gt;
+&lt;meta name="description" content="Receitas caseiras da Ana: bolos, pães e doces."&gt;
+&lt;meta http-equiv="refresh" content="5; url=https://exemplo.com/"&gt;
+&lt;meta property="og:title" content="Bolo de cenoura"&gt;
+</pre>
+<dl class="anatomy">
+  <dt><code>charset</code></dt><dd>Sozinho, sem <code>content</code>. Diz a codificação dos caracteres ("character set"). O único valor válido hoje é <code>utf-8</code>.</dd>
+  <dt><code>name</code> + <code>content</code></dt><dd>A forma mais comum: o <strong>nome</strong> da informação e o <strong>conteúdo</strong> dela. Cada <code>name</code> aparece uma vez só (com exceção do <code>theme-color</code>, que pode ter um por <code>media</code>).</dd>
+  <dt><code>http-equiv</code> + <code>content</code></dt><dd>"Equivalente HTTP": faz o papel de um cabeçalho que o servidor mandaria junto com a página.</dd>
+  <dt><code>property</code> + <code>content</code></dt><dd>Usado pelo <strong>Open Graph</strong> (as metas que as redes sociais leem). O validador aceita.</dd>
+</dl>
+
+<h2 id="essenciais">As essenciais: em toda página</h2>
+<pre class="file" data-file="index.html">&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura fofinho com cobertura de chocolate, passo a passo, em 50 minutos."&gt;
+&lt;/head&gt;
+</pre>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Meta</th><th>Para que serve</th><th>Se faltar</th><th>Aula</th></tr>
+<tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>Diz que o arquivo está em UTF-8. Deve vir <strong>logo no começo</strong> do <code>head</code>: dentro dos primeiros 1024 bytes do arquivo.</td><td>O navegador tem de adivinhar a codificação, e pode errar: aparece <code>OlÃ¡</code> no lugar de <code>Olá</code>.</td><td><a href="acentos-utf8.html">Acentos e UTF-8</a></td></tr>
+<tr><td><code>&lt;meta name="viewport" …&gt;</code></td><td>Faz a página caber na largura do celular.</td><td>O celular desenha a página como se fosse uma tela de computador, em miniatura, e o leitor precisa dar zoom.</td><td><a href="meta-viewport.html">Celular (meta viewport)</a></td></tr>
+<tr><td><code>&lt;title&gt;</code> (não é meta, mas anda junto)</td><td>O título da aba, dos favoritos e do resultado de busca. Obrigatório.</td><td>O validador dá erro: <code>Element “head” is missing a required instance of child element “title”.</code></td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>&lt;meta name="description" …&gt;</code></td><td>Um resumo da página, de uma ou duas frases. Os buscadores costumam mostrar embaixo do título.</td><td>O buscador escolhe sozinho um pedaço do texto da página.</td><td><a href="seo.html">HTML e SEO</a></td></tr>
+</table>
+</div>
+
+<h2 id="name">Metas com <code>name</code></h2>
+<p>Todas estas passaram sem erro no <code>vnu</code> (arquivo <code>meta1.html</code> da Ana).</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>name=</code></th><th>O que diz</th><th>Exemplo de <code>content</code></th><th>Aula</th></tr>
+<tr><td><code>viewport</code></td><td>Como a página se ajusta à tela. Veja os <a href="#viewport">valores</a>.</td><td><code>width=device-width, initial-scale=1</code></td><td><a href="meta-viewport.html">Celular</a></td></tr>
+<tr><td><code>description</code></td><td>O resumo da página para buscadores e redes.</td><td><code>Receitas caseiras da Ana…</code></td><td><a href="seo.html">HTML e SEO</a></td></tr>
+<tr><td><code>author</code></td><td>Quem escreveu a página.</td><td><code>Ana Souza</code></td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>robots</code></td><td>O que os robôs dos buscadores podem fazer com a página. Veja os <a href="#robots">valores</a>.</td><td><code>noindex, nofollow</code></td><td><a href="robots-sitemap.html">robots.txt e sitemap</a></td></tr>
+<tr><td><code>theme-color</code></td><td>A cor que alguns navegadores (principalmente no celular) usam na barra de cima. Pode ter uma versão para o modo escuro, com <code>media</code>.</td><td><code>#7b3f00</code></td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>color-scheme</code></td><td>Diz que a página funciona no modo claro, no escuro ou nos dois. O navegador ajusta os campos e a barra de rolagem.</td><td><code>light dark</code></td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>referrer</code></td><td>Quanto do endereço desta página os sites dos links ficam sabendo.</td><td><code>strict-origin-when-cross-origin</code></td><td><a href="seguranca.html">Segurança</a></td></tr>
+<tr><td><code>application-name</code></td><td>O nome do site quando ele é usado como aplicativo.</td><td><code>Receitas da Ana</code></td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>generator</code></td><td>O programa que gerou a página.</td><td><code>VS Code</code></td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>keywords</code></td><td>Palavras-chave. O validador aceita, mas o Google diz que não usa: não perca tempo.</td><td><code>receitas, bolo, doces</code></td><td><a href="seo.html">HTML e SEO</a></td></tr>
+<tr><td><code>format-detection</code></td><td>Do Safari no iPhone: <code>telephone=no</code> impede que números da página virem links de telefone sozinhos.</td><td><code>telephone=no</code></td><td><a href="links-email-tel.html">E-mail e Telefone</a></td></tr>
+<tr><td><code>google-site-verification</code></td><td>Prova para o Google que o site é seu (o código vem do painel do Google).</td><td><code>abc123…</code></td><td><a href="publicar.html">Publicar</a></td></tr>
+<tr><td><code>twitter:card</code></td><td>O formato do cartão quando o link é compartilhado no X (antigo Twitter).</td><td><code>summary_large_image</code></td><td><a href="open-graph.html">Open Graph</a></td></tr>
+</table>
+</div>
+
+<h2 id="viewport">Valores do <code>viewport</code></h2>
+<p>Dentro do <code>content</code>, os valores vão separados por vírgula: <code>content="width=device-width, initial-scale=1"</code>. Na prática, essa linha é tudo o que você precisa.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Valor</th><th>O que faz</th></tr>
+<tr><td><code>width=device-width</code></td><td>A largura da página é a largura da tela do aparelho. O mais importante.</td></tr>
+<tr><td><code>initial-scale=1</code></td><td>Começa sem zoom (100%).</td></tr>
+<tr><td><code>minimum-scale</code>, <code>maximum-scale</code></td><td>O menor e o maior zoom permitidos. <strong>Não limite</strong>: quem enxerga mal precisa ampliar.</td></tr>
+<tr><td><code>user-scalable=no</code></td><td>Proíbe o zoom. <strong>Não use</strong>; o validador avisa (veja <a href="#erros">abaixo</a>), e vários navegadores de celular ignoram.</td></tr>
+<tr><td><code>viewport-fit=cover</code></td><td>Em telas com recorte (a "franja" da câmera), a página ocupa a tela inteira, e o CSS cuida das bordas.</td></tr>
+<tr><td><code>interactive-widget=resizes-content</code></td><td>Quando o teclado do celular abre, a página encolhe para caber no espaço que sobra.</td></tr>
+</table>
+</div>
+
+<h2 id="robots">Valores do <code>robots</code></h2>
+<p>Separados por vírgula. Sem esta meta, vale o padrão: <code>index, follow</code>. Quem obedece é o robô de cada buscador; a lista abaixo é a que o Google documenta.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Valor</th><th>O que pede</th></tr>
+<tr><td><code>index</code> / <code>noindex</code></td><td>Pode (ou não pode) aparecer nos resultados de busca.</td></tr>
+<tr><td><code>follow</code> / <code>nofollow</code></td><td>Pode (ou não pode) seguir os links desta página.</td></tr>
+<tr><td><code>none</code></td><td>O mesmo que <code>noindex, nofollow</code>.</td></tr>
+<tr><td><code>nosnippet</code></td><td>Não mostrar o resumo de texto embaixo do título.</td></tr>
+<tr><td><code>noimageindex</code></td><td>Não indexar as imagens desta página.</td></tr>
+<tr><td><code>max-image-preview:large</code></td><td>Pode mostrar uma prévia grande das imagens.</td></tr>
+</table>
+</div>
+<div class="warning">
+<strong>robots não é segurança</strong>
+<p>O <code>noindex</code> é um pedido, não uma tranca. A página continua aberta para quem tiver o endereço. Nunca publique o que não pode ser visto.</p>
+</div>
+
+<h2 id="http-equiv">Metas com <code>http-equiv</code></h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>http-equiv=</code></th><th>O que faz</th><th>Exemplo de <code>content</code></th><th>Situação</th></tr>
+<tr><td><code>content-security-policy</code></td><td>Uma política de segurança (CSP): de onde a página pode carregar scripts, estilos e imagens.</td><td><code>default-src 'self'</code></td><td>Válida. Aula <a href="seguranca.html">Segurança</a>.</td></tr>
+<tr><td><code>refresh</code></td><td>Recarrega a página, ou vai para outra, depois de alguns segundos. O formato é <code>segundos; url=endereço</code>, <strong>com</strong> o ponto e vírgula.</td><td><code>5; url=https://exemplo.com/</code></td><td>Válida, mas evite: o leitor perde o que estava lendo, e o botão Voltar fica confuso.</td></tr>
+<tr><td><code>default-style</code></td><td>Qual folha de estilo alternativa (pelo <code>title</code> do <code>link</code>) vem ligada.</td><td><code>Claro</code></td><td>Válida, rara.</td></tr>
+<tr><td><code>content-type</code></td><td>A forma antiga do charset: <code>content="text/html; charset=utf-8"</code>.</td><td>—</td><td>Ainda aceita sozinha, mas use <code>&lt;meta charset="utf-8"&gt;</code>. As duas juntas são erro.</td></tr>
+<tr><td><code>X-UA-Compatible</code></td><td>Era para o Internet Explorer, que não existe mais.</td><td><code>IE=edge</code></td><td>O validador aceitou, mas não serve para nada hoje. Pode apagar.</td></tr>
+<tr><td><code>content-language</code></td><td>O idioma da página, do jeito antigo.</td><td>—</td><td>Erro: use <code>&lt;html lang="pt-BR"&gt;</code>.</td></tr>
+</table>
+</div>
+
+<h2 id="og">Open Graph e X (redes sociais)</h2>
+<p>Quando alguém cola o link da sua página no WhatsApp, no Facebook ou no LinkedIn, o aplicativo lê estas metas para montar o cartão com título, resumo e imagem. Aula: <a href="open-graph.html">Open Graph</a>.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Meta</th><th>O que é</th><th>Exemplo de <code>content</code></th></tr>
+<tr><td><code>property="og:title"</code></td><td>O título do cartão.</td><td><code>Bolo de cenoura</code></td></tr>
+<tr><td><code>property="og:description"</code></td><td>O resumo do cartão.</td><td><code>O bolo de cenoura da Ana.</code></td></tr>
+<tr><td><code>property="og:image"</code></td><td>A imagem do cartão. Use o endereço <strong>completo</strong>, com <code>https://</code>.</td><td><code>https://exemplo.com/img/bolo.jpg</code></td></tr>
+<tr><td><code>property="og:url"</code></td><td>O endereço oficial da página.</td><td><code>https://exemplo.com/bolo.html</code></td></tr>
+<tr><td><code>property="og:type"</code></td><td>O tipo: <code>website</code> (o padrão) ou <code>article</code> (um post, uma receita).</td><td><code>article</code></td></tr>
+<tr><td><code>property="og:locale"</code></td><td>O idioma. Atenção: aqui é com <strong>sublinhado</strong>, <code>pt_BR</code>, ao contrário do <code>lang="pt-BR"</code> do HTML.</td><td><code>pt_BR</code></td></tr>
+<tr><td><code>property="og:site_name"</code></td><td>O nome do site.</td><td><code>Receitas da Ana</code></td></tr>
+<tr><td><code>name="twitter:card"</code></td><td>O formato do cartão no X: <code>summary</code> (imagem pequena) ou <code>summary_large_image</code> (grande). Sem outras metas <code>twitter:</code>, o X usa as do Open Graph.</td><td><code>summary_large_image</code></td></tr>
+</table>
+</div>
+
+<h2 id="outros">Outros elementos do head</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Aula</th></tr>
+<tr><td><code>&lt;title&gt;…&lt;/title&gt;</code></td><td>O título da página. Obrigatório, um só.</td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>&lt;link rel="stylesheet" href="estilo.css"&gt;</code></td><td>Liga o CSS.</td><td><a href="ligar-css.html">Ligar CSS</a></td></tr>
+<tr><td><code>&lt;link rel="icon" href="favicon.svg"&gt;</code></td><td>O ícone da aba.</td><td><a href="favicon.html">Favicon</a></td></tr>
+<tr><td><code>&lt;link rel="canonical" href="https://…"&gt;</code></td><td>O endereço oficial, quando a mesma página abre por vários endereços.</td><td><a href="seo.html">HTML e SEO</a></td></tr>
+<tr><td><code>&lt;link rel="alternate" hreflang="en" href="…"&gt;</code></td><td>A mesma página em outro idioma.</td><td><a href="seo.html">HTML e SEO</a></td></tr>
+<tr><td><code>&lt;link rel="manifest" href="site.webmanifest"&gt;</code></td><td>O arquivo que descreve o site como aplicativo (nome, ícones, cores).</td><td><a href="favicon.html">Favicon</a></td></tr>
+<tr><td><code>&lt;link rel="preload" …&gt;</code></td><td>Baixar antes um arquivo que vai ser preciso logo.</td><td><a href="preload.html">Desempenho</a></td></tr>
+<tr><td><code>&lt;style&gt;…&lt;/style&gt;</code></td><td>CSS escrito na própria página.</td><td><a href="ligar-css.html">Ligar CSS</a></td></tr>
+<tr><td><code>&lt;script src="…" defer&gt;&lt;/script&gt;</code></td><td>JavaScript.</td><td><a href="script.html">O Elemento script</a></td></tr>
+<tr><td><code>&lt;script type="application/ld+json"&gt;</code></td><td>Dados estruturados para buscadores.</td><td><a href="dados-estruturados.html">JSON-LD</a></td></tr>
+<tr><td><code>&lt;base href="…"&gt;</code></td><td>O endereço de partida dos links relativos.</td><td><a href="caminhos.html">Caminhos</a></td></tr>
+</table>
+</div>
+
+<h2 id="completo">Um head completo</h2>
+<p>Este é o <code>head</code> da página do bolo da Ana, na ordem recomendada: o <code>charset</code> primeiro, depois o <code>viewport</code> e o <code>title</code>. Passou no <code>vnu</code> sem nenhuma mensagem.</p>
+<pre class="file" data-file="bolo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura fofinho com cobertura de chocolate, passo a passo, em 50 minutos."&gt;
+  &lt;meta name="author" content="Ana Souza"&gt;
+  &lt;meta name="theme-color" content="#7b3f00"&gt;
+  &lt;link rel="icon" href="favicon.svg" type="image/svg+xml"&gt;
+  &lt;link rel="canonical" href="https://exemplo.com/bolo.html"&gt;
+  &lt;meta property="og:title" content="Bolo de cenoura"&gt;
+  &lt;meta property="og:description" content="O bolo de cenoura fofinho da Ana."&gt;
+  &lt;meta property="og:image" content="https://exemplo.com/img/bolo.jpg"&gt;
+  &lt;meta property="og:url" content="https://exemplo.com/bolo.html"&gt;
+  &lt;meta property="og:type" content="article"&gt;
+  &lt;meta property="og:locale" content="pt_BR"&gt;
+  &lt;meta name="twitter:card" content="summary_large_image"&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+  &lt;script src="receitas.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/ref">$ vnu --verbose bolo.html
+bolo.html</pre>
+
+<h2 id="erros">Mensagens do validador</h2>
+<p>Provocadas de propósito nos arquivos <code>meta2.html</code> e <code>meta4.html</code> da Ana:</p>
+<pre class="term" data-cwd="~/ref">$ vnu meta2.html
+"file:/home/ana/ref/meta2.html":4.1-4.27: error: Internal encoding declaration “iso-8859-1” disagrees with the actual encoding of the document (“utf-8”).
+"file:/home/ana/ref/meta2.html":4.1-4.27: error: The only allowed value for the “charset” attribute for the “meta” element is “utf-8”.
+"file:/home/ana/ref/meta2.html":5.1-5.67: error: A document must not include both a “meta” element with an “http-equiv” attribute whose value is “content-type”, and a “meta” element with a “charset” attribute.
+"file:/home/ana/ref/meta2.html":6.1-6.103: info warning: Consider avoiding viewport values that prevent users from resizing documents.</pre>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Código</th><th>Mensagem real do validador</th><th>O que significa e como consertar</th></tr>
+<tr><td><code>&lt;meta charset="iso-8859-1"&gt;</code></td><td><code>The only allowed value for the “charset” attribute for the “meta” element is “utf-8”.</code> e <code>Internal encoding declaration “iso-8859-1” disagrees with the actual encoding of the document (“utf-8”).</code></td><td>O arquivo foi salvo em UTF-8, mas a meta diz outra coisa. Use sempre <code>utf-8</code> (e salve o arquivo em UTF-8 no editor).</td></tr>
+<tr><td><code>charset</code> e <code>http-equiv="Content-Type"</code> juntos</td><td><code>A document must not include both a “meta” element with an “http-equiv” attribute whose value is “content-type”, and a “meta” element with a “charset” attribute.</code></td><td>Duas declarações de codificação. Apague a de <code>http-equiv</code>.</td></tr>
+<tr><td><code>charset</code> depois de um comentário enorme</td><td><code>A “charset” attribute on a “meta” element found after the first 1024 bytes.</code></td><td>O navegador só procura o <code>charset</code> nos primeiros 1024 bytes. Ponha o <code>&lt;meta charset&gt;</code> como a primeira linha do <code>head</code>.</td></tr>
+<tr><td><code>user-scalable=no</code>, <code>maximum-scale=1</code></td><td><code>Consider avoiding viewport values that prevent users from resizing documents.</code> (aviso)</td><td>"Evite valores que impedem o leitor de mudar o tamanho." Deixe só <code>width=device-width, initial-scale=1</code>.</td></tr>
+<tr><td><code>&lt;meta name="description"&gt;</code> sem <code>content</code></td><td><code>Element “meta” is missing one or more of the following attributes: “content”, “property”.</code></td><td>Falta o <code>content</code>, o texto da meta.</td></tr>
+<tr><td><code>&lt;meta content="…"&gt;</code> sem <code>name</code></td><td><code>Element “meta” is missing one or more of the following attributes: “http-equiv”, “itemprop”, “name”, “property”.</code></td><td>O conteúdo está lá, mas não diz de quê. Ponha o <code>name</code>.</td></tr>
+<tr><td>Duas <code>description</code></td><td><code>A document must not include more than one “meta” element with its “name” attribute set to the value “description”.</code></td><td>Junte numa só.</td></tr>
+<tr><td><code>http-equiv="content-language"</code></td><td><code>Using the “meta” element to specify the document-wide default language is obsolete. Consider specifying the language on the root element instead.</code></td><td>"Considere pôr o idioma no elemento raiz": <code>&lt;html lang="pt-BR"&gt;</code>.</td></tr>
+<tr><td><code>content="5 url=outra.html"</code> (no <code>refresh</code>)</td><td><code>Bad value “5 url=outra.html” for attribute “content” on element “meta”: Expected a digit or a semicolon, but saw “ ” instead.</code></td><td>Faltou o ponto e vírgula: <code>content="5; url=outra.html"</code>.</td></tr>
+<tr><td><code>&lt;meta name="author" …&gt;</code> dentro do <code>body</code></td><td><code>Attribute “name” not allowed on element “meta” at this point.</code> e <code>Element “meta” is missing one or more of the following attributes: “itemprop”, “property”.</code></td><td>No <code>body</code>, só são aceitas metas de dados estruturados (<code>itemprop</code>, <code>property</code>). Leve a meta para o <code>head</code>.</td></tr>
+</table>
+</div>
+
+<div class="cenario">
+<strong>Quando dá errado: o validador nem sempre reclama</strong>
+<p>No teste da Ana, três erros passaram <strong>sem nenhuma mensagem</strong> do <code>vnu</code> com um arquivo do computador:</p>
+<ul>
+  <li><strong>Sem <code>&lt;meta charset&gt;</code> nenhum.</strong> O <code>vnu</code> lê o arquivo como UTF-8 e não reclama. O navegador, que recebe o arquivo de outro jeito, pode adivinhar errado. Ponha o <code>charset</code> sempre.</li>
+  <li><strong>Duas metas <code>viewport</code>.</strong> O navegador fica com uma delas, e você não sabe qual. Deixe uma só.</li>
+  <li><strong><code>X-UA-Compatible</code>.</strong> Aceito, mas inútil hoje.</li>
+</ul>
+<p>Passar no validador é necessário, mas não basta: releia o seu <code>head</code>.</p>
+</div>
+
+<h2 id="experimente">Experimente</h2>
+<div class="tryhtml" data-goal="texto:title=Bolo de cenoura,sel:meta[name=viewport][content*=device-width],sel:meta[name=description][content]">
+<p class="try-task"><strong>Missão:</strong> a página do bolo da Ana tem o <code>head</code> quase vazio. Troque o título por "Bolo de cenoura — Receitas da Ana", acrescente a meta <code>viewport</code> com <code>width=device-width, initial-scale=1</code> e uma meta <code>description</code> com um resumo da receita. As metas não mudam o resultado na tela, mas o título muda o nome da aba.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Sem título&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+  &lt;p&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura fofinho com cobertura de chocolate, passo a passo."&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+  &lt;p&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Em toda página: <code>&lt;meta charset="utf-8"&gt;</code> (primeira linha do <code>head</code>), <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>, <code>&lt;title&gt;</code> e <code>&lt;meta name="description" content="…"&gt;</code>.</li>
+  <li>Formas: <code>charset</code>; <code>name</code> + <code>content</code>; <code>http-equiv</code> + <code>content</code>; <code>property</code> + <code>content</code> (Open Graph).</li>
+  <li>Não limite o zoom no <code>viewport</code>. <code>keywords</code> não ajuda no Google. <code>robots</code> é um pedido, não uma tranca.</li>
+  <li>Open Graph: <code>og:title</code>, <code>og:description</code>, <code>og:image</code> (endereço completo), <code>og:url</code>; o idioma é <code>pt_BR</code>, com sublinhado.</li>
+  <li>Idioma da página vai no <code>&lt;html lang="pt-BR"&gt;</code>, não numa meta.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
