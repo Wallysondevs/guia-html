@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Legenda e Acessibilidade — caption e scope | Guia HTML</title>
+<meta name="description" content="Legenda e acessibilidade de tabelas em HTML para quem nunca fez um site: o título da tabela com caption, o atributo scope (col, row, rowgroup) que diz a quem cada th dá nome, como o leitor de tela usa isso, caption ou figcaption, e os erros reais do validador W3C (caption fora do lugar, scope com valor errado ou no td, summary obsoleto), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Legenda e Acessibilidade</span></h1>
+
+<p class="intro">A tabela de vendas da Ana já tem cabeçalhos, grupos e células mescladas. Faltam dois detalhes que fazem muita diferença para quem <strong>não enxerga</strong> a tabela e a ouve num leitor de tela: um <strong>título</strong> que diga do que a tabela trata, a tag <code>&lt;caption&gt;</code>, e uma indicação clara de <strong>a quem cada cabeçalho dá nome</strong>, o atributo <code>scope</code>. Nesta aula você aprende os dois e fecha o módulo de tabelas.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como dar um título à tabela com <code>caption</code>, e onde ele tem de ficar.</li>
+  <li>Como um leitor de tela percorre uma tabela, e por que os cabeçalhos importam tanto.</li>
+  <li>Como o <code>scope</code> diz se um <code>th</code> é nome de coluna (<code>col</code>), de linha (<code>row</code>) ou de um grupo (<code>rowgroup</code>).</li>
+  <li>Quando usar <code>caption</code> e quando usar <code>figure</code> com <code>figcaption</code>.</li>
+  <li>Os erros e avisos reais do validador: <code>caption</code> fora do lugar, <code>scope="column"</code>, <code>scope</code> no <code>td</code> e o atributo <code>summary</code>.</li>
+</ul>
+</div>
+
+<p>Os exemplos usam o <code>&lt;head&gt;</code> com as duas regras de CSS da aula <a href="tabelas.html">Tabelas</a>. Os quadros <strong>Resultado</strong> são desenhados pelo seu navegador; as mensagens do validador saíram do <code>vnu</code> 26.10.12 na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: ouvir uma tabela</h2>
+<p>Feche os olhos e imagine alguém lendo uma tabela em voz alta para você, célula por célula: "três... um... cinco... oito". Sem saber do que é a tabela, nem de qual linha e coluna vem cada número, essa lista não serve para nada.</p>
+
+<p>É assim que um <strong>leitor de tela</strong> (o programa que lê a página em voz alta para pessoas cegas ou com baixa visão, aula <a href="leitores-tela.html">Leitores de Tela</a>) trabalha. A pessoa entra na tabela e anda pelas células com o teclado, para cima, para baixo e para os lados. Para cada célula, o leitor pode anunciar, junto com o conteúdo, o <strong>título da tabela</strong> e os <strong>nomes da linha e da coluna</strong>: "Caneta azul, Terça, 8". Para isso, ele precisa saber:</p>
+<ol class="passo">
+  <li>do que trata a tabela: o <code>caption</code>;</li>
+  <li>quais células são nomes: os <code>th</code> (aula <a href="tabelas-cabecalho.html">Cabeçalhos</a>);</li>
+  <li>a quem cada nome se aplica, à coluna ou à linha: o <code>scope</code>.</li>
+</ol>
+
+<hr>
+
+<h2>1. O título da tabela: <code>caption</code></h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Preços&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;caption&gt;Preços de outubro&lt;/caption&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Produto&lt;/th&gt;
+    &lt;th&gt;Preço&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caderno&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;caption&gt;Preços de outubro&lt;/caption&gt;</dt><dd>A legenda (<em>caption</em>, "legenda", "título"). Ela é o <strong>primeiro filho</strong> do <code>table</code>: vem logo depois do <code>&lt;table&gt;</code>, antes de qualquer linha ou grupo.</dd>
+  <dt>onde aparece</dt><dd>O navegador a desenha <strong>em cima</strong> da tabela, centralizada, com letra normal (sem negrito).</dd>
+  <dt>a largura</dt><dd>A legenda acompanha a largura da tabela. Um título comprido numa tabela estreita quebra em várias linhas, em vez de alargar a tabela.</dd>
+</dl>
+
+<p>A legenda é a resposta certa para o erro <em>Misplaced non-space characters inside a table</em> da aula <a href="tabelas.html">Tabelas</a>, quando a Ana escreveu o título solto dentro do <code>&lt;table&gt;</code>: o texto tinha de estar num <code>caption</code>.</p>
+
+<h3><code>caption</code> ou um título <code>h2</code> antes da tabela?</h3>
+<p>Os dois podem existir juntos, e servem para coisas diferentes:</p>
+<ul>
+  <li>O <code>h2</code> é um título <strong>da página</strong>: organiza as seções e aparece na lista de títulos que o leitor de tela oferece (aula <a href="titulos.html">Títulos</a>).</li>
+  <li>O <code>caption</code> é o nome <strong>da tabela</strong>: ele faz parte dela. Quando a pessoa entra na tabela, o leitor anuncia o <code>caption</code>; e quando a página tem várias tabelas, é por ele que ela sabe qual é qual.</li>
+</ul>
+<p>Uma seção "Preços" com um <code>h2</code> e, logo abaixo, uma tabela com <code>&lt;caption&gt;Preços de outubro&lt;/caption&gt;</code> está ótima. O que não vale é trocar o <code>caption</code> por um parágrafo antes da tabela: para o leitor de tela, esse parágrafo não tem ligação nenhuma com ela.</p>
+
+<div class="tryhtml" data-goal="sel:table&gt;caption:first-child,texto:caption=Vendas de outubro,nsel:caption=1,nsel:p=0">
+<p class="try-task"><strong>Experimente:</strong> o título da tabela está num parágrafo, solto antes dela. Troque o parágrafo por uma <strong>legenda de verdade</strong>, com o texto <code>Vendas de outubro</code>, no lugar certo dentro do <code>table</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Vendas&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Vendas de outubro&lt;/p&gt;
+&lt;table&gt;
+  &lt;tr&gt;&lt;th&gt;Produto&lt;/th&gt;&lt;th&gt;Vendidos&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Caderno&lt;/td&gt;&lt;td&gt;31&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Caneta azul&lt;/td&gt;&lt;td&gt;87&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Vendas&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;caption&gt;Vendas de outubro&lt;/caption&gt;
+  &lt;tr&gt;&lt;th&gt;Produto&lt;/th&gt;&lt;th&gt;Vendidos&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Caderno&lt;/td&gt;&lt;td&gt;31&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Caneta azul&lt;/td&gt;&lt;td&gt;87&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. A quem o cabeçalho dá nome: <code>scope</code></h2>
+<p>Na tabela de vendas por dia, há cabeçalhos nas duas direções: os dias no topo e os produtos na primeira coluna. O atributo <code>scope</code> ("alcance") diz, em cada <code>th</code>, até onde vai o nome dele:</p>
+
+<pre class="file" data-file="vendas.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Vendas&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;caption&gt;Vendas da primeira semana de outubro&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;/td&gt;
+      &lt;th scope="col"&gt;Segunda&lt;/th&gt;
+      &lt;th scope="col"&gt;Terça&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;Caderno&lt;/th&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;Caneta azul&lt;/th&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;8&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>scope="col"</dt><dd>De <em>column</em>, "coluna": "eu sou o nome de <strong>todas as células abaixo de mim</strong>, na minha coluna". "Terça" dá nome ao 1 e ao 8.</dd>
+  <dt>scope="row"</dt><dd>"Linha": "eu sou o nome de <strong>todas as células à minha direita</strong>, na minha linha". "Caneta azul" dá nome ao 5 e ao 8.</dd>
+  <dt>o 8</dt><dd>Fica no cruzamento: é da linha "Caneta azul" <strong>e</strong> da coluna "Terça". Com os dois <code>scope</code>, o leitor de tela pode anunciar os dois nomes.</dd>
+  <dt>a legenda em duas linhas</dt><dd>"Vendas da primeira semana de outubro" é mais larga que a tabela, então quebrou em duas linhas, como explicado na seção 1.</dd>
+</dl>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose vendas.html
+vendas.html                 « só o nome: nenhum erro</pre>
+
+<p>O <code>scope</code> não muda nada no desenho: a tabela fica igual com ou sem ele. Ele só existe para as tecnologias assistivas.</p>
+
+<h3>E sem <code>scope</code>?</h3>
+<p>Sem <code>scope</code>, o navegador <strong>tenta adivinhar</strong> a quem cada <code>th</code> se refere (a especificação chama isso de estado <em>auto</em>, "automático"). Numa tabela simples, com <code>th</code> só no topo, ele quase sempre acerta. Nas tabelas com cabeçalhos nas duas direções, com células mescladas ou com <code>th</code> no meio, a adivinhação pode falhar, e cada leitor de tela pode entender de um jeito. Com <code>scope</code>, ninguém precisa adivinhar.</p>
+
+<div class="tip">
+<strong>Regra do guia</strong>
+<p>Ponha <code>scope</code> em todo <code>th</code>: <code>col</code> nos do topo, <code>row</code> nos da primeira coluna. Custa pouco, e a tabela fica clara para qualquer leitor de tela.</p>
+</div>
+
+<h3>O nome de um grupo: <code>scope="rowgroup"</code></h3>
+<p>Na aula <a href="tabelas-cabecalho.html">Cabeçalhos</a>, a Ana separou a papelaria dos doces em dois <code>tbody</code>. O <code>th</code> com o nome de cada seção vale para todas as linhas do grupo, e o valor certo é <code>rowgroup</code> ("grupo de linhas"):</p>
+
+<pre class="file" data-file="secoes.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Vendas&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th scope="col"&gt;Produto&lt;/th&gt;&lt;th scope="col"&gt;Preço&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th scope="rowgroup" colspan="2"&gt;Papelaria&lt;/th&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Caderno&lt;/td&gt;&lt;td&gt;R$ 25,00&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Caneta azul&lt;/td&gt;&lt;td&gt;R$ 3,50&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th scope="rowgroup" colspan="2"&gt;Doces&lt;/th&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Brigadeiro&lt;/td&gt;&lt;td&gt;R$ 2,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>"Papelaria" ocupa as duas colunas com <code>colspan="2"</code> (aula <a href="tabelas-mesclar.html">Mesclar Células</a>) e, com <code>scope="rowgroup"</code>, dá nome a todas as linhas do <code>tbody</code> dele. Os quatro valores de <code>scope</code> são estes:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>scope</code></th><th>O <code>th</code> dá nome a…</th></tr>
+<tr><td><code>col</code></td><td>as células da coluna dele</td></tr>
+<tr><td><code>row</code></td><td>as células da linha dele</td></tr>
+<tr><td><code>rowgroup</code></td><td>as linhas do grupo dele (<code>thead</code>, <code>tbody</code> ou <code>tfoot</code>)</td></tr>
+<tr><td><code>colgroup</code></td><td>um grupo de colunas marcado com <code>&lt;colgroup&gt;</code>, um elemento pouco usado que fica para a <a href="ref-elementos.html">referência</a></td></tr>
+</table>
+</div>
+
+<div class="note">
+<strong>Tabelas muito complicadas: <code>headers</code></strong>
+<p>Quando nem o <code>scope</code> resolve (cabeçalhos em vários níveis, cruzando de jeitos irregulares), cada <code>th</code> pode ganhar um <code>id</code> e cada <code>td</code> pode listar, no atributo <code>headers</code>, os <code>id</code> dos seus cabeçalhos: <code>&lt;td headers="terca caneta"&gt;8&lt;/td&gt;</code>. Funciona, mas dá trabalho e quebra fácil. Na maioria das vezes, a melhor saída é dividir a tabela complicada em tabelas mais simples.</p>
+</div>
+
+<hr>
+
+<h2>3. <code>caption</code> ou <code>figure</code>?</h2>
+<p>Uma tabela também pode ir dentro de um <code>figure</code>, com a legenda num <code>figcaption</code> (aula <a href="figure.html">figure e figcaption</a>), como as tabelas numeradas de um livro: "Tabela 1: preços de outubro". Nesse caso, use <strong>um</strong> dos dois, e não os dois ao mesmo tempo. Veja o que o validador diz quando a Ana usa os dois (no arquivo completo, o <code>figure</code> está na linha 12, depois do cabeçalho de sempre):</p>
+
+<pre class="file" data-file="figure.html">&lt;figure&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Preços de outubro&lt;/caption&gt;
+    &lt;tr&gt;&lt;td&gt;Caderno&lt;/td&gt;&lt;td&gt;R$ 25,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;/table&gt;
+  &lt;figcaption&gt;Tabela 1: preços de outubro&lt;/figcaption&gt;
+&lt;/figure&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu figure.html
+"file:/home/ana/site/figure.html":13.10-14.13: info warning: When a “table” element is the only content in a “figure” element other than the “figcaption”, the “caption” element should be omitted in favor of the “figcaption”.</pre>
+
+<p>"Quando um <code>table</code> é o único conteúdo de um <code>figure</code> além do <code>figcaption</code>, o <code>caption</code> deve ser omitido em favor do <code>figcaption</code>." Ou seja: dentro de <code>figure</code>, a legenda é o <code>figcaption</code>; apague o <code>caption</code>. Fora de <code>figure</code>, que é o caso mais comum, use <code>caption</code>.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Nos arquivos completos, as linhas 1 a 11 são o cabeçalho com o <code>&lt;style&gt;</code>; o código mostrado começa na linha 12.</p>
+
+<div class="cenario">
+<strong><code>error: Element “caption” not allowed as child of element “table” in this context.</code></strong>
+<p>A Ana pôs a legenda no meio da tabela, depois da linha dos cabeçalhos:</p>
+<pre class="file" data-file="caption-depois.html" data-resultado>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Produto&lt;/th&gt;
+    &lt;th&gt;Preço&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;caption&gt;Preços de outubro&lt;/caption&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caderno&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu caption-depois.html
+"file:/home/ana/site/caption-depois.html":16.8-17.11: error: Element “caption” not allowed as child of element “table” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> o <code>caption</code> só é permitido como <strong>primeiro</strong> filho do <code>table</code>. Depois que uma linha apareceu, ele está "fora do contexto".</p>
+<p><strong>O que o navegador faz:</strong> desenha a legenda <strong>em cima</strong> da tabela mesmo assim, e a página parece certa. Por dentro, a árvore ficou estranha: o navegador fechou o <code>tbody</code> automático antes do <code>caption</code> e abriu <strong>outro</strong> <code>tbody</code> depois dele. A tabela passou a ter dois corpos, com a legenda no meio.</p>
+<p><strong>Como consertar:</strong> mova o <code>caption</code> para logo depois do <code>&lt;table&gt;</code>. Uma tabela com dois <code>caption</code> dá o mesmo erro no segundo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “column” for attribute “scope” on element “th”.</code></strong>
+<pre class="file" data-file="scope-errado.html">&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th scope="column"&gt;Produto&lt;/th&gt;
+    &lt;td scope="row"&gt;Caderno&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu scope-errado.html
+"file:/home/ana/site/scope-errado.html":13.7-14.23: error: Bad value “column” for attribute “scope” on element “th”.
+"file:/home/ana/site/scope-errado.html":14.36-15.20: info warning: The “scope” attribute on the “td” element is obsolete. Use the “scope” attribute on a “th” element instead.</pre>
+<dl class="anatomy">
+  <dt>Bad value “column” for attribute “scope”</dt><dd>A palavra em inglês é <em>column</em>, mas o valor é abreviado: <code>col</code>. Os únicos valores são <code>col</code>, <code>row</code>, <code>colgroup</code> e <code>rowgroup</code>. Com um valor desconhecido, o navegador volta a adivinhar, como se o <code>scope</code> não existisse.</dd>
+  <dt>The “scope” attribute on the “td” element is obsolete</dt><dd>"O atributo <code>scope</code> no elemento <code>td</code> é obsoleto. Use o <code>scope</code> num <code>th</code>." Uma célula de dados não é nome de nada. Se a célula é um nome, ela deve ser <code>th</code>.</dd>
+</dl>
+<p><strong>Como consertar:</strong> <code>&lt;th scope="col"&gt;</code> e, se "Caderno" é o nome da linha, <code>&lt;th scope="row"&gt;Caderno&lt;/th&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: The “summary” attribute on the “table” element is obsolete.</code></strong>
+<p>Em tutoriais antigos de acessibilidade, a descrição da tabela ia num atributo <code>summary</code> ("resumo"):</p>
+<pre class="file" data-file="summary.html">&lt;table summary="Preços dos produtos da lojinha"&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caderno&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu summary.html
+"file:/home/ana/site/summary.html":12.1-12.48: info warning: The “summary” attribute on the “table” element is obsolete. Consider describing the structure of the “table” in a “caption” element or in a “figure” element containing the “table”; or, simplify the structure of the “table” so that no description is needed.</pre>
+<p><strong>O que significa:</strong> "o atributo <code>summary</code> é obsoleto. Considere descrever a estrutura da tabela num <code>caption</code> ou num <code>figure</code> que contenha a tabela; ou simplifique a tabela para que nenhuma descrição seja necessária." O problema do <code>summary</code> é que ele é invisível: só o leitor de tela o lia, e quem enxerga nunca sabia que a descrição existia.</p>
+<p><strong>Como consertar:</strong> apague o <code>summary</code> e ponha o texto num <code>caption</code>, visível para todo mundo.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;caption&gt;…&lt;/caption&gt;</code></td><td>Título da tabela. Primeiro filho do <code>table</code>; um só. Aparece em cima, centralizado.</td></tr>
+<tr><td><code>&lt;th scope="col"&gt;</code></td><td>Nome da coluna: vale para as células abaixo.</td></tr>
+<tr><td><code>&lt;th scope="row"&gt;</code></td><td>Nome da linha: vale para as células à direita.</td></tr>
+<tr><td><code>&lt;th scope="rowgroup"&gt;</code></td><td>Nome de um grupo de linhas (o <code>tbody</code> onde ele está).</td></tr>
+<tr><td><code>scope</code> ausente</td><td>Estado <em>auto</em>: o navegador adivinha. Prefira escrever.</td></tr>
+<tr><td><code>headers="id1 id2"</code> no <code>td</code></td><td>Liga a célula aos <code>th</code> com esses <code>id</code>, para tabelas complexas.</td></tr>
+<tr><td>Tabela num <code>figure</code></td><td>Legenda no <code>figcaption</code>, sem <code>caption</code>.</td></tr>
+<tr><td><code>summary</code>, <code>scope</code> no <code>td</code></td><td>Obsoletos (<em>info warning</em>).</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O título da tabela</h3>
+<p>Complete:</p>
+<div class="ex-code">&lt;table&gt; &lt;<input data-answer="caption" aria-label="tag da legenda">&gt;Preços de outubro&lt;/caption&gt; …</div>
+</div>
+
+<div class="exercise">
+<h3>2. Nome da linha</h3>
+<p>Complete o valor do <code>scope</code> para o <code>th</code> da primeira coluna, que dá nome à linha:</p>
+<div class="ex-code">&lt;th scope="<input data-answer="row" aria-label="valor do scope">"&gt;Caderno&lt;/th&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Onde o <code>caption</code> tem de ficar?</p>
+<label><input type="radio" name="q3"> Antes do <code>&lt;table&gt;</code></label>
+<label><input type="radio" name="q3"> Depois do <code>&lt;/table&gt;</code></label>
+<label><input type="radio" name="q3"> Logo depois do <code>&lt;table&gt;</code>, como primeiro filho</label>
+<label><input type="radio" name="q3"> Dentro do <code>thead</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que muda no desenho da tabela quando você acrescenta <code>scope="col"</code> nos <code>th</code>?</p>
+<label><input type="radio" name="q4"> Os cabeçalhos ficam em negrito</label>
+<label><input type="radio" name="q4"> Nada: o <code>scope</code> é para o leitor de tela e outras tecnologias assistivas</label>
+<label><input type="radio" name="q4"> As colunas ficam da mesma largura</label>
+<label><input type="radio" name="q4"> Aparece uma borda embaixo do cabeçalho</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. <code>&lt;th scope="column"&gt;</code> dá qual resultado no validador?</p>
+<label><input type="radio" name="q5"> Nenhum: <em>column</em> e <em>col</em> são sinônimos</label>
+<label><input type="radio" name="q5"> <em>info warning</em> de obsoleto</label>
+<label><input type="radio" name="q5"> <em>Element “th” not allowed</em></label>
+<label><input type="radio" name="q5"> <em>error: Bad value “column” for attribute “scope” on element “th”.</em></label>
+</div>
+
+<h3>Missão final: a tabela acessível</h3>
+
+<div class="tryhtml" data-goal="texto:table&gt;caption:first-child=Vendas por dia,nsel:th[scope=&quot;col&quot;]=2,nsel:th[scope=&quot;row&quot;]=3,nsel:th:not([scope])=0,nsel:td[scope]=0">
+<p class="try-task"><strong>Missão:</strong> deixe a tabela de vendas pronta para um leitor de tela. Dê a ela a legenda <code>Vendas por dia</code>. Depois ponha o <code>scope</code> certo em <strong>todos</strong> os <code>th</code>: os dias, no topo, são nomes de coluna; os produtos, na primeira coluna, são nomes de linha.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Vendas&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;th&gt;Sábado&lt;/th&gt;&lt;th&gt;Domingo&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th&gt;Caderno&lt;/th&gt;&lt;td&gt;6&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th&gt;Caneta azul&lt;/th&gt;&lt;td&gt;12&lt;/td&gt;&lt;td&gt;7&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th&gt;Estojo&lt;/th&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Vendas&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;caption&gt;Vendas por dia&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;th scope="col"&gt;Sábado&lt;/th&gt;&lt;th scope="col"&gt;Domingo&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th scope="row"&gt;Caderno&lt;/th&gt;&lt;td&gt;6&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope="row"&gt;Caneta azul&lt;/th&gt;&lt;td&gt;12&lt;/td&gt;&lt;td&gt;7&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope="row"&gt;Estojo&lt;/th&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>No resultado, a única mudança visível é a legenda. Todo o resto aconteceu "por dentro", para quem ouve a página. Com isso, o módulo de tabelas está completo. Para juntar tudo numa página de verdade, veja o projeto <a href="projeto-cardapio.html">Cardápio</a>.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>caption</code> é o título da tabela: primeiro filho do <code>table</code>, um só, desenhado em cima e centralizado. Ele faz parte da tabela, e o leitor de tela o anuncia.</li>
+  <li>Leitores de tela percorrem a tabela célula por célula e podem anunciar os nomes da linha e da coluna de cada dado. Para isso precisam dos <code>th</code> e do <code>scope</code>.</li>
+  <li><code>scope="col"</code>: nome da coluna. <code>scope="row"</code>: nome da linha. <code>scope="rowgroup"</code>: nome de um grupo de linhas. Sem <code>scope</code>, o navegador adivinha.</li>
+  <li><code>scope</code> não muda o desenho. Em tabelas muito complexas existe o <code>headers</code>, mas o melhor é simplificar.</li>
+  <li>Dentro de <code>figure</code>, a legenda é o <code>figcaption</code>, sem <code>caption</code>.</li>
+  <li>Erros e avisos: <em>Element “caption” not allowed as child of element “table” in this context</em>, <em>Bad value “column” for attribute “scope”</em>, <code>scope</code> no <code>td</code> e <code>summary</code> obsoletos.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
