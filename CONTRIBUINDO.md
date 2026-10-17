@@ -111,6 +111,7 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
 - **Avisos** (`!`, não são falha):
   - erro no console da solução, de uma caixa livre ou de um Resultado (por exemplo, `Não foi possível carregar "bolo.jpg" (<img>)`);
   - solução desenhada em modo quirks.
+  - **recurso que falha** na solução de uma missão, numa caixa livre ou num Resultado: um 404, uma imagem, um script ou CSS que não carregou, um `<iframe>` que caiu na 404 do editor ou do servidor. Exemplo: `a solução carrega algo que falha: 404 jogo.html`. Uma meta como `attr:iframe[sandbox]` não olha o conteúdo do iframe; este aviso, sim. Num Resultado com "erro de propósito" no rótulo, o aviso diz isso.
 - Guarda o que passou em `tools/.cache-missoes.json`. Só testa de novo a caixa que mudou (ou tudo, se o `htmlsim.js` mudar). Use `--sem-cache` para forçar.
 - `--nativo`: valida no `vnu` do lab **a solução de cada missão** (abas `.html` e `.css`) e **cada `pre.file[data-resultado]`**.
   - Solução com erro do W3C = **falha**.
@@ -126,6 +127,10 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
   - Um *service worker* (`assets/htmlsim-sw.js`) serve a pasta `assets/sim/<caixa>/`, com cada aba no próprio endereço.
   - Por isso funcionam, como num site publicado: `<link href="estilo.css">`, `<script src="script.js">`, `<a href="sobre.html">`, `href="#receita"`, pastas (`data-file="css/estilo.css"`) e `../`.
   - O DOM fica **exatamente** como o navegador montou: o `<link>` continua `<link href="estilo.css">`. Por isso `attr:link[href]=estilo.css` funciona.
+- **`<iframe sandbox>` no código do leitor** (conferido no Chromium): um `<iframe>` com `sandbox` **sem** `allow-same-origin` tem origem opaca e **não passa pelo service worker**.
+  - Por isso `src="jogo.html"` (uma aba) e `assets/midia/…` dentro dele dão o 404 do servidor de verdade.
+  - Nesses exemplos, ponha o conteúdo no `srcdoc` do iframe, ou use `sandbox="allow-scripts allow-same-origin"` quando a aula permitir.
+  - O editor não consegue resolver isso: é a regra do navegador. O testador avisa (`não passou pelo editor`).
 - **Mídia:** `assets/midia/…` funciona dentro do quadro e no Resultado, como se a pasta da caixa fosse a raiz do guia. Escreva `src="assets/midia/bolo-800.jpg"`, sem `/` no começo e sem `../`.
 - **Abas e navegação:**
   - editar uma aba `.html` mostra essa página no quadro;
@@ -155,6 +160,10 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
   - Um `submit` com `preventDefault()` no JS do leitor não é tocado.
   - `method="dialog"` fecha o `<dialog>`, como no navegador.
 - **`alert`, `confirm` e `prompt`** funcionam (são do navegador).
+- **`autofocus`:** pela regra do HTML, depois que o leitor focou qualquer coisa na página do guia (o editor, um botão), o navegador ignora o `autofocus` dentro dos quadros.
+  - Enquanto o leitor digita, o editor não tira o foco do código.
+  - O botão ↻ (da caixa e do Resultado) aplica o `autofocus` da página, como o navegador faria numa aba nova.
+  - O ↗ abre numa aba nova, onde quem aplica o `autofocus` é o próprio navegador.
 - **Validar no W3C (decisão: tem, opcional):** o botão manda o código da aba `.html` aberta para `validator.w3.org/nu`, só **depois de o leitor confirmar** (o código vai para a internet). As mensagens aparecem em inglês, com a linha e a coluna. As metas **não** dependem disso.
 - **Restaurar** volta ao código original. **Ver solução** pede confirmação e troca as abas que a solução muda.
 - **Missão:** "Missão em andamento… Ainda falta: h1 com o texto “Receitas da Ana” (hoje o texto é “Meu site”)" → "✔ Missão cumprida!".
@@ -189,6 +198,7 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
   - um `href="#x"` navega de verdade para o fragmento do próprio quadro, como no modo completo: rola, liga o `:target` e move o ponto de partida do foco (o próximo <kbd>Tab</kbd> parte dali);
   - `href="#"` e `href="#top"` (sem elemento com esse id) voltam ao topo, como no navegador; o foco fica no link clicado;
   - um link para uma página que não existe só dá um aviso no console;
+  - só `<link href>` e `<script src>` são embutidos: `<track src="aba.vtt">` não carrega, `<iframe src="aba.html">` mostra o 404 do servidor, e `import` entre abas `.js` não resolve;
   - um GET para outra aba não leva os dados no `location.search`;
   - o documento **nunca** fica em modo quirks (é a regra do `srcdoc`);
   - `assets/midia/…` só funciona em páginas da raiz do site.
