@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML canvas — um quadro para desenhar com JavaScript | Guia HTML</title>
+<meta name="description" content="O elemento canvas para quem nunca fez um site: width e height, o conteúdo alternativo, o getContext(&quot;2d&quot;), retângulos, linhas, círculos e texto com um JavaScript mínimo e explicado linha a linha, acessibilidade (role=&quot;img&quot; e aria-label), canvas × SVG × img e os erros reais do validador W3C e do console.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">canvas</span></h1>
+
+<p class="intro">O <code>&lt;canvas&gt;</code> é um <strong>quadro em branco</strong> dentro da página. Sozinho, ele não mostra nada: o HTML só pendura o quadro na parede e diz o tamanho dele. Quem desenha é o <strong>JavaScript</strong>, ponto por ponto, como uma mão com giz. Com ele se fazem gráficos, jogos, editores de foto e assinaturas digitais. Nesta aula você vai criar o quadro, fazer seus primeiros desenhos com um JavaScript bem pequeno (explicado linha a linha) e ver o que acontece quando algo dá errado.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <code>canvas</code> e quando ele é a ferramenta certa.</li>
+  <li>Os atributos <code>width</code> e <code>height</code> e o tamanho padrão (300 × 150).</li>
+  <li>O conteúdo alternativo, escrito entre <code>&lt;canvas&gt;</code> e <code>&lt;/canvas&gt;</code>.</li>
+  <li>O mínimo de JavaScript para desenhar: <code>getContext("2d")</code>, retângulos, linhas, círculos e texto.</li>
+  <li>Como as coordenadas funcionam (o ponto 0,0 fica no canto de <strong>cima</strong>).</li>
+  <li>Como deixar o desenho acessível com <code>role="img"</code> e <code>aria-label</code>.</li>
+  <li>Os erros reais: <code>width="300px"</code>, <code>&lt;canvas /&gt;</code>, <code>alt</code> no canvas e o <code>null</code> no console.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram conferidos com o <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. Os desenhos você vê ao vivo: o seu próprio navegador roda cada exemplo.</p>
+
+<hr>
+
+<h2>A ideia: a lousa e o giz</h2>
+<p>Pense numa sala de aula. Antes da aula, alguém <strong>pendura a lousa</strong> na parede: escolhe onde ela fica e o tamanho dela. Depois, a professora pega o <strong>giz</strong> e desenha: um quadrado aqui, uma linha ali, uma palavra no canto.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na sala de aula</th><th>Na página</th><th>Quem faz</th></tr>
+<tr><td>Pendurar a lousa e escolher o tamanho</td><td><code>&lt;canvas width="300" height="150"&gt;</code></td><td><strong>HTML</strong></td></tr>
+<tr><td>Pegar o giz</td><td><code>getContext("2d")</code></td><td>JavaScript</td></tr>
+<tr><td>Desenhar</td><td><code>fillRect(…)</code>, <code>fillText(…)</code>…</td><td>JavaScript</td></tr>
+</table>
+</div>
+
+<p>Uma diferença importante: a lousa não lembra <strong>o que</strong> foi desenhado, só guarda os pontinhos de cor (os <strong>pixels</strong>). Depois de pintado, um quadrado não é mais "um quadrado" que você pode clicar ou mover: é só tinta. Isso deixa o canvas muito rápido para jogos e gráficos que mudam o tempo todo, mas tem um preço na acessibilidade, que você vai ver na seção 5.</p>
+
+<hr>
+
+<h2>1. O elemento canvas</h2>
+<p>O quadro mais simples tem uma <code>id</code> (para o JavaScript achá-lo depois), uma largura e uma altura:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;canvas id="quadro" width="300" height="150" style="border: 1px solid gray"&gt;
+  Aqui haveria um desenho, mas o seu navegador não mostra canvas.
+&lt;/canvas&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;canvas&gt;</dt><dd>"Tela de pintura", em inglês: o quadro em branco. Tem tag de abertura e de <strong>fechamento</strong>; nunca escreva <code>&lt;canvas /&gt;</code> (veja em <a href="#errado">Quando dá errado</a>).</dd>
+  <dt>id="quadro"</dt><dd>Um nome único na página. O JavaScript vai procurar o quadro por esse nome (aula <a href="class-id.html">class e id</a>).</dd>
+  <dt>width="300"</dt><dd><em>Width</em> = "largura", em pixels. Só o número, <strong>sem</strong> <code>px</code>. Sem o atributo, a largura é <code>300</code>.</dd>
+  <dt>height="150"</dt><dd><em>Height</em> = "altura", em pixels. Sem o atributo, a altura é <code>150</code>.</dd>
+  <dt>style="border: 1px solid gray"</dt><dd>Só para você <strong>ver</strong> onde o quadro está. O canvas nasce transparente: sem a borda, o resultado acima seria um espaço vazio (aula <a href="atributo-style.html">O Atributo style</a>).</dd>
+  <dt>Aqui haveria um desenho…</dt><dd>O <strong>conteúdo alternativo</strong> (<em>fallback</em>). Aparece só quando o navegador não pode desenhar: um navegador muito antigo ou com o JavaScript desligado. No seu navegador, ele fica escondido.</dd>
+</dl>
+
+<p>Repare no resultado: um retângulo vazio, e o texto de dentro não aparece. Isso está certo. Um navegador que entende <code>canvas</code> mostra o quadro e <strong>esconde</strong> o que está dentro dele; o conteúdo alternativo é para quem não pode ver o desenho.</p>
+
+<div class="tip">
+<strong>Todos os navegadores entendem canvas</strong>
+<p>O <code>canvas</code> nasceu no Safari, da Apple, por volta de 2004, e entrou no HTML5. Hoje funciona em todos os navegadores atuais, de computador e de celular, há mais de dez anos. O conteúdo alternativo continua útil para quem desliga o JavaScript e para os leitores de tela.</p>
+</div>
+
+<hr>
+
+<h2>2. O primeiro desenho: um retângulo</h2>
+<p>Agora entra o JavaScript. Ele fica num arquivo separado, o <code>script.js</code>, ligado pela tag <code>&lt;script src="script.js"&gt;</code> no <strong>fim</strong> do HTML, depois do canvas (o porquê está em <a href="#errado">Quando dá errado</a>; a tag em si tem aula própria, <a href="script.html">O Elemento script</a>).</p>
+
+<p>Clique nas abas para ver os dois arquivos. O retângulo laranja do resultado foi desenhado agora pelo seu navegador:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;canvas id="quadro" width="300" height="150" style="border: 1px solid gray"&gt;
+  Um retângulo laranja.
+&lt;/canvas&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const quadro = document.getElementById("quadro");
+const giz = quadro.getContext("2d");
+
+giz.fillStyle = "orange";
+giz.fillRect(20, 20, 120, 80);
+</pre>
+</div>
+
+<p>São só quatro linhas de JavaScript. Uma por vez:</p>
+
+<dl class="anatomy">
+  <dt>const quadro =</dt><dd><code>const</code> cria uma "caixa com nome" (uma <strong>constante</strong>) chamada <code>quadro</code>. O que vem depois do <code>=</code> é guardado nela.</dd>
+  <dt>document.getElementById("quadro")</dt><dd>"Documento, pegue o elemento pela id <code>quadro</code>." Devolve o seu <code>&lt;canvas&gt;</code>. A id tem de ser <strong>igual</strong> à do HTML, com as mesmas maiúsculas e minúsculas.</dd>
+  <dt>quadro.getContext("2d")</dt><dd>"Quadro, me dê o seu giz de duas dimensões." O resultado se chama <strong>contexto</strong>: o objeto que sabe desenhar. Aqui ele foi guardado em <code>giz</code>; em outros sites você vai ver o nome <code>ctx</code> (de <em>context</em>).</dd>
+  <dt>giz.fillStyle = "orange"</dt><dd><em>Fill style</em> = "estilo do preenchimento": a cor da tinta. Aceita nomes de cor em inglês (<code>"red"</code>, <code>"green"</code>, <code>"blue"</code>) e códigos como <code>"#ff8800"</code>.</dd>
+  <dt>giz.fillRect(20, 20, 120, 80)</dt><dd><em>Fill rectangle</em> = "preencher retângulo". Os quatro números, na ordem: <strong>x</strong> (distância da esquerda), <strong>y</strong> (distância do topo), <strong>largura</strong> e <strong>altura</strong>, todos em pixels.</dd>
+  <dt>;</dt><dd>O ponto e vírgula termina cada instrução, como o ponto final de uma frase.</dd>
+</dl>
+
+<h3>As coordenadas: o 0,0 fica em cima</h3>
+<p>Na escola, o gráfico tem o 0,0 embaixo, e o y cresce para cima. No canvas é diferente: o ponto <strong>0,0 é o canto de cima à esquerda</strong>, o x cresce para a direita e o y cresce <strong>para baixo</strong>, como as linhas de um caderno.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Ponto</th><th>Onde fica num quadro de 300 × 150</th></tr>
+<tr><td><code>(0, 0)</code></td><td>canto de cima, à esquerda</td></tr>
+<tr><td><code>(300, 0)</code></td><td>canto de cima, à direita</td></tr>
+<tr><td><code>(0, 150)</code></td><td>canto de baixo, à esquerda</td></tr>
+<tr><td><code>(150, 75)</code></td><td>o centro</td></tr>
+</table>
+</div>
+
+<p>Então <code>fillRect(20, 20, 120, 80)</code> começa 20 pixels à direita da borda esquerda e 20 abaixo do topo, e se estende por 120 de largura e 80 de altura. O que passar da borda do quadro é simplesmente cortado.</p>
+
+<div class="tryhtml" data-goal="src:fillStyle\s*=\s*[&quot;']green[&quot;'],src:fillRect\(\s*150\s*\,\s*50\s*\,">
+<p class="try-task"><strong>Missão:</strong> pinte o retângulo de <strong>verde</strong> (<code>"green"</code>) e mova-o para que ele comece no ponto <code>x = 150</code>, <code>y = 50</code>, sem mudar o tamanho. Veja no resultado se ele foi para o lugar que você imaginou.</p>
+<pre class="script" data-file="index.html">&lt;canvas id="quadro" width="300" height="150" style="border: 1px solid gray"&gt;
+  Um retângulo colorido.
+&lt;/canvas&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const quadro = document.getElementById("quadro");
+const giz = quadro.getContext("2d");
+
+giz.fillStyle = "orange";
+giz.fillRect(20, 20, 120, 80);
+</pre>
+<pre class="solucao" data-file="script.js">const quadro = document.getElementById("quadro");
+const giz = quadro.getContext("2d");
+
+giz.fillStyle = "green";
+giz.fillRect(150, 50, 120, 80);
+</pre>
+</div>
+
+<p>O retângulo agora vai de x = 150 até x = 270 e de y = 50 até y = 130: cabe inteiro no quadro. Experimente também <code>fillRect(250, 100, 120, 80)</code> e veja o pedaço que sobra ser cortado.</p>
+
+<hr>
+
+<h2>3. Mais formas: contorno, linha, círculo e texto</h2>
+<p>O mesmo <code>giz</code> sabe fazer outras coisas. Cada exemplo abaixo usa só uma ou duas instruções novas.</p>
+
+<h3>Contorno de retângulo</h3>
+<p>O <code>fill…</code> pinta por dentro; o <code>stroke…</code> (<em>stroke</em> = "traço") desenha só a borda:</p>
+
+<pre class="file" data-file="script.js">giz.strokeStyle = "blue";
+giz.lineWidth = 4;
+giz.strokeRect(20, 20, 120, 80);
+</pre>
+
+<dl class="anatomy">
+  <dt>strokeStyle</dt><dd>A cor do traço (a do preenchimento é a <code>fillStyle</code>).</dd>
+  <dt>lineWidth</dt><dd>"Largura da linha": a grossura do traço, em pixels.</dd>
+  <dt>strokeRect(x, y, largura, altura)</dt><dd>Desenha só a borda de um retângulo. Os números funcionam como no <code>fillRect</code>.</dd>
+</dl>
+
+<h3>Uma linha reta</h3>
+<p>Linhas e outras formas livres se desenham como quem faz um desenho sem tirar o lápis do papel: você começa um <strong>caminho</strong> (<em>path</em>), leva o lápis a um ponto, risca até outro e, no fim, passa a tinta:</p>
+
+<pre class="file" data-file="script.js">giz.beginPath();
+giz.moveTo(20, 130);
+giz.lineTo(280, 20);
+giz.stroke();
+</pre>
+
+<dl class="anatomy">
+  <dt>beginPath()</dt><dd>"Começar caminho": avisa que um desenho novo vai começar.</dd>
+  <dt>moveTo(20, 130)</dt><dd>"Mover para": leva o lápis até o ponto (20, 130) <strong>sem riscar</strong>.</dd>
+  <dt>lineTo(280, 20)</dt><dd>"Linha até": risca do ponto atual até (280, 20). Por enquanto, o risco ainda está "a lápis", invisível.</dd>
+  <dt>stroke()</dt><dd>Passa a tinta por cima do caminho, com a <code>strokeStyle</code> e a <code>lineWidth</code> atuais. Sem ele, a linha não aparece.</dd>
+</dl>
+
+<h3>Um círculo</h3>
+<p>Círculos são arcos que dão a volta completa. O <code>arc</code> recebe o centro, o raio e de onde até onde desenhar:</p>
+
+<pre class="file" data-file="script.js">giz.fillStyle = "gold";
+giz.beginPath();
+giz.arc(150, 75, 40, 0, Math.PI * 2);
+giz.fill();
+</pre>
+
+<dl class="anatomy">
+  <dt>arc(150, 75, 40, …)</dt><dd><em>Arc</em> = "arco". O centro fica em (150, 75) e o raio é de 40 pixels.</dd>
+  <dt>0, Math.PI * 2</dt><dd>O começo e o fim do arco, medidos em <strong>radianos</strong>, a unidade de ângulo do JavaScript. <code>0</code> até <code>Math.PI * 2</code> (2 × 3,14…) é a volta inteira; <code>Math.PI</code> sozinho seria meia volta.</dd>
+  <dt>fill()</dt><dd>Pinta o caminho por dentro com a <code>fillStyle</code>. Com <code>stroke()</code> no lugar, sairia só o contorno do círculo.</dd>
+</dl>
+
+<h3>Texto</h3>
+<pre class="file" data-file="script.js">giz.fillStyle = "black";
+giz.font = "20px sans-serif";
+giz.fillText("Receitas da Ana", 20, 40);
+</pre>
+
+<dl class="anatomy">
+  <dt>font</dt><dd>O tamanho e a família da letra, escritos como no CSS: <code>"20px sans-serif"</code> = 20 pixels, uma letra sem serifa.</dd>
+  <dt>fillText("Receitas da Ana", 20, 40)</dt><dd>Escreve o texto. Atenção: o (20, 40) é o ponto da <strong>linha de base</strong> do texto, a linha onde as letras "pousam", e não o canto de cima. Com <code>y = 0</code>, o texto ficaria quase todo para fora do quadro.</dd>
+</dl>
+
+<h3>Tudo junto: o sol da Ana</h3>
+<p>Aqui estão as quatro formas num desenho só. Mexa nos números, nas cores e no texto, e veja o resultado mudar:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;canvas id="quadro" width="300" height="150" style="border: 1px solid gray"&gt;
+  Um sol amarelo sobre um chão verde, com a frase "Bom dia!".
+&lt;/canvas&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const quadro = document.getElementById("quadro");
+const giz = quadro.getContext("2d");
+
+// o chão: um retângulo verde
+giz.fillStyle = "green";
+giz.fillRect(0, 120, 300, 30);
+
+// o sol: um círculo amarelo
+giz.fillStyle = "gold";
+giz.beginPath();
+giz.arc(230, 50, 30, 0, Math.PI * 2);
+giz.fill();
+
+// um raio de sol: uma linha
+giz.strokeStyle = "orange";
+giz.lineWidth = 3;
+giz.beginPath();
+giz.moveTo(195, 85);
+giz.lineTo(170, 110);
+giz.stroke();
+
+// o texto
+giz.fillStyle = "black";
+giz.font = "24px sans-serif";
+giz.fillText("Bom dia!", 20, 50);
+
+console.log("Desenho pronto!");
+</pre>
+</div>
+
+<p>Duas coisas novas no <code>script.js</code>:</p>
+<ul>
+  <li>As linhas que começam com <code>//</code> são <strong>comentários</strong>: o JavaScript ignora tudo dali até o fim da linha. Servem para você lembrar o que cada pedaço faz.</li>
+  <li><code>console.log("Desenho pronto!")</code> escreve uma mensagem no <strong>console</strong>, que aparece embaixo do resultado. No navegador de verdade, o console fica nas <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor (F12)</a>. É lá que aparecem os erros de JavaScript.</li>
+</ul>
+
+<p>A <strong>ordem</strong> importa: o que é desenhado depois fica por cima, como tinta sobre tinta. Mova o bloco do chão para o fim do arquivo e faça o sol descer até <code>y = 120</code>: o chão vai cobrir a metade de baixo do sol.</p>
+
+<hr>
+
+<h2>4. O tamanho: atributo × CSS</h2>
+<p>O <code>width</code> e o <code>height</code> do canvas definem <strong>quantos pixels</strong> o quadro tem por dentro, a "resolução" do desenho. Já o CSS (por exemplo, <code>style="width: 600px"</code>) só muda o tamanho em que o quadro aparece na tela. Se os dois não combinam, o navegador <strong>estica</strong> o desenho, como uma foto pequena ampliada:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;p&gt;Atributos: 150 × 75, mostrado com 150 de largura.&lt;/p&gt;
+&lt;canvas class="placa" width="150" height="75" style="border: 1px solid gray"&gt;Texto "Ana"&lt;/canvas&gt;
+
+&lt;p&gt;Atributos: 150 × 75, mas o CSS manda mostrar com 300 de largura.&lt;/p&gt;
+&lt;canvas class="placa" width="150" height="75" style="border: 1px solid gray; width: 300px"&gt;Texto "Ana"&lt;/canvas&gt;
+
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">// desenha a mesma coisa nos dois quadros
+for (const quadro of document.querySelectorAll(".placa")) {
+  const giz = quadro.getContext("2d");
+  giz.font = "40px sans-serif";
+  giz.fillText("Ana", 20, 55);
+}
+</pre>
+</div>
+
+<p>O segundo "Ana" saiu maior e mais borrado: são os mesmos 150 × 75 pixels, esticados para o dobro. (O <code>for … of</code> repete o desenho para cada quadro com a classe <code>placa</code>; laços são assunto do JavaScript, não deste guia.)</p>
+
+<div class="warning">
+<strong>Regra prática</strong>
+<p>Escolha o tamanho do canvas pelos atributos <code>width</code> e <code>height</code>. Se precisar mudar o tamanho com CSS, mantenha a mesma <strong>proporção</strong> e saiba que o desenho vai ser ampliado ou reduzido.</p>
+</div>
+
+<hr>
+
+<h2>5. Acessibilidade: o desenho precisa de palavras</h2>
+<p>Para um leitor de tela (o programa que lê a página em voz alta para quem não enxerga), um canvas é uma caixa vazia: ele não sabe que ali tem um sol e um "Bom dia!". Lembre que o canvas guarda só pixels. Você tem três jeitos de ajudar, do mais simples ao mais completo:</p>
+
+<ol class="passo">
+  <li><strong>Um rótulo.</strong> <code>role="img"</code> diz "trate este quadro como uma imagem", e <code>aria-label</code> dá a descrição, como o <code>alt</code> de uma imagem (aulas <a href="imagens-alt.html">Texto Alternativo</a> e <a href="aria.html">ARIA</a>).</li>
+  <li><strong>O conteúdo alternativo.</strong> O texto (ou uma tabela, ou uma imagem) entre <code>&lt;canvas&gt;</code> e <code>&lt;/canvas&gt;</code>. É o que aparece com o JavaScript desligado.</li>
+  <li><strong>O texto na própria página.</strong> Para um gráfico com números, escreva os números também num parágrafo ou numa tabela ao lado. Isso serve para todo mundo.</li>
+</ol>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;canvas id="vendas" width="300" height="150" role="img"
+        aria-label="Gráfico de barras: 12 bolos vendidos em maio e 20 em junho."&gt;
+  &lt;p&gt;Bolos vendidos: 12 em maio e 20 em junho.&lt;/p&gt;
+&lt;/canvas&gt;
+</pre>
+
+<p>O resultado aparece vazio porque não há <code>script.js</code> desenhando as barras, mas o rótulo já está lá para o leitor de tela. Note que <code>alt</code> <strong>não</strong> existe no canvas: o validador recusa (veja abaixo).</p>
+
+<div class="tryhtml" data-goal="attr:canvas#vendas[role]=img,attr:canvas#vendas[aria-label],texto:canvas#vendas p=12 em maio">
+<p class="try-task"><strong>Missão:</strong> o gráfico de vendas está "mudo". Coloque <code>role="img"</code> e um <code>aria-label</code> com a descrição no <code>&lt;canvas&gt;</code>, e escreva dentro dele um parágrafo com os números: <code>&lt;p&gt;Bolos vendidos: 12 em maio e 20 em junho.&lt;/p&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;canvas id="vendas" width="300" height="150" style="border: 1px solid gray"&gt;&lt;/canvas&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const quadro = document.getElementById("vendas");
+const giz = quadro.getContext("2d");
+
+giz.fillStyle = "steelblue";
+giz.fillRect(60, 90, 60, 60);   // maio: 12
+giz.fillRect(180, 50, 60, 100); // junho: 20
+
+giz.fillStyle = "black";
+giz.font = "16px sans-serif";
+giz.fillText("maio", 70, 80);
+giz.fillText("junho", 185, 40);
+</pre>
+<pre class="solucao" data-file="index.html">&lt;canvas id="vendas" width="300" height="150" style="border: 1px solid gray" role="img"
+        aria-label="Gráfico de barras: 12 bolos vendidos em maio e 20 em junho."&gt;
+  &lt;p&gt;Bolos vendidos: 12 em maio e 20 em junho.&lt;/p&gt;
+&lt;/canvas&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+</div>
+
+<p>O desenho continua igual na tela: a mudança é invisível para quem enxerga e enorme para quem usa leitor de tela.</p>
+
+<h3>A página completa, conferida no validador</h3>
+<p>Nas caixas "Experimente", o código é só um pedaço da página. Num arquivo de verdade, o canvas fica dentro de uma página inteira, com <code>&lt;!DOCTYPE html&gt;</code>, <code>lang</code>, <code>charset</code> e <code>title</code>, e o script no fim do <code>&lt;body&gt;</code>:</p>
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Desenho da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Desenho da Ana&lt;/h1&gt;
+&lt;canvas id="quadro" width="300" height="150" role="img" aria-label="Um sol amarelo sobre um chão verde"&gt;
+  Um sol amarelo sobre um chão verde.
+&lt;/canvas&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu --verbose index.html
+index.html               « só o nome do arquivo: nenhum erro, nenhum aviso</pre>
+<p>O <code>--verbose</code> ("falante") faz o <code>vnu</code> mostrar o nome de cada arquivo que ele conferiu; sem nenhuma linha de <code>error</code> depois, a página está válida. O validador confere só o HTML: ele não roda o <code>script.js</code>.</p>
+
+<hr>
+
+<h2>6. canvas, SVG ou img: qual usar?</h2>
+<p>Existem três jeitos de pôr um desenho na página. Cada um tem o seu lugar:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>&lt;img&gt;</code></th><th><code>&lt;svg&gt;</code></th><th><code>&lt;canvas&gt;</code></th></tr>
+<tr><td>O que é</td><td>um arquivo de imagem pronto (foto, logo)</td><td>um desenho descrito em tags (<code>&lt;circle&gt;</code>, <code>&lt;rect&gt;</code>)</td><td>um quadro de pixels pintado pelo JavaScript</td></tr>
+<tr><td>Precisa de JavaScript?</td><td>não</td><td>não</td><td><strong>sim</strong></td></tr>
+<tr><td>Ampliado, fica…</td><td>borrado (JPG, PNG)</td><td>nítido</td><td>borrado</td></tr>
+<tr><td>Cada forma é um elemento?</td><td>não</td><td><strong>sim</strong>: dá para clicar e mudar cada uma</td><td>não: depois de pintada, é só tinta</td></tr>
+<tr><td>Acessibilidade</td><td><code>alt</code></td><td><code>&lt;title&gt;</code> e texto de verdade</td><td><code>role="img"</code>, <code>aria-label</code> e conteúdo alternativo</td></tr>
+<tr><td>Melhor para</td><td>fotos e imagens que não mudam</td><td>ícones, logos, mapas e gráficos simples</td><td>jogos, animações, gráficos com muitos pontos, editar fotos</td></tr>
+</table>
+</div>
+
+<p>Para um logo ou um ícone, prefira <code>&lt;img&gt;</code> ou <a href="svg.html">SVG</a>. Use o canvas quando o desenho é <strong>feito na hora</strong> pelo programa e muda muito, como um jogo.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Escrever <code>width="300px"</code></strong>
+<p><strong>O que o navegador faz:</strong> lê os algarismos do começo (<code>300</code>), para no <code>p</code> e segue em frente, sem avisar ninguém. O quadro fica com 300 de largura. Funciona por sorte: com <code>width="50%"</code>, o navegador lê só o <code>50</code>, e o quadro fica com 50 pixels, e não com metade da página.</p>
+<p><strong>O validador</strong>, com este <code>index.html</code>:</p>
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Desenho da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;canvas id="quadro" width="300px" height="150"&gt;&lt;/canvas&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.47: error: Bad value “300px” for attribute “width” on element “canvas”: Expected a digit but saw “p” instead.</pre>
+<p>"Valor ruim “300px” para o atributo <code>width</code> no elemento <code>canvas</code>: esperava um algarismo, mas encontrou um “p”." <strong>Como consertar:</strong> só o número, <code>width="300"</code>. Para tamanhos em porcentagem, use CSS e lembre da seção 4.</p>
+</div>
+
+<div class="cenario">
+<strong>Fechar com <code>&lt;canvas /&gt;</code>: o resto da página some</strong>
+<p><strong>O que o navegador faz:</strong> no HTML, a barra do <code>/&gt;</code> só vale para elementos <strong>vazios</strong> (como <code>&lt;img&gt;</code> e <code>&lt;br&gt;</code>). No canvas, ela é ignorada: a tag fica <strong>aberta</strong>, e tudo o que vem depois vira conteúdo alternativo do canvas. E o conteúdo alternativo fica escondido. Veja: o parágrafo sumiu do resultado.</p>
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;h1&gt;Desenho da Ana&lt;/h1&gt;
+&lt;canvas id="quadro" width="300" height="150" style="border: 1px solid gray" /&gt;
+&lt;p&gt;Este parágrafo deveria aparecer embaixo do quadro.&lt;/p&gt;
+</pre>
+</div>
+<p>(Experimente trocar <code>/&gt;</code> por <code>&gt;&lt;/canvas&gt;</code> e veja o parágrafo voltar.) <strong>O validador</strong>, com o mesmo código numa página completa, mostra três erros, todos vindos do mesmo engano:</p>
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Desenho da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Desenho da Ana&lt;/h1&gt;
+&lt;canvas id="quadro" width="300" height="150" /&gt;
+&lt;p&gt;Este parágrafo deveria aparecer embaixo do quadro.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":9.1-9.47: error: Self-closing syntax (“/&gt;”) used on a non-void HTML element. Ignoring the slash and treating as a start tag.
+"file:/home/ana/site/index.html":11.1-11.7: error: End tag for  “body” seen, but there were unclosed elements.
+"file:/home/ana/site/index.html":9.1-9.47: error: Unclosed element “canvas”.</pre>
+<dl class="anatomy">
+  <dt>Self-closing syntax (“/&gt;”) used on a non-void HTML element</dt><dd>"Sintaxe de autofechamento usada num elemento HTML que não é vazio. Ignorando a barra e tratando como tag de abertura."</dd>
+  <dt>End tag for “body” seen, but there were unclosed elements</dt><dd>"Vi o fim do <code>body</code>, mas havia elementos abertos." (O espaço duplo depois de <code>for</code> sai assim mesmo do validador.)</dd>
+  <dt>Unclosed element “canvas”</dt><dd>"Elemento <code>canvas</code> não fechado."</dd>
+</dl>
+<p><strong>Como consertar:</strong> sempre <code>&lt;canvas …&gt;&lt;/canvas&gt;</code>, com a tag de fechamento.</p>
+</div>
+
+<div class="cenario">
+<strong>Usar <code>alt</code> no canvas</strong>
+<p><strong>O que o navegador faz:</strong> nada. O <code>alt</code> é da <code>&lt;img&gt;</code>; no canvas ele é ignorado, e o leitor de tela continua sem descrição.</p>
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Desenho da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;canvas id="quadro" width="300" height="150" alt="Um sol amarelo"&gt;&lt;/canvas&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.66: error: Attribute “alt” not allowed on element “canvas” at this point.</pre>
+<p>"O atributo <code>alt</code> não é permitido no elemento <code>canvas</code> neste ponto." <strong>Como consertar:</strong> troque por <code>role="img" aria-label="…"</code> e escreva o conteúdo alternativo (seção 5).</p>
+</div>
+
+<div class="cenario">
+<strong>No console: <code>Cannot read properties of null (reading 'getContext')</code></strong>
+<p><strong>O que significa:</strong> o <code>getElementById</code> não achou o canvas e devolveu <code>null</code> ("nada"). E "nada" não tem <code>getContext</code>. As duas causas mais comuns:</p>
+<ul>
+  <li>O <code>&lt;script&gt;</code> veio <strong>antes</strong> do <code>&lt;canvas&gt;</code>. O navegador lê a página de cima para baixo e roda o script assim que o encontra, quando o canvas ainda não existe.</li>
+  <li>A id está escrita diferente: <code>id="Quadro"</code> no HTML e <code>"quadro"</code> no JavaScript.</li>
+</ul>
+<p>Aqui o script está antes do canvas. Veja o erro no console, embaixo do resultado:</p>
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;canvas id="quadro" width="300" height="150" style="border: 1px solid gray"&gt;&lt;/canvas&gt;
+</pre>
+<pre class="script" data-file="script.js">const quadro = document.getElementById("quadro");
+const giz = quadro.getContext("2d");
+giz.fillStyle = "orange";
+giz.fillRect(20, 20, 120, 80);
+</pre>
+</div>
+<p>No Chrome, o erro completo é <code>TypeError: Cannot read properties of null (reading 'getContext')</code>: "erro de tipo: não dá para ler as propriedades de <code>null</code> (lendo <code>getContext</code>)". O Firefox diz a mesma coisa com outras palavras. O validador W3C <strong>não</strong> pega esse erro: o HTML está certo; o problema é a ordem.</p>
+<p><strong>Como consertar:</strong> ponha o <code>&lt;script src="script.js"&gt;</code> no fim, depois do canvas (ou use <code>defer</code>, assunto da aula <a href="preload.html">Desempenho</a>), e confira se a id é idêntica.</p>
+</div>
+
+<div class="cenario">
+<strong>No console: <code>Cannot set properties of null (setting 'fillStyle')</code></strong>
+<p><strong>O que significa:</strong> desta vez o canvas foi achado, mas o <code>getContext</code> devolveu <code>null</code>. Quase sempre é o nome do contexto: tem de ser <code>"2d"</code>, com <strong>d minúsculo</strong>. Com <code>getContext("2D")</code>, o navegador não reconhece o pedido e não entrega giz nenhum; o erro só aparece na linha seguinte, a do <code>fillStyle</code>.</p>
+<p><strong>Como consertar:</strong> escreva exatamente <code>getContext("2d")</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O desenho saiu borrado ou esticado</strong>
+<p><strong>O que significa:</strong> o CSS mostra o canvas num tamanho diferente do <code>width</code>/<code>height</code> (seção 4). O validador não reclama, porque o HTML está certo.</p>
+<p><strong>Como consertar:</strong> ajuste os atributos <code>width</code> e <code>height</code> ao tamanho em que o quadro aparece, ou mantenha a proporção.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<h3>No HTML</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;canvas id="quadro" width="300" height="150"&gt;…&lt;/canvas&gt;</code></td><td>Cria o quadro (padrão: 300 × 150 pixels)</td></tr>
+<tr><td>texto entre as tags</td><td>Conteúdo alternativo: aparece sem canvas ou sem JavaScript</td></tr>
+<tr><td><code>role="img" aria-label="…"</code></td><td>Descrição para leitores de tela</td></tr>
+<tr><td><code>&lt;script src="script.js"&gt;&lt;/script&gt;</code> depois do canvas</td><td>Liga o JavaScript que desenha</td></tr>
+</table>
+</div>
+
+<h3>No JavaScript</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>document.getElementById("quadro")</code></td><td>Acha o canvas pela id</td></tr>
+<tr><td><code>quadro.getContext("2d")</code></td><td>Pega o contexto 2D (o "giz")</td></tr>
+<tr><td><code>giz.fillStyle = "red"</code></td><td>Cor do preenchimento</td></tr>
+<tr><td><code>giz.fillRect(x, y, largura, altura)</code></td><td>Retângulo pintado</td></tr>
+<tr><td><code>giz.strokeStyle = "blue"</code> / <code>giz.lineWidth = 4</code></td><td>Cor e grossura do traço</td></tr>
+<tr><td><code>giz.strokeRect(x, y, largura, altura)</code></td><td>Só a borda de um retângulo</td></tr>
+<tr><td><code>giz.clearRect(x, y, largura, altura)</code></td><td>Apaga uma área (volta a ficar transparente)</td></tr>
+<tr><td><code>beginPath()</code>, <code>moveTo(x, y)</code>, <code>lineTo(x, y)</code>, <code>stroke()</code></td><td>Linha: começa, leva o lápis, risca, passa a tinta</td></tr>
+<tr><td><code>arc(x, y, raio, 0, Math.PI * 2)</code> + <code>fill()</code></td><td>Círculo pintado (centro em x, y)</td></tr>
+<tr><td><code>giz.font = "20px sans-serif"</code></td><td>Tamanho e família da letra</td></tr>
+<tr><td><code>giz.fillText("texto", x, y)</code></td><td>Escreve um texto (y é a linha de base)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O quadro</h3>
+<p>Complete para criar um canvas de 400 pixels de largura:</p>
+<div class="ex-code">&lt;canvas id="jogo" <input data-answer="width" aria-label="atributo">="400" height="200"&gt;&lt;/canvas&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O giz</h3>
+<p>Complete o pedido do contexto de duas dimensões:</p>
+<div class="ex-code">const giz = quadro.getContext("<input data-answer="2d" aria-label="tipo de contexto">");</div>
+</div>
+
+<div class="exercise">
+<h3>3. Um quadrado</h3>
+<p>Complete para pintar um quadrado de 50 × 50 no canto de cima, à esquerda (no ponto 0, 0):</p>
+<div class="ex-code">giz.fillRect(<input data-answer="0, 0, 50, 50|0,0,50,50" aria-label="os quatro números">);</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Sem os atributos <code>width</code> e <code>height</code>, qual é o tamanho de um canvas?</p>
+<label><input type="radio" name="q4"> 0 × 0: ele não aparece</label>
+<label><input type="radio" name="q4"> O tamanho da tela inteira</label>
+<label><input type="radio" name="q4"> 300 × 150 pixels</label>
+<label><input type="radio" name="q4"> 100 × 100 pixels</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Num quadro de 300 × 150, onde fica o ponto <code>(0, 150)</code>?</p>
+<label><input type="radio" name="q5"> No canto de cima, à esquerda</label>
+<label><input type="radio" name="q5"> No canto de baixo, à esquerda</label>
+<label><input type="radio" name="q5"> No canto de cima, à direita</label>
+<label><input type="radio" name="q5"> Fora do quadro</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. O console mostra <code>Cannot read properties of null (reading 'getContext')</code>. Qual é a causa mais provável?</p>
+<label><input type="radio" name="q6"> Faltou o <code>height</code> no canvas</label>
+<label><input type="radio" name="q6"> O navegador não entende canvas</label>
+<label><input type="radio" name="q6"> A cor da <code>fillStyle</code> está em português</label>
+<label><input type="radio" name="q6"> O script rodou antes de o canvas existir, ou a id está diferente</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">7. Qual é o jeito válido de descrever um canvas para leitores de tela?</p>
+<label><input type="radio" name="q7"> <code>role="img" aria-label="…"</code> e um conteúdo alternativo</label>
+<label><input type="radio" name="q7"> <code>alt="…"</code></label>
+<label><input type="radio" name="q7"> <code>title</code> dentro do <code>script.js</code></label>
+<label><input type="radio" name="q7"> Não precisa: o leitor de tela enxerga o desenho</label>
+</div>
+
+<h3>Missão final: a placa da lojinha</h3>
+
+<div class="tryhtml" data-goal="attr:canvas#placa[width]=300,attr:canvas#placa[height]=100,attr:canvas#placa[role]=img,attr:canvas#placa[aria-label],src:getContext\(\s*[&quot;']2d[&quot;']\s*\),src:fillRect\(,src:fillText\(\s*[&quot;']Lojinha da Ana[&quot;']">
+<p class="try-task"><strong>Missão:</strong> a Ana quer uma placa desenhada para o site.</p>
+<ol>
+  <li>No <code>index.html</code>, crie um <code>&lt;canvas&gt;</code> com <code>id="placa"</code>, 300 de largura e 100 de altura, <code>role="img"</code> e um <code>aria-label</code> com o texto da placa. Não esqueça a tag de fechamento.</li>
+  <li>No <code>script.js</code>, pegue o contexto 2D, pinte um retângulo de fundo com <code>fillRect</code> e escreva <code>"Lojinha da Ana"</code> com <code>fillText</code>, numa cor diferente do fundo.</li>
+</ol>
+<pre class="script" data-file="index.html">&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;!-- crie o canvas aqui --&gt;
+
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">// 1. ache o canvas pela id
+
+// 2. pegue o contexto 2D
+
+// 3. pinte o fundo
+
+// 4. escreva o texto
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;canvas id="placa" width="300" height="100" role="img" aria-label="Placa: Lojinha da Ana"&gt;
+  Lojinha da Ana
+&lt;/canvas&gt;
+
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="solucao" data-file="script.js">// 1. ache o canvas pela id
+const placa = document.getElementById("placa");
+
+// 2. pegue o contexto 2D
+const giz = placa.getContext("2d");
+
+// 3. pinte o fundo
+giz.fillStyle = "darkred";
+giz.fillRect(0, 0, 300, 100);
+
+// 4. escreva o texto
+giz.fillStyle = "white";
+giz.font = "30px sans-serif";
+giz.fillText("Lojinha da Ana", 30, 62);
+</pre>
+</div>
+
+<p>Se o fundo cobriu o texto, lembre da ordem: primeiro o fundo, depois o texto. Se o texto não apareceu, confira se o <code>y</code> do <code>fillText</code> não é <code>0</code> (a linha de base ficaria no topo, e as letras, para fora).</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;canvas width="…" height="…"&gt;&lt;/canvas&gt;</code> cria um quadro transparente de pixels. Sem os atributos, ele tem 300 × 150. Os números vão sem <code>px</code>, e a tag de fechamento é obrigatória.</li>
+  <li>O HTML só cria o quadro; quem desenha é o JavaScript: <code>getElementById</code> acha o canvas, <code>getContext("2d")</code> dá o "giz", e <code>fillRect</code>, <code>strokeRect</code>, <code>lineTo</code>, <code>arc</code> e <code>fillText</code> desenham.</li>
+  <li>O ponto 0,0 fica no canto de <strong>cima</strong> à esquerda; o y cresce para baixo. O que é desenhado depois fica por cima.</li>
+  <li>O <code>width</code>/<code>height</code> são a resolução; o CSS só muda o tamanho na tela e pode esticar o desenho.</li>
+  <li>O canvas é mudo para leitores de tela: use <code>role="img"</code>, <code>aria-label</code> e conteúdo alternativo (nunca <code>alt</code>).</li>
+  <li>Script antes do canvas ou id diferente dá <code>Cannot read properties of null</code> no console; o validador não vê esse erro.</li>
+  <li>Para logos e ícones, prefira <code>img</code> ou SVG; o canvas é para desenhos feitos na hora, como jogos e gráficos.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
