@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Formatos de Imagem — JPG, PNG, WebP, SVG e AVIF | Guia HTML</title>
+<meta name="description" content="Formatos de imagem para a web, para quem nunca fez um site: pixels × vetor, JPG, PNG, WebP, AVIF e SVG, com os tamanhos reais dos arquivos (ls -l), o comando file, transparência, nitidez ao ampliar, qual formato usar em cada caso e o que fazer com HEIC e extensões trocadas.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Formatos de Imagem</span></h1>
+
+<p class="intro">O mesmo bolo, desenhado do mesmo jeito, pode ser um arquivo de 6 KB ou de 66 KB. Pode ficar nítido ou borrado quando você aumenta. Pode ter um fundo branco quadrado ou se encaixar redondinho no fundo colorido da página. O que muda é o <strong>formato</strong> do arquivo: JPG, PNG, WebP, AVIF ou SVG. O HTML é o mesmo para todos, <code>&lt;img src="…" alt="…"&gt;</code>; escolher o formato certo é o que deixa o site rápido e bonito.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>A diferença entre imagens de <strong>pixels</strong> (JPG, PNG, WebP, AVIF) e <strong>vetoriais</strong> (SVG).</li>
+  <li>Para que serve cada formato, com o tamanho real dos arquivos do guia, medido com <code>ls -l</code>.</li>
+  <li>Como o comando <code>file</code> descobre o formato de verdade, mesmo com a extensão errada.</li>
+  <li>Transparência: por que o avatar em JPG fica com um quadrado branco em volta.</li>
+  <li>Por que um logotipo em SVG fica nítido em qualquer tamanho e um em PNG borra.</li>
+  <li>Qual formato usar em cada caso, e o que fazer com fotos HEIC do iPhone.</li>
+</ul>
+</div>
+
+<p>Os arquivos são os do guia (<code>assets/midia/</code>), copiados para a pasta <code>~/formatos</code> da máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>). Antes, veja <a href="imagens.html">Imagens</a> e <a href="imagens-tamanho.html">Largura e Altura</a>.</p>
+
+<hr>
+
+<h2>A ideia: o mosaico e a receita</h2>
+<p>Existem dois jeitos de guardar um desenho:</p>
+<ul>
+  <li><strong>Como um mosaico de azulejos.</strong> Você divide o desenho numa grade de quadradinhos e anota a cor de cada um. É assim que a câmera do celular guarda uma foto. Cada quadradinho é um <strong>pixel</strong> (de <em>picture element</em>, "elemento de imagem"). Se você ampliar demais, os azulejos aparecem: a imagem fica borrada ou quadriculada. JPG, PNG, WebP e AVIF são mosaicos.</li>
+  <li><strong>Como uma receita de desenho.</strong> Você escreve instruções: "um retângulo vermelho de 112 por 70, com cantos arredondados; um círculo amarelo aqui". Quem lê a receita desenha no tamanho que quiser, sempre com traço perfeito. Isso é uma imagem <strong>vetorial</strong>. O SVG é uma receita.</li>
+</ul>
+
+<p>Dá para ver a receita: um SVG é um arquivo de <strong>texto</strong>. As primeiras linhas do logotipo da lojinha:</p>
+
+<pre class="term" data-cwd="~/formatos">$ head -3 logo-lojinha.svg
+&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160" width="400" height="160" role="img" aria-labelledby="t"&gt;
+&lt;title id="t"&gt;Lojinha da Ana&lt;/title&gt;
+&lt;g transform="translate(8 14)"&gt;</pre>
+
+<p>Parece HTML, e é parente dele (os dois usam tags). O <code>head -3</code> mostra as 3 primeiras linhas de um arquivo. Tente o mesmo num JPG e você verá símbolos estranhos: os pixels são guardados em binário, não em texto.</p>
+
+<hr>
+
+<h2>1. O mesmo bolo em cinco formatos</h2>
+<p>O guia tem a mesma ilustração do bolo, com 800 × 600 pixels, salva em quatro formatos de pixels, e uma versão SVG. Veja quanto cada arquivo ocupa:</p>
+
+<pre class="term" data-cwd="~/formatos">$ ls -l bolo-800.* bolo.svg
+-rw-rw-r-- 1 ana ana  6292 out 17 16:02 bolo-800.avif
+-rw-rw-r-- 1 ana ana 25020 out 17 16:02 bolo-800.jpg
+-rw-rw-r-- 1 ana ana 65918 out 17 16:02 bolo-800.png
+-rw-rw-r-- 1 ana ana 11106 out 17 16:02 bolo-800.webp
+-rw-rw-r-- 1 ana ana 14989 out 17 16:02 bolo.svg</pre>
+
+<p>O número antes da data é o tamanho em <strong>bytes</strong>. Arredondando:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Arquivo</th><th>Tamanho</th><th>Comparado ao JPG</th></tr>
+<tr><td><code>bolo-800.png</code></td><td>66 KB</td><td>2,6 vezes maior</td></tr>
+<tr><td><code>bolo-800.jpg</code></td><td>25 KB</td><td>a referência</td></tr>
+<tr><td><code>bolo.svg</code></td><td>15 KB</td><td>60%</td></tr>
+<tr><td><code>bolo-800.webp</code></td><td>11 KB</td><td>44%</td></tr>
+<tr><td><code>bolo-800.avif</code></td><td>6 KB</td><td>25%: um quarto</td></tr>
+</table>
+</div>
+
+<p>E na tela? Veja os quatro de pixels lado a lado, desenhados agora pelo seu navegador:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo em JPG" width="200" height="150"&gt;
+&lt;img src="assets/midia/bolo-800.png" alt="Bolo em PNG" width="200" height="150"&gt;
+&lt;img src="assets/midia/bolo-800.webp" alt="Bolo em WebP" width="200" height="150"&gt;
+&lt;img src="assets/midia/bolo-800.avif" alt="Bolo em AVIF" width="200" height="150"&gt;
+</pre>
+
+<p>Para o olho, são iguais. A diferença está no peso: numa internet lenta, o AVIF chega quatro vezes mais rápido que o JPG e dez vezes mais rápido que o PNG. O HTML, repare, só muda a extensão no <code>src</code>. O navegador descobre o formato sozinho.</p>
+
+<div class="tryhtml" data-goal="attr:img[src]=assets/midia/bolo-800.avif,attr:img[width]=400,attr:img[height]=300">
+<p class="try-task"><strong>Missão:</strong> a página usa o PNG do bolo, que pesa 66 KB. Troque pela versão <strong>AVIF</strong> do mesmo bolo (6 KB), sem mudar o resto.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.png" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.avif" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Cada formato, de perto</h2>
+
+<h3>JPG (ou JPEG): fotos</h3>
+<p>O nome vem do grupo que o criou em 1992, o <em>Joint Photographic Experts Group</em> ("grupo conjunto de especialistas em fotografia"). <code>.jpg</code> e <code>.jpeg</code> são o mesmo formato. Ele é <strong>com perda</strong> (<em>lossy</em>): para ficar leve, joga fora detalhes que o olho quase não percebe. Funciona muito bem com fotos, cheias de cores e degradês, e mal com desenhos de linhas retas e texto, onde aparecem borrõezinhos em volta das bordas. <strong>Não tem transparência</strong>: o fundo é sempre pintado de alguma cor. Todo navegador e todo programa abre JPG.</p>
+
+<h3>PNG: transparência e desenhos nítidos</h3>
+<p><em>Portable Network Graphics</em> ("gráficos portáteis para a rede"). É <strong>sem perda</strong> (<em>lossless</em>): guarda cada pixel exatamente como era. Por isso é ótimo para capturas de tela, desenhos de cores chapadas e logotipos, e tem <strong>transparência</strong>. Para fotos e ilustrações cheias de degradês, fica pesado: o <code>bolo-800.png</code> tem 66 KB, contra 25 KB do JPG.</p>
+
+<h3>WebP: o substituto moderno dos dois</h3>
+<p>Criado pelo Google em 2010, faz as duas coisas: com perda (como o JPG) ou sem perda (como o PNG), e com transparência. Costuma ficar entre 25% e 35% menor que o JPG equivalente; aqui, 11 KB contra 25 KB. Todos os navegadores atuais mostram WebP.</p>
+
+<h3>AVIF: o mais leve</h3>
+<p><em>AV1 Image File Format</em>, o formato de imagem feito a partir do AV1, um formato de vídeo. É o mais novo da lista e o que comprime mais: 6 KB para o mesmo bolo. Tem transparência. Os navegadores atuais (Chrome, Edge, Firefox e Safari) mostram AVIF, mas alguns aparelhos e programas antigos não. Por isso, muitos sites oferecem o AVIF e um JPG "de reserva", com o elemento <code>&lt;picture&gt;</code> (aula <a href="picture.html">O Elemento picture</a>).</p>
+
+<h3>SVG: logotipos, ícones e mapas</h3>
+<p><em>Scalable Vector Graphics</em> ("gráficos vetoriais escaláveis"): a "receita de desenho" da introdução. Fica nítido em <strong>qualquer</strong> tamanho, tem transparência e, para desenhos simples, é minúsculo: o logotipo da lojinha tem 1,7 KB. Não serve para fotos (uma foto não é feita de formas simples). Como é texto, também pode ser escrito direto dentro do HTML (aula <a href="svg.html">SVG no HTML</a>). Aqui ele entra como um arquivo, num <code>&lt;img&gt;</code>, igual aos outros.</p>
+
+<h3>GIF: o avô</h3>
+<p>O GIF (1987) só tem 256 cores e ficou famoso pelas animações curtas. Hoje, para animação, um vídeo curto (aula <a href="video.html">Vídeo</a>) ou um WebP animado pesam bem menos. Você ainda vai encontrar GIFs, mas não há motivo para criar novos.</p>
+
+<hr>
+
+<h2>3. O comando <code>file</code>: o formato de verdade</h2>
+<p>A extensão (<code>.jpg</code>, <code>.png</code>) é só parte do nome: qualquer pessoa pode renomear um arquivo. O formato de verdade está nos primeiros bytes do arquivo, uma espécie de "assinatura". O comando <code>file</code> lê essa assinatura:</p>
+
+<pre class="term" data-cwd="~/formatos">$ file bolo-800.* bolo.svg
+bolo-800.avif: ISO Media, AVIF Image
+bolo-800.jpg:  JPEG image data, JFIF standard 1.01, aspect ratio, density 1x1, segment length 16, progressive, precision 8, 800x600, components 3
+bolo-800.png:  PNG image data, 800 x 600, 8-bit/color RGB, non-interlaced
+bolo-800.webp: RIFF (little-endian) data, Web/P image, VP8 encoding, 800x600, Scaling: [none]x[none], YUV color, decoders should clamp
+bolo.svg:      SVG Scalable Vector Graphics image, ASCII text, with very long lines (2532)</pre>
+
+<dl class="anatomy">
+  <dt>ISO Media, AVIF Image</dt><dd>Um AVIF. Esta versão do <code>file</code> não mostra o tamanho em pixels dele.</dd>
+  <dt>JPEG image data … 800x600</dt><dd>Um JPG de 800 × 600. O <code>progressive</code> quer dizer que ele aparece primeiro borrado e vai ficando nítido enquanto chega.</dd>
+  <dt>PNG image data, 800 x 600, 8-bit/color RGB</dt><dd>Um PNG de 800 × 600. <code>RGB</code> (vermelho, verde, azul) sem o <code>A</code> de "alfa": este PNG não usa transparência.</dd>
+  <dt>RIFF … Web/P image, VP8 encoding, 800x600</dt><dd>Um WebP com perda (<code>VP8</code> é o jeito de comprimir, vindo de um formato de vídeo).</dd>
+  <dt>SVG Scalable Vector Graphics image, ASCII text</dt><dd>Um SVG: texto puro.</dd>
+</dl>
+
+<p>Cada arquivo tem a sua assinatura no começo. A do JPG, por exemplo, é sempre a mesma: os bytes <code>377 330 377</code> e, logo depois, as letras <code>JFIF</code>. O <code>od -c</code> mostra os primeiros bytes um por um:</p>
+
+<pre class="term" data-cwd="~/formatos">$ head -c 12 bolo-800.jpg | od -c
+0000000 377 330 377 340  \0 020   J   F   I   F  \0 001
+0000014</pre>
+
+<p>O navegador faz igual: para imagens, ele olha a assinatura e não confia só no nome nem no <code>Content-Type</code> que o servidor manda. A seção "Quando dá errado" mostra o que isso causa.</p>
+
+<hr>
+
+<h2>4. Transparência</h2>
+<p>O avatar da Ana é redondo. O arquivo, como toda imagem de pixels, é <strong>quadrado</strong>: o que fica fora do círculo são pixels transparentes, que deixam ver o que está atrás. O JPG não tem transparência, então nele esses cantos foram pintados de branco. Veja os quatro formatos sobre um fundo laranja:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p style="background: #f4a558; padding: 12px"&gt;
+  &lt;img src="assets/midia/avatar-ana-192.jpg" alt="Avatar da Ana em JPG" width="96" height="96"&gt;
+  &lt;img src="assets/midia/avatar-ana-192.png" alt="Avatar da Ana em PNG" width="96" height="96"&gt;
+  &lt;img src="assets/midia/avatar-ana-192.webp" alt="Avatar da Ana em WebP" width="96" height="96"&gt;
+  &lt;img src="assets/midia/avatar-ana.svg" alt="Avatar da Ana em SVG" width="96" height="96"&gt;
+&lt;/p&gt;
+</pre>
+
+<p>O primeiro, em JPG, ficou com um quadrado branco em volta. Os outros três se encaixam no laranja. (O <code>style="background: …"</code> pinta o fundo do parágrafo; ele é do CSS e aparece só para o exemplo, aula <a href="atributo-style.html">O Atributo style</a>.)</p>
+
+<pre class="term" data-cwd="~/formatos">$ ls -l avatar-ana-192.* mapa-800.*
+-rw-rw-r-- 1 ana ana  6200 out 17 16:02 avatar-ana-192.jpg
+-rw-rw-r-- 1 ana ana 11654 out 17 16:02 avatar-ana-192.png
+-rw-rw-r-- 1 ana ana  4310 out 17 16:02 avatar-ana-192.webp
+-rw-rw-r-- 1 ana ana 12885 out 17 16:02 mapa-800.png
+-rw-rw-r-- 1 ana ana 12970 out 17 16:02 mapa-800.webp</pre>
+
+<p>No avatar, o WebP (4,3 KB) tem transparência e ainda pesa menos que o JPG (6,2 KB) e que o PNG (11,7 KB). Mas repare no mapa: o WebP (12970 bytes) ficou um pouquinho <strong>maior</strong> que o PNG (12885). O mapa é um desenho de cores chapadas, o tipo de imagem em que o PNG é muito bom. Nenhum formato ganha sempre: na dúvida, salve nos dois e compare com <code>ls -l</code>.</p>
+
+<hr>
+
+<h2>5. Ampliar: pixels borram, vetor não</h2>
+<p>O logotipo da lojinha existe em PNG de 200 × 80 e em SVG. Mostrando os dois com <code>width="600"</code>, três vezes o tamanho do PNG:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;PNG de 200 × 80, ampliado para 600 × 240:&lt;/p&gt;
+&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="600" height="240"&gt;
+&lt;p&gt;SVG, também com 600 × 240:&lt;/p&gt;
+&lt;img src="assets/midia/logo-lojinha.svg" alt="Lojinha da Ana" width="600" height="240"&gt;
+</pre>
+
+<p>O PNG ficou <strong>borrado</strong>: o navegador teve de inventar os pixels que faltavam, esticando os 200 que existiam. O SVG ficou nítido, porque o navegador seguiu a receita no tamanho novo. (Se a sua tela for estreita, o quadro pode encolher as duas, mas a diferença continua visível.)</p>
+
+<pre class="term" data-cwd="~/formatos">$ ls -l logo-lojinha*
+-rw-rw-r-- 1 ana ana 4586 out 17 16:02 logo-lojinha-200.png
+-rw-rw-r-- 1 ana ana 2688 out 17 16:02 logo-lojinha-200.webp
+-rw-rw-r-- 1 ana ana 9088 out 17 16:02 logo-lojinha-400.png
+-rw-rw-r-- 1 ana ana 5588 out 17 16:02 logo-lojinha-400.webp
+-rw-rw-r-- 1 ana ana 1706 out 17 16:02 logo-lojinha.svg</pre>
+
+<p>E o SVG, que serve para qualquer tamanho, é o menor de todos: 1706 bytes. Para o PNG ficar nítido numa tela de alta densidade, seria preciso o de 400 × 160, com 9 KB.</p>
+
+<div class="tryhtml" data-goal="attr:img[src]=assets/midia/logo-lojinha.svg,attr:img[width]=400,attr:img[height]=160">
+<p class="try-task"><strong>Missão:</strong> o logotipo do topo aparece borrado, porque é um PNG pequeno esticado. Troque pelo <strong>SVG</strong> (<code>assets/midia/logo-lojinha.svg</code>), mantendo o tamanho de 400 × 160.</p>
+<pre class="script" data-file="index.html">&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="400" height="160"&gt;
+&lt;h1&gt;Bolos caseiros&lt;/h1&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;img src="assets/midia/logo-lojinha.svg" alt="Lojinha da Ana" width="400" height="160"&gt;
+&lt;h1&gt;Bolos caseiros&lt;/h1&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>6. Qual usar</h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>A imagem é…</th><th>Use</th><th>Por quê</th></tr>
+<tr><td>uma foto (do celular, da câmera)</td><td><strong>WebP</strong> ou <strong>AVIF</strong>; JPG se quiser o máximo de compatibilidade</td><td>com perda, leve, sem precisar de transparência</td></tr>
+<tr><td>um logotipo, um ícone, um mapa simples, um gráfico</td><td><strong>SVG</strong></td><td>nítido em qualquer tamanho, minúsculo</td></tr>
+<tr><td>um desenho com transparência que não existe em SVG</td><td><strong>WebP</strong> (sem perda) ou <strong>PNG</strong></td><td>transparência e bordas nítidas</td></tr>
+<tr><td>uma captura de tela (com texto)</td><td><strong>PNG</strong> ou WebP sem perda</td><td>o texto fica nítido</td></tr>
+<tr><td>uma animação curta</td><td>vídeo (<code>&lt;video&gt;</code>) ou WebP animado</td><td>o GIF pesa muito mais</td></tr>
+</table>
+</div>
+
+<p>Para o seu site, o caminho mais simples hoje é: fotos em <strong>WebP</strong>, desenhos em <strong>SVG</strong>. Quer o mais leve possível com um plano B para aparelhos antigos? AVIF com um JPG de reserva, no <code>&lt;picture&gt;</code>.</p>
+
+<div class="tip">
+<strong>Como converter</strong>
+<p>Programas gratuitos fazem isso: o Squoosh (squoosh.app, que roda no navegador e mostra o antes e o depois), o GIMP e o Inkscape (para SVG). No terminal, existem os comandos <code>cwebp</code> (para WebP) e <code>avifenc</code> (para AVIF). Converta sempre a partir do <strong>original</strong>: transformar um JPG em PNG não traz de volta os detalhes que o JPG jogou fora; só deixa o arquivo maior.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>O validador aprova, mas a foto não aparece: HEIC, PSD, TIFF</strong>
+<p><strong>O que aconteceu:</strong> a Ana passou as fotos do iPhone direto para o site. Elas estão em <strong>HEIC</strong>, o formato que o iPhone usa por padrão.</p>
+<pre class="term" data-cwd="~/formatos">$ vnu --verbose heic.html
+heic.html                         « nenhum erro</pre>
+<p>O validador só confere o HTML: <code>&lt;img src="bolo.heic"&gt;</code> está escrito certo. Mas a maioria dos navegadores (o Chrome, o Edge e o Firefox) não mostra HEIC: aparece a imagem quebrada, com o <code>alt</code>. O Safari mostra, e por isso a Ana, no iPhone dela, não percebeu nada. O mesmo vale para <code>.psd</code> (Photoshop), <code>.tiff</code> e <code>.raw</code>: não são formatos da web.</p>
+<p><strong>Como consertar:</strong> converta para WebP, AVIF ou JPG antes de pôr no site. (No iPhone, dá para mudar a câmera para o modo "Mais compatível", que salva em JPG.)</p>
+</div>
+
+<div class="cenario">
+<strong>A extensão diz uma coisa e o arquivo é outra</strong>
+<p><strong>O que aconteceu:</strong> a Ana renomeou <code>bolo-800.png</code> para <code>foto.jpg</code>, achando que isso "transformava" o arquivo em JPG e o deixava mais leve.</p>
+<pre class="term" data-cwd="~/formatos">$ cp bolo-800.png foto.jpg
+$ file foto.jpg
+foto.jpg: PNG image data, 800 x 600, 8-bit/color RGB, non-interlaced       « continua PNG
+$ ls -l foto.jpg
+-rw-rw-r-- 1 ana ana 65918 out 17 16:04 foto.jpg                            « e com os mesmos 66 KB
+$ python3 -m http.server &amp;
+[1] 9
+$ curl -sI http://localhost:8000/foto.jpg
+127.0.0.1 - - [17/Oct/2026 16:04:46] "HEAD /foto.jpg HTTP/1.1" 200 -
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 19:04:46 GMT
+Content-type: image/jpeg                                                    « o servidor confiou no nome
+Content-Length: 65918
+Last-Modified: Sat, 17 Oct 2026 19:04:45 GMT
+
+$ kill %1</pre>
+<p>Renomear não converte nada. O servidor, que só olha o nome, anuncia <code>image/jpeg</code>, mas o arquivo continua sendo um PNG de 66 KB. O navegador olha a assinatura do arquivo, percebe que é PNG e mostra a foto normalmente (conferimos num Chromium 155), por isso ninguém nota. O site só fica mais pesado do que a Ana pensa.</p>
+<p><strong>Como consertar:</strong> converta de verdade (Squoosh, GIMP, <code>cwebp</code>) e confira com <code>file</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Attribute “type” not allowed on element “img” at this point.</code></strong>
+<p><strong>O que aconteceu:</strong> a Ana quis "avisar" o formato: <code>&lt;img src="bolo-800.webp" type="image/webp" …&gt;</code>.</p>
+<pre class="term" data-cwd="~/formatos">$ vnu type.html
+"file:/home/ana/formatos/type.html":8.1-8.90: error: Attribute “type” not allowed on element “img” at this point.</pre>
+<p>O <code>&lt;img&gt;</code> não tem atributo <code>type</code>: o navegador descobre o formato sozinho.</p>
+<p><strong>Como consertar:</strong> apague o <code>type</code>. Ele existe no <code>&lt;source&gt;</code> do <code>&lt;picture&gt;</code>, onde serve para o navegador pular os formatos que não conhece (aula <a href="picture.html">O Elemento picture</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>Logotipo borrado, texto da captura de tela com "sujeirinhas"</strong>
+<p><strong>O que aconteceu:</strong> formato errado para o tipo de imagem. Um PNG pequeno esticado borra (seção 5); um desenho com texto salvo em JPG ganha borrõezinhos em volta das letras, porque o JPG joga fora detalhes nas bordas.</p>
+<p><strong>Como consertar:</strong> logotipos e ícones em SVG; capturas de tela em PNG ou WebP sem perda.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Formato</th><th>Tipo</th><th>Perda</th><th>Transparência</th><th>Melhor para</th><th>O bolo 800 × 600</th></tr>
+<tr><td>JPG / JPEG</td><td>pixels</td><td>com perda</td><td>não</td><td>fotos, compatibilidade máxima</td><td>25 KB</td></tr>
+<tr><td>PNG</td><td>pixels</td><td>sem perda</td><td>sim</td><td>capturas de tela, desenhos chapados</td><td>66 KB</td></tr>
+<tr><td>WebP</td><td>pixels</td><td>com ou sem</td><td>sim</td><td>fotos e desenhos, no lugar de JPG e PNG</td><td>11 KB</td></tr>
+<tr><td>AVIF</td><td>pixels</td><td>com ou sem</td><td>sim</td><td>fotos, o mais leve (com plano B)</td><td>6 KB</td></tr>
+<tr><td>SVG</td><td>vetor</td><td>não se aplica</td><td>sim</td><td>logotipos, ícones, mapas, gráficos</td><td>15 KB</td></tr>
+<tr><td>GIF</td><td>pixels</td><td>sem perda, 256 cores</td><td>sim (só total)</td><td>só páginas antigas</td><td>(não há)</td></tr>
+</table>
+</div>
+
+<p>O tipo que o servidor manda no <code>Content-type</code>: <code>image/jpeg</code>, <code>image/png</code>, <code>image/webp</code>, <code>image/avif</code>, <code>image/svg+xml</code> (conferidos com <code>curl -sI</code> no servidor local do laboratório).</p>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O formato da receita</h3>
+<p>Qual formato é vetorial, feito de texto, e fica nítido em qualquer tamanho? (só a sigla)</p>
+<div class="ex-code"><input data-answer="SVG|svg|.svg" aria-label="formato"></div>
+</div>
+
+<div class="exercise">
+<h3>2. O comando</h3>
+<p>Complete o comando que mostra o formato de verdade de um arquivo:</p>
+<div class="ex-code">$ <input data-answer="file" aria-label="comando"> foto.jpg</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. O avatar redondo da Ana aparece com um quadrado branco em volta, sobre o fundo laranja. Qual é o formato provável?</p>
+<label><input type="radio" name="q3"> PNG</label>
+<label><input type="radio" name="q3"> SVG</label>
+<label><input type="radio" name="q3"> JPG, que não tem transparência</label>
+<label><input type="radio" name="q3"> WebP</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. A Ana renomeou <code>bolo.png</code> (66 KB) para <code>bolo.jpg</code>. O que aconteceu com o arquivo?</p>
+<label><input type="radio" name="q4"> Virou JPG e ficou com 25 KB</label>
+<label><input type="radio" name="q4"> Nada: continua um PNG de 66 KB, só com outro nome</label>
+<label><input type="radio" name="q4"> Estragou: o navegador não mostra mais</label>
+<label><input type="radio" name="q4"> O validador acusa erro</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Qual é a melhor escolha para o logotipo da lojinha, que aparece pequeno no celular e grande no computador?</p>
+<label><input type="radio" name="q5"> SVG</label>
+<label><input type="radio" name="q5"> JPG</label>
+<label><input type="radio" name="q5"> GIF</label>
+<label><input type="radio" name="q5"> HEIC</label>
+</div>
+
+<h3>Missão final: cada imagem no seu formato</h3>
+
+<div class="tryhtml" data-goal="attr:header img[src]=assets/midia/logo-lojinha.svg,attr:main img[src]=assets/midia/bolo-800.webp,attr:footer img[src]=assets/midia/mapa.svg,nsel:img[width][height][alt]=3">
+<p class="try-task"><strong>Missão:</strong> a página da lojinha usa os formatos errados. Troque o <code>src</code> de cada imagem: o logotipo (no <code>&lt;header&gt;</code>) e o mapa (no <code>&lt;footer&gt;</code>) devem usar a versão <strong>SVG</strong> (<code>logo-lojinha.svg</code> e <code>mapa.svg</code>); a ilustração do bolo deve usar o <strong>WebP</strong> do mesmo tamanho (<code>bolo-800.webp</code>). Todos estão em <code>assets/midia/</code>. Não mexa no <code>alt</code>, no <code>width</code> nem no <code>height</code>.</p>
+<pre class="script" data-file="index.html">&lt;header&gt;
+  &lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+  &lt;img src="assets/midia/bolo-800.png" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+&lt;/main&gt;
+&lt;footer&gt;
+  &lt;img src="assets/midia/mapa-400.png" alt="Mapa: a Lojinha da Ana fica na esquina da Rua das Flores com a Avenida Central" width="400" height="250"&gt;
+&lt;/footer&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;header&gt;
+  &lt;img src="assets/midia/logo-lojinha.svg" alt="Lojinha da Ana" width="200" height="80"&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+  &lt;img src="assets/midia/bolo-800.webp" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+&lt;/main&gt;
+&lt;footer&gt;
+  &lt;img src="assets/midia/mapa.svg" alt="Mapa: a Lojinha da Ana fica na esquina da Rua das Flores com a Avenida Central" width="400" height="250"&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<p>Os elementos <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code> e <code>&lt;footer&gt;</code> dividem a página em topo, conteúdo e rodapé; eles têm aulas próprias no Nível 2 (<a href="header-footer.html">header e footer</a>, <a href="main.html">main</a>). Com a troca, a página caiu de 66 + 5,4 + 4,6 = uns 76 KB de imagens para 11 + 7,7 + 1,7 = uns 20 KB, e o logotipo e o mapa ficaram nítidos em qualquer tela.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Imagens de <strong>pixels</strong> (JPG, PNG, WebP, AVIF) são mosaicos: borram quando ampliadas. O <strong>SVG</strong> é vetorial, uma "receita" em texto: nítido em qualquer tamanho.</li>
+  <li>O mesmo bolo 800 × 600: PNG 66 KB, JPG 25 KB, SVG 15 KB, WebP 11 KB, AVIF 6 KB. Na tela, os de pixels parecem iguais.</li>
+  <li>JPG: fotos, sem transparência. PNG: sem perda, transparência, capturas de tela. WebP: faz os dois, mais leve. AVIF: o mais leve. SVG: logotipos, ícones, mapas.</li>
+  <li>O formato de verdade está na assinatura do arquivo: o <code>file</code> mostra. Renomear não converte. O navegador também olha a assinatura.</li>
+  <li>O validador não confere o formato: HEIC, PSD e TIFF passam no validador e não aparecem na maioria dos navegadores. O <code>&lt;img&gt;</code> não tem <code>type</code>.</li>
+  <li>Regra prática: fotos em WebP (ou AVIF com plano B no <code>&lt;picture&gt;</code>), desenhos em SVG. Na dúvida, compare os tamanhos com <code>ls -l</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
