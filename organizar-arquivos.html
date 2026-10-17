@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Organizar os Arquivos — pastas, nomes e o index.html | Guia HTML</title>
+<meta name="description" content="Como organizar as pastas e os arquivos de um site para quem nunca fez um: nomes sem maiúsculas, espaços nem acentos, as pastas css, js e img, o papel do index.html, os caminhos com ../ entre pastas, o comando tree, o 404 de uma maiúscula no servidor e as mensagens reais do validador W3C para barras invertidas e espaços.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Organizar os Arquivos</span></h1>
+
+<p class="intro">Um site de verdade não é um arquivo só: são várias páginas, uma folha de estilo, um script, um monte de fotos. Enquanto são três arquivos, tanto faz onde eles ficam. Com trinta, a pasta vira uma gaveta de bagunça, e os links começam a quebrar. Nesta aula a Ana arruma a pasta do site de receitas: escolhe nomes que funcionam em qualquer servidor, separa os arquivos em pastas, entende por que a primeira página se chama <code>index.html</code> e aprende a escrever os caminhos entre uma pasta e outra.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>As regras para dar nome a arquivos de site (e o que acontece quando você as quebra).</li>
+  <li>Uma estrutura de pastas simples: <code>css/</code>, <code>js/</code>, <code>img/</code> e uma pasta para as páginas.</li>
+  <li>Por que a página inicial se chama <code>index.html</code>.</li>
+  <li>Como escrever os caminhos entre pastas, com <code>../</code>.</li>
+  <li>A ver a árvore de pastas com o comando <code>tree</code> e a validar o site inteiro com o <code>vnu</code>.</li>
+</ul>
+</div>
+
+<p>Os comandos desta aula rodaram na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>, Ubuntu), na pasta <code>~/sites</code>, com o <code>tree</code> 2.3.1, o <strong>validador W3C</strong> (<code>vnu</code> 26.10.12) e o servidor de teste do Python, que tem aula própria em <a href="servidor-local.html">Servidor Local</a>. O que é terminal e como ele funciona está no Guia Bash; aqui basta ler os comandos e as saídas.</p>
+
+<hr>
+
+<h2>A ideia: a cozinha arrumada</h2>
+<p>Numa cozinha arrumada, os talheres ficam numa gaveta, as panelas noutro armário e os temperos numa prateleira, cada pote com etiqueta. Você acha qualquer coisa de olhos fechados, e qualquer pessoa que entra na cozinha também acha. Um site é igual: o navegador e o servidor precisam achar cada arquivo pelo <strong>nome exato</strong> e pelo <strong>caminho</strong> até ele.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Cozinha</th><th>Site</th></tr>
+<tr><td>A cozinha inteira</td><td>a <strong>pasta raiz</strong> do site (aqui, <code>receitas/</code>)</td></tr>
+<tr><td>A gaveta de talheres, o armário de panelas</td><td>as <strong>subpastas</strong>: <code>css/</code>, <code>js/</code>, <code>img/</code></td></tr>
+<tr><td>A etiqueta de cada pote</td><td>o <strong>nome do arquivo</strong>: <code>bolo-de-cenoura.jpg</code></td></tr>
+<tr><td>"Na segunda gaveta, à esquerda"</td><td>o <strong>caminho</strong>: <code>img/bolo-de-cenoura.jpg</code></td></tr>
+<tr><td>A porta de entrada</td><td>o <code>index.html</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. A pasta bagunçada</h2>
+<p>Esta era a pasta do site da Ana antes da arrumação. O comando <code>ls</code> ("<em>list</em>", listar) mostra o que tem dentro:</p>
+
+<pre class="term" data-cwd="~/sites/bagunca">$ ls
+bolo FINAL (2).html
+estilo antigo.css
+estilo.css
+Foto do Bolo.JPG
+IMG_20260315_142233.jpg
+logo.png
+Página Inicial.html
+pudim.html
+script.js
+sobre mim.html</pre>
+
+<p>Tudo misturado, e quase todo nome tem um problema: espaços, maiúsculas, acentos, parênteses, uma foto com o nome que a câmera deu, uma folha de estilo "antiga" que ninguém sabe se ainda é usada. No computador da Ana, tudo isso funciona. Num servidor de verdade, metade quebra. A próxima seção mostra por quê.</p>
+
+<hr>
+
+<h2>2. Nomes de arquivo que funcionam em qualquer lugar</h2>
+<p>O nome de um arquivo do site vira um pedaço do <strong>endereço</strong> dele na internet (a URL). E as URLs têm regras mais duras que as pastas do seu computador. Siga estas cinco regras e você nunca vai ter problema:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Regra</th><th>Ruim</th><th>Bom</th><th>Por quê</th></tr>
+<tr><td>1. Só <strong>minúsculas</strong></td><td><code>Foto.JPG</code></td><td><code>foto.jpg</code></td><td>Os servidores (quase todos Linux) diferenciam <code>A</code> de <code>a</code></td></tr>
+<tr><td>2. <strong>Hífen</strong> no lugar de espaço</td><td><code>sobre mim.html</code></td><td><code>sobre-mim.html</code></td><td>Espaço não é permitido em URL: vira <code>%20</code></td></tr>
+<tr><td>3. Sem <strong>acentos</strong> nem <code>ç</code></td><td><code>Página Inicial.html</code></td><td><code>index.html</code></td><td>Viram códigos como <code>%C3%A1</code> e confundem programas</td></tr>
+<tr><td>4. Só letras, números, <code>-</code> e <code>.</code></td><td><code>bolo FINAL (2).html</code></td><td><code>bolo-de-cenoura.html</code></td><td><code>( ) &amp; # ? %</code> têm significado especial em URLs</td></tr>
+<tr><td>5. Nomes que <strong>descrevem</strong></td><td><code>IMG_20260315_142233.jpg</code></td><td><code>bolo-de-cenoura.jpg</code></td><td>Você (e os buscadores) entendem o que é sem abrir</td></tr>
+</table>
+</div>
+
+<h3>A maiúscula que vira 404</h3>
+<p>No Windows e no macOS, <code>Pudim.jpg</code> e <code>pudim.jpg</code> são o mesmo arquivo. No Linux, onde roda a maioria dos servidores, são dois nomes diferentes. Na pasta arrumada da Ana existe <code>img/pudim.jpg</code>, com p minúsculo:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ ls img
+bolo-de-cenoura.jpg
+logo.svg
+pudim.jpg
+$ ls img/Pudim.jpg
+ls: não foi possível acessar 'img/Pudim.jpg': Arquivo ou diretório inexistente</pre>
+
+<p>E o servidor responde do mesmo jeito. Com o servidor de teste ligado nessa pasta, o <code>curl -I</code> pede só o cabeçalho da resposta, a primeira linha diz se deu certo:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ curl -sI http://localhost:8000/img/pudim.jpg | head -1
+HTTP/1.0 200 OK
+$ curl -sI http://localhost:8000/img/Pudim.jpg | head -1
+HTTP/1.0 404 File not found
+$ curl -sI http://localhost:8000/img/pudim.JPG | head -1
+HTTP/1.0 404 File not found</pre>
+
+<p><code>200 OK</code> quer dizer "achei, aqui está". <code>404 File not found</code> quer dizer "arquivo não encontrado": no lugar da foto, o visitante veria o ícone de imagem quebrada. É o erro clássico de quem testou tudo no Windows e publicou: "no meu computador funcionava!". Com <strong>tudo minúsculo</strong>, esse problema nunca acontece.</p>
+
+<h3>O espaço que vira <code>%20</code></h3>
+<p>Uma URL não pode ter espaço. A Ana copiou a foto antiga, com o nome da pasta bagunçada, para dentro de <code>img/</code>. Para pedir o arquivo <code>Foto do Bolo.JPG</code>, o endereço precisa trocar cada espaço por <code>%20</code>, e foi assim que ele apareceu no registro do servidor (o <code>grep</code> mostra só as linhas com "Foto"):</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ cp ~/sites/bagunca/"Foto do Bolo.JPG" img/      « só para o teste
+$ curl -sI "http://localhost:8000/img/Foto%20do%20Bolo.JPG" | head -1
+HTTP/1.0 200 OK
+$ grep Foto ~/servidor.log
+127.0.0.1 - - [17/Oct/2026 15:59:30] "HEAD /img/Foto%20do%20Bolo.JPG HTTP/1.1" 200 -</pre>
+
+<p>Funciona, mas é feio, fácil de errar e o validador reclama quando o espaço aparece direto no <code>href</code> (veja <a href="#errado">Quando dá errado</a>). Use hífen.</p>
+
+<hr>
+
+<h2>3. Uma estrutura de pastas simples</h2>
+<p>Depois da arrumação, a pasta ficou assim. O comando <code>tree</code> ("árvore") desenha as pastas e o que há dentro de cada uma:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ tree
+.
+├── css
+│   └── estilo.css
+├── img
+│   ├── bolo-de-cenoura.jpg
+│   ├── logo.svg
+│   └── pudim.jpg
+├── index.html
+├── js
+│   └── script.js
+├── receitas
+│   ├── bolo-de-cenoura.html
+│   └── pudim.html
+└── sobre.html
+
+5 directories, 9 files</pre>
+
+<dl class="anatomy">
+  <dt>.</dt><dd>O ponto é "a pasta onde estou": a <strong>raiz</strong> do site, <code>~/sites/receitas</code>. Tudo que o site precisa mora aqui dentro.</dd>
+  <dt>index.html</dt><dd>A página inicial, sempre na raiz (seção 5).</dd>
+  <dt>sobre.html</dt><dd>Uma página avulsa, também na raiz.</dd>
+  <dt>css/</dt><dd>As folhas de estilo (aula <a href="ligar-css.html">Ligar CSS</a>).</dd>
+  <dt>js/</dt><dd>Os scripts (aula <a href="script.html">O Elemento script</a>).</dd>
+  <dt>img/</dt><dd>As imagens. Muitos sites chamam de <code>images/</code> ou juntam tudo em <code>assets/</code> ("recursos"); o nome não importa, desde que você use sempre o mesmo.</dd>
+  <dt>receitas/</dt><dd>Uma pasta para um <strong>grupo de páginas</strong>: cada receita é uma página.</dd>
+  <dt>5 directories, 9 files</dt><dd>"5 pastas, 9 arquivos". O <code>tree</code> conta também a própria raiz (o <code>.</code>), por isso são 5, e não 4.</dd>
+</dl>
+
+<h3>Outras formas de ver a árvore</h3>
+<p>Num site grande, a árvore inteira fica enorme. Três opções do <code>tree</code> ajudam:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ tree -L 1
+.
+├── css
+├── img
+├── index.html
+├── js
+├── receitas
+└── sobre.html
+
+5 directories, 2 files
+$ tree -d
+.
+├── css
+├── img
+├── js
+└── receitas
+
+5 directories
+$ tree --dirsfirst
+.
+├── css
+│   └── estilo.css
+├── img
+│   ├── bolo-de-cenoura.jpg
+│   ├── logo.svg
+│   └── pudim.jpg
+├── js
+│   └── script.js
+├── receitas
+│   ├── bolo-de-cenoura.html
+│   └── pudim.html
+├── index.html
+└── sobre.html
+
+5 directories, 9 files</pre>
+
+<ul>
+  <li><code>-L 1</code> ("<em>level</em>", nível 1): só o primeiro andar, sem entrar nas pastas.</li>
+  <li><code>-d</code> ("<em>directories</em>"): só as pastas.</li>
+  <li><code>--dirsfirst</code>: as pastas primeiro, os arquivos depois.</li>
+</ul>
+
+<div class="note">
+<strong>Sem o <code>tree</code></strong>
+<p>No Ubuntu, se o comando não existir, instale com <code>sudo apt install tree</code>. No Windows, o Prompt de Comando tem um <code>tree /f</code> parecido. E o painel de arquivos do VS Code (aula <a href="editores.html">Editores</a>) mostra a mesma árvore, com setinhas para abrir e fechar as pastas.</p>
+</div>
+
+<hr>
+
+<h2>4. Caminhos entre pastas</h2>
+<p>Com as pastas, cada link precisa dizer <strong>onde</strong> está o arquivo, a partir da página que tem o link. Este é o assunto da aula <a href="caminhos.html">Caminhos Relativos e Absolutos</a>; aqui vão os dois casos que todo site organizado usa.</p>
+
+<h3>De uma página na raiz</h3>
+<p>O <code>index.html</code> está na raiz. Para ele, a folha de estilo está "na pasta <code>css</code>, arquivo <code>estilo.css</code>":</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;img src="img/logo.svg" alt="Logo das Receitas da Ana" width="100" height="100"&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="receitas/bolo-de-cenoura.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="receitas/pudim.html"&gt;Pudim&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="sobre.html"&gt;Sobre a Ana&lt;/a&gt;&lt;/p&gt;
+&lt;script src="js/script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<h3>De uma página dentro de uma pasta</h3>
+<p>O <code>pudim.html</code> mora em <code>receitas/</code>. Para ele, <code>css/estilo.css</code> significaria "a pasta <code>css</code> <strong>dentro de</strong> <code>receitas</code>", que não existe. Ele precisa primeiro <strong>subir</strong> uma pasta, com <code>../</code> ("a pasta de cima"):</p>
+
+<pre class="file" data-file="receitas/pudim.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Pudim | Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="../css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pudim&lt;/h1&gt;
+&lt;img src="../img/pudim.jpg" alt="Pudim de leite com calda de caramelo" width="400" height="300"&gt;
+&lt;p&gt;&lt;a href="../index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+&lt;script src="../js/script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na página…</th><th>para chegar em…</th><th>escreva</th></tr>
+<tr><td><code>index.html</code></td><td><code>css/estilo.css</code></td><td><code>css/estilo.css</code></td></tr>
+<tr><td><code>index.html</code></td><td><code>receitas/pudim.html</code></td><td><code>receitas/pudim.html</code></td></tr>
+<tr><td><code>receitas/pudim.html</code></td><td><code>css/estilo.css</code></td><td><code>../css/estilo.css</code></td></tr>
+<tr><td><code>receitas/pudim.html</code></td><td><code>index.html</code></td><td><code>../index.html</code></td></tr>
+<tr><td><code>receitas/pudim.html</code></td><td><code>receitas/bolo-de-cenoura.html</code></td><td><code>bolo-de-cenoura.html</code> (mesma pasta)</td></tr>
+</table>
+</div>
+
+<p>Se o <code>pudim.html</code> usasse <code>href="css/estilo.css"</code>, o navegador pediria <code>/receitas/css/estilo.css</code>. Foi o que a Ana testou no servidor:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ curl -sI http://localhost:8000/receitas/css/estilo.css | head -1
+HTTP/1.0 404 File not found
+$ curl -sI http://localhost:8000/css/estilo.css | head -1
+HTTP/1.0 200 OK</pre>
+
+<p>Nenhuma mensagem aparece na página: o pudim só fica <strong>sem estilo</strong>. Quem conta o 404 é o F12, na aba de rede (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>).</p>
+
+<p>No editor do guia, as abas podem ter pastas no nome (<code>css/estilo.css</code>, <code>receitas/pudim.html</code>) e funcionam como um site de verdade: um caminho errado não acha o arquivo, e um link errado mostra uma página "404: página não encontrada".</p>
+
+<div class="tryhtml" data-goal="css:h1{color}=rgb(178, 34, 34),attr:a[href]=../index.html">
+<p class="try-task"><strong>Missão:</strong> o resultado mostra a página <code>receitas/pudim.html</code>, mas o título deveria estar vermelho-tijolo (a cor do <code>estilo.css</code>) e o link "Voltar ao início" leva a um 404. Conserte os <strong>dois caminhos</strong> na aba <code>receitas/pudim.html</code>. Depois clique no link para conferir que ele chega ao início.</p>
+<pre class="script" data-file="receitas/pudim.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Pudim | Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pudim&lt;/h1&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="receitas/pudim.html"&gt;Pudim&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="css/estilo.css">h1 {
+  color: firebrick;
+}
+</pre>
+<pre class="solucao" data-file="receitas/pudim.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Pudim | Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="../css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pudim&lt;/h1&gt;
+&lt;p&gt;&lt;a href="../index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. A porta de entrada: <code>index.html</code></h2>
+<p>Quando alguém digita só o endereço do site, sem nome de arquivo (<code>http://localhost:8000/</code>, ou <code>https://ana.example/</code>), o servidor procura na pasta um arquivo chamado <strong><code>index.html</code></strong> ("índice") e entrega esse. É uma convenção de quase todos os servidores, inclusive o GitHub Pages (aula <a href="publicar.html">Publicar</a>):</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ curl -s http://localhost:8000/ | head -5
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;</pre>
+
+<p>O endereço terminou em <code>/</code> e veio o <code>index.html</code>. E numa pasta <strong>sem</strong> <code>index.html</code>? O servidor de teste do Python mostra a lista de arquivos da pasta:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ curl -s http://localhost:8000/img/
+&lt;!DOCTYPE HTML&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;style type="text/css"&gt;
+:root {
+color-scheme: light dark;
+}
+&lt;/style&gt;
+&lt;title&gt;Directory listing for /img/&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Directory listing for /img/&lt;/h1&gt;
+&lt;hr&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="bolo-de-cenoura.jpg"&gt;bolo-de-cenoura.jpg&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="logo.svg"&gt;logo.svg&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="pudim.jpg"&gt;pudim.jpg&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+<p>"<em>Directory listing</em>" é "lista do diretório": uma página que o próprio servidor montou, com um link para cada arquivo. Outros servidores fazem diferente: o GitHub Pages, por exemplo, responde 404. Por isso:</p>
+<ul>
+  <li>a página inicial do site se chama <strong><code>index.html</code></strong>, em minúsculas, na <strong>raiz</strong>;</li>
+  <li><code>Index.html</code>, <code>index.htm</code>, <code>home.html</code> ou <code>Página Inicial.html</code> não servem de porta de entrada.</li>
+</ul>
+
+<div class="tip">
+<strong>Endereços bonitos com <code>index.html</code></strong>
+<p>Alguns sites dão a cada página uma <strong>pasta</strong> com um <code>index.html</code> dentro: <code>receitas/pudim/index.html</code>. Assim, o endereço fica <code>/receitas/pudim/</code>, sem o <code>.html</code> no fim. Funciona porque o servidor procura o <code>index.html</code> em <strong>toda</strong> pasta, não só na raiz.</p>
+</div>
+
+<hr>
+
+<h2>6. Validar o site inteiro</h2>
+<p>O <code>vnu</code> aceita vários arquivos de uma vez. O asterisco (<code>*.html</code>) quer dizer "todos os arquivos terminados em <code>.html</code>" desta pasta, e <code>receitas/*.html</code>, os da pasta <code>receitas</code>:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ vnu --verbose *.html receitas/*.html
+index.html
+sobre.html
+receitas/bolo-de-cenoura.html
+receitas/pudim.html</pre>
+
+<p>Com <code>--verbose</code>, ele mostra o nome de cada arquivo conferido; sem nenhuma outra linha, nenhum erro. Dá também para passar a <strong>pasta</strong> (<code>.</code>), mas aí ele tenta ler <strong>todo</strong> arquivo como HTML, inclusive o CSS e as fotos:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ vnu . 2&gt;&amp;1 | head -3
+"file:/home/ana/sites/receitas/./css/estilo.css":1.1-3.1: error: Non-space characters found without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/sites/receitas/./css/estilo.css":1.1-3.1: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/sites/receitas/./css/estilo.css":1.1-3.1: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.</pre>
+
+<p>Erros falsos: um arquivo CSS não tem <code>&lt;!DOCTYPE html&gt;</code>, e nem deveria. A opção <code>--skip-non-html</code> ("pule o que não é HTML") resolve; o validador só avisa, como <code>info warning</code>, cada arquivo que pulou:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ vnu --skip-non-html --verbose .
+"file:/home/ana/sites/receitas/./css/estilo.css": info warning: File was not checked. Files must have .html, .xhtml, .htm, or .xht extensions.
+"file:/home/ana/sites/receitas/./img/logo.svg": info warning: File was not checked. Files must have .html, .xhtml, .htm, or .xht extensions.
+"file:/home/ana/sites/receitas/./img/bolo-de-cenoura.jpg": info warning: File was not checked. Files must have .html, .xhtml, .htm, or .xht extensions.
+./receitas/bolo-de-cenoura.html
+./receitas/pudim.html
+"file:/home/ana/sites/receitas/./img/pudim.jpg": info warning: File was not checked. Files must have .html, .xhtml, .htm, or .xht extensions.
+./sobre.html
+./index.html
+"file:/home/ana/sites/receitas/./js/script.js": info warning: File was not checked. Files must have .html, .xhtml, .htm, or .xht extensions.</pre>
+
+<p>"Arquivo não conferido. Os arquivos precisam ter as extensões <code>.html</code>, <code>.xhtml</code>, <code>.htm</code> ou <code>.xht</code>." As quatro páginas passaram. (A ordem embaralhada é normal: o validador confere vários arquivos ao mesmo tempo.)</p>
+
+<hr>
+
+<h2>Formas de organizar: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>Como fica</th><th>Bom para</th><th>Cuidado</th></tr>
+<tr><td>Tudo na raiz</td><td><code>index.html</code>, <code>sobre.html</code>, <code>estilo.css</code>, <code>bolo.jpg</code> lado a lado</td><td>Sites de 2 ou 3 páginas, exercícios</td><td>Com muitos arquivos, vira a pasta bagunçada da seção 1</td></tr>
+<tr><td>Pastas por <strong>tipo</strong></td><td><code>css/</code>, <code>js/</code>, <code>img/</code> + páginas</td><td>A maioria dos sites pequenos e médios (a forma desta aula)</td><td>Páginas em subpastas precisam de <code>../</code></td></tr>
+<tr><td>Pasta por <strong>página</strong></td><td><code>receitas/pudim/index.html</code> + <code>receitas/pudim/foto.jpg</code></td><td>Blogs e sites com muitas páginas; endereços sem <code>.html</code></td><td>Mais pastas; os caminhos para o CSS sobem mais (<code>../../css/</code>)</td></tr>
+</table>
+</div>
+
+<p><strong>Qual usar?</strong> Comece com as pastas por tipo: é simples e todo mundo que abrir o seu projeto vai entender. Seja qual for a escolha, o mais importante é <strong>manter</strong>: um nome de pasta, um jeito de nomear arquivos, do começo ao fim.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<p>A Ana juntou num arquivo os caminhos que vinham do jeito Windows de pensar:</p>
+
+<pre class="file" data-file="barra.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Erros de caminho&lt;/title&gt;
+&lt;link rel="stylesheet" href="css\estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;img src="C:\Users\Ana\Desktop\site\img\bolo.jpg" alt="Bolo"&gt;
+&lt;img src="file:///C:/Users/Ana/Desktop/site/img/bolo.jpg" alt="Bolo"&gt;
+&lt;a href="sobre mim.html"&gt;Sobre&lt;/a&gt;
+&lt;a href="Página Inicial.html"&gt;Início&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/sites/bagunca">$ vnu barra.html
+"file:/home/ana/sites/bagunca/barra.html":6.1-6.45: error: Bad value “css\estilo.css” for attribute “href” on element “link”: Backslash ("\") used as path segment delimiter.
+"file:/home/ana/sites/bagunca/barra.html":9.1-9.61: error: Bad value “C:\Users\Ana\Desktop\site\img\bolo.jpg” for attribute “src” on element “img”: Illegal character after “c:”. “\” is not allowed.
+"file:/home/ana/sites/bagunca/barra.html":11.1-11.25: error: Bad value “sobre mim.html” for attribute “href” on element “a”: Illegal character in path segment. Space is not allowed.
+"file:/home/ana/sites/bagunca/barra.html":12.1-12.30: error: Bad value “Página Inicial.html” for attribute “href” on element “a”: Illegal character in path segment. Space is not allowed.</pre>
+
+<div class="cenario">
+<strong><code>Backslash ("\") used as path segment delimiter.</code></strong>
+<p><strong>O que significa:</strong> "Barra invertida usada para separar as pastas do caminho". O Windows separa pastas com <code>\</code>; a web, sempre com <code>/</code>. O navegador até costuma trocar uma pela outra, mas o validador acusa, e outros programas não perdoam.</p>
+<p><strong>Como consertar:</strong> <code>href="css/estilo.css"</code>, com a barra normal.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Illegal character after “c:”. “\” is not allowed.</code> (e o <code>file:///C:/</code> que passou)</strong>
+<p><strong>O que significa:</strong> o caminho aponta para uma pasta <strong>do computador da Ana</strong> (<code>C:\Users\Ana\Desktop</code>). O validador recusou a versão com <code>\</code>. A versão <code>file:///C:/…</code> é uma URL bem escrita e passou, mas é ainda mais traiçoeira: no computador da Ana, a imagem aparece; no site publicado, o navegador do visitante procura um <code>C:</code> no computador <strong>dele</strong>, e não acha nada. Isso acontece quando você arrasta uma imagem para dentro do editor e ele escreve o caminho completo.</p>
+<p><strong>Como consertar:</strong> use sempre caminhos <strong>relativos</strong> à página (<code>img/bolo.jpg</code>), com a imagem dentro da pasta do site.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Illegal character in path segment. Space is not allowed.</code></strong>
+<p><strong>O que significa:</strong> "Caractere ilegal num pedaço do caminho. Espaço não é permitido." O navegador consegue abrir o link (ele troca o espaço por <code>%20</code> sozinho), mas o endereço não é válido. O acento de <code>Página</code> não foi o problema aqui (o validador aceita letras acentuadas), e sim o espaço.</p>
+<p><strong>Como consertar:</strong> renomeie o arquivo (<code>sobre-mim.html</code>, <code>index.html</code>) e o link junto.</p>
+</div>
+
+<div class="cenario">
+<strong>"No meu computador funciona, no servidor a imagem não aparece"</strong>
+<p><strong>O que significa:</strong> quase sempre, uma diferença de maiúscula: o arquivo é <code>Foto.JPG</code> e o código diz <code>foto.jpg</code>, ou o contrário. O Windows e o macOS não ligam; o servidor Linux responde <code>404 File not found</code>, como na seção 2. O validador não pega esse erro, porque ele não confere se o arquivo existe.</p>
+<p><strong>Como consertar:</strong> renomeie todos os arquivos para minúsculas e confira os nomes no código. Testar num servidor local (aula <a href="servidor-local.html">Servidor Local</a>) no Linux ajuda a pegar o erro antes de publicar.</p>
+</div>
+
+<hr>
+
+<h2>Referência</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Comando ou escrita</th><th>O que faz</th></tr>
+<tr><td><code>tree</code></td><td>Desenha a árvore de pastas e arquivos</td></tr>
+<tr><td><code>tree -L 1</code></td><td>Só o primeiro nível</td></tr>
+<tr><td><code>tree -d</code></td><td>Só as pastas</td></tr>
+<tr><td><code>tree --dirsfirst</code></td><td>Pastas antes dos arquivos</td></tr>
+<tr><td><code>vnu --verbose *.html receitas/*.html</code></td><td>Valida as páginas de duas pastas</td></tr>
+<tr><td><code>vnu --skip-non-html .</code></td><td>Valida a pasta toda, pulando o que não é HTML</td></tr>
+<tr><td><code>pasta/arquivo</code></td><td>Desce para uma pasta</td></tr>
+<tr><td><code>../arquivo</code></td><td>Sobe uma pasta</td></tr>
+<tr><td><code>index.html</code> (na raiz)</td><td>A página que o servidor entrega quando o endereço termina em <code>/</code></td></tr>
+<tr><td>Nome de arquivo</td><td>minúsculas, sem espaço (hífen), sem acento, só <code>a-z 0-9 - .</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Um bom nome</h3>
+<p>Reescreva o nome <code>Bolo de Fubá.JPG</code> seguindo as cinco regras:</p>
+<div class="ex-code"><input data-answer="bolo-de-fuba.jpg" aria-label="nome do arquivo"></div>
+</div>
+
+<div class="exercise">
+<h3>2. Subir uma pasta</h3>
+<p>Na página <code>receitas/pudim.html</code>, complete o caminho até <code>img/logo.svg</code>:</p>
+<div class="ex-code">&lt;img src="<input data-answer="../img/logo.svg" aria-label="caminho">" alt="Logo"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. O endereço <code>https://ana.example/</code> termina em <code>/</code>. Que arquivo o servidor procura na raiz?</p>
+<label><input type="radio" name="q3"> <code>home.html</code></label>
+<label><input type="radio" name="q3"> <code>Index.HTML</code></label>
+<label><input type="radio" name="q3"> <code>index.html</code></label>
+<label><input type="radio" name="q3"> O primeiro arquivo em ordem alfabética</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. A foto é <code>img/Pudim.jpg</code> e o código diz <code>src="img/pudim.jpg"</code>. No Windows a foto aparece. E no servidor Linux?</p>
+<label><input type="radio" name="q4"> Aparece também</label>
+<label><input type="radio" name="q4"> Não aparece: o servidor responde 404</label>
+<label><input type="radio" name="q4"> O validador acusa o erro</label>
+<label><input type="radio" name="q4"> O servidor corrige a maiúscula sozinho</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Por que o <code>vnu .</code> deu erros no <code>estilo.css</code>?</p>
+<label><input type="radio" name="q5"> Porque, com uma pasta, ele leu todo arquivo como HTML; o <code>--skip-non-html</code> resolve</label>
+<label><input type="radio" name="q5"> Porque o CSS está errado</label>
+<label><input type="radio" name="q5"> Porque falta um <code>&lt;!DOCTYPE html&gt;</code> no CSS</label>
+<label><input type="radio" name="q5"> Porque o CSS tem de ficar na raiz</label>
+</div>
+
+<h3>Missão final: os nomes que o servidor não acha</h3>
+
+<div class="tryhtml" data-goal="css:h1{color}=rgb(178, 34, 34),attr:a[href]=sobre.html">
+<p class="try-task"><strong>Missão:</strong> como num servidor de verdade, as abas deste editor diferenciam maiúsculas. O <code>index.html</code> da Ana foi escrito "de cabeça", e os nomes não batem com os arquivos que existem: <code>css/estilo.css</code> e <code>sobre.html</code>. Conserte o <code>href</code> do <code>&lt;link&gt;</code> e o do link "Sobre a Ana" (sem renomear as abas). O título deve ficar vermelho-tijolo, e o link deve abrir a página Sobre.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="CSS/Estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="Sobre.html"&gt;Sobre a Ana&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Sobre | Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;Ana cozinha desde os 12 anos. &lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="css/estilo.css">h1 {
+  color: firebrick;
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="sobre.html"&gt;Sobre a Ana&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Nomes de arquivo: <strong>minúsculas</strong>, <strong>hífen</strong> no lugar de espaço, sem acentos, só <code>a-z</code>, <code>0-9</code>, <code>-</code> e <code>.</code>, e nomes que descrevem o conteúdo.</li>
+  <li>O servidor Linux diferencia maiúsculas: <code>Pudim.jpg</code> ≠ <code>pudim.jpg</code> dá <code>404 File not found</code>, e o validador não pega.</li>
+  <li>Uma estrutura simples: páginas na raiz (ou numa pasta de páginas) e <code>css/</code>, <code>js/</code>, <code>img/</code>. O <code>tree</code> mostra a árvore.</li>
+  <li>A página inicial é o <code>index.html</code> da raiz: o servidor a entrega quando o endereço termina em <code>/</code>.</li>
+  <li>De uma página numa subpasta, suba com <code>../</code>: <code>../css/estilo.css</code>. Barras sempre <code>/</code>, nunca <code>\</code>, e nunca caminhos do seu computador (<code>C:\…</code>, <code>file:///</code>).</li>
+  <li>Valide o site inteiro com <code>vnu *.html pasta/*.html</code> ou <code>vnu --skip-non-html .</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
