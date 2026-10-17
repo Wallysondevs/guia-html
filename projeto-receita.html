@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Projeto Página de Receita — figure, listas, âncoras e citação | Guia HTML</title>
+<meta name="description" content="Projeto passo a passo: a receita de bolo de cenoura da Ana numa página HTML. Foto com figure, figcaption e alt; informações numa lista de descrição com time; ingredientes em ul e modo de preparo em ol; índice com âncoras, strong, em, blockquote e um PDF para baixar. Quatro versões com missões, o que o navegador faz com os erros e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>Projeto <span class="hl">Página de Receita</span></h1>
+
+<p class="intro">Todo mundo pede à Ana a receita do bolo de cenoura. Em vez de mandar a mesma mensagem toda vez, ela vai fazer uma página: foto, tempo de preparo, ingredientes, passo a passo e as dicas da avó. Uma receita é o exemplo perfeito para treinar o Nível 1: tem <strong>imagem</strong>, tem <strong>listas</strong> dos dois tipos (a dos ingredientes não tem ordem; a do preparo tem) e é comprida o bastante para precisar de um <strong>índice</strong> que pula para cada parte.</p>
+
+<div class="note">
+<strong>Você vai praticar</strong>
+<ul>
+  <li>Colocar uma imagem com <code>alt</code>, <code>width</code> e <code>height</code>, dentro de um <code>figure</code> com legenda (<a href="imagens.html">Imagens</a>, <a href="imagens-alt.html">Texto Alternativo</a>, <a href="figure.html">figure e figcaption</a>).</li>
+  <li>Organizar informações em pares com <code>dl</code>, e marcar uma duração com <code>time</code> (<a href="listas-descricao.html">Listas de Descrição</a>, <a href="time.html">time</a>).</li>
+  <li>Escolher entre <code>ul</code> e <code>ol</code> (<a href="listas.html">Listas</a>, <a href="listas-ordenadas.html">Listas Numeradas</a>).</li>
+  <li>Fazer um índice com âncoras (<a href="ancoras.html">Âncoras na Mesma Página</a>).</li>
+  <li>Destacar com <code>strong</code> e <code>em</code>, citar com <code>blockquote</code> e oferecer um arquivo para baixar (<a href="negrito-italico.html">strong e em</a>, <a href="citacoes.html">Citações</a>, <a href="download.html">download</a>).</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>O que vamos construir</h2>
+<p>A receita pronta, desenhada pelo seu navegador. Clique nos links do "Ir para" e veja o quadro pular para cada parte.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+  &lt;p&gt;Ir para: &lt;a href="#ingredientes"&gt;Ingredientes&lt;/a&gt; · &lt;a href="#preparo"&gt;Modo de preparo&lt;/a&gt; · &lt;a href="#dicas"&gt;Dicas&lt;/a&gt;&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;&lt;time datetime="PT1H10M"&gt;1 hora e 10 minutos&lt;/time&gt;&lt;/dd&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2 id="ingredientes"&gt;Ingredientes&lt;/h2&gt;
+  &lt;h3&gt;Massa&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras médias, descascadas e picadas&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de óleo&lt;/li&gt;
+    &lt;li&gt;2 xícaras (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;2 e 1/2 xícaras (chá) de farinha de trigo&lt;/li&gt;
+    &lt;li&gt;1 colher (sopa) de fermento em pó&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Cobertura&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;1 colher (sopa) de manteiga&lt;/li&gt;
+    &lt;li&gt;3 colheres (sopa) de chocolate em pó&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;1/2 xícara (chá) de leite&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2 id="preparo"&gt;Modo de preparo&lt;/h2&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Ligue o forno a 180 °C e unte uma fôrma com furo no meio.&lt;/li&gt;
+    &lt;li&gt;Bata no liquidificador a cenoura, os ovos e o óleo até ficar liso.&lt;/li&gt;
+    &lt;li&gt;Numa tigela, misture o creme com o açúcar e a farinha. Por último, junte o fermento, mexendo devagar.&lt;/li&gt;
+    &lt;li&gt;Despeje na fôrma e asse por cerca de 40 minutos, até o palito sair seco. &lt;strong&gt;Não abra o forno nos primeiros 30 minutos&lt;/strong&gt;, senão o bolo murcha.&lt;/li&gt;
+    &lt;li&gt;Para a cobertura, leve tudo ao fogo baixo, mexendo, até engrossar. Espalhe sobre o bolo ainda quente.&lt;/li&gt;
+  &lt;/ol&gt;
+
+  &lt;h2 id="dicas"&gt;Dicas&lt;/h2&gt;
+  &lt;p&gt;A cenoura tem de ser bem batida: &lt;em&gt;nenhum&lt;/em&gt; pedacinho pode sobrar. E, como dizia a minha avó:&lt;/p&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;Bolo bom é bolo feito sem pressa e comido com companhia.&lt;/p&gt;
+  &lt;/blockquote&gt;
+  &lt;p&gt;&lt;a href="assets/midia/receita-bolo.pdf" download&gt;Baixe a receita em PDF&lt;/a&gt; para imprimir.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<ol class="passo">
+  <li><a href="#versao1">O título e a foto com legenda</a> (<code>figure</code>, <code>img</code>, <code>figcaption</code>).</li>
+  <li><a href="#versao2">As informações rápidas</a> (<code>dl</code> e <code>time</code>).</li>
+  <li><a href="#versao3">Ingredientes e modo de preparo</a> (<code>ul</code> e <code>ol</code>).</li>
+  <li><a href="#versao4">Índice, destaques e dicas</a> (âncoras, <code>strong</code>, <code>em</code>, <code>blockquote</code>, <code>download</code>).</li>
+</ol>
+
+<h3>Antes de começar</h3>
+<p>Você precisa ter visto <a href="imagens.html">Imagens</a>, <a href="listas.html">Listas</a> e <a href="listas-ordenadas.html">Listas Numeradas</a>; para a versão 4, <a href="ancoras.html">Âncoras</a>. No seu computador, a pasta do projeto precisa da imagem e do PDF. A Ana copiou os dois para uma pasta <code>assets/midia</code> dentro do projeto, com o mesmo caminho que o editor do guia usa:</p>
+
+<pre class="term">$ mkdir -p sites/receita/assets/midia
+$ cd sites/receita</pre>
+
+<p>Depois de copiar <code>bolo-400.jpg</code> e <code>receita-bolo.pdf</code> para <code>assets/midia</code> (você pode salvar os dois a partir do resultado acima, com o botão direito), a pasta fica assim:</p>
+
+<pre class="term" data-cwd="~/sites/receita">$ tree
+.
+├── assets
+│   └── midia
+│       ├── bolo-400.jpg
+│       └── receita-bolo.pdf
+└── index.html
+
+3 directories, 3 files</pre>
+
+<hr>
+
+<h2 id="versao1">Versão 1 · O título e a foto com legenda</h2>
+<p>A página começa pelo nome da receita, uma frase de apresentação e a foto. Uma foto com legenda é como a foto de um livro de receitas com a frase embaixo: as duas andam juntas. No HTML, o "par" é o <code>figure</code>, e a frase é o <code>figcaption</code>.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;figure&gt;</dt><dd>Um conteúdo que se explica sozinho (aqui, a foto) junto com a sua legenda. O navegador dá uma margem em volta.</dd>
+  <dt>&lt;img src="assets/midia/bolo-400.jpg"</dt><dd>A imagem. O <code>src</code> (<em>source</em>, "fonte") é o caminho do arquivo, a partir da pasta da página (veja <a href="caminhos.html">Caminhos</a>).</dd>
+  <dt>alt="Bolo de cenoura com cobertura…"</dt><dd>O texto alternativo: o que a imagem mostra, para quem não pode vê-la (leitor de tela, imagem que não carregou). Descreva o que importa: aqui, o bolo e a cobertura escorrendo.</dd>
+  <dt>width="400" height="300"</dt><dd>A largura e a altura em pixels, sem "px". O navegador reserva o espaço antes da imagem chegar, e o texto não "pula" quando ela aparece (veja <a href="imagens-tamanho.html">Largura e Altura</a>).</dd>
+  <dt>&lt;figcaption&gt;</dt><dd>A legenda da figura, visível para todos. Fica dentro do <code>figure</code>, como primeiro ou último filho.</dd>
+</dl>
+
+<div class="tip">
+<strong>O <code>alt</code> e a legenda não dizem a mesma coisa</strong>
+<p>A legenda conta algo <strong>sobre</strong> a foto ("ainda morno"); o <code>alt</code> substitui a foto para quem não a vê ("bolo com cobertura de chocolate escorrendo"). Se o <code>alt</code> repetisse a legenda, o leitor de tela leria a mesma frase duas vezes, e a pessoa nunca saberia como o bolo é.</p>
+</div>
+
+<div class="cenario">
+<strong>A imagem sem <code>alt</code></strong>
+<p>Na primeira tentativa, a Ana pôs a imagem solta e a legenda num parágrafo, sem <code>figure</code> e sem <code>alt</code> (é o código inicial da missão abaixo). O validador acusou:</p>
+<pre class="term" data-cwd="~/sites/receita">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/receita/index.html":12.3-12.64: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
+<p>"Um elemento <code>img</code> tem de ter o atributo <code>alt</code>, a não ser em certas condições." Uma dessas condições: uma imagem dentro de um <code>figure</code> que tem <code>figcaption</code>. Com o <code>figure</code>, o validador para de reclamar, porque a legenda pode ser a descrição. Mas "O bolo pronto, ainda morno" não descreve o bolo. Escreva o <code>alt</code> mesmo assim.</p>
+</div>
+
+<div class="cenario">
+<strong>O caminho da imagem errado</strong>
+<p>Um erro de digitação no nome do arquivo (<code>bolo.jpg.jpg</code> no lugar de <code>bolo-400.jpg</code>):</p>
+<pre class="file" data-file="index.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo.jpg.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> reserva o espaço de 400 × 300 (graças ao <code>width</code> e ao <code>height</code>) e, no lugar da foto, mostra um ícone de imagem quebrada e o texto do <code>alt</code> (o desenho muda de navegador para navegador). O console do quadro avisa que não conseguiu carregar a imagem. <strong>O validador não reclama:</strong> ele confere se o HTML está bem escrito, não se o arquivo existe. <strong>Como consertar:</strong> confira o nome do arquivo letra por letra, inclusive a extensão e as maiúsculas (veja <a href="caminhos.html">Caminhos</a>).</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:figure > img[alt],texto:figure > figcaption=O bolo pronto,nsel:body > p=1">
+<p class="try-task"><strong>Missão (versão 1):</strong> coloque a imagem e a legenda dentro de um <code>&lt;figure&gt;</code>, troque o <code>&lt;p&gt;</code> da legenda por <code>&lt;figcaption&gt;</code> e escreva um <code>alt</code> que descreva o bolo.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+
+  &lt;img src="assets/midia/bolo-400.jpg" width="400" height="300"&gt;
+  &lt;p&gt;O bolo pronto, ainda morno.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao2">Versão 2 · As informações rápidas</h2>
+<p>Antes de começar uma receita, todo mundo quer saber três coisas: quanto tempo leva, quanto rende e se é difícil. São pares "pergunta → resposta", o trabalho de uma lista de descrição. E o tempo ganha um <code>time</code>, que deixa a duração legível também para programas (um buscador pode mostrar "1 h 10 min" no resultado da busca).</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;&lt;time datetime="PT1H10M"&gt;1 hora e 10 minutos&lt;/time&gt;&lt;/dd&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;dl&gt;</dt><dd>A lista de pares.</dd>
+  <dt>&lt;dt&gt;Tempo de preparo&lt;/dt&gt;</dt><dd>O termo: o nome da informação.</dd>
+  <dt>&lt;dd&gt;</dt><dd>A descrição: o valor da informação, com recuo.</dd>
+  <dt>&lt;time datetime="PT1H10M"&gt;</dt><dd>Uma duração no formato de máquina: <code>P</code> de "período", <code>T</code> de "tempo", <code>1H</code> = 1 hora, <code>10M</code> = 10 minutos. O texto entre as tags é para as pessoas; o <code>datetime</code>, para os programas.</dd>
+</dl>
+
+<div class="cenario">
+<strong>Uma duração escrita do jeito errado no <code>datetime</code></strong>
+<p>A Ana escreveu <code>&lt;time datetime="1h10min"&gt;</code>. Na tela, nada muda: o <code>datetime</code> não aparece. O validador sabe ler o formato e reclama:</p>
+<pre class="term" data-cwd="~/sites/receita">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/receita/index.html":20.9-20.33: error: Bad value “1h10min” for attribute “datetime” on element “time”: The literal did not satisfy the time-datetime format.</pre>
+<p>"Valor ruim para o <code>datetime</code>: não segue o formato de data e hora." <strong>Como consertar:</strong> durações começam com <code>PT</code> e usam <code>H</code>, <code>M</code> e <code>S</code> (horas, minutos, segundos): <code>PT40M</code>, <code>PT1H10M</code>. A aula <a href="time.html">time e data</a> tem os outros formatos.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:dl > dt=3,texto:dt:nth-of-type(2)=Rendimento,sel:dd time[datetime]">
+<p class="try-task"><strong>Missão (versão 2):</strong> falta o rendimento. Entre o tempo e a dificuldade, acrescente o par <code>&lt;dt&gt;Rendimento&lt;/dt&gt;</code> e <code>&lt;dd&gt;12 fatias&lt;/dd&gt;</code>. Depois, coloque o tempo dentro de um <code>&lt;time datetime="PT1H10M"&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;1 hora e 10 minutos&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;&lt;time datetime="PT1H10M"&gt;1 hora e 10 minutos&lt;/time&gt;&lt;/dd&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao3">Versão 3 · Ingredientes e modo de preparo</h2>
+<p>Aqui as duas listas trabalham lado a lado. Os ingredientes podem ser separados em qualquer ordem: lista com marcadores, <code>ul</code>. Os passos do preparo, não: bater a massa depois de assar não dá certo. Lista numerada, <code>ol</code>. Como a receita tem massa e cobertura, os ingredientes ganham dois subtítulos <code>h3</code>.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;&lt;time datetime="PT1H10M"&gt;1 hora e 10 minutos&lt;/time&gt;&lt;/dd&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Ingredientes&lt;/h2&gt;
+  &lt;h3&gt;Massa&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras médias, descascadas e picadas&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de óleo&lt;/li&gt;
+    &lt;li&gt;2 xícaras (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;2 e 1/2 xícaras (chá) de farinha de trigo&lt;/li&gt;
+    &lt;li&gt;1 colher (sopa) de fermento em pó&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Cobertura&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;1 colher (sopa) de manteiga&lt;/li&gt;
+    &lt;li&gt;3 colheres (sopa) de chocolate em pó&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;1/2 xícara (chá) de leite&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Modo de preparo&lt;/h2&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Ligue o forno a 180 °C e unte uma fôrma com furo no meio.&lt;/li&gt;
+    &lt;li&gt;Bata no liquidificador a cenoura, os ovos e o óleo até ficar liso.&lt;/li&gt;
+    &lt;li&gt;Numa tigela, misture o creme com o açúcar e a farinha. Por último, junte o fermento, mexendo devagar.&lt;/li&gt;
+    &lt;li&gt;Despeje na fôrma e asse por cerca de 40 minutos, até o palito sair seco.&lt;/li&gt;
+    &lt;li&gt;Para a cobertura, leve tudo ao fogo baixo, mexendo, até engrossar. Espalhe sobre o bolo ainda quente.&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Parte</th><th>Elemento</th><th>Por quê</th></tr>
+<tr><td>Ingredientes</td><td><code>ul</code> + <code>li</code></td><td>A ordem não importa; o marcador ajuda a riscar o que já separou.</td></tr>
+<tr><td>Modo de preparo</td><td><code>ol</code> + <code>li</code></td><td>A ordem importa. O navegador numera sozinho: se a Ana inserir um passo no meio, os números se ajustam.</td></tr>
+<tr><td>Massa / Cobertura</td><td><code>h3</code></td><td>Subtítulos dentro de "Ingredientes" (<code>h2</code>), um nível abaixo.</td></tr>
+</table>
+</div>
+
+<p>Repare que os números da lista não estão no código: quem escreve "1.", "2." à mão dentro de um <code>&lt;p&gt;</code> tem de renumerar tudo quando muda um passo, e o leitor de tela não anuncia "lista, 5 itens".</p>
+
+<div class="cenario">
+<strong>Uma lista dentro de um parágrafo</strong>
+<p>A Ana quis escrever "Para a massa:" e a lista logo abaixo, tudo dentro de um <code>&lt;p&gt;</code>:</p>
+<pre class="file" data-file="index.html · erro de propósito" data-resultado>&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;p&gt;Para a massa:
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras médias, descascadas e picadas&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+  &lt;li&gt;1 xícara (chá) de óleo&lt;/li&gt;
+  &lt;li&gt;2 xícaras (chá) de açúcar&lt;/li&gt;
+  &lt;li&gt;2 e 1/2 xícaras (chá) de farinha de trigo&lt;/li&gt;
+  &lt;li&gt;1 colher (sopa) de fermento em pó&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> um parágrafo não pode conter uma lista. Quando o navegador encontra o <code>&lt;ul&gt;</code>, ele <strong>fecha o parágrafo sozinho</strong>, ali mesmo, e a lista fica fora dele. Depois, ao encontrar o <code>&lt;/p&gt;</code> que sobrou, ele cria um parágrafo <strong>vazio</strong> novo. No resultado, aparece um espaço a mais depois da lista; no F12, um <code>&lt;p&gt;&lt;/p&gt;</code> que a Ana não escreveu. <strong>O que o validador diz:</strong></p>
+<pre class="term" data-cwd="~/sites/receita">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/receita/index.html":37.3-37.6: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p>"Vi um <code>&lt;/p&gt;</code>, mas não há nenhum <code>p</code> aberto": o navegador já tinha fechado. <strong>Como consertar:</strong> o texto de apresentação num parágrafo e a lista depois dele, separados; ou, melhor ainda, um subtítulo <code>h3</code>, como na versão 3.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:ol > li=5,nsel:body > p=1">
+<p class="try-task"><strong>Missão (versão 3):</strong> o modo de preparo está em cinco parágrafos soltos. Transforme-os numa lista numerada: um <code>&lt;ol&gt;</code> com cinco <code>&lt;li&gt;</code>, um para cada passo.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;&lt;time datetime="PT1H10M"&gt;1 hora e 10 minutos&lt;/time&gt;&lt;/dd&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Ingredientes&lt;/h2&gt;
+  &lt;h3&gt;Massa&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras médias, descascadas e picadas&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de óleo&lt;/li&gt;
+    &lt;li&gt;2 xícaras (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;2 e 1/2 xícaras (chá) de farinha de trigo&lt;/li&gt;
+    &lt;li&gt;1 colher (sopa) de fermento em pó&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Cobertura&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;1 colher (sopa) de manteiga&lt;/li&gt;
+    &lt;li&gt;3 colheres (sopa) de chocolate em pó&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;1/2 xícara (chá) de leite&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Modo de preparo&lt;/h2&gt;
+  &lt;p&gt;Ligue o forno a 180 °C e unte uma fôrma com furo no meio.&lt;/p&gt;
+  &lt;p&gt;Bata no liquidificador a cenoura, os ovos e o óleo até ficar liso.&lt;/p&gt;
+  &lt;p&gt;Numa tigela, misture o creme com o açúcar e a farinha. Por último, junte o fermento, mexendo devagar.&lt;/p&gt;
+  &lt;p&gt;Despeje na fôrma e asse por cerca de 40 minutos, até o palito sair seco.&lt;/p&gt;
+  &lt;p&gt;Para a cobertura, leve tudo ao fogo baixo, mexendo, até engrossar. Espalhe sobre o bolo ainda quente.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;&lt;time datetime="PT1H10M"&gt;1 hora e 10 minutos&lt;/time&gt;&lt;/dd&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Ingredientes&lt;/h2&gt;
+  &lt;h3&gt;Massa&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras médias, descascadas e picadas&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de óleo&lt;/li&gt;
+    &lt;li&gt;2 xícaras (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;2 e 1/2 xícaras (chá) de farinha de trigo&lt;/li&gt;
+    &lt;li&gt;1 colher (sopa) de fermento em pó&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Cobertura&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;1 colher (sopa) de manteiga&lt;/li&gt;
+    &lt;li&gt;3 colheres (sopa) de chocolate em pó&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;1/2 xícara (chá) de leite&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Modo de preparo&lt;/h2&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Ligue o forno a 180 °C e unte uma fôrma com furo no meio.&lt;/li&gt;
+    &lt;li&gt;Bata no liquidificador a cenoura, os ovos e o óleo até ficar liso.&lt;/li&gt;
+    &lt;li&gt;Numa tigela, misture o creme com o açúcar e a farinha. Por último, junte o fermento, mexendo devagar.&lt;/li&gt;
+    &lt;li&gt;Despeje na fôrma e asse por cerca de 40 minutos, até o palito sair seco.&lt;/li&gt;
+    &lt;li&gt;Para a cobertura, leve tudo ao fogo baixo, mexendo, até engrossar. Espalhe sobre o bolo ainda quente.&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao4">Versão 4 · Índice, destaques e dicas</h2>
+<p>A página ficou comprida: no celular, o modo de preparo fica lá embaixo. Um índice no topo resolve, como o sumário de uma revista: cada link pula para uma parte da <strong>mesma</strong> página. Para isso, cada parte ganha um nome (o <code>id</code>), e o link aponta para esse nome com <code>#</code>. Também entram um aviso importante em <code>strong</code>, uma ênfase com <code>em</code>, o ditado da avó num <code>blockquote</code> e o PDF da receita para baixar.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+  &lt;p&gt;Ir para: &lt;a href="#ingredientes"&gt;Ingredientes&lt;/a&gt; · &lt;a href="#preparo"&gt;Modo de preparo&lt;/a&gt; · &lt;a href="#dicas"&gt;Dicas&lt;/a&gt;&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;&lt;time datetime="PT1H10M"&gt;1 hora e 10 minutos&lt;/time&gt;&lt;/dd&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2 id="ingredientes"&gt;Ingredientes&lt;/h2&gt;
+  &lt;h3&gt;Massa&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras médias, descascadas e picadas&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de óleo&lt;/li&gt;
+    &lt;li&gt;2 xícaras (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;2 e 1/2 xícaras (chá) de farinha de trigo&lt;/li&gt;
+    &lt;li&gt;1 colher (sopa) de fermento em pó&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Cobertura&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;1 colher (sopa) de manteiga&lt;/li&gt;
+    &lt;li&gt;3 colheres (sopa) de chocolate em pó&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;1/2 xícara (chá) de leite&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2 id="preparo"&gt;Modo de preparo&lt;/h2&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Ligue o forno a 180 °C e unte uma fôrma com furo no meio.&lt;/li&gt;
+    &lt;li&gt;Bata no liquidificador a cenoura, os ovos e o óleo até ficar liso.&lt;/li&gt;
+    &lt;li&gt;Numa tigela, misture o creme com o açúcar e a farinha. Por último, junte o fermento, mexendo devagar.&lt;/li&gt;
+    &lt;li&gt;Despeje na fôrma e asse por cerca de 40 minutos, até o palito sair seco. &lt;strong&gt;Não abra o forno nos primeiros 30 minutos&lt;/strong&gt;, senão o bolo murcha.&lt;/li&gt;
+    &lt;li&gt;Para a cobertura, leve tudo ao fogo baixo, mexendo, até engrossar. Espalhe sobre o bolo ainda quente.&lt;/li&gt;
+  &lt;/ol&gt;
+
+  &lt;h2 id="dicas"&gt;Dicas&lt;/h2&gt;
+  &lt;p&gt;A cenoura tem de ser bem batida: &lt;em&gt;nenhum&lt;/em&gt; pedacinho pode sobrar. E, como dizia a minha avó:&lt;/p&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;Bolo bom é bolo feito sem pressa e comido com companhia.&lt;/p&gt;
+  &lt;/blockquote&gt;
+  &lt;p&gt;&lt;a href="assets/midia/receita-bolo.pdf" download&gt;Baixe a receita em PDF&lt;/a&gt; para imprimir.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;h2 id="preparo"&gt;</dt><dd>Dá o nome <code>preparo</code> ao título. O <code>id</code> é único na página, sem espaços (use hífen: <code>modo-de-preparo</code>).</dd>
+  <dt>&lt;a href="#preparo"&gt;</dt><dd>Um link para o elemento com <code>id="preparo"</code> nesta mesma página. O <code>#</code> quer dizer "um lugar dentro da página". Ao clicar, o navegador rola até lá, e o endereço ganha o <code>#preparo</code> no fim (dá para mandar o link direto para o modo de preparo).</dd>
+  <dt>&lt;strong&gt;</dt><dd>Importância: um aviso que não pode passar despercebido. Aparece em negrito.</dd>
+  <dt>&lt;em&gt;</dt><dd>Ênfase: muda o sentido da frase, como quando você fala uma palavra mais forte ("<em>nenhum</em> pedacinho"). Aparece em itálico.</dd>
+  <dt>&lt;blockquote&gt;</dt><dd>Uma citação longa, de outra pessoa. O navegador dá um recuo dos dois lados. Dentro dela vão parágrafos.</dd>
+  <dt>&lt;a href="assets/midia/receita-bolo.pdf" download&gt;</dt><dd>Um link que <strong>baixa</strong> o arquivo, em vez de abri-lo (veja <a href="download.html">Baixar Arquivos</a>).</dd>
+</dl>
+
+<div class="cenario">
+<strong>Uma letra maiúscula e o link não pula</strong>
+<p>No índice, a Ana escreveu <code>href="#Preparo"</code>, com "P" maiúsculo; o título tem <code>id="preparo"</code>. Clicar no link não faz nada (o endereço até muda, mas a página não rola), porque o <code>id</code> diferencia maiúsculas de minúsculas. E o validador <strong>não</strong> avisa: ele não confere se cada <code>#nome</code> existe na página.</p>
+<pre class="term" data-cwd="~/sites/receita">$ grep -n 'Preparo\|preparo"' index.html
+11:  &lt;p&gt;Ir para: &lt;a href="#ingredientes"&gt;Ingredientes&lt;/a&gt; · &lt;a href="#Preparo"&gt;Modo de preparo&lt;/a&gt; · &lt;a href="#dicas"&gt;Dicas&lt;/a&gt;&lt;/p&gt;
+46:  &lt;h2 id="preparo"&gt;Modo de preparo&lt;/h2&gt;
+$ vnu --verbose index.html
+index.html                            « nenhum erro: o validador não confere as âncoras</pre>
+<p><strong>Como consertar:</strong> escreva os <code>id</code> sempre em minúsculas, sem acento e sem espaço, e copie o nome do <code>id</code> para o <code>href</code>. Com espaço, aí sim o validador reclama, das duas pontas:</p>
+<pre class="term" data-cwd="~/sites/receita">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/receita/index.html":11.58-11.84: error: Bad value “#modo de preparo” for attribute “href” on element “a”: Illegal character in fragment. Space is not allowed.
+"file:/home/ana/sites/receita/index.html":46.3-46.27: error: Bad value “modo de preparo” for attribute “id” on element “h2”: An ID must not contain whitespace.</pre>
+<p>"Caractere proibido no fragmento (a parte depois do <code>#</code>): espaço não é permitido" e "um ID não pode conter espaço".</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:h2#preparo,sel:h2#dicas,sel:a[href='#preparo'],sel:a[href='#dicas']">
+<p class="try-task"><strong>Missão (versão 4):</strong> o índice só tem o link dos ingredientes. Dê <code>id="preparo"</code> ao título do modo de preparo e <code>id="dicas"</code> ao das dicas, e transforme "Modo de preparo" e "Dicas" do índice em links para eles. Depois, clique nos links no resultado.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+  &lt;p&gt;Ir para: &lt;a href="#ingredientes"&gt;Ingredientes&lt;/a&gt; · Modo de preparo · Dicas&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;&lt;time datetime="PT1H10M"&gt;1 hora e 10 minutos&lt;/time&gt;&lt;/dd&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2 id="ingredientes"&gt;Ingredientes&lt;/h2&gt;
+  &lt;h3&gt;Massa&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras médias, descascadas e picadas&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de óleo&lt;/li&gt;
+    &lt;li&gt;2 xícaras (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;2 e 1/2 xícaras (chá) de farinha de trigo&lt;/li&gt;
+    &lt;li&gt;1 colher (sopa) de fermento em pó&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Cobertura&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;1 colher (sopa) de manteiga&lt;/li&gt;
+    &lt;li&gt;3 colheres (sopa) de chocolate em pó&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;1/2 xícara (chá) de leite&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Modo de preparo&lt;/h2&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Ligue o forno a 180 °C e unte uma fôrma com furo no meio.&lt;/li&gt;
+    &lt;li&gt;Bata no liquidificador a cenoura, os ovos e o óleo até ficar liso.&lt;/li&gt;
+    &lt;li&gt;Numa tigela, misture o creme com o açúcar e a farinha. Por último, junte o fermento, mexendo devagar.&lt;/li&gt;
+    &lt;li&gt;Despeje na fôrma e asse por cerca de 40 minutos, até o palito sair seco. &lt;strong&gt;Não abra o forno nos primeiros 30 minutos&lt;/strong&gt;, senão o bolo murcha.&lt;/li&gt;
+    &lt;li&gt;Para a cobertura, leve tudo ao fogo baixo, mexendo, até engrossar. Espalhe sobre o bolo ainda quente.&lt;/li&gt;
+  &lt;/ol&gt;
+
+  &lt;h2&gt;Dicas&lt;/h2&gt;
+  &lt;p&gt;A cenoura tem de ser bem batida: &lt;em&gt;nenhum&lt;/em&gt; pedacinho pode sobrar. E, como dizia a minha avó:&lt;/p&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;Bolo bom é bolo feito sem pressa e comido com companhia.&lt;/p&gt;
+  &lt;/blockquote&gt;
+  &lt;p&gt;&lt;a href="assets/midia/receita-bolo.pdf" download&gt;Baixe a receita em PDF&lt;/a&gt; para imprimir.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+  &lt;p&gt;Ir para: &lt;a href="#ingredientes"&gt;Ingredientes&lt;/a&gt; · &lt;a href="#preparo"&gt;Modo de preparo&lt;/a&gt; · &lt;a href="#dicas"&gt;Dicas&lt;/a&gt;&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;&lt;time datetime="PT1H10M"&gt;1 hora e 10 minutos&lt;/time&gt;&lt;/dd&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2 id="ingredientes"&gt;Ingredientes&lt;/h2&gt;
+  &lt;h3&gt;Massa&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras médias, descascadas e picadas&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de óleo&lt;/li&gt;
+    &lt;li&gt;2 xícaras (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;2 e 1/2 xícaras (chá) de farinha de trigo&lt;/li&gt;
+    &lt;li&gt;1 colher (sopa) de fermento em pó&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Cobertura&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;1 colher (sopa) de manteiga&lt;/li&gt;
+    &lt;li&gt;3 colheres (sopa) de chocolate em pó&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;1/2 xícara (chá) de leite&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2 id="preparo"&gt;Modo de preparo&lt;/h2&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Ligue o forno a 180 °C e unte uma fôrma com furo no meio.&lt;/li&gt;
+    &lt;li&gt;Bata no liquidificador a cenoura, os ovos e o óleo até ficar liso.&lt;/li&gt;
+    &lt;li&gt;Numa tigela, misture o creme com o açúcar e a farinha. Por último, junte o fermento, mexendo devagar.&lt;/li&gt;
+    &lt;li&gt;Despeje na fôrma e asse por cerca de 40 minutos, até o palito sair seco. &lt;strong&gt;Não abra o forno nos primeiros 30 minutos&lt;/strong&gt;, senão o bolo murcha.&lt;/li&gt;
+    &lt;li&gt;Para a cobertura, leve tudo ao fogo baixo, mexendo, até engrossar. Espalhe sobre o bolo ainda quente.&lt;/li&gt;
+  &lt;/ol&gt;
+
+  &lt;h2 id="dicas"&gt;Dicas&lt;/h2&gt;
+  &lt;p&gt;A cenoura tem de ser bem batida: &lt;em&gt;nenhum&lt;/em&gt; pedacinho pode sobrar. E, como dizia a minha avó:&lt;/p&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;Bolo bom é bolo feito sem pressa e comido com companhia.&lt;/p&gt;
+  &lt;/blockquote&gt;
+  &lt;p&gt;&lt;a href="assets/midia/receita-bolo.pdf" download&gt;Baixe a receita em PDF&lt;/a&gt; para imprimir.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>A página completa</h2>
+<p>A versão final é a versão 4. Salve como <code>index.html</code> na pasta <code>sites/receita</code>, ao lado da pasta <code>assets</code>:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura — Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+  &lt;p&gt;O bolo que a minha avó fazia todo domingo: fofinho, laranja por dentro e com uma casquinha de chocolate por cima.&lt;/p&gt;
+  &lt;p&gt;Ir para: &lt;a href="#ingredientes"&gt;Ingredientes&lt;/a&gt; · &lt;a href="#preparo"&gt;Modo de preparo&lt;/a&gt; · &lt;a href="#dicas"&gt;Dicas&lt;/a&gt;&lt;/p&gt;
+
+  &lt;figure&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;figcaption&gt;O bolo pronto, ainda morno.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;h2&gt;Informações&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Tempo de preparo&lt;/dt&gt;
+    &lt;dd&gt;&lt;time datetime="PT1H10M"&gt;1 hora e 10 minutos&lt;/time&gt;&lt;/dd&gt;
+    &lt;dt&gt;Rendimento&lt;/dt&gt;
+    &lt;dd&gt;12 fatias&lt;/dd&gt;
+    &lt;dt&gt;Dificuldade&lt;/dt&gt;
+    &lt;dd&gt;Fácil&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2 id="ingredientes"&gt;Ingredientes&lt;/h2&gt;
+  &lt;h3&gt;Massa&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras médias, descascadas e picadas&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de óleo&lt;/li&gt;
+    &lt;li&gt;2 xícaras (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;2 e 1/2 xícaras (chá) de farinha de trigo&lt;/li&gt;
+    &lt;li&gt;1 colher (sopa) de fermento em pó&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Cobertura&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;1 colher (sopa) de manteiga&lt;/li&gt;
+    &lt;li&gt;3 colheres (sopa) de chocolate em pó&lt;/li&gt;
+    &lt;li&gt;1 xícara (chá) de açúcar&lt;/li&gt;
+    &lt;li&gt;1/2 xícara (chá) de leite&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2 id="preparo"&gt;Modo de preparo&lt;/h2&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Ligue o forno a 180 °C e unte uma fôrma com furo no meio.&lt;/li&gt;
+    &lt;li&gt;Bata no liquidificador a cenoura, os ovos e o óleo até ficar liso.&lt;/li&gt;
+    &lt;li&gt;Numa tigela, misture o creme com o açúcar e a farinha. Por último, junte o fermento, mexendo devagar.&lt;/li&gt;
+    &lt;li&gt;Despeje na fôrma e asse por cerca de 40 minutos, até o palito sair seco. &lt;strong&gt;Não abra o forno nos primeiros 30 minutos&lt;/strong&gt;, senão o bolo murcha.&lt;/li&gt;
+    &lt;li&gt;Para a cobertura, leve tudo ao fogo baixo, mexendo, até engrossar. Espalhe sobre o bolo ainda quente.&lt;/li&gt;
+  &lt;/ol&gt;
+
+  &lt;h2 id="dicas"&gt;Dicas&lt;/h2&gt;
+  &lt;p&gt;A cenoura tem de ser bem batida: &lt;em&gt;nenhum&lt;/em&gt; pedacinho pode sobrar. E, como dizia a minha avó:&lt;/p&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;Bolo bom é bolo feito sem pressa e comido com companhia.&lt;/p&gt;
+  &lt;/blockquote&gt;
+  &lt;p&gt;&lt;a href="assets/midia/receita-bolo.pdf" download&gt;Baixe a receita em PDF&lt;/a&gt; para imprimir.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O que o projeto juntou: <a href="imagens.html">imagens</a> com <a href="imagens-alt.html">alt</a> e <a href="imagens-tamanho.html">tamanho</a>, <a href="figure.html">figure</a>, <a href="listas-descricao.html">dl</a>, <a href="time.html">time</a>, <a href="listas.html">ul</a> e <a href="listas-ordenadas.html">ol</a>, <a href="ancoras.html">âncoras</a>, <a href="negrito-italico.html">strong e em</a>, <a href="citacoes.html">blockquote</a> e <a href="download.html">download</a>.</p>
+
+<h3>Validando no laboratório</h3>
+<pre class="term" data-cwd="~/sites/receita">$ ls
+assets
+index.html
+$ vnu --verbose index.html
+index.html
+$ echo $?
+0</pre>
+
+<hr>
+
+<h2>Desafios extras</h2>
+<ol>
+  <li><strong>Voltar ao topo.</strong> No fim da página, um link <code>&lt;a href="#"&gt;Voltar ao topo&lt;/a&gt;</code>. Teste: <code>#</code> sozinho leva ao começo da página.</li>
+  <li><strong>Quem disse.</strong> Depois do <code>blockquote</code>, escreva "— Vó Lurdes" num parágrafo, com o nome da fonte em <code>&lt;cite&gt;</code> se for um livro (veja <a href="citacoes.html">Citações</a>).</li>
+  <li><strong>Vídeo do preparo.</strong> Acrescente o vídeo <code>assets/midia/video-bolo.mp4</code> com <code>controls</code> e as legendas <code>video-bolo.vtt</code> (veja <a href="video.html">Vídeo</a> e <a href="legendas.html">Legendas</a>).</li>
+  <li><strong>Continuar a numeração.</strong> Faça uma segunda lista só com a cobertura, numerada a partir de 6, com <code>&lt;ol start="6"&gt;</code> (veja <a href="listas-ordenadas.html">Listas Numeradas</a>).</li>
+  <li><strong>Imagem que se adapta.</strong> Use <code>srcset</code> com <code>bolo-400.jpg</code>, <code>bolo-800.jpg</code> e <code>bolo-1200.jpg</code>, para telas grandes receberem uma foto mais nítida (veja <a href="imagens-responsivas.html">Imagens Responsivas</a>).</li>
+</ol>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">1. Qual lista é a certa para o modo de preparo?</p>
+<label><input type="radio" name="q1"> <code>ul</code>, porque são itens.</label>
+<label><input type="radio" name="q1"> <code>ol</code>, porque a ordem dos passos importa.</label>
+<label><input type="radio" name="q1"> <code>dl</code>, porque cada passo tem uma descrição.</label>
+<label><input type="radio" name="q1"> Parágrafos numerados à mão.</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">2. O que o navegador faz com <code>&lt;p&gt;Para a massa: &lt;ul&gt;…&lt;/ul&gt;&lt;/p&gt;</code>?</p>
+<label><input type="radio" name="q2"> Mostra a lista dentro do parágrafo.</label>
+<label><input type="radio" name="q2"> Mostra uma página de erro.</label>
+<label><input type="radio" name="q2"> Ignora a lista.</label>
+<label><input type="radio" name="q2"> Fecha o parágrafo antes da lista e cria um parágrafo vazio no <code>&lt;/p&gt;</code> que sobrou.</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">3. Qual link pula para <code>&lt;h2 id="dicas"&gt;</code>?</p>
+<label><input type="radio" name="q3"> <code>&lt;a href="#dicas"&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;a href="dicas"&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;a href="#Dicas"&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;a id="dicas"&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Para que servem o <code>width</code> e o <code>height</code> da imagem?</p>
+<label><input type="radio" name="q4"> Para a imagem carregar mais rápido.</label>
+<label><input type="radio" name="q4"> Para o validador aceitar a imagem sem <code>alt</code>.</label>
+<label><input type="radio" name="q4"> Para o navegador reservar o espaço antes de a imagem chegar.</label>
+<label><input type="radio" name="q4"> Para cortar a imagem.</label>
+</div>
+
+<div class="exercise">
+<p>5. Complete a duração de 40 minutos no formato de máquina:</p>
+<div class="ex-code">&lt;time datetime="<input data-answer="PT40M" aria-label="duração" size="7">"&gt;40 minutos&lt;/time&gt;</div>
+</div>
+
+<div class="exercise">
+<p>6. Complete a legenda da figura:</p>
+<div class="ex-code">&lt;figure&gt; &lt;img src="bolo.jpg" alt="…"&gt; &lt;<input data-answer="figcaption" aria-label="elemento" size="11">&gt;O bolo pronto&lt;/figcaption&gt; &lt;/figure&gt;</div>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Toda imagem tem <code>alt</code> (o que ela mostra), <code>width</code> e <code>height</code>; com legenda, vai num <code>figure</code> com <code>figcaption</code>.</li>
+  <li>O validador confere o HTML, não os arquivos: caminho errado e âncora errada passam calados. Clique e olhe.</li>
+  <li><code>dl</code> para pares de informação; <code>time datetime="PT1H10M"</code> para durações.</li>
+  <li><code>ul</code> quando a ordem não importa, <code>ol</code> quando importa; lista nunca dentro de <code>p</code>.</li>
+  <li><code>id</code> sem espaço, em minúsculas, e <code>href="#id"</code> para pular até ele.</li>
+  <li><code>strong</code> para importância, <code>em</code> para ênfase, <code>blockquote</code> para citações longas.</li>
+</ul>
+<p>Próximo projeto: <a href="projeto-cardapio.html">Cardápio</a>.</p>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
