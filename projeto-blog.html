@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Projeto Blog Semântico — header, nav, main, article, aside e footer | Guia HTML</title>
+<meta name="description" content="Projeto passo a passo: o blog da Ana com HTML semântico. Da sopa de div a header, nav, main e footer; posts em article com time; aside com o perfil da autora; a página de um post com header e footer do artigo, section e comentários. Quatro versões com missões, o que muda para o leitor de tela e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>Projeto <span class="hl">Blog Semântico</span></h1>
+
+<p class="intro">A Ana quer um blog para contar as histórias da cozinha dela. Um blog tem sempre as mesmas partes: o cabeçalho com o nome, o menu, os posts, uma coluna "sobre a autora" e o rodapé. Neste projeto, cada parte ganha o <strong>elemento com o nome certo</strong>: <code>header</code>, <code>nav</code>, <code>main</code>, <code>article</code>, <code>aside</code>, <code>footer</code>. Na tela, quase nada muda. Para o leitor de tela, o buscador e o modo de leitura do navegador, muda tudo: eles passam a saber o que é o quê.</p>
+
+<div class="note">
+<strong>Você vai praticar</strong>
+<ul>
+  <li>Trocar uma "sopa de <code>div</code>" pelos elementos semânticos (<a href="semantica.html">HTML Semântico</a>, <a href="div-span.html">div e span</a>).</li>
+  <li>Montar o esqueleto de um site com <code>header</code>, <code>nav</code>, <code>main</code> e <code>footer</code> (<a href="header-footer.html">header e footer</a>, <a href="nav.html">nav</a>, <a href="main.html">main</a>).</li>
+  <li>Marcar cada post com <code>article</code> e a data com <code>time</code> (<a href="section-article.html">section e article</a>, <a href="time.html">time</a>).</li>
+  <li>Separar o conteúdo complementar com <code>aside</code> (<a href="aside.html">aside</a>).</li>
+  <li>Montar a página de um post, com <code>header</code> e <code>footer</code> do próprio artigo, <code>section</code> e comentários.</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>O que vamos construir</h2>
+<p>A página inicial do blog, desenhada pelo seu navegador. Ainda sem CSS: o visual é o padrão do navegador. Os links do menu pulam para cada parte.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;figure&gt;
+        &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+        &lt;figcaption&gt;Saiu igualzinho ao da vó.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-05"&gt;5 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;aside id="sobre"&gt;
+    &lt;h2&gt;Sobre a Ana&lt;/h2&gt;
+    &lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;
+    &lt;p&gt;Confeiteira e dona da Lojinha da Ana. Escrevo aqui as receitas da família e o que aprendo na cozinha.&lt;/p&gt;
+  &lt;/aside&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>E, na versão 4, a página de um post (<code>post.html</code>), com comentários.</p>
+
+<ol class="passo">
+  <li><a href="#versao1">Da sopa de div ao esqueleto semântico</a> (<code>header</code>, <code>nav</code>, <code>main</code>, <code>footer</code>).</li>
+  <li><a href="#versao2">Cada post num article</a> (<code>article</code> e <code>time</code>).</li>
+  <li><a href="#versao3">A coluna "Sobre a Ana"</a> (<code>aside</code> e <code>figure</code>).</li>
+  <li><a href="#versao4">A página do post</a> (<code>header</code> e <code>footer</code> do artigo, <code>section</code> e comentários).</li>
+</ol>
+
+<h3>Antes de começar</h3>
+<p>Você precisa ter visto <a href="semantica.html">HTML Semântico</a> e as aulas do grupo Semântica, de <a href="header-footer.html">header e footer</a> a <a href="aside.html">aside</a>. A pasta do projeto, com a pasta de imagens:</p>
+
+<pre class="term">$ mkdir -p sites/blog/assets/midia
+$ cd sites/blog</pre>
+
+<hr>
+
+<h2 id="versao1">Versão 1 · Da sopa de div ao esqueleto semântico</h2>
+<p>Muita gente monta páginas só com <code>div</code>, uma "caixa sem nome", e dá um <code>id</code> a cada uma para lembrar o que é. Foi assim que a Ana começou:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="cabecalho"&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;div id="menu"&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div id="posts"&gt;
+    &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+    &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+    &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;div id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Funciona, e a tela está certa. Mas <code>id="cabecalho"</code> é um apelido que só a Ana entende: para o navegador, são quatro caixas iguais. É como uma casa com todas as portas sem placa: quem mora sabe qual é o banheiro; a visita tem de abrir uma por uma. Agora a mesma página, com as placas:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+    &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+    &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Compare os dois resultados: são iguais. A diferença é para quem não olha a tela.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Era</th><th>O que é</th><th>Para o leitor de tela</th></tr>
+<tr><td><code>header</code></td><td><code>div id="cabecalho"</code></td><td>O cabeçalho do site: nome, frase, menu.</td><td>Uma região "banner" (faixa do topo).</td></tr>
+<tr><td><code>nav</code></td><td><code>div id="menu"</code></td><td>Um grupo de links de navegação.</td><td>Uma região "navegação": dá para pular direto para o menu.</td></tr>
+<tr><td><code>main</code></td><td><code>div id="posts"</code></td><td>O conteúdo principal, o que só esta página tem. <strong>Um</strong> por página.</td><td>A região "principal": a pessoa pula direto para cá, sem ouvir o menu toda vez.</td></tr>
+<tr><td><code>footer</code></td><td><code>div id="contato"</code></td><td>O rodapé: contato, direitos.</td><td>Uma região "informações".</td></tr>
+</table>
+</div>
+
+<p>Essas regiões (os <em>landmarks</em>, "pontos de referência") são como os capítulos de um livro em áudio: o leitor de tela lista as regiões, e a pessoa escolhe para onde ir. Os <code>id</code> continuam lá: eles servem para os links do menu (<code>href="#posts"</code>), e não para dizer o que a parte é.</p>
+
+<div class="cenario">
+<strong>Dois <code>main</code> na mesma página</strong>
+<p>A Ana achou que cada post merecia o seu <code>main</code> e fechou o primeiro antes do segundo post:</p>
+<pre class="term" data-cwd="~/sites/blog">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/blog/index.html":24.3-24.8: error: A document must not include more than one visible “main” element.</pre>
+<p>"Um documento não pode ter mais de um <code>main</code> visível." Na tela, nada muda; para o leitor de tela, há duas regiões "principais", e o atalho que pula para o conteúdo principal vai só para a primeira. <strong>Como consertar:</strong> um <code>main</code> com todo o conteúdo principal; para separar os posts, a versão 2 usa <code>article</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:body > header > nav,sel:body > main#posts,sel:body > footer#contato,nsel:div=0">
+<p class="try-task"><strong>Missão (versão 1):</strong> troque as quatro <code>div</code> pelos elementos semânticos: o cabeçalho vira <code>header</code>, o menu vira <code>nav</code>, os posts viram <code>main</code> e o contato vira <code>footer</code>. Mantenha os <code>id</code> <code>posts</code> e <code>contato</code> (os links do menu usam), e não se esqueça das tags de fechamento.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="cabecalho"&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;div id="menu"&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div id="posts"&gt;
+    &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+    &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+    &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;div id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+    &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+    &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao2">Versão 2 · Cada post num article</h2>
+<p>Um post de blog faz sentido sozinho: dá para copiá-lo para outro site, mandar por e-mail ou ler no celular sem o resto da página. Conteúdos assim são <code>article</code>, "artigo": um post, uma notícia, um comentário, um produto. E cada post tem uma data, marcada com <code>time</code>.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-05"&gt;5 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;article&gt;</dt><dd>Um conteúdo completo e independente: o post inteiro, do título ao texto.</dd>
+  <dt>&lt;h2&gt;</dt><dd>Todo <code>article</code> tem um título. Aqui, <code>h2</code>, porque o <code>h1</code> da página é o nome do blog.</dd>
+  <dt>&lt;time datetime="2026-10-12"&gt;</dt><dd>A data no formato de máquina, <code>ano-mês-dia</code>. Os buscadores e os leitores de feed usam para mostrar a data do post e ordenar.</dd>
+  <dt>12 de outubro de 2026&lt;/time&gt;</dt><dd>A data como as pessoas leem.</dd>
+</dl>
+
+<div class="tip">
+<strong>"Tiro o <code>article</code> da página: ainda faz sentido?"</strong>
+<p>É o teste para escolher entre <code>article</code> e <code>section</code>. O post, sozinho, faz sentido: é <code>article</code>. Uma parte de um texto ("Por que dá certo"), sozinha, fica sem pé nem cabeça: é <code>section</code>, como você vai ver na versão 4. E se a caixa só existe para o CSS, sem significado nenhum, é <code>div</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>A data no formato brasileiro dentro do <code>datetime</code></strong>
+<p>A Ana escreveu <code>&lt;time datetime="05/10/2026"&gt;</code>. Para nós é 5 de outubro; para um programa americano, seria 10 de maio. O formato do <code>datetime</code> é um só, no mundo inteiro, e o validador o conhece:</p>
+<pre class="term" data-cwd="~/sites/blog">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/blog/index.html":28.10-28.37: error: Bad value “05/10/2026” for attribute “datetime” on element “time”: The literal did not satisfy the time-datetime format.</pre>
+<p>"Valor ruim para o <code>datetime</code>: não segue o formato." <strong>Como consertar:</strong> no <code>datetime</code>, sempre <code>2026-10-05</code> (ano com 4 dígitos, mês e dia com 2). O texto entre as tags pode ser escrito do jeito que você quiser.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:main > article=2,nsel:article time[datetime]=2,attr:article:nth-of-type(2) time[datetime]=2026-10-05">
+<p class="try-task"><strong>Missão (versão 2):</strong> o primeiro post já é um <code>article</code>; o segundo ainda está solto. Coloque o título, a data e o texto do segundo post dentro de um <code>&lt;article&gt;</code>, e marque a data com <code>&lt;time datetime="2026-10-05"&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+    &lt;p&gt;5 de outubro de 2026&lt;/p&gt;
+    &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-05"&gt;5 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao3">Versão 3 · A coluna "Sobre a Ana"</h2>
+<p>Quase todo blog tem uma caixinha com a foto e duas linhas sobre quem escreve. Ela é útil, mas não é o assunto da página: se sumisse, os posts continuariam fazendo sentido. Esse conteúdo "ao lado" é o <code>aside</code>. O primeiro post também ganha a foto do bolo, num <code>figure</code>, e o menu ganha o link "Sobre".</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;figure&gt;
+        &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+        &lt;figcaption&gt;Saiu igualzinho ao da vó.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-05"&gt;5 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;aside id="sobre"&gt;
+    &lt;h2&gt;Sobre a Ana&lt;/h2&gt;
+    &lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;
+    &lt;p&gt;Confeiteira e dona da Lojinha da Ana. Escrevo aqui as receitas da família e o que aprendo na cozinha.&lt;/p&gt;
+  &lt;/aside&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;aside id="sobre"&gt;</dt><dd>Conteúdo complementar: relacionado ao site, mas fora do assunto principal. Fica fora do <code>main</code>, como uma coluna lateral (o CSS é que a colocaria do lado; sem CSS, ela vem embaixo). Para o leitor de tela, é uma região "complementar".</dd>
+  <dt>&lt;img … alt="Desenho da Ana, sorrindo…"&gt;</dt><dd>O avatar. O <code>alt</code> descreve o desenho, porque o texto ao lado não diz como a Ana é.</dd>
+  <dt>&lt;figure&gt; dentro do &lt;article&gt;</dt><dd>A foto faz parte do post: fica dentro do <code>article</code>, com a legenda.</dd>
+</dl>
+
+<div class="cenario">
+<strong>Uma <code>section</code> sem título</strong>
+<p>Para "organizar", a Ana pôs o parágrafo do <code>aside</code> dentro de uma <code>section</code>. O validador estranhou:</p>
+<pre class="term" data-cwd="~/sites/blog">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/blog/index.html":41.5-41.13: info warning: Section lacks heading. Consider using “h2”-“h6” elements to add identifying headings to all sections, or else use a “div” element instead for any cases where no heading is needed.</pre>
+<p>"A <code>section</code> não tem título. Considere usar <code>h2</code>–<code>h6</code> para identificar todas as seções, ou então use uma <code>div</code> nos casos em que não precisa de título." É só um conselho (<code>info warning</code>), mas um bom conselho: uma seção é uma parte com assunto, e todo assunto tem nome. Se a caixa não tem assunto, ela não é <code>section</code>. Aqui, ela nem precisava existir.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:body > aside#sobre > h2,nsel:div=0,nsel:main aside=0">
+<p class="try-task"><strong>Missão (versão 3):</strong> a caixa "Sobre a Ana" ainda é uma <code>div</code>. Troque-a por um <code>&lt;aside&gt;</code> (mantendo o <code>id="sobre"</code>, que o link do menu usa). Ela fica onde está: depois do <code>main</code>, antes do <code>footer</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;figure&gt;
+        &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+        &lt;figcaption&gt;Saiu igualzinho ao da vó.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-05"&gt;5 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;div id="sobre"&gt;
+    &lt;h2&gt;Sobre a Ana&lt;/h2&gt;
+    &lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;
+    &lt;p&gt;Confeiteira e dona da Lojinha da Ana. Escrevo aqui as receitas da família e o que aprendo na cozinha.&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;figure&gt;
+        &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+        &lt;figcaption&gt;Saiu igualzinho ao da vó.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-05"&gt;5 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;aside id="sobre"&gt;
+    &lt;h2&gt;Sobre a Ana&lt;/h2&gt;
+    &lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;
+    &lt;p&gt;Confeiteira e dona da Lojinha da Ana. Escrevo aqui as receitas da família e o que aprendo na cozinha.&lt;/p&gt;
+  &lt;/aside&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao4">Versão 4 · A página do post</h2>
+<p>Na página inicial, cada post aparece resumido, com um link "Ler o post completo". Esse link leva a uma página nova, <code>post.html</code>, só daquele post. Nela, o <code>h1</code> é o título do post (o assunto desta página), e o nome do blog vira um link de volta para o início. O artigo ganha partes próprias: um <code>header</code> com o título e a data, <code>section</code> para cada parte do texto, um <code>footer</code> com os marcadores e, no fim, os comentários, cada um num <code>article</code>.</p>
+
+<pre class="file" data-file="post.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura da vó — Blog da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;Blog da Ana&lt;/a&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="index.html#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;article&gt;
+      &lt;header&gt;
+        &lt;h1&gt;Bolo de cenoura da vó&lt;/h1&gt;
+        &lt;p&gt;Por Ana Costa, em &lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;/header&gt;
+      &lt;figure&gt;
+        &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+        &lt;figcaption&gt;Saiu igualzinho ao da vó.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;Por que dá certo&lt;/h2&gt;
+        &lt;p&gt;A cenoura batida com o óleo deixa a massa úmida, e o fermento entra por último, mexido devagar, para o bolo crescer por igual.&lt;/p&gt;
+      &lt;/section&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;O que eu mudei&lt;/h2&gt;
+        &lt;p&gt;Pus um pouco menos de açúcar na massa, porque a cobertura já é bem doce.&lt;/p&gt;
+      &lt;/section&gt;
+
+      &lt;footer&gt;
+        &lt;p&gt;Marcadores: &lt;a href="index.html"&gt;bolos&lt;/a&gt;, &lt;a href="index.html"&gt;receitas de família&lt;/a&gt;&lt;/p&gt;
+      &lt;/footer&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;Comentários&lt;/h2&gt;
+        &lt;article&gt;
+          &lt;h3&gt;Carla&lt;/h3&gt;
+          &lt;p&gt;&lt;time datetime="2026-10-13"&gt;13 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+          &lt;p&gt;Fiz ontem e a família amou. A cobertura ficou durinha por cima, perfeita!&lt;/p&gt;
+        &lt;/article&gt;
+        &lt;article&gt;
+          &lt;h3&gt;Bruno&lt;/h3&gt;
+          &lt;p&gt;&lt;time datetime="2026-10-14"&gt;14 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+          &lt;p&gt;Dá para trocar o óleo por manteiga?&lt;/p&gt;
+        &lt;/article&gt;
+      &lt;/section&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Neste quadro só existe esta página, então os links para <code>index.html</code> mostram a página "não encontrada" do editor. No <em>Experimente</em> da missão, que tem as duas páginas em abas, eles funcionam.</p>
+
+<dl class="anatomy">
+  <dt>&lt;article&gt; &lt;header&gt;</dt><dd>O cabeçalho <strong>do artigo</strong>: título, autora e data. <code>header</code> e <code>footer</code> não são só do site: qualquer <code>article</code> ou <code>section</code> pode ter os seus. Dentro de um artigo, eles não viram regiões da página.</dd>
+  <dt>&lt;h1&gt;Bolo de cenoura da vó&lt;/h1&gt;</dt><dd>Nesta página, o assunto é o post. O nome do blog está no cabeçalho do site, como um link.</dd>
+  <dt>&lt;section&gt; &lt;h2&gt;Por que dá certo&lt;/h2&gt;</dt><dd>Uma parte do texto, com o seu título. Sozinha, não faria sentido: é <code>section</code>, não <code>article</code>.</dd>
+  <dt>&lt;footer&gt; Marcadores…</dt><dd>O rodapé do artigo: informações <strong>sobre</strong> o artigo (os marcadores, quem escreveu, os direitos).</dd>
+  <dt>&lt;section&gt; &lt;h2&gt;Comentários&lt;/h2&gt; &lt;article&gt;</dt><dd>Os comentários ficam numa seção, e cada comentário é um <code>article</code> dentro do artigo do post: faz sentido sozinho, mas pertence àquele post.</dd>
+</dl>
+
+<div class="cenario">
+<strong>Um <code>main</code> dentro do artigo</strong>
+<p>A Ana achou que o texto principal do post merecia um <code>main</code> e o colocou em volta do primeiro parágrafo, dentro do <code>article</code>. Uma tag, três erros:</p>
+<pre class="term" data-cwd="~/sites/blog">$ vnu --verbose post.html
+post.html
+"file:/home/ana/sites/blog/post.html":30.7-30.12: error: The “main” element must not appear as a descendant of the “article” element.
+"file:/home/ana/sites/blog/post.html":30.7-30.12: error: The “main” element must not appear as a descendant of the “main” element.
+"file:/home/ana/sites/blog/post.html":30.7-30.12: error: A document must not include more than one visible “main” element.</pre>
+<p>"O <code>main</code> não pode estar dentro de um <code>article</code>", "nem dentro de outro <code>main</code>", e "um documento não pode ter mais de um <code>main</code> visível". O <code>main</code> é o conteúdo principal da <strong>página</strong> inteira, e só existe um. <strong>Como consertar:</strong> tire o <code>main</code> de dentro do artigo; o artigo já está dentro do <code>main</code> da página.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:article > header > h1,sel:article > header time[datetime],sel:main > article > footer">
+<p class="try-task"><strong>Missão (versão 4):</strong> na aba <code>post.html</code>, coloque o título e a linha "Por Ana Costa, em…" dentro de um <code>&lt;header&gt;</code> do artigo, e o parágrafo dos marcadores dentro de um <code>&lt;footer&gt;</code> do artigo. A aba <code>index.html</code> já está pronta: clique em "Início" para ir até ela e em "Ler o post completo" para voltar.</p>
+<pre class="script" data-file="post.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura da vó — Blog da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;Blog da Ana&lt;/a&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="index.html#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;article&gt;
+      &lt;h1&gt;Bolo de cenoura da vó&lt;/h1&gt;
+      &lt;p&gt;Por Ana Costa, em &lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;figure&gt;
+        &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+        &lt;figcaption&gt;Saiu igualzinho ao da vó.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;Por que dá certo&lt;/h2&gt;
+        &lt;p&gt;A cenoura batida com o óleo deixa a massa úmida, e o fermento entra por último, mexido devagar, para o bolo crescer por igual.&lt;/p&gt;
+      &lt;/section&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;O que eu mudei&lt;/h2&gt;
+        &lt;p&gt;Pus um pouco menos de açúcar na massa, porque a cobertura já é bem doce.&lt;/p&gt;
+      &lt;/section&gt;
+
+      &lt;p&gt;Marcadores: &lt;a href="index.html"&gt;bolos&lt;/a&gt;, &lt;a href="index.html"&gt;receitas de família&lt;/a&gt;&lt;/p&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;Comentários&lt;/h2&gt;
+        &lt;article&gt;
+          &lt;h3&gt;Carla&lt;/h3&gt;
+          &lt;p&gt;&lt;time datetime="2026-10-13"&gt;13 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+          &lt;p&gt;Fiz ontem e a família amou. A cobertura ficou durinha por cima, perfeita!&lt;/p&gt;
+        &lt;/article&gt;
+        &lt;article&gt;
+          &lt;h3&gt;Bruno&lt;/h3&gt;
+          &lt;p&gt;&lt;time datetime="2026-10-14"&gt;14 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+          &lt;p&gt;Dá para trocar o óleo por manteiga?&lt;/p&gt;
+        &lt;/article&gt;
+      &lt;/section&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;figure&gt;
+        &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+        &lt;figcaption&gt;Saiu igualzinho ao da vó.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+      &lt;p&gt;&lt;a href="post.html"&gt;Ler o post completo&lt;/a&gt;&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-05"&gt;5 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;aside id="sobre"&gt;
+    &lt;h2&gt;Sobre a Ana&lt;/h2&gt;
+    &lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;
+    &lt;p&gt;Confeiteira e dona da Lojinha da Ana. Escrevo aqui as receitas da família e o que aprendo na cozinha.&lt;/p&gt;
+  &lt;/aside&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="post.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura da vó — Blog da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;Blog da Ana&lt;/a&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="index.html#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;article&gt;
+      &lt;header&gt;
+        &lt;h1&gt;Bolo de cenoura da vó&lt;/h1&gt;
+        &lt;p&gt;Por Ana Costa, em &lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;/header&gt;
+      &lt;figure&gt;
+        &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+        &lt;figcaption&gt;Saiu igualzinho ao da vó.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;Por que dá certo&lt;/h2&gt;
+        &lt;p&gt;A cenoura batida com o óleo deixa a massa úmida, e o fermento entra por último, mexido devagar, para o bolo crescer por igual.&lt;/p&gt;
+      &lt;/section&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;O que eu mudei&lt;/h2&gt;
+        &lt;p&gt;Pus um pouco menos de açúcar na massa, porque a cobertura já é bem doce.&lt;/p&gt;
+      &lt;/section&gt;
+
+      &lt;footer&gt;
+        &lt;p&gt;Marcadores: &lt;a href="index.html"&gt;bolos&lt;/a&gt;, &lt;a href="index.html"&gt;receitas de família&lt;/a&gt;&lt;/p&gt;
+      &lt;/footer&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;Comentários&lt;/h2&gt;
+        &lt;article&gt;
+          &lt;h3&gt;Carla&lt;/h3&gt;
+          &lt;p&gt;&lt;time datetime="2026-10-13"&gt;13 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+          &lt;p&gt;Fiz ontem e a família amou. A cobertura ficou durinha por cima, perfeita!&lt;/p&gt;
+        &lt;/article&gt;
+        &lt;article&gt;
+          &lt;h3&gt;Bruno&lt;/h3&gt;
+          &lt;p&gt;&lt;time datetime="2026-10-14"&gt;14 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+          &lt;p&gt;Dá para trocar o óleo por manteiga?&lt;/p&gt;
+        &lt;/article&gt;
+      &lt;/section&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>O site completo</h2>
+<p>O blog final tem duas páginas: o <code>index.html</code> da versão 3, com o link para o post, e o <code>post.html</code> da versão 4. Salve as duas na pasta <code>sites/blog</code>, com a pasta <code>assets/midia</code> ao lado:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Blog da Ana — receitas e histórias da minha cozinha&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Blog da Ana&lt;/h1&gt;
+    &lt;p&gt;Receitas e histórias da minha cozinha.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="posts"&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura da vó&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;figure&gt;
+        &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+        &lt;figcaption&gt;Saiu igualzinho ao da vó.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+      &lt;p&gt;&lt;a href="post.html"&gt;Ler o post completo&lt;/a&gt;&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Como guardar bolo para não ressecar&lt;/h2&gt;
+      &lt;p&gt;&lt;time datetime="2026-10-05"&gt;5 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;p&gt;Bolo guardado na geladeira resseca. O segredo é deixar fora, bem tampado, por até três dias.&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;aside id="sobre"&gt;
+    &lt;h2&gt;Sobre a Ana&lt;/h2&gt;
+    &lt;img src="assets/midia/avatar-ana-96.jpg" alt="Desenho da Ana, sorrindo, de coque e blusa verde" width="96" height="96"&gt;
+    &lt;p&gt;Confeiteira e dona da Lojinha da Ana. Escrevo aqui as receitas da família e o que aprendo na cozinha.&lt;/p&gt;
+  &lt;/aside&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="file" data-file="post.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura da vó — Blog da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;Blog da Ana&lt;/a&gt;&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="index.html#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;article&gt;
+      &lt;header&gt;
+        &lt;h1&gt;Bolo de cenoura da vó&lt;/h1&gt;
+        &lt;p&gt;Por Ana Costa, em &lt;time datetime="2026-10-12"&gt;12 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+      &lt;/header&gt;
+      &lt;figure&gt;
+        &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas" width="400" height="300"&gt;
+        &lt;figcaption&gt;Saiu igualzinho ao da vó.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+      &lt;p&gt;Fiz o bolo de cenoura da minha avó pela primeira vez sozinha. Saiu fofinho, do jeito que eu lembrava.&lt;/p&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;Por que dá certo&lt;/h2&gt;
+        &lt;p&gt;A cenoura batida com o óleo deixa a massa úmida, e o fermento entra por último, mexido devagar, para o bolo crescer por igual.&lt;/p&gt;
+      &lt;/section&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;O que eu mudei&lt;/h2&gt;
+        &lt;p&gt;Pus um pouco menos de açúcar na massa, porque a cobertura já é bem doce.&lt;/p&gt;
+      &lt;/section&gt;
+
+      &lt;footer&gt;
+        &lt;p&gt;Marcadores: &lt;a href="index.html"&gt;bolos&lt;/a&gt;, &lt;a href="index.html"&gt;receitas de família&lt;/a&gt;&lt;/p&gt;
+      &lt;/footer&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;Comentários&lt;/h2&gt;
+        &lt;article&gt;
+          &lt;h3&gt;Carla&lt;/h3&gt;
+          &lt;p&gt;&lt;time datetime="2026-10-13"&gt;13 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+          &lt;p&gt;Fiz ontem e a família amou. A cobertura ficou durinha por cima, perfeita!&lt;/p&gt;
+        &lt;/article&gt;
+        &lt;article&gt;
+          &lt;h3&gt;Bruno&lt;/h3&gt;
+          &lt;p&gt;&lt;time datetime="2026-10-14"&gt;14 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+          &lt;p&gt;Dá para trocar o óleo por manteiga?&lt;/p&gt;
+        &lt;/article&gt;
+      &lt;/section&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+
+  &lt;footer id="contato"&gt;
+    &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Ana Costa&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O que o projeto juntou: <a href="semantica.html">semântica</a>, <a href="header-footer.html">header e footer</a>, <a href="nav.html">nav</a>, <a href="main.html">main</a>, <a href="section-article.html">section e article</a>, <a href="aside.html">aside</a>, <a href="time.html">time</a>, <a href="figure.html">figure</a> e <a href="links.html">links</a> entre páginas.</p>
+
+<h3>Validando no laboratório</h3>
+<pre class="term" data-cwd="~/sites/blog">$ tree
+.
+├── assets
+│   └── midia
+│       ├── avatar-ana-96.jpg
+│       └── bolo-400.jpg
+├── index.html
+└── post.html
+
+3 directories, 4 files
+$ vnu --verbose *.html
+index.html
+post.html
+$ echo $?
+0</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Use para</th><th>Quantos</th></tr>
+<tr><td><code>header</code></td><td>o topo do site, ou o começo de um artigo/seção</td><td>vários (um por site, um por artigo…)</td></tr>
+<tr><td><code>nav</code></td><td>os grupos <strong>principais</strong> de links</td><td>poucos (menu, índice)</td></tr>
+<tr><td><code>main</code></td><td>o conteúdo principal da página</td><td>exatamente um</td></tr>
+<tr><td><code>article</code></td><td>conteúdo que faz sentido sozinho (post, comentário)</td><td>vários</td></tr>
+<tr><td><code>section</code></td><td>uma parte com título dentro de algo maior</td><td>vários</td></tr>
+<tr><td><code>aside</code></td><td>conteúdo complementar (sobre a autora, links relacionados)</td><td>vários</td></tr>
+<tr><td><code>footer</code></td><td>o rodapé do site, ou informações sobre um artigo/seção</td><td>vários</td></tr>
+<tr><td><code>div</code></td><td>uma caixa sem significado, só para o CSS</td><td>quantos precisar</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Desafios extras</h2>
+<ol>
+  <li><strong>Pular para o conteúdo.</strong> Como primeiro item do <code>body</code>, um link <code>&lt;a href="#posts"&gt;Pular para os posts&lt;/a&gt;</code>: quem navega pelo teclado não precisa passar pelo menu toda vez (veja <a href="teclado.html">Teclado e Foco</a>).</li>
+  <li><strong>Página atual no menu.</strong> No <code>post.html</code>, nenhum link do menu é a página atual; no <code>index.html</code>, ponha <code>aria-current="page"</code> no link "Posts" (veja <a href="aria.html">ARIA</a>).</li>
+  <li><strong>Hora do comentário.</strong> Troque a data dos comentários por data e hora: <code>&lt;time datetime="2026-10-13T19:30"&gt;13/10, 19h30&lt;/time&gt;</code> (veja <a href="time.html">time</a>).</li>
+  <li><strong>Mais respostas.</strong> Faça a Ana responder ao Bruno com um <code>article</code> dentro do <code>article</code> do comentário dele.</li>
+  <li><strong>Uma terceira página.</strong> Crie <code>sobre.html</code> com o perfil completo da Ana e mude o link "Sobre" do menu para ela (o próximo projeto, o <a href="projeto-portfolio.html">Portfólio</a>, é todo sobre sites de várias páginas).</li>
+</ol>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">1. Trocar as <code>div</code> por <code>header</code>, <code>nav</code>, <code>main</code> e <code>footer</code> muda o quê na tela, sem CSS?</p>
+<label><input type="radio" name="q1"> O cabeçalho fica em negrito.</label>
+<label><input type="radio" name="q1"> O menu vira uma barra horizontal.</label>
+<label><input type="radio" name="q1"> Quase nada: a diferença é para leitores de tela, buscadores e outros programas.</label>
+<label><input type="radio" name="q1"> A página fica mais rápida.</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">2. Quantos <code>main</code> visíveis uma página pode ter?</p>
+<label><input type="radio" name="q2"> Um.</label>
+<label><input type="radio" name="q2"> Um por artigo.</label>
+<label><input type="radio" name="q2"> Quantos quiser.</label>
+<label><input type="radio" name="q2"> Nenhum: o <code>body</code> já é o principal.</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">3. Um comentário de leitor, embaixo do post, é marcado com…</p>
+<label><input type="radio" name="q3"> <code>aside</code>, porque é complementar.</label>
+<label><input type="radio" name="q3"> <code>footer</code>, porque fica no fim.</label>
+<label><input type="radio" name="q3"> <code>div</code>, porque não tem significado.</label>
+<label><input type="radio" name="q3"> <code>article</code>, porque faz sentido sozinho; dentro de uma <code>section</code> de comentários.</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Qual destes é um <code>datetime</code> válido para 5 de outubro de 2026?</p>
+<label><input type="radio" name="q4"> <code>05/10/2026</code></label>
+<label><input type="radio" name="q4"> <code>2026-10-05</code></label>
+<label><input type="radio" name="q4"> <code>5 de outubro de 2026</code></label>
+<label><input type="radio" name="q4"> <code>10-05-2026</code></label>
+</div>
+
+<div class="exercise">
+<p>5. Complete o elemento da coluna "Sobre a Ana", que fica fora do conteúdo principal:</p>
+<div class="ex-code">&lt;<input data-answer="aside" aria-label="elemento" size="6"> id="sobre"&gt; &lt;h2&gt;Sobre a Ana&lt;/h2&gt; … &lt;/aside&gt;</div>
+</div>
+
+<div class="exercise">
+<p>6. Complete o elemento do menu principal:</p>
+<div class="ex-code">&lt;<input data-answer="nav" aria-label="elemento" size="4">&gt; &lt;ul&gt; &lt;li&gt;&lt;a href="#posts"&gt;Posts&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/nav&gt;</div>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Os elementos semânticos dizem o que cada parte <strong>é</strong>; a tela quase não muda, mas o leitor de tela ganha regiões para pular.</li>
+  <li><code>header</code>, <code>nav</code>, <code>main</code> (um só), <code>aside</code> e <code>footer</code> montam o esqueleto do site.</li>
+  <li><code>article</code> para o que faz sentido sozinho (post, comentário); <code>section</code> para partes com título; <code>div</code> para caixas sem significado.</li>
+  <li><code>header</code> e <code>footer</code> também existem dentro de um artigo.</li>
+  <li><code>time datetime="2026-10-12"</code>: a data para os programas, no formato ano-mês-dia.</li>
+  <li>Em cada página, o <code>h1</code> é o assunto daquela página.</li>
+</ul>
+<p>Próximo projeto: <a href="projeto-portfolio.html">Portfólio (várias páginas)</a>.</p>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
