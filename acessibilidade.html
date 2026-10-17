@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Acessibilidade — páginas que todo mundo consegue usar | Guia HTML</title>
+<meta name="description" content="Acessibilidade na web para quem nunca fez um site: quem precisa dela, como um leitor de tela enxerga a página (a árvore de acessibilidade real do Chrome, antes e depois), o checklist do HTML acessível (lang, títulos, alt, links, label, button), o que o validador W3C pega e o que ele não pega, como testar com o teclado e o zoom, as WCAG e a Lei Brasileira de Inclusão.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Acessibilidade</span></h1>
+
+<p class="intro">Uma página <strong>acessível</strong> é uma página que todo mundo consegue usar: quem não enxerga e ouve a página por um programa, quem não usa mouse, quem precisa das letras grandes, quem não ouve o vídeo, quem se confunde com páginas bagunçadas. A boa notícia: a maior parte da acessibilidade vem de graça quando você usa o HTML <strong>certo</strong>. Esta aula abre o Nível 3 mostrando como um leitor de tela "vê" uma página, o checklist do HTML acessível e por que o validador, sozinho, não basta.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Quem precisa de acessibilidade (spoiler: todo mundo, em algum momento).</li>
+  <li>O que é a <strong>árvore de acessibilidade</strong>, a versão da página que o leitor de tela recebe, com um antes e depois real.</li>
+  <li>O checklist do HTML acessível: <code>lang</code>, títulos, <code>alt</code>, texto dos links, <code>label</code>, <code>button</code>, tabelas e mídia.</li>
+  <li>O que o validador W3C pega, e a lista do que ele <strong>não</strong> pega.</li>
+  <li>Como testar sozinho: o teclado, o zoom e um leitor de tela.</li>
+  <li>As regras: as WCAG e a Lei Brasileira de Inclusão.</li>
+</ul>
+</div>
+
+<p>As páginas desta aula estão na pasta <code>~/site/ax</code> da máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>) e foram conferidas com o validador W3C (<code>vnu</code>). As árvores de acessibilidade foram tiradas do Chrome.</p>
+
+<hr>
+
+<h2>A ideia: a rampa na calçada</h2>
+<p>A rampa na esquina da calçada foi feita para quem usa cadeira de rodas. Mas repare em quem mais passa por ela: a mãe com carrinho de bebê, o entregador com o carrinho de caixas, a turista com a mala de rodinhas, o senhor de bengala. Uma coisa feita para um grupo acaba ajudando todo mundo.</p>
+
+<p>Na web é igual. A legenda feita para pessoas surdas ajuda quem assiste no ônibus sem fone. O <code>alt</code> feito para pessoas cegas aparece quando a internet está lenta e a imagem não carrega, e é lido pelo Google. O título bem organizado, feito para leitores de tela, ajuda todo mundo a achar a parte que interessa.</p>
+
+<h3>Quem precisa</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>Sempre</th><th>Por um tempo</th><th>Numa situação</th></tr>
+<tr><td>Ver</td><td>Pessoa cega ou com baixa visão</td><td>Olho operado, óculos quebrado</td><td>Sol batendo na tela</td></tr>
+<tr><td>Ouvir</td><td>Pessoa surda</td><td>Infecção no ouvido</td><td>Lugar barulhento, sem fone</td></tr>
+<tr><td>Mexer as mãos</td><td>Tremor, paralisia, sem um braço</td><td>Braço quebrado</td><td>Segurando um bebê no colo</td></tr>
+<tr><td>Entender</td><td>Dislexia, deficiência intelectual</td><td>Cansaço, remédio forte</td><td>Página numa língua que você mal conhece</td></tr>
+</table>
+</div>
+
+<p>No Brasil, segundo o IBGE (2022), cerca de 18 milhões de pessoas têm alguma deficiência. Some a isso os idosos, que enxergam e ouvem menos a cada ano, e todas as situações da última coluna.</p>
+
+<h3>Como essas pessoas usam a web</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tecnologia</th><th>Quem usa</th><th>O que ela precisa do seu HTML</th></tr>
+<tr><td><strong>Leitor de tela</strong> (NVDA, VoiceOver, TalkBack, Orca)</td><td>Pessoas cegas</td><td>Títulos, <code>alt</code>, links e botões com nome, <code>lang</code> certo (aula <a href="leitores-tela.html">Leitores de Tela</a>)</td></tr>
+<tr><td>Teclado, sem mouse</td><td>Quem não consegue usar o mouse, e quem digita rápido</td><td>Tudo o que se clica tem de ser alcançável com <kbd>Tab</kbd> (aula <a href="teclado.html">Teclado e Foco</a>)</td></tr>
+<tr><td>Zoom e ampliador de tela</td><td>Pessoas com baixa visão, idosos</td><td>Página que não quebra com 200% de zoom, e que não bloqueia o zoom</td></tr>
+<tr><td>Legendas e transcrição</td><td>Pessoas surdas</td><td><code>&lt;track&gt;</code> e texto (aulas <a href="legendas.html">Legendas</a> e <a href="audio.html">Áudio</a>)</td></tr>
+<tr><td>Controle por voz</td><td>Quem não usa as mãos</td><td>Botões e links com o texto que aparece na tela ("clique em Fazer pedido")</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. Como o leitor de tela "vê" a sua página</h2>
+<p>O leitor de tela não olha para a tela. Ele recebe do navegador uma versão da página feita só de <strong>significados</strong>: "aqui tem um título de nível 1 chamado Doces da Ana; aqui um link chamado Veja o cardápio; aqui um botão chamado Fazer pedido". Essa versão se chama <strong>árvore de acessibilidade</strong>, e o navegador a monta a partir do seu HTML. Cores, tamanhos e posições não entram nela.</p>
+
+<p>Veja duas versões da página da Ana. Na tela, as duas parecem quase iguais. Esta é a versão com problemas:</p>
+
+<pre class="file" data-file="ruim.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="titulo"&gt;Doces da Ana&lt;/div&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300"&gt;
+&lt;p&gt;Para ver o cardápio, &lt;a href="cardapio.html"&gt;clique aqui&lt;/a&gt;.&lt;/p&gt;
+&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha.svg" width="200" height="80" alt=""&gt;&lt;/a&gt;
+&lt;input type="text" name="nome" placeholder="Seu nome"&gt;
+&lt;div onclick="alert('Pedido feito!')"&gt;Fazer pedido&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>E esta é a árvore de acessibilidade que o Chrome montou para ela (cada linha é o <strong>papel</strong> da coisa e, entre aspas, o <strong>nome</strong> que o leitor de tela fala):</p>
+
+<pre class="file" data-file="árvore de acessibilidade: ruim.html (Chrome)">RootWebArea "Doces da Ana"
+  StaticText "Doces da Ana"
+  StaticText "Para ver o cardápio, "
+  link "clique aqui"
+  StaticText "."
+  link ""
+  textbox "Seu nome"
+  StaticText "Fazer pedido"
+</pre>
+
+<dl class="anatomy">
+  <dt>RootWebArea "Doces da Ana"</dt><dd>A página, com o nome que veio do <code>&lt;title&gt;</code>. Este está certo.</dd>
+  <dt>StaticText "Doces da Ana"</dt><dd>O título da página virou só "texto parado": um <code>&lt;div&gt;</code> com letra grande <strong>parece</strong> título, mas não é. Quem navega pulando de título em título (o jeito mais comum de usar um leitor de tela) não o encontra.</dd>
+  <dt>(a imagem sumiu)</dt><dd>A foto do bolo, sem <code>alt</code>, nem aparece na árvore. Para quem não vê, o bolo não existe. Alguns leitores de tela leem o nome do arquivo no lugar: "bolo traço 400 ponto jpg".</dd>
+  <dt>link "clique aqui"</dt><dd>Quem pede ao leitor de tela a lista de links da página ouve "clique aqui", sem saber para onde vai.</dd>
+  <dt>link ""</dt><dd>Um link <strong>sem nome</strong>: a imagem dentro dele tem <code>alt=""</code>, que quer dizer "imagem decorativa, ignore". O leitor de tela diz só "link", ou lê o endereço.</dd>
+  <dt>textbox "Seu nome"</dt><dd>O campo ganhou nome pelo <code>placeholder</code>, porque o Chrome o usa quando falta <code>&lt;label&gt;</code>. Funciona, mas é frágil: o texto some da tela quando a pessoa começa a digitar, e nem todo leitor de tela o usa. O certo é o <code>&lt;label&gt;</code>.</dd>
+  <dt>StaticText "Fazer pedido"</dt><dd>O "botão" virou texto parado. Um <code>&lt;div onclick&gt;</code> responde ao clique do mouse, mas não é anunciado como botão, não recebe o foco do <kbd>Tab</kbd> e não funciona com a tecla <kbd>Enter</kbd>.</dd>
+</dl>
+
+<p>Agora a versão consertada. Repare: nenhum CSS, nenhum truque, só os elementos certos:</p>
+
+<pre class="file" data-file="bom.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300" alt="Bolo de cenoura com cobertura de chocolate, enfeitado com cenourinhas"&gt;
+&lt;p&gt;&lt;a href="cardapio.html"&gt;Veja o cardápio&lt;/a&gt;.&lt;/p&gt;
+&lt;label for="nome"&gt;Seu nome&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;
+&lt;button type="button" onclick="alert('Pedido feito!')"&gt;Fazer pedido&lt;/button&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="file" data-file="árvore de acessibilidade: bom.html (Chrome)">RootWebArea "Doces da Ana"
+  heading "Doces da Ana" nível 1
+  image "Bolo de cenoura com cobertura de chocolate, enfeitado com cenourinhas"
+  link "Veja o cardápio"
+  StaticText "."
+  StaticText "Seu nome"
+  textbox "Seu nome"
+  button "Fazer pedido"
+</pre>
+
+<p>Cada coisa agora tem o <strong>papel</strong> certo (<code>heading</code> = título, <code>image</code>, <code>link</code>, <code>button</code>) e um <strong>nome</strong> que faz sentido. É isso que o leitor de tela fala. Você pode ver essa árvore no seu navegador: no <a href="ferramentas-dev.html">F12</a> do Chrome, selecione um elemento e procure o painel de acessibilidade. E o validador? Na versão com problemas, ele achou só <strong>dois</strong> dos sete:</p>
+
+<pre class="term" data-cwd="~/site/ax">$ vnu ruim.html
+"file:/home/ana/site/ax/ruim.html":9.1-9.62: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+"file:/home/ana/site/ax/ruim.html":1.16-2.6: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.
+$ vnu --verbose bom.html
+bom.html</pre>
+
+<p>O <code>div</code> no lugar do título, o "clique aqui", o link sem nome, o campo sem <code>label</code> e o <code>div</code> que finge ser botão passaram sem nenhuma mensagem. A seção 3 tem a lista completa.</p>
+
+<hr>
+
+<h2>2. O checklist do HTML acessível</h2>
+<p>Cada item tem a sua aula; aqui eles aparecem juntos, como a lista de conferência antes de publicar.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>#</th><th>Item</th><th>Por quê</th><th>Aula</th></tr>
+<tr><td>1</td><td><code>&lt;html lang="pt-BR"&gt;</code></td><td>O leitor de tela escolhe a voz e a pronúncia pela língua. Sem ele, um leitor configurado em inglês lê o português com sotaque americano, quase incompreensível.</td><td><a href="estrutura.html">Estrutura</a></td></tr>
+<tr><td>2</td><td>Um <code>&lt;title&gt;</code> que diz o que é a página</td><td>É a primeira coisa que o leitor de tela fala, e é o nome da aba.</td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td>3</td><td>Um <code>&lt;h1&gt;</code> e títulos em ordem (<code>h2</code>, <code>h3</code>…), sem pular nível</td><td>Os títulos são o "índice" da página: o leitor de tela pula de um para o outro.</td><td><a href="titulos.html">Títulos</a></td></tr>
+<tr><td>4</td><td><code>alt</code> em toda imagem (vazio se for decoração)</td><td>É a imagem para quem não vê.</td><td><a href="imagens-alt.html">Texto Alternativo</a></td></tr>
+<tr><td>5</td><td>Texto de link que faz sentido sozinho</td><td>"Veja o cardápio", e nunca "clique aqui" ou "saiba mais".</td><td><a href="links.html">Links</a></td></tr>
+<tr><td>6</td><td><code>&lt;label&gt;</code> em todo campo</td><td>Dá nome ao campo; clicar no texto também foca o campo.</td><td><a href="label.html">label</a>, <a href="formularios-acessiveis.html">Formulários Acessíveis</a></td></tr>
+<tr><td>7</td><td><code>&lt;button&gt;</code> para ações e <code>&lt;a&gt;</code> para ir a outro lugar</td><td>Vêm prontos para teclado e leitor de tela. <code>&lt;div onclick&gt;</code> não.</td><td><a href="botoes.html">Botões</a></td></tr>
+<tr><td>8</td><td>Elementos de significado: <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code></td><td>Viram "regiões" que o leitor de tela lista e para as quais pula direto.</td><td><a href="semantica.html">HTML Semântico</a></td></tr>
+<tr><td>9</td><td>Tabelas com <code>&lt;th&gt;</code>, <code>scope</code> e <code>&lt;caption&gt;</code>; tabela só para dados</td><td>O leitor de tela lê o cabeçalho junto de cada célula.</td><td><a href="tabelas-legenda.html">caption e scope</a></td></tr>
+<tr><td>10</td><td>Legenda nos vídeos, texto nos áudios, sem som automático</td><td>Para quem não ouve, e para não atrapalhar o leitor de tela.</td><td><a href="legendas.html">Legendas</a></td></tr>
+<tr><td>11</td><td>A cor nunca é a única pista</td><td>"Os campos em vermelho são obrigatórios" não serve para quem não distingue cores. Escreva "(obrigatório)".</td><td><a href="validacao.html">Validação</a></td></tr>
+<tr><td>12</td><td>Não bloquear o zoom</td><td>Quem enxerga pouco precisa aumentar a página.</td><td><a href="meta-viewport.html">meta viewport</a></td></tr>
+</table>
+</div>
+
+<p>Repare que quase nenhum item pede algo <strong>a mais</strong>: pede o elemento certo no lugar do errado. Por isso se diz que "HTML semântico é metade da acessibilidade". A outra metade (contraste das cores, tamanho das letras, foco visível) é com o CSS e com o design.</p>
+
+<div class="tryhtml" data-goal="attr:html[lang]=pt-BR,sel:img[alt],nsel:img[alt='']=0">
+<p class="try-task"><strong>Missão:</strong> esta página tem os dois problemas que o validador pega. Diga a língua da página no <code>&lt;html&gt;</code> e escreva um <code>alt</code> que descreva a foto do bolo (olhe o resultado para ver o que ela mostra).</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300"&gt;
+&lt;p&gt;O bolo mais pedido da lojinha.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300" alt="Bolo de cenoura com cobertura de chocolate, enfeitado com cenourinhas"&gt;
+&lt;p&gt;O bolo mais pedido da lojinha.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. O validador ajuda, mas não basta</h2>
+<p>O validador confere as <strong>regras</strong> do HTML, e algumas delas existem por causa da acessibilidade. Ele não entende o <strong>sentido</strong>: não sabe se o <code>alt</code> descreve a foto, nem se aquele <code>&lt;div&gt;</code> deveria ser um botão. Todas as páginas abaixo foram passadas no validador:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Problema</th><th>O validador diz</th></tr>
+<tr><td>Imagem sem <code>alt</code></td><td><code>error</code>: <em>An “img” element must have an “alt” attribute</em></td></tr>
+<tr><td>Títulos pulando nível (<code>h1</code> e depois <code>h4</code>)</td><td><code>error</code>: <em>…skipping 2 heading levels</em></td></tr>
+<tr><td><code>lang</code> com valor inválido (<code>lang="portugues"</code>)</td><td><code>error</code>: <em>Bad value “portugues” for attribute “lang”</em></td></tr>
+<tr><td><code>&lt;html&gt;</code> sem <code>lang</code></td><td><code>info warning</code>: <em>Consider adding a “lang” attribute…</em></td></tr>
+<tr><td>Página sem <code>h1</code></td><td><code>info warning</code>: <em>…none of them has a computed heading level of 1</em></td></tr>
+<tr><td>Título vazio (<code>&lt;h2&gt;&lt;/h2&gt;</code>)</td><td><code>info warning</code>: <em>Empty heading.</em></td></tr>
+<tr><td>Zoom bloqueado (<code>user-scalable=no</code>)</td><td><code>info warning</code>: <em>Consider avoiding viewport values that prevent users from resizing documents.</em></td></tr>
+<tr><td>Campo sem <code>label</code></td><td>nada</td></tr>
+<tr><td>"Clique aqui"</td><td>nada</td></tr>
+<tr><td>Link só com imagem de <code>alt=""</code> (link sem nome)</td><td>nada</td></tr>
+<tr><td><code>&lt;div onclick&gt;</code> no lugar de botão</td><td>nada</td></tr>
+<tr><td><code>&lt;button&gt;&lt;/button&gt;</code> vazio, sem nome</td><td>nada</td></tr>
+<tr><td><code>tabindex="5"</code> (bagunça a ordem do <kbd>Tab</kbd>)</td><td>nada</td></tr>
+<tr><td>Tabela de dados sem <code>&lt;th&gt;</code></td><td>nada</td></tr>
+<tr><td><code>alt</code> que não descreve nada (<code>alt="imagem"</code>)</td><td>nada</td></tr>
+</table>
+</div>
+
+<p>Algumas das mensagens reais. Os arquivos <code>x-…</code> usam o esqueleto de sempre, com o conteúdo a partir da linha 8 (no <code>x-zoom.html</code>, o <code>&lt;meta name="viewport"&gt;</code> está na linha 5 do <code>&lt;head&gt;</code>):</p>
+
+<pre class="term" data-cwd="~/site">$ vnu x-pulo.html
+"file:/home/ana/site/x-pulo.html":9.1-9.4: error: The heading “h4” (with computed level 4) follows the heading “h1” (with computed level 1), skipping 2 heading levels.
+$ vnu x-langruim.html
+"file:/home/ana/site/x-langruim.html":1.16-2.23: error: Bad value “portugues” for attribute “lang” on element “html”: Subtags must not exceed 8 characters in length.
+$ vnu x-vazio.html
+"file:/home/ana/site/x-vazio.html":9.1-9.4: info warning: Empty heading.
+$ vnu x-zoom.html
+"file:/home/ana/site/x-zoom.html":5.1-5.103: info warning: Consider avoiding viewport values that prevent users from resizing documents.</pre>
+
+<dl class="anatomy">
+  <dt>The heading “h4” … follows the heading “h1” …, skipping 2 heading levels</dt><dd>"O título <code>h4</code> vem depois do <code>h1</code>, pulando 2 níveis" (o <code>h2</code> e o <code>h3</code>). Para quem navega pelos títulos, é como um índice que pula do capítulo 1 para o item 1.1.1. Se você queria uma letra menor, isso é CSS; o nível do título é a <strong>posição</strong> no índice.</dd>
+  <dt>Subtags must not exceed 8 characters in length</dt><dd>"As partes do código de língua não podem passar de 8 letras". O <code>lang</code> usa códigos padronizados: <code>pt-BR</code>, <code>pt</code>, <code>en</code>, <code>es</code>. "portugues" não é um deles.</dd>
+  <dt>Empty heading</dt><dd>"Título vazio": o leitor de tela anuncia um título sem nada.</dd>
+  <dt>Consider avoiding viewport values that prevent users from resizing documents</dt><dd>"Evite valores do viewport que impeçam o usuário de redimensionar". O <code>user-scalable=no</code> e o <code>maximum-scale=1</code> travam o zoom com os dedos no celular (aula <a href="meta-viewport.html">meta viewport</a>).</dd>
+</dl>
+
+<div class="tryhtml" data-goal="nsrc:clique aqui,texto:a=cardápio">
+<p class="try-task"><strong>Missão:</strong> o validador aceita esta página, mas o link não diz para onde vai. Reescreva a frase para o próprio link dizer o destino (por exemplo, "Veja o cardápio de hoje"), sem "clique aqui".</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;p&gt;Para ver o cardápio, &lt;a href="cardapio.html"&gt;clique aqui&lt;/a&gt;.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="cardapio.html"&gt;Veja o cardápio de hoje&lt;/a&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Teste você mesmo</h2>
+<p>Não precisa de ferramenta cara. Três testes de cinco minutos pegam a maior parte dos problemas:</p>
+
+<ol class="passo">
+  <li><strong>Só o teclado.</strong> Guarde o mouse. Aperte <kbd>Tab</kbd> várias vezes (e <kbd>Shift</kbd>+<kbd>Tab</kbd> para voltar). Você consegue chegar a todos os links, botões e campos? Dá para ver <strong>onde</strong> está o foco? O <kbd>Enter</kbd> aciona os links e botões? Um <code>&lt;div onclick&gt;</code> é pulado pelo <kbd>Tab</kbd>. (Mais em <a href="teclado.html">Teclado e Foco</a>.)</li>
+  <li><strong>Zoom de 200%.</strong> Aperte <kbd>Ctrl</kbd>+<kbd>+</kbd> (no Mac, <kbd>Cmd</kbd>+<kbd>+</kbd>) até 200%. O texto continua legível, sem ficar cortado nem uma letra por cima da outra?</li>
+  <li><strong>Um leitor de tela.</strong> Já vem no seu sistema ou é gratuito: <strong>NVDA</strong> no Windows, <strong>VoiceOver</strong> no Mac e no iPhone, <strong>TalkBack</strong> no Android e <strong>Orca</strong> no Linux. Feche os olhos e tente achar o telefone da lojinha. (Mais em <a href="leitores-tela.html">Leitores de Tela</a>.)</li>
+</ol>
+
+<p>E duas ferramentas automáticas, que conferem dezenas de regras de uma vez: o <strong>Lighthouse</strong>, que já vem no F12 do Chrome (aba "Lighthouse", categoria de acessibilidade), e extensões como o <strong>WAVE</strong> e o <strong>axe</strong>. Elas pegam mais coisas que o validador (link sem nome, campo sem rótulo, contraste fraco), mas também não entendem o sentido. Ferramenta automática encontra uma parte dos problemas; o resto, só testando com pessoas e com o teclado.</p>
+
+<div class="tryhtml" data-goal="sel:button,nsel:div[onclick]=0">
+<p class="try-task"><strong>Missão:</strong> clique em "Fazer pedido" no resultado: funciona com o mouse. Agora clique no resultado e aperte <kbd>Tab</kbd>: o foco nunca chega nele. Troque o <code>&lt;div&gt;</code> por um <code>&lt;button type="button"&gt;</code>, com o mesmo <code>onclick</code>, e teste o <kbd>Tab</kbd> e o <kbd>Enter</kbd> de novo.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="#"&gt;Cardápio&lt;/a&gt;&lt;/p&gt;
+&lt;div onclick="alert('Pedido feito!')"&gt;Fazer pedido&lt;/div&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="#"&gt;Cardápio&lt;/a&gt;&lt;/p&gt;
+&lt;button type="button" onclick="alert('Pedido feito!')"&gt;Fazer pedido&lt;/button&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. As regras: WCAG e a lei</h2>
+
+<h3>As WCAG</h3>
+<p>As <strong>WCAG</strong> (<em>Web Content Accessibility Guidelines</em>, "Diretrizes de Acessibilidade para Conteúdo Web") são as regras internacionais de acessibilidade, publicadas pelo W3C, o mesmo grupo do validador. A versão atual é a 2.2, de 2023. Elas se organizam em quatro princípios. O conteúdo precisa ser:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Princípio</th><th>Quer dizer</th><th>Exemplo no HTML</th></tr>
+<tr><td><strong>Perceptível</strong></td><td>Todo mundo consegue perceber o conteúdo, por algum sentido</td><td><code>alt</code>, legendas, transcrição</td></tr>
+<tr><td><strong>Operável</strong></td><td>Todo mundo consegue usar os controles</td><td>Botões e links de verdade, que funcionam pelo teclado; poder pausar o que se mexe</td></tr>
+<tr><td><strong>Compreensível</strong></td><td>O conteúdo e o funcionamento são claros</td><td><code>lang</code>, <code>label</code>, mensagens de erro claras</td></tr>
+<tr><td><strong>Robusto</strong></td><td>Funciona com navegadores e tecnologias assistivas, de hoje e de amanhã</td><td>HTML válido e elementos usados pelo significado</td></tr>
+</table>
+</div>
+
+<p>Cada regra tem um nível: <strong>A</strong> (o mínimo), <strong>AA</strong> (o nível que leis e empresas costumam exigir) e <strong>AAA</strong> (o mais alto). Os limites que você viu em outras aulas vêm daqui: o som que toca sozinho por mais de 3 segundos precisa de um jeito de parar (<a href="audio.html">Áudio</a>) e o movimento que dura mais de 5 segundos precisa de pausa (<a href="video.html">Vídeo</a>).</p>
+
+<h3>A lei no Brasil</h3>
+<p>A <strong>Lei Brasileira de Inclusão</strong> (Lei 13.146, de 2015), no artigo 63, diz que é obrigatória a acessibilidade nos sites mantidos por empresas com sede ou representação no país e por órgãos de governo, seguindo as boas práticas internacionais, ou seja, as WCAG. Para os sites do governo, existe ainda o <strong>eMAG</strong> (Modelo de Acessibilidade em Governo Eletrônico). Na prática: um site de loja, mesmo pequeno como o da Ana, também deve ser acessível.</p>
+
+<hr>
+
+<h2>Formas diferentes: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th><th>Evite</th></tr>
+<tr><td>Um título</td><td><code>&lt;h1&gt;</code>…<code>&lt;h6&gt;</code>, em ordem</td><td><code>&lt;div class="titulo"&gt;</code>, <code>&lt;b&gt;</code> com letra grande</td></tr>
+<tr><td>Uma ação ("Fazer pedido", "Abrir menu")</td><td><code>&lt;button type="button"&gt;</code></td><td><code>&lt;div onclick&gt;</code>, <code>&lt;a href="#"&gt;</code></td></tr>
+<tr><td>Ir para outro lugar</td><td><code>&lt;a href&gt;</code> com texto que diz o destino</td><td>"clique aqui", <code>&lt;button onclick="location=…"&gt;</code></td></tr>
+<tr><td>Nome de um campo</td><td><code>&lt;label for&gt;</code></td><td>Só <code>placeholder</code></td></tr>
+<tr><td>Uma imagem que é um link</td><td><code>alt</code> que diz o destino: <code>alt="Cardápio"</code></td><td><code>alt=""</code> dentro do link</td></tr>
+<tr><td>Dar significado que o HTML não tem</td><td>ARIA, com cuidado (próxima aula: <a href="aria.html">ARIA</a>)</td><td>ARIA no lugar de um elemento que já existe</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>"Passou no validador, então está acessível"</strong>
+<p>A página <code>ruim.html</code> da seção 1 teve dois avisos no validador e cinco problemas que ele não viu. <strong>Como consertar:</strong> use o validador como o primeiro passo, e depois o checklist da seção 2 e os testes da seção 4.</p>
+</div>
+
+<div class="cenario">
+<strong>Títulos escolhidos pelo tamanho da letra</strong>
+<pre class="file" data-file="x-pulo.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;h4&gt;Bolos&lt;/h4&gt;
+&lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+</pre>
+<p>A Ana achou o <code>&lt;h2&gt;</code> grande demais e usou o <code>&lt;h4&gt;</code>. O validador acusa o pulo (<code>skipping 2 heading levels</code>, na seção 3). <strong>Como consertar:</strong> o nível segue a <strong>estrutura</strong> (o primeiro subtítulo é <code>h2</code>); o tamanho se muda com CSS.</p>
+</div>
+
+<div class="cenario">
+<strong>Link ou botão com imagem e <code>alt=""</code></strong>
+<p>Um logo, ou um ícone de lupa ou de carrinho, sozinho dentro de um link, com <code>alt=""</code>, deixa o link sem nome (<code>link ""</code> na árvore da seção 1). O validador não reclama: para ele, <code>alt=""</code> é válido. <strong>Como consertar:</strong> quando a imagem é a única coisa dentro do link, o <code>alt</code> diz o <strong>destino</strong>: <code>&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha.svg" width="200" height="80" alt="Lojinha da Ana: página inicial"&gt;&lt;/a&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Língua errada</strong>
+<p>Uma página copiada de um modelo em inglês costuma vir com <code>&lt;html lang="en"&gt;</code>. O validador não reclama (é um código válido), mas o leitor de tela lê o português com a pronúncia do inglês. <strong>Como consertar:</strong> <code>lang="pt-BR"</code>. Um trecho em outra língua dentro da página ganha o seu próprio <code>lang</code>: <code>&lt;span lang="en"&gt;cupcake&lt;/span&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Termo</th><th>O que é</th></tr>
+<tr><td>Acessibilidade</td><td>Página que todo mundo consegue perceber, usar e entender</td></tr>
+<tr><td>Tecnologia assistiva</td><td>Programas e aparelhos que ajudam a usar o computador: leitor de tela, ampliador, controle por voz</td></tr>
+<tr><td>Leitor de tela</td><td>Programa que lê a página em voz alta (ou em braille): NVDA, VoiceOver, TalkBack, Orca</td></tr>
+<tr><td>Árvore de acessibilidade</td><td>A versão da página que o navegador entrega ao leitor de tela: papel + nome de cada coisa</td></tr>
+<tr><td>Papel (<em>role</em>)</td><td>O que a coisa é: título, link, botão, imagem, campo</td></tr>
+<tr><td>Nome acessível</td><td>O que o leitor de tela fala: o texto do link, o <code>alt</code>, o <code>label</code>…</td></tr>
+<tr><td>WCAG 2.2</td><td>As regras internacionais (níveis A, AA, AAA)</td></tr>
+<tr><td>LBI, art. 63</td><td>A lei brasileira que obriga sites de empresas e do governo a serem acessíveis</td></tr>
+<tr><td>eMAG</td><td>O modelo de acessibilidade dos sites do governo brasileiro</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A língua da página</h3>
+<p>Complete a primeira tag de uma página em português do Brasil:</p>
+<div class="ex-code">&lt;html lang="<input data-answer="pt-BR" aria-label="língua">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O botão de verdade</h3>
+<p>Complete o elemento certo para uma ação:</p>
+<div class="ex-code">&lt;<input data-answer="button" aria-label="elemento"> type="button" onclick="pedir()"&gt;Fazer pedido&lt;/button&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. O nome do campo</h3>
+<p>Complete o elemento que dá nome ao campo:</p>
+<div class="ex-code">&lt;<input data-answer="label" aria-label="elemento"> for="nome"&gt;Seu nome&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Qual destes problemas o validador W3C <strong>pega</strong>?</p>
+<label><input type="radio" name="q4"> Um link "clique aqui"</label>
+<label><input type="radio" name="q4"> Um <code>h4</code> logo depois do <code>h1</code></label>
+<label><input type="radio" name="q4"> Um campo sem <code>label</code></label>
+<label><input type="radio" name="q4"> Um <code>&lt;div onclick&gt;</code> no lugar de um botão</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Na árvore de acessibilidade, o que aparece para <code>&lt;a href="index.html"&gt;&lt;img src="logo.svg" alt=""&gt;&lt;/a&gt;</code>?</p>
+<label><input type="radio" name="q5"> <code>link "logo.svg"</code></label>
+<label><input type="radio" name="q5"> <code>image "logo"</code></label>
+<label><input type="radio" name="q5"> <code>link ""</code>: um link sem nome</label>
+<label><input type="radio" name="q5"> Nada, o link some</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Para quem as legendas de um vídeo são úteis?</p>
+<label><input type="radio" name="q6"> Para pessoas surdas, e também para quem assiste sem som, num lugar barulhento ou em outra língua</label>
+<label><input type="radio" name="q6"> Só para pessoas surdas</label>
+<label><input type="radio" name="q6"> Só para o Google</label>
+<label><input type="radio" name="q6"> Para ninguém: o vídeo já tem som</label>
+</div>
+
+<h3>Missão final: a página consertada</h3>
+
+<div class="tryhtml" data-goal="attr:html[lang]=pt-BR,texto:h1=Doces da Ana,nsel:div.titulo=0,sel:img[alt],nsel:img[alt='']=0,attr:label[for]=nome,attr:input[id]=nome,sel:button,nsel:div[onclick]=0,nsrc:clique aqui">
+<p class="try-task"><strong>Missão:</strong> esta é a <code>ruim.html</code> da seção 1, sem o link do logo. Conserte os seis problemas: a língua no <code>&lt;html&gt;</code>; o título "Doces da Ana" num <code>&lt;h1&gt;</code>; o <code>alt</code> da foto; um link que diz o destino, sem "clique aqui"; um <code>&lt;label for="nome"&gt;</code> ligado ao campo (que ganha <code>id="nome"</code>); e um <code>&lt;button type="button"&gt;</code> no lugar do <code>&lt;div onclick&gt;</code>. Depois teste com o <kbd>Tab</kbd>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="titulo"&gt;Doces da Ana&lt;/div&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300"&gt;
+&lt;p&gt;Para ver o cardápio, &lt;a href="cardapio.html"&gt;clique aqui&lt;/a&gt;.&lt;/p&gt;
+&lt;input type="text" name="nome" placeholder="Seu nome"&gt;
+&lt;div onclick="alert('Pedido feito!')"&gt;Fazer pedido&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-400.jpg" width="400" height="300" alt="Bolo de cenoura com cobertura de chocolate, enfeitado com cenourinhas"&gt;
+&lt;p&gt;&lt;a href="cardapio.html"&gt;Veja o cardápio&lt;/a&gt;.&lt;/p&gt;
+&lt;label for="nome"&gt;Seu nome&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;
+&lt;button type="button" onclick="alert('Pedido feito!')"&gt;Fazer pedido&lt;/button&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Acessibilidade é a página que todo mundo consegue usar: quem não vê, não ouve, não usa mouse, precisa de zoom, ou está numa situação difícil. Como a rampa na calçada, ela ajuda todo mundo.</li>
+  <li>O leitor de tela recebe a <strong>árvore de acessibilidade</strong>: o papel e o nome de cada coisa. Ela vem do seu HTML: <code>&lt;div&gt;</code> com cara de título vira texto parado; <code>&lt;h1&gt;</code> vira título.</li>
+  <li>O checklist: <code>lang</code>, <code>title</code>, títulos em ordem, <code>alt</code>, links que dizem o destino, <code>label</code>, <code>button</code>, tabelas com <code>th</code>, legendas, cor nunca sozinha, zoom liberado.</li>
+  <li>O validador pega alguns problemas (<code>alt</code>, pulo de títulos, <code>lang</code>, zoom bloqueado), mas não pega campo sem <code>label</code>, "clique aqui", link sem nome nem <code>&lt;div onclick&gt;</code>.</li>
+  <li>Teste com o teclado (<kbd>Tab</kbd>), com zoom de 200% e com um leitor de tela; use o Lighthouse do F12.</li>
+  <li>As regras são as WCAG 2.2 (A, AA, AAA); no Brasil, a Lei Brasileira de Inclusão (art. 63) obriga sites de empresas e do governo a serem acessíveis.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
