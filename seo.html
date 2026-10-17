@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML e SEO — title, description e o que o buscador lê | Guia HTML</title>
+<meta name="description" content="SEO em HTML para quem nunca fez um site: como o Google e outros buscadores leem a página, o title e a meta description que aparecem no resultado, títulos, links, alt e lang, link canonical e meta robots noindex, o que o robô vê com curl e o que o JavaScript esconde dele, com as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML e <span class="hl">SEO</span></h1>
+
+<p class="intro">A Ana publicou o site de receitas. Agora ela quer que, quando alguém procurar "bolo de cenoura fofinho" no Google, a receita dela apareça na lista. Fazer o site ser bem encontrado pelos buscadores se chama <strong>SEO</strong> (<em>Search Engine Optimization</em>, "otimização para mecanismos de busca"). Boa parte do SEO não tem nada de mágico: é HTML bem escrito. Nesta aula você vai ver o que o buscador lê na sua página, quais elementos aparecem no resultado da busca e quais erros o fazem entender a página errado.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como um buscador encontra e lê uma página (o robô, o índice, o resultado).</li>
+  <li>O <code>&lt;title&gt;</code> e a <code>&lt;meta name="description"&gt;</code>: o que aparece na lista do Google.</li>
+  <li>Por que o <code>&lt;h1&gt;</code>, os títulos, o texto dos links, o <code>alt</code> e o <code>lang</code> também contam.</li>
+  <li>O <code>&lt;link rel="canonical"&gt;</code> e a <code>&lt;meta name="robots" content="noindex"&gt;</code>.</li>
+  <li>O que o robô recebe de verdade, visto com <code>curl</code>, e o problema do texto que só o JavaScript escreve.</li>
+  <li>Os mitos (a <code>meta keywords</code>) e os erros reais do validador W3C.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, versão 26.10.12) e servidos com <code>python3 -m http.server</code> na máquina fictícia da Ana, na pasta <code>~/site</code>. O endereço do site da Ana nos exemplos é fictício: <code>https://ana.exemplo.com/</code>.</p>
+
+<hr>
+
+<h2>A ideia: o bibliotecário que nunca dorme</h2>
+<p>Imagine um bibliotecário que visita todas as bibliotecas do mundo, lê cada livro, anota numa ficha <strong>do que ele trata</strong> e guarda a ficha num fichário gigante. Quando alguém pergunta "tem algum livro sobre bolo de cenoura?", ele procura no fichário e entrega uma lista, com os melhores primeiro.</p>
+
+<p>Um buscador como o Google, o Bing ou o DuckDuckGo faz isso com páginas:</p>
+<ol class="passo">
+  <li><strong>Rastrear</strong> (<em>crawl</em>): um programa, o <strong>robô</strong> (<em>crawler</em> ou <em>bot</em>), baixa a página e segue os links dela para achar outras.</li>
+  <li><strong>Indexar</strong>: o buscador lê o HTML, entende do que a página trata e guarda isso no <strong>índice</strong>, o fichário.</li>
+  <li><strong>Mostrar</strong>: quando alguém busca, o buscador escolhe e ordena as páginas do índice, e mostra para cada uma um título, o endereço e um resumo.</li>
+</ol>
+
+<p>O robô não vê cores nem fotos bonitas. Como o leitor de tela (aula <a href="leitores-tela.html">Leitores de Tela</a>), ele lê o <strong>HTML</strong>. Por isso quase tudo que deixa a página acessível também ajuda o SEO.</p>
+
+<div class="warning">
+<strong>Ninguém controla a posição</strong>
+<p>A ordem dos resultados depende de centenas de coisas que o HTML não controla: a qualidade do texto, quantos outros sites apontam para o seu, a velocidade, a idade do site. O HTML certo garante que o buscador <strong>entenda</strong> a página. Desconfie de quem promete "primeiro lugar no Google" mexendo só no código.</p>
+</div>
+
+<hr>
+
+<h2>1. O título da página: <code>&lt;title&gt;</code></h2>
+<p>O <code>&lt;title&gt;</code>, dentro do <code>&lt;head&gt;</code> (aula <a href="meta.html">title e meta</a>), é o texto da aba do navegador. Na lista do buscador, ele costuma ser a <strong>linha grande e clicável</strong> de cada resultado. É o elemento de SEO mais importante da página.</p>
+
+<pre class="file" data-file="bolo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+&lt;title&gt;Bolo de cenoura fofinho com cobertura de chocolate | Receitas da Ana&lt;/title&gt;
+&lt;meta name="description" content="Bolo de cenoura de liquidificador, fofinho e fácil, com cobertura de chocolate que endurece. Rende 12 fatias e fica pronto em 50 minutos."&gt;
+&lt;link rel="canonical" href="https://ana.exemplo.com/bolo-de-cenoura.html"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura fofinho&lt;/h1&gt;
+&lt;p&gt;O bolo que a minha avó fazia todo domingo.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>Bolo de cenoura fofinho com cobertura de chocolate</dt><dd>O <strong>assunto</strong> vem primeiro, com as palavras que a pessoa digitaria na busca.</dd>
+  <dt>|</dt><dd>Um separador (barra vertical, hífen ou travessão). É só costume.</dd>
+  <dt>Receitas da Ana</dt><dd>O nome do site vem no fim. Assim, numa aba estreita ou num resultado cortado, o que sobra é o assunto.</dd>
+</dl>
+
+<ul>
+  <li><strong>Um título diferente para cada página.</strong> Dez páginas chamadas "Receitas da Ana" são dez fichas iguais no fichário: o buscador não sabe qual mostrar.</li>
+  <li><strong>Curto.</strong> Na lista do buscador, um título comprido é cortado com "…". Por volta de 50 a 60 caracteres costuma caber; não existe um número oficial, porque o corte depende da largura.</li>
+  <li><strong>Verdadeiro.</strong> O título promete o que a página tem. O buscador pode até reescrever um título que não combina com o conteúdo.</li>
+</ul>
+
+<p>O <code>&lt;title&gt;</code> não aparece dentro da página, e sim na aba. Por isso, no editor abaixo, quem mostra o título é o console, com uma linha de JavaScript (<code>document.title</code>).</p>
+
+<div class="tryhtml" data-goal="texto:title=Bolo de cenoura,texto:title=Receitas da Ana,nsrc:&lt;title&gt;\s*Página 1">
+<p class="try-task"><strong>Missão:</strong> o título "Página 1" não diz nada a ninguém. Troque-o por um título que comece com o assunto ("Bolo de cenoura…") e termine com o nome do site ("Receitas da Ana").</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Página 1&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="script.js">console.log("Título da aba:", document.title);
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura com cobertura de chocolate | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O resumo: <code>&lt;meta name="description"&gt;</code></h2>
+<p>Embaixo do título, o resultado da busca mostra duas ou três linhas de resumo, o <em>snippet</em> ("trecho"). O buscador costuma usar a <strong>meta description</strong> ("descrição") da página, quando ela combina com o que a pessoa buscou; se não combina, ou se a página não tem uma, ele escolhe sozinho um trecho do texto.</p>
+
+<dl class="anatomy">
+  <dt>name="description"</dt><dd>O tipo da informação: a descrição da página. O nome é sempre em inglês, desse jeito.</dd>
+  <dt>content="…"</dt><dd>O texto do resumo. Escreva para uma <strong>pessoa</strong>: o que ela vai encontrar e por que clicar. Duas frases, por volta de 120 a 160 caracteres, costumam caber sem corte.</dd>
+</dl>
+
+<p>A descrição <strong>não muda a posição</strong> da página na lista. Ela muda outra coisa: se a pessoa clica ou não. Um resumo claro ("Rende 12 fatias e fica pronto em 50 minutos") convence mais do que "Bem-vindo ao meu site!".</p>
+
+<div class="tryhtml" data-goal="sel:meta[name='description'],src:name=&quot;description&quot;\s+content=&quot;[^&quot;]{60\,170}&quot;">
+<p class="try-task"><strong>Missão:</strong> crie, no <code>&lt;head&gt;</code>, uma <code>&lt;meta name="description" content="…"&gt;</code> para a página da torta de limão, com um resumo de 60 a 170 caracteres (o <code>content</code> logo depois do <code>name</code>). O console mostra o tamanho.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Torta de limão gelada | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Torta de limão gelada&lt;/h1&gt;
+&lt;p&gt;Massa de biscoito, creme de leite condensado com limão e merengue.&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="script.js">const d = document.querySelector('meta[name="description"]');
+console.log(d ? "Descrição com " + d.content.length + " caracteres" : "Ainda sem descrição");
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Torta de limão gelada | Receitas da Ana&lt;/title&gt;
+&lt;meta name="description" content="Torta de limão gelada sem forno: massa de biscoito, creme de limão e merengue. Fica pronta em 30 minutos mais 4 horas de geladeira."&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Torta de limão gelada&lt;/h1&gt;
+&lt;p&gt;Massa de biscoito, creme de leite condensado com limão e merengue.&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. O que o robô recebe: veja com <code>curl</code></h2>
+<p>O robô pede a página ao servidor, igual ao navegador, e recebe o <strong>código</strong>. Você pode fazer o mesmo pedido no terminal com o <code>curl</code> (aula <a href="servidor-local.html">Servidor Local</a>). A Ana subiu o servidor local na pasta do site e pediu a página do bolo, filtrando as linhas que interessam com o <code>grep</code>:</p>
+
+<pre class="term" data-cwd="~/site">$ python3 -m http.server &amp;
+[1] 4
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+$ curl -s http://localhost:8000/bolo.html | grep -E '&lt;title&gt;|description|canonical|&lt;h1&gt;'
+127.0.0.1 - - [17/Oct/2026 15:53:54] "GET /bolo.html HTTP/1.1" 200 -     « o registro do servidor
+&lt;title&gt;Bolo de cenoura fofinho com cobertura de chocolate | Receitas da Ana&lt;/title&gt;
+&lt;meta name="description" content="Bolo de cenoura de liquidificador, fofinho e fácil, com cobertura de chocolate que endurece. Rende 12 fatias e fica pronto em 50 minutos."&gt;
+&lt;link rel="canonical" href="https://ana.exemplo.com/bolo-de-cenoura.html"&gt;
+&lt;h1&gt;Bolo de cenoura fofinho&lt;/h1&gt;</pre>
+
+<p>O <code>-s</code> ("silencioso") tira a barra de progresso do <code>curl</code>; o <code>grep -E</code> mostra só as linhas que têm uma das palavras. Essas são as linhas que o buscador lê para montar o resultado: o título, a descrição, o endereço principal e o título principal da página.</p>
+
+<h3>O texto que só o JavaScript escreve</h3>
+<p>Agora uma página em que o texto da receita é escrito pelo JavaScript, depois que a página abre:</p>
+
+<pre class="file" data-file="bolo-js.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id="app"&gt;&lt;/div&gt;
+&lt;script&gt;
+  document.getElementById("app").innerHTML =
+    "&lt;h1&gt;Bolo de cenoura fofinho&lt;/h1&gt;&lt;p&gt;O bolo da minha avó.&lt;/p&gt;";
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ curl -s http://localhost:8000/bolo-js.html | grep -A4 '&lt;body&gt;'
+127.0.0.1 - - [17/Oct/2026 15:53:54] "GET /bolo-js.html HTTP/1.1" 200 -
+&lt;body&gt;
+&lt;div id="app"&gt;&lt;/div&gt;     « vazia: é isto que chega pela rede
+&lt;script&gt;
+  document.getElementById("app").innerHTML =
+    "&lt;h1&gt;Bolo de cenoura fofinho&lt;/h1&gt;&lt;p&gt;O bolo da minha avó.&lt;/p&gt;";
+$ kill %1
+[1]+  Terminado                  python3 -m http.server</pre>
+
+<p>No navegador, a página mostra o título e o texto normalmente. Mas o que chegou pela rede foi uma <code>&lt;div&gt;</code> <strong>vazia</strong> e um script. O <code>curl</code> não roda JavaScript, e muitos robôs também não. O robô do Google até roda, mas às vezes bem depois, numa segunda passada. Para o SEO, a regra é simples: <strong>o conteúdo importante vai no HTML</strong>, e não só no JavaScript. O título e a descrição também: um <code>&lt;title&gt;</code> trocado por script pode não ser visto.</p>
+
+<hr>
+
+<h2>4. O resto da página também conta</h2>
+<p>O buscador lê a página inteira para entender o assunto. O que ajuda:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No HTML</th><th>Por que ajuda o buscador</th><th>Aula</th></tr>
+<tr><td>Um <code>&lt;h1&gt;</code> com o assunto e títulos <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code> em ordem</td><td>Mostram do que a página trata e como ela se divide.</td><td><a href="titulos.html">Títulos</a></td></tr>
+<tr><td>Texto dos links que diz o destino ("receita de torta de limão")</td><td>O robô usa o texto do link para entender a página de <strong>destino</strong>. "Clique aqui" não diz nada.</td><td><a href="links.html">Links</a></td></tr>
+<tr><td><code>alt</code> nas imagens</td><td>É o único jeito de o robô saber o que a foto mostra, e ajuda na busca de imagens.</td><td><a href="imagens-alt.html">Texto Alternativo</a></td></tr>
+<tr><td><code>&lt;html lang="pt-BR"&gt;</code></td><td>Ajuda a mostrar a página para quem busca em português.</td><td><a href="estrutura.html">Estrutura</a></td></tr>
+<tr><td><code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;article&gt;</code></td><td>Separam o conteúdo principal do menu e do rodapé.</td><td><a href="semantica.html">HTML Semântico</a></td></tr>
+<tr><td><code>&lt;meta name="viewport"&gt;</code></td><td>O Google avalia a versão de <strong>celular</strong> da página.</td><td><a href="meta-viewport.html">Celular</a></td></tr>
+<tr><td>Nomes de arquivo claros: <code>bolo-de-cenoura.html</code></td><td>O endereço aparece no resultado e também diz o assunto.</td><td><a href="organizar-arquivos.html">Organizar os Arquivos</a></td></tr>
+</table>
+</div>
+
+<p>Sobre o endereço: use letras minúsculas, sem acento e sem espaço, com hífen entre as palavras. <code>bolo-de-cenoura.html</code> é melhor que <code>Bolo%20de%20Cenoura.html</code> ou <code>pagina7.html</code>.</p>
+
+<hr>
+
+<h2>5. Dizer ao buscador o que fazer</h2>
+
+<h3>O endereço principal: <code>&lt;link rel="canonical"&gt;</code></h3>
+<p>Às vezes a mesma página abre por vários endereços: com e sem <code>www</code>, com <code>index.html</code> no fim ou sem, com um <code>?origem=instagram</code> que a Ana usa para saber de onde vieram as visitas. Para o buscador, cada endereço pode parecer uma página diferente, com o mesmo texto. O <code>&lt;link rel="canonical"&gt;</code> ("canônico", o oficial) diz qual é o endereço principal:</p>
+
+<pre class="file" data-file="canonical.html">&lt;link rel="canonical" href="https://ana.exemplo.com/bolo-de-cenoura.html"&gt;
+</pre>
+
+<p>Use o endereço <strong>completo</strong>, com <code>https://</code>. Um endereço relativo funciona, mas um engano de pasta faz o buscador apontar para a página errada. O canônico é uma <strong>sugestão</strong>: o buscador costuma seguir, mas pode escolher outro endereço se achar que você se enganou.</p>
+
+<h3>"Não ponha no fichário": <code>&lt;meta name="robots"&gt;</code></h3>
+<p>Algumas páginas não devem aparecer na busca: a página de "obrigado pela encomenda", um rascunho, os resultados da busca interna do site. A <code>meta robots</code> pede isso:</p>
+
+<pre class="file" data-file="obrigado.html">&lt;meta name="robots" content="noindex"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>name="robots"</dt><dd>A mensagem é para todos os robôs de busca.</dd>
+  <dt>content="noindex"</dt><dd>"Não indexe": não mostre esta página nos resultados. O robô ainda pode visitá-la e seguir os links.</dd>
+  <dt>content="noindex, nofollow"</dt><dd>Também "não siga os links desta página".</dd>
+</dl>
+
+<div class="warning">
+<strong>O <code>noindex</code> não esconde nada</strong>
+<p>A página continua pública: qualquer pessoa com o endereço abre. O <code>noindex</code> só pede ao buscador que não a mostre na lista, e é um pedido que os buscadores sérios atendem. Nunca use isso para "proteger" dados pessoais. E cuidado com o caminho inverso: um <code>noindex</code> esquecido no site inteiro, depois do lançamento, tira o site todo da busca. Há também um arquivo para falar com os robôs, o <code>robots.txt</code> (aula <a href="robots-sitemap.html">robots.txt e sitemap</a>).</p>
+</div>
+
+<hr>
+
+<h2>Mitos e coisas que não ajudam</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mito</th><th>A verdade</th></tr>
+<tr><td><code>&lt;meta name="keywords" content="bolo, receita, cenoura"&gt;</code> ajuda</td><td>O Google ignora a <code>meta keywords</code> há muitos anos, porque ela foi usada para enganar. O validador aceita, mas ela não faz nada pelo seu site.</td></tr>
+<tr><td>Repetir a palavra muitas vezes ("bolo bolo bolo") sobe a página</td><td>Isso tem nome, <em>keyword stuffing</em> ("entupir de palavras-chave"), e os buscadores <strong>punem</strong>. Escreva para pessoas.</td></tr>
+<tr><td>Texto escondido (letra branca no fundo branco) com palavras-chave</td><td>Também é punido. O buscador compara o que aparece com o que está no código.</td></tr>
+<tr><td>Vários <code>&lt;h1&gt;</code> com palavras-chave</td><td>Não engana ninguém. Um <code>&lt;h1&gt;</code> claro com o assunto da página é o que ajuda.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Como saber se deu certo</h2>
+<ul>
+  <li>Busque <code>site:ana.exemplo.com</code> no Google (troque pelo seu endereço): o operador <code>site:</code> mostra as páginas do seu site que estão no índice. Um site novo pode levar dias ou semanas para aparecer.</li>
+  <li>O <strong>Google Search Console</strong> e o <strong>Bing Webmaster Tools</strong> são painéis gratuitos dos buscadores para o dono do site: mostram quais páginas foram indexadas, os erros encontrados e com que buscas as pessoas chegaram. Para usar, você prova que o site é seu.</li>
+  <li>Valide o HTML (aula <a href="validar.html">Validar o HTML</a>): um <code>&lt;head&gt;</code> quebrado pode esconder o título e a descrição.</li>
+</ul>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>Element “title” must not be empty.</code> e <code>A document must not include more than one “meta” element with its “name” attribute set to the value “description”.</code></strong>
+<p>A Ana copiou o <code>&lt;head&gt;</code> de outra página e deixou dois erros:</p>
+<pre class="file" data-file="copiado.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;meta name="description" content="Bolo de cenoura fofinho."&gt;
+&lt;meta name="description" content="Torta de limão gelada."&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu copiado.html
+"file:/home/ana/site/copiado.html":5.8-5.15: error: Element “title” must not be empty.
+"file:/home/ana/site/copiado.html":7.1-7.58: error: A document must not include more than one “meta” element with its “name” attribute set to the value “description”.</pre>
+<p><strong>O que o navegador faz:</strong> a aba mostra o endereço do arquivo no lugar do título. O buscador inventa um título com o que achar na página e escolhe uma das descrições, ou nenhuma.</p>
+<p><strong>O que o validador diz:</strong> "o elemento <code>title</code> não pode estar vazio" e "um documento não pode ter mais de uma <code>meta</code> com <code>name</code> igual a <code>description</code>".</p>
+<p><strong>Como consertar:</strong> um título com o assunto e uma única descrição, as duas desta página.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Element “title” not allowed as child of element “head” in this context.</code></strong>
+<p>Dois <code>&lt;title&gt;</code> no mesmo <code>&lt;head&gt;</code>, um para cada "palavra-chave":</p>
+<pre class="file" data-file="dois.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;title&gt;Receita fácil de bolo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dois.html
+"file:/home/ana/site/dois.html":6.1-6.7: error: Element “title” not allowed as child of element “head” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que o navegador faz:</strong> usa só o <strong>primeiro</strong> <code>&lt;title&gt;</code>. <strong>O que o validador diz:</strong> "o elemento <code>title</code> não é permitido como filho de <code>head</code> neste contexto": só pode haver um. E ele avisa que não vai mostrar outros erros daquele trecho (<em>Suppressing further errors from this subtree</em>). <strong>Como consertar:</strong> um título só.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Element “meta” is missing one or more of the following attributes: “content”, “property”.</code></strong>
+<p>Uma <code>&lt;meta name="description"&gt;</code> sem o <code>content</code>, o texto da descrição:</p>
+<pre class="file" data-file="semcontent.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura | Receitas da Ana&lt;/title&gt;
+&lt;meta name="description"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu semcontent.html
+"file:/home/ana/site/semcontent.html":6.1-6.25: error: Element “meta” is missing one or more of the following attributes: “content”, “property”.</pre>
+<p>"Falta à <code>meta</code> um destes atributos: <code>content</code>, <code>property</code>." (O <code>property</code> é o das metas do Open Graph, aula <a href="open-graph.html">Open Graph</a>.) <strong>Como consertar:</strong> escreva o resumo no <code>content</code>.</p>
+</div>
+
+<h3>O que o validador não vê</h3>
+<p>Esta página passa sem nenhuma mensagem:</p>
+
+<pre class="file" data-file="engano.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;meta name="descricao" content="Bolo de cenoura fofinho."&gt;
+&lt;meta name="robots" content="noindex"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose engano.html
+engano.html              « nenhuma mensagem
+$ echo $?
+0</pre>
+
+<div class="cenario">
+<strong>Válido, e invisível na busca</strong>
+<ul>
+  <li><code>name="descricao"</code>, em português: o validador aceita qualquer nome, mas nenhum buscador procura "descricao". O nome certo é <code>description</code>.</li>
+  <li><code>noindex</code> esquecido: é válido e tira a página da busca.</li>
+  <li>O título "Receitas da Ana" é o mesmo de todas as páginas do site.</li>
+</ul>
+<p><strong>Como achar:</strong> confira o <code>&lt;head&gt;</code> de cada página com o <code>curl</code> e o <code>grep</code>, como na seção 3, e acompanhe o Search Console depois de publicar.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No <code>&lt;head&gt;</code></th><th>O que faz</th></tr>
+<tr><td><code>&lt;title&gt;Assunto | Site&lt;/title&gt;</code></td><td>A linha clicável do resultado; um por página, diferente em cada página</td></tr>
+<tr><td><code>&lt;meta name="description" content="…"&gt;</code></td><td>O resumo do resultado (quando o buscador escolhe usá-lo); um por página</td></tr>
+<tr><td><code>&lt;link rel="canonical" href="https://…"&gt;</code></td><td>O endereço principal da página</td></tr>
+<tr><td><code>&lt;meta name="robots" content="noindex"&gt;</code></td><td>Pede para não mostrar a página na busca</td></tr>
+<tr><td><code>&lt;meta name="robots" content="noindex, nofollow"&gt;</code></td><td>E também para não seguir os links</td></tr>
+<tr><td><code>&lt;meta name="viewport" …&gt;</code></td><td>Página pronta para celular</td></tr>
+<tr><td><code>&lt;html lang="pt-BR"&gt;</code></td><td>O idioma da página</td></tr>
+<tr><td><code>&lt;meta name="keywords"&gt;</code></td><td>Ignorada pelo Google: não perca tempo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O resumo</h3>
+<p>Complete o nome da meta que dá o resumo do resultado:</p>
+<div class="ex-code">&lt;meta name="<input data-answer="description" aria-label="nome da meta">" content="Bolo fofinho de liquidificador."&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Fora da busca</h3>
+<p>Complete para pedir que esta página não apareça nos resultados:</p>
+<div class="ex-code">&lt;meta name="robots" content="<input data-answer="noindex" aria-label="valor">"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Qual é o melhor <code>&lt;title&gt;</code> para a página da torta de limão do site da Ana?</p>
+<label><input type="radio" name="q3"> <code>Receitas da Ana</code></label>
+<label><input type="radio" name="q3"> <code>Torta de limão gelada | Receitas da Ana</code></label>
+<label><input type="radio" name="q3"> <code>Página 2</code></label>
+<label><input type="radio" name="q3"> <code>torta torta limão torta receita torta</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Com <code>curl</code>, a página mostra só <code>&lt;div id="app"&gt;&lt;/div&gt;</code> e um script, mas no navegador aparece a receita. Por quê?</p>
+<label><input type="radio" name="q4"> O <code>curl</code> está com defeito</label>
+<label><input type="radio" name="q4"> O servidor mandou uma página diferente</label>
+<label><input type="radio" name="q4"> O texto é escrito pelo JavaScript, que o <code>curl</code> não roda</label>
+<label><input type="radio" name="q4"> Faltou a <code>meta description</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. O que o <code>&lt;link rel="canonical"&gt;</code> diz ao buscador?</p>
+<label><input type="radio" name="q5"> Qual é o endereço principal desta página</label>
+<label><input type="radio" name="q5"> Que a página não deve aparecer na busca</label>
+<label><input type="radio" name="q5"> As palavras-chave da página</label>
+<label><input type="radio" name="q5"> Qual é o CSS da página</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. O que a <code>meta keywords</code> faz pelo seu site no Google hoje?</p>
+<label><input type="radio" name="q6"> Põe a página em primeiro lugar</label>
+<label><input type="radio" name="q6"> Muda o resumo do resultado</label>
+<label><input type="radio" name="q6"> Dá erro no validador</label>
+<label><input type="radio" name="q6"> Nada: o Google a ignora</label>
+</div>
+
+<h3>Missão final: a página do pão de queijo</h3>
+
+<div class="tryhtml" data-goal="texto:title=Pão de queijo,sel:meta[name='description'],attr:link[rel='canonical'][href]=https://ana.exemplo.com/pao-de-queijo.html,nsel:h1=1,texto:h1=Pão de queijo,nsrc:clique aqui,nsel:meta[name='robots']=0">
+<p class="try-task"><strong>Missão:</strong> prepare a página para a busca. (1) Um <code>&lt;title&gt;</code> que comece com "Pão de queijo" e termine com "Receitas da Ana". (2) Uma <code>meta description</code> com um resumo de verdade. (3) O canônico <code>https://ana.exemplo.com/pao-de-queijo.html</code>. (4) Só um <code>&lt;h1&gt;</code>, com "Pão de queijo" (o segundo vira <code>&lt;h2&gt;</code>). (5) Troque o "clique aqui" por um texto de link que diga o destino. (6) Apague o <code>noindex</code> que sobrou do rascunho.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;meta name="robots" content="noindex"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pão de queijo mineiro&lt;/h1&gt;
+&lt;h1&gt;Ingredientes&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;500 g de polvilho azedo&lt;/li&gt;
+  &lt;li&gt;2 ovos&lt;/li&gt;
+  &lt;li&gt;200 g de queijo meia-cura&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Para a versão sem lactose, &lt;a href="pao-de-queijo-sem-lactose.html"&gt;clique aqui&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Pão de queijo mineiro | Receitas da Ana&lt;/title&gt;
+&lt;meta name="description" content="Pão de queijo mineiro de polvilho azedo e queijo meia-cura, crocante por fora e macio por dentro. Rende 30 unidades."&gt;
+&lt;link rel="canonical" href="https://ana.exemplo.com/pao-de-queijo.html"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pão de queijo mineiro&lt;/h1&gt;
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;500 g de polvilho azedo&lt;/li&gt;
+  &lt;li&gt;2 ovos&lt;/li&gt;
+  &lt;li&gt;200 g de queijo meia-cura&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Veja também o &lt;a href="pao-de-queijo-sem-lactose.html"&gt;pão de queijo sem lactose&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>SEO é ajudar o buscador a <strong>entender</strong> a página. O robô lê o HTML, como o leitor de tela.</li>
+  <li>O <code>&lt;title&gt;</code> é a linha clicável do resultado: assunto primeiro, nome do site no fim, um diferente por página.</li>
+  <li>A <code>meta description</code> é o resumo que convence a clicar; uma por página, escrita para pessoas.</li>
+  <li>Títulos em ordem, links com texto claro, <code>alt</code>, <code>lang</code> e HTML semântico ajudam a entender o conteúdo.</li>
+  <li>O conteúdo importante vai no HTML, não só no JavaScript: o <code>curl</code> mostra o que o robô recebe.</li>
+  <li><code>canonical</code> indica o endereço principal; <code>noindex</code> pede para ficar fora da busca (mas não esconde a página).</li>
+  <li>A <code>meta keywords</code> e repetir palavras não ajudam. O validador pega título vazio ou repetido e descrição dupla, mas não vê <code>name="descricao"</code> nem um <code>noindex</code> esquecido.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
