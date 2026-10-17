@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Semântico — dizer o que cada parte da página é | Guia HTML</title>
+<meta name="description" content="HTML semântico para quem nunca fez um site: a mesma página de receitas feita em sopa de div e com header, nav, main, article, aside e footer, o que muda para leitores de tela, buscadores e outras pessoas, as regiões (landmarks), a semântica do texto e os avisos reais do validador W3C (role desnecessário, título pulando nível, section sem título).">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Semântico</span></h1>
+
+<p class="intro">Na aula <a href="div-span.html">div e span</a>, você viu que o <code>div</code> é uma caixa sem significado. Dá para montar uma página inteira só com ela, e muita gente monta. Mas o HTML tem elementos que dizem <strong>o que</strong> cada parte da página é: o topo, o menu, o conteúdo principal, uma receita, o rodapé. Usar o elemento que diz o que a coisa é se chama escrever HTML <strong>semântico</strong>. Nesta aula você vai ver a <strong>mesma</strong> página da Ana feita dos dois jeitos, descobrir que na tela elas são idênticas e entender quem enxerga a diferença.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que quer dizer "semântico" e o que é uma "sopa de div".</li>
+  <li>A mesma página feita com <code>div</code> e com <code>header</code>, <code>nav</code>, <code>main</code>, <code>article</code>, <code>aside</code> e <code>footer</code>.</li>
+  <li>Quem lê a diferença: leitores de tela (com as <strong>regiões</strong> da página), buscadores, o modo de leitura do navegador e outras pessoas.</li>
+  <li>Que a semântica também vale para o texto: <code>strong</code>, <code>em</code>, <code>time</code>, títulos.</li>
+  <li>Os avisos reais do validador: <code>role</code> desnecessário, título que pula nível e <code>section</code> sem título.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/receitas</code>. Cada elemento novo desta aula tem a sua própria aula logo depois desta, no grupo Semântica do menu.</p>
+
+<hr>
+
+<h2>A ideia: caixas com etiqueta</h2>
+<p>Volte à mudança de casa. Você pode encher vinte caixas de papelão e não escrever nada nelas. Tudo chega ao destino, mas quem for desempacotar precisa abrir caixa por caixa para descobrir onde estão as panelas. Agora imagine as mesmas vinte caixas com etiquetas: "COZINHA", "QUARTO", "BANHEIRO". O conteúdo é o mesmo, mas qualquer pessoa sabe para onde levar cada uma, até sem abrir.</p>
+
+<p>O <code>div</code> é a caixa sem etiqueta. Os elementos semânticos são as caixas com etiqueta, e a etiqueta é o próprio nome do elemento. A palavra vem do grego <em>sēmantikós</em>, "que tem significado": a <strong>semântica</strong> é o estudo do significado.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na mudança</th><th>Em HTML</th></tr>
+<tr><td>Caixa sem nada escrito</td><td><code>&lt;div&gt;</code></td></tr>
+<tr><td>Caixa com um bilhete colado dentro, que só quem abre vê</td><td><code>&lt;div class="rodape"&gt;</code>: o nome da classe ajuda você e o CSS, mas o navegador não sabe o que "rodape" quer dizer</td></tr>
+<tr><td>Caixa com a etiqueta "COZINHA" do lado de fora</td><td><code>&lt;footer&gt;</code>: o próprio elemento diz "isto é o rodapé", e todo programa que lê HTML entende</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. A página em "sopa de div"</h2>
+<p>Esta é a página inicial do site de receitas, feita só com <code>div</code>. Cada parte tem um <code>id</code> ou uma <code>class</code> com um nome que explica o que ela é (aula <a href="class-id.html">class e id</a>):</p>
+
+<pre class="file" data-file="sopa.html" data-resultado>&lt;div id="topo"&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;div class="menu"&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+    &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+    &lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id="conteudo"&gt;
+  &lt;div class="receita"&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="lateral"&gt;
+  &lt;h2&gt;Mais vistas&lt;/h2&gt;
+  &lt;p&gt;Pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id="rodape"&gt;
+  &lt;p&gt;© 2026 Ana. Receitas testadas na minha cozinha.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+
+<p>Para uma pessoa que lê o código com calma, está tudo claro: <code>topo</code>, <code>menu</code>, <code>conteudo</code>, <code>rodape</code>. O problema é que esses nomes estão em português, foram escolhidos pela Ana e poderiam ser qualquer coisa: <code>cabecalho</code>, <code>top</code>, <code>barra1</code>, <code>xyz</code>. Para o navegador, são <strong>sete caixas sem significado</strong>. Uma página assim, com <code>div</code> dentro de <code>div</code> dentro de <code>div</code>, ganhou o apelido de <strong>sopa de div</strong> (em inglês, <em>div soup</em>).</p>
+
+<hr>
+
+<h2>2. A mesma página, semântica</h2>
+<p>Agora a mesma página, trocando cada <code>div</code> pelo elemento que diz o que aquela parte é:</p>
+
+<pre class="file" data-file="semantico.html" data-resultado>&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+    &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+    &lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;
+&lt;aside&gt;
+  &lt;h2&gt;Mais vistas&lt;/h2&gt;
+  &lt;p&gt;Pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;/aside&gt;
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana. Receitas testadas na minha cozinha.&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+
+<p>Compare os dois quadros "Resultado": eles são <strong>idênticos</strong>. Nenhum elemento semântico desta página muda a aparência. Todos são blocos (aula <a href="bloco-inline.html">Bloco × Em Linha</a>), sem borda, sem cor e sem margem, exatamente como o <code>div</code>. A diferença não está na tela; está no <strong>significado</strong>.</p>
+
+<dl class="anatomy">
+  <dt>header</dt><dd>"Cabeçalho": o topo da página, com o nome do site e, muitas vezes, o menu. Aula <a href="header-footer.html">header e footer</a>.</dd>
+  <dt>nav</dt><dd>De <em>navigation</em>, "navegação": o grupo dos links principais do site. Aula <a href="nav.html">nav</a>.</dd>
+  <dt>main</dt><dd>"Principal": o conteúdo principal desta página, aquele que muda de uma página para outra. Só um por página. Aula <a href="main.html">main</a>.</dd>
+  <dt>article</dt><dd>"Artigo": um conteúdo completo, que faz sentido sozinho, como uma receita ou um post. Aula <a href="section-article.html">section e article</a>.</dd>
+  <dt>aside</dt><dd>"À parte": um conteúdo relacionado, mas que não é o principal, como a caixa "Mais vistas". Aula <a href="aside.html">aside</a>.</dd>
+  <dt>footer</dt><dd>"Rodapé": o fim da página, com direitos autorais, contato, links finais. Aula <a href="header-footer.html">header e footer</a>.</dd>
+</dl>
+
+<h3>A planta da página</h3>
+<p>Uma página semântica pode ser desenhada como a planta de uma casa. Esta é a da página da Ana:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Parte</th><th>Era</th><th>Agora</th><th>Dentro dela</th></tr>
+<tr><td>Topo</td><td><code>&lt;div id="topo"&gt;</code></td><td><code>&lt;header&gt;</code></td><td>o <code>h1</code> e o menu</td></tr>
+<tr><td>Menu</td><td><code>&lt;div class="menu"&gt;</code></td><td><code>&lt;nav&gt;</code></td><td>os links do site</td></tr>
+<tr><td>Conteúdo principal</td><td><code>&lt;div id="conteudo"&gt;</code></td><td><code>&lt;main&gt;</code></td><td>a receita</td></tr>
+<tr><td>A receita</td><td><code>&lt;div class="receita"&gt;</code></td><td><code>&lt;article&gt;</code></td><td>o <code>h2</code> e o parágrafo</td></tr>
+<tr><td>Barra lateral</td><td><code>&lt;div class="lateral"&gt;</code></td><td><code>&lt;aside&gt;</code></td><td>"Mais vistas"</td></tr>
+<tr><td>Rodapé</td><td><code>&lt;div id="rodape"&gt;</code></td><td><code>&lt;footer&gt;</code></td><td>os direitos autorais</td></tr>
+</table>
+</div>
+
+<div class="tryhtml" data-goal="sel:header h1,sel:header nav a,nsel:div=0">
+<p class="try-task"><strong>Missão:</strong> comece pelo topo. Troque o <code>&lt;div id="topo"&gt;</code> por <code>&lt;header&gt;</code> e o <code>&lt;div class="menu"&gt;</code> por <code>&lt;nav&gt;</code>. Não esqueça de trocar também as tags de fechamento (<code>&lt;/div&gt;</code>). Os <code>id</code> e <code>class</code> podem sair. Repare que o resultado não muda nada.</p>
+<pre class="script" data-file="index.html">&lt;div id="topo"&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;div class="menu"&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+    &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+    &lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Bem-vindo! Escolha uma categoria no menu.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+    &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+    &lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;p&gt;Bem-vindo! Escolha uma categoria no menu.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Quem enxerga a diferença</h2>
+<p>Se a tela é a mesma, por que trocar? Porque a página não é lida só por olhos.</p>
+
+<h3>Leitores de tela e as regiões da página</h3>
+<p>Um <strong>leitor de tela</strong> é o programa que lê a página em voz alta para pessoas cegas ou com baixa visão (aula <a href="leitores-tela.html">Leitores de Tela</a>). Ninguém quer ouvir a página inteira do começo, todas as vezes, para chegar à receita. Por isso os leitores de tela oferecem atalhos para <strong>pular de região em região</strong>: "ir para o menu", "ir para o conteúdo principal", "ir para o rodapé".</p>
+
+<p>Essas regiões se chamam <strong>marcos</strong> ou <strong>pontos de referência</strong> (em inglês, <em>landmarks</em>). E quem diz onde elas estão são justamente os elementos semânticos. Cada um tem um <strong>papel</strong> (em inglês, <em>role</em>) que o navegador repassa ao leitor de tela:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Papel (<em>role</em>)</th><th>O leitor de tela entende…</th></tr>
+<tr><td><code>header</code> (o da página)</td><td><code>banner</code></td><td>"o topo do site"</td></tr>
+<tr><td><code>nav</code></td><td><code>navigation</code></td><td>"um grupo de links de navegação"</td></tr>
+<tr><td><code>main</code></td><td><code>main</code></td><td>"o conteúdo principal começa aqui"</td></tr>
+<tr><td><code>aside</code> (o da página)</td><td><code>complementary</code></td><td>"um conteúdo complementar"</td></tr>
+<tr><td><code>footer</code> (o da página)</td><td><code>contentinfo</code></td><td>"informações sobre a página: autoria, direitos"</td></tr>
+<tr><td><code>article</code></td><td><code>article</code></td><td>"um conteúdo completo, independente"</td></tr>
+<tr><td><code>div</code></td><td>nenhum (genérico)</td><td>nada: o leitor de tela passa direto</td></tr>
+</table>
+</div>
+
+<p>Na sopa de div, essa lista fica vazia: não há região nenhuma para pular. Na versão semântica, a pessoa ouve algo como "navegação" ao chegar no menu e pode ir direto ao "principal". As palavras exatas mudam de um leitor de tela para outro, mas a ideia é a mesma. Os papéis entre aspas (<code>banner</code>, <code>contentinfo</code>) vêm do <strong>ARIA</strong>, um padrão de acessibilidade com aula própria (<a href="aria.html">ARIA</a>). No F12 (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>), os navegadores têm uma parte de <strong>acessibilidade</strong> que mostra o papel do elemento selecionado.</p>
+
+<h3>Buscadores, modo de leitura e outras pessoas</h3>
+<ul>
+  <li><strong>Buscadores</strong> (Google, Bing…) usam a estrutura para entender qual parte é o conteúdo de verdade e qual é menu ou rodapé repetido em todas as páginas (aula <a href="seo.html">HTML e SEO</a>).</li>
+  <li>O <strong>modo de leitura</strong> dos navegadores, aquele botão que mostra só o texto de uma notícia, sem menus nem anúncios, procura o conteúdo principal da página. Elementos como <code>main</code> e <code>article</code> ajudam a achar.</li>
+  <li><strong>Outras pessoas</strong> (e você, daqui a seis meses) leem <code>&lt;/nav&gt;</code> e sabem na hora o que está terminando. Já um <code>&lt;/div&gt;</code> no fim de uma linha não diz qual das sete caixas fechou.</li>
+</ul>
+
+<hr>
+
+<h2>4. Semântica também é para o texto</h2>
+<p>Os elementos de página são a parte mais visível da semântica, mas a ideia vale para tudo. Cada vez que você escolhe um elemento, a pergunta é a mesma: "<strong>o que isto é?</strong>", e não "como quero que isto pareça?".</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O que é</th><th>Sem significado</th><th>Com significado</th><th>Aula</th></tr>
+<tr><td>Um título de seção</td><td><code>&lt;p style="font-size: 24px;"&gt;</code></td><td><code>&lt;h2&gt;</code></td><td><a href="titulos.html">Títulos</a></td></tr>
+<tr><td>Um trecho importante</td><td><code>&lt;b&gt;</code> ou <code>&lt;span class="negrito"&gt;</code></td><td><code>&lt;strong&gt;</code></td><td><a href="negrito-italico.html">Negrito e Itálico</a></td></tr>
+<tr><td>Uma ênfase na fala</td><td><code>&lt;i&gt;</code></td><td><code>&lt;em&gt;</code></td><td><a href="negrito-italico.html">Negrito e Itálico</a></td></tr>
+<tr><td>Uma lista de ingredientes</td><td>linhas com <code>&lt;br&gt;</code> e um "-" na frente</td><td><code>&lt;ul&gt;</code> e <code>&lt;li&gt;</code></td><td><a href="listas.html">Listas</a></td></tr>
+<tr><td>Uma data</td><td><code>17/10/2026</code> solto</td><td><code>&lt;time datetime="2026-10-17"&gt;</code></td><td><a href="time.html">time e data</a></td></tr>
+<tr><td>Uma foto com legenda</td><td><code>&lt;div&gt;</code> com <code>img</code> e <code>p</code></td><td><code>&lt;figure&gt;</code> e <code>&lt;figcaption&gt;</code></td><td><a href="figure.html">figure e figcaption</a></td></tr>
+</table>
+</div>
+
+<p>O <code>b</code> e o <code>i</code> não estão proibidos: eles têm usos próprios, explicados na aula de negrito e itálico. O problema é escolher um elemento <strong>pela aparência</strong>, como você vai ver no <a href="#errado">Quando dá errado</a>.</p>
+
+<div class="tip">
+<strong>E o <code>div</code>, nunca mais?</strong>
+<p>Não é isso. O <code>div</code> continua sendo o elemento certo quando você precisa de uma caixa só para o CSS e nenhum elemento semântico serve: por exemplo, uma caixa em volta do <code>main</code> e do <code>aside</code>, para colocá-los lado a lado. A regra é: <strong>primeiro</strong> procure um elemento com significado; se não houver, use o <code>div</code>.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>A sopa de div passa no validador</strong>
+<p>Uma surpresa: o validador não reclama da sopa de div. Os dois arquivos desta aula, completos, passam sem nenhuma mensagem:</p>
+<pre class="term" data-cwd="~/receitas">$ vnu --verbose sopa.html semantico.html
+sopa.html                         « só os nomes: nenhum erro, nenhum aviso
+semantico.html</pre>
+<p>O validador confere as <strong>regras</strong> do HTML: o que pode ficar dentro de quê, quais atributos existem, se as tags fecham. Ele não sabe que o seu <code>&lt;div id="rodape"&gt;</code> é um rodapé. A semântica é responsabilidade de quem escreve.</p>
+<p><strong>Como consertar:</strong> para cada <code>div</code>, pergunte "o que é isto?". Se a resposta for "o topo", "o menu", "o conteúdo principal", "uma receita", "um quadro à parte" ou "o rodapé", existe um elemento para isso.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: The “navigation” role is unnecessary for element “nav”.</code></strong>
+<p>Antes dos elementos semânticos existirem, a acessibilidade da sopa de div era feita com o atributo <code>role</code>: <code>&lt;div role="navigation"&gt;</code>. Muita gente ainda escreve o <code>role</code> por costume, junto com o elemento novo:</p>
+<pre class="file" data-file="com-role.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header role="banner"&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav role="navigation"&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;main role="main"&gt;
+  &lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+&lt;/main&gt;
+&lt;footer role="contentinfo"&gt;
+  &lt;p&gt;© 2026 Ana.&lt;/p&gt;
+&lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu com-role.html
+"file:/home/ana/receitas/com-role.html":8.1-8.22: info warning: The “banner” role is unnecessary for element “header”.
+"file:/home/ana/receitas/com-role.html":10.3-10.25: info warning: The “navigation” role is unnecessary for element “nav”.
+"file:/home/ana/receitas/com-role.html":14.1-14.18: info warning: The “main” role is unnecessary for element “main”.
+"file:/home/ana/receitas/com-role.html":17.1-17.27: info warning: The “contentinfo” role is unnecessary for element “footer”.</pre>
+<dl class="anatomy">
+  <dt>info warning:</dt><dd>"Aviso informativo". Não é um erro: o <code>vnu</code> termina com código de saída 0, como se estivesse tudo certo. Mas vale a pena ler.</dd>
+  <dt>The “navigation” role is unnecessary for element “nav”.</dt><dd>"O papel <code>navigation</code> é desnecessário para o elemento <code>nav</code>": o <code>nav</code> <strong>já tem</strong> esse papel sozinho. Escrever de novo não ajuda e só polui o código.</dd>
+</dl>
+<p><strong>Como consertar:</strong> apague o <code>role</code> dos elementos semânticos. Ele só faz sentido em casos especiais, vistos na aula <a href="aria.html">ARIA</a>.</p>
+</div>
+
+<div class="cenario">
+<strong>Escolher pela aparência: <code>error: The heading “h4” (with computed level 4) follows the heading “h1”…</code></strong>
+<p>A Ana queria uma frase de efeito embaixo do nome do site, em letra pequena e em negrito. O <code>h4</code> tem essa cara, então ela usou um <code>h4</code> na linha 9:</p>
+<pre class="file" data-file="titulo-pequeno.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h4&gt;As receitas mais gostosas da família&lt;/h4&gt;
+&lt;p&gt;Bolo de cenoura, pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu titulo-pequeno.html
+"file:/home/ana/receitas/titulo-pequeno.html":9.1-9.4: error: The heading “h4” (with computed level 4) follows the heading “h1” (with computed level 1), skipping 2 heading levels.</pre>
+<p>"O título <code>h4</code> (de nível calculado 4) vem depois do título <code>h1</code> (de nível 1), pulando 2 níveis." Para o validador, a página ficou com um capítulo (<code>h1</code>) e, dentro dele, um "sub-sub-subtítulo", sem os níveis 2 e 3. O leitor de tela também anuncia "título nível 4", e quem usa a lista de títulos para navegar acha que perdeu alguma parte.</p>
+<p><strong>Como consertar:</strong> a frase não é um título; é um texto. Use <code>&lt;p&gt;</code> (e, se quiser a letra menor, CSS). Escolha o nível do título pela <strong>posição</strong> na página, nunca pelo tamanho da letra (aula <a href="titulos.html">Títulos</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>Trocar todo <code>div</code> por <code>section</code>: <code>info warning: Section lacks heading.</code></strong>
+<p>Quem descobre a semântica às vezes troca <strong>todos</strong> os <code>div</code> por <code>section</code>, achando que é "mais semântico". Na linha 10, a caixa da foto virou uma <code>section</code>:</p>
+<pre class="term" data-cwd="~/receitas">$ vnu tudo-section.html
+"file:/home/ana/receitas/tudo-section.html":10.3-10.24: info warning: Section lacks heading. Consider using “h2”-“h6” elements to add identifying headings to all sections, or else use a “div” element instead for any cases where no heading is needed.</pre>
+<p>"A seção não tem título. Considere usar elementos <code>h2</code>-<code>h6</code> para dar títulos que identifiquem todas as seções, <strong>ou então use um <code>div</code></strong> nos casos em que nenhum título é necessário." O próprio validador manda voltar para o <code>div</code>: uma <code>section</code> é uma parte com título, e não uma caixa qualquer. A aula <a href="section-article.html">section e article</a> conta a história toda.</p>
+<p><strong>Como consertar:</strong> se a caixa existe só para o CSS, ela é um <code>div</code>. Semântico não é "sem <code>div</code>"; é "cada elemento no seu papel".</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>O que é</th><th>Papel para o leitor de tela</th><th>Quantos por página</th></tr>
+<tr><td><code>header</code></td><td>topo (da página ou de um artigo)</td><td><code>banner</code>, quando é o da página</td><td>quantos precisar</td></tr>
+<tr><td><code>nav</code></td><td>grupo de links principais</td><td><code>navigation</code></td><td>quantos precisar</td></tr>
+<tr><td><code>main</code></td><td>conteúdo principal</td><td><code>main</code></td><td><strong>um</strong> visível</td></tr>
+<tr><td><code>article</code></td><td>conteúdo completo e independente</td><td><code>article</code></td><td>quantos precisar</td></tr>
+<tr><td><code>section</code></td><td>parte com título</td><td><code>region</code>, se tiver nome</td><td>quantos precisar</td></tr>
+<tr><td><code>aside</code></td><td>conteúdo relacionado, à parte</td><td><code>complementary</code>, quando é o da página (ou tem nome)</td><td>quantos precisar</td></tr>
+<tr><td><code>footer</code></td><td>rodapé (da página ou de um artigo)</td><td><code>contentinfo</code>, quando é o da página</td><td>quantos precisar</td></tr>
+<tr><td><code>div</code></td><td>caixa genérica, só para o CSS</td><td>nenhum</td><td>quantos precisar</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O rodapé</h3>
+<p>Complete com o elemento semântico do rodapé da página:</p>
+<div class="ex-code">&lt;<input data-answer="footer" aria-label="elemento"> &gt;&lt;p&gt;© 2026 Ana&lt;/p&gt;&lt;/<input data-answer="footer" aria-label="fechamento">&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O conteúdo principal</h3>
+<p>Qual elemento marca o conteúdo principal da página?</p>
+<div class="ex-code">&lt;<input data-answer="main" aria-label="elemento">&gt;</div>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">3. A Ana trocou todos os <code>div</code> da página por elementos semânticos. O que muda no quadro "Resultado", sem CSS?</p>
+<label><input type="radio" name="q3"> O menu fica na horizontal</label>
+<label><input type="radio" name="q3"> O rodapé vai para o fim da janela</label>
+<label><input type="radio" name="q3"> Aparecem bordas em volta de cada parte</label>
+<label><input type="radio" name="q3"> Nada: a diferença é no significado, não na aparência</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que o validador diz de uma página feita só com <code>div</code>, sem nenhum outro erro?</p>
+<label><input type="radio" name="q4"> Um erro para cada <code>div</code></label>
+<label><input type="radio" name="q4"> Nada: ele confere as regras, não o significado</label>
+<label><input type="radio" name="q4"> Um aviso pedindo <code>header</code> e <code>footer</code></label>
+<label><input type="radio" name="q4"> Que a página não tem <code>main</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Quem mais se beneficia de uma página com <code>header</code>, <code>nav</code>, <code>main</code> e <code>footer</code>?</p>
+<label><input type="radio" name="q5"> Quem usa leitor de tela, que pode pular direto para cada região</label>
+<label><input type="radio" name="q5"> Ninguém: é só uma moda</label>
+<label><input type="radio" name="q5"> Só quem usa celular</label>
+<label><input type="radio" name="q5"> Só o CSS, que fica mais rápido</label>
+</div>
+
+<h3>Missão final: tire a página da sopa</h3>
+
+<div class="tryhtml" data-goal="sel:header h1,sel:header nav a,nsel:main=1,sel:main article h2,sel:aside h2,sel:footer p,nsel:div=0">
+<p class="try-task"><strong>Missão:</strong> esta é a sopa de div do começo da aula. Troque cada <code>div</code> pelo elemento semântico certo (use a tabela "A planta da página"). No fim, não pode sobrar nenhum <code>div</code>, e o resultado deve continuar igual.</p>
+<pre class="script" data-file="index.html">&lt;div id="topo"&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;div class="menu"&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+    &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+    &lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id="conteudo"&gt;
+  &lt;div class="receita"&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="lateral"&gt;
+  &lt;h2&gt;Mais vistas&lt;/h2&gt;
+  &lt;p&gt;Pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id="rodape"&gt;
+  &lt;p&gt;© 2026 Ana. Receitas testadas na minha cozinha.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+    &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+    &lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;
+&lt;aside&gt;
+  &lt;h2&gt;Mais vistas&lt;/h2&gt;
+  &lt;p&gt;Pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;/aside&gt;
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana. Receitas testadas na minha cozinha.&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>HTML <strong>semântico</strong> é escolher o elemento que diz <strong>o que</strong> cada parte é, e não como ela parece.</li>
+  <li>Uma página só de <code>div</code> é uma "sopa de div": funciona, mas nenhum programa sabe o que é topo, menu ou rodapé.</li>
+  <li>A troca: topo → <code>header</code>, menu → <code>nav</code>, conteúdo principal → <code>main</code>, receita → <code>article</code>, barra lateral → <code>aside</code>, rodapé → <code>footer</code>.</li>
+  <li>Na tela, nada muda. Quem enxerga a diferença são os leitores de tela (que pulam entre as <strong>regiões</strong>), os buscadores, o modo de leitura e as pessoas que leem o código.</li>
+  <li>O validador não acusa sopa de div. Ele avisa quando sobra <code>role</code> repetido (<code>info warning</code>), quando um título pula nível (<code>error</code>) e quando uma <code>section</code> não tem título.</li>
+  <li>O <code>div</code> continua valendo para caixas só de CSS: primeiro o elemento com significado; se não houver, o <code>div</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
