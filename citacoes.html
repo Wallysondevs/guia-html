@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Citações — blockquote, q e cite | Guia HTML</title>
+<meta name="description" content="Citações em HTML para quem nunca fez um site: blockquote para citações longas, q para citações curtas com as aspas que o navegador coloca sozinho, o elemento cite para o título de uma obra, o atributo cite, como dizer quem falou com figure e figcaption, e os erros reais do validador W3C, com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Citações</span></h1>
+
+<p class="intro">A Ana aprendeu a cozinhar com a avó, e o site dela vive repetindo os conselhos da vovó Lurdes, copiados de um caderno de receitas antigo. Quando você coloca no seu site palavras que são <strong>de outra pessoa</strong>, o HTML tem tags para dizer isso: <code>&lt;blockquote&gt;</code> para uma citação longa, em bloco; <code>&lt;q&gt;</code> para uma citação curta, no meio da frase; e <code>&lt;cite&gt;</code> para o <strong>título da obra</strong> de onde ela veio. Nesta aula você vai usar as três e ver como dizer, do jeito certo, quem falou.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li><code>&lt;blockquote&gt;</code>: a citação longa, em bloco, com recuo.</li>
+  <li><code>&lt;q&gt;</code>: a citação curta, dentro da frase, e as aspas que o navegador coloca sozinho.</li>
+  <li><code>&lt;cite&gt;</code>: o título de um livro, filme, música, caderno de receitas.</li>
+  <li>O atributo <code>cite</code>: o endereço da fonte, que não aparece na tela.</li>
+  <li>Como mostrar <strong>quem disse</strong>: fora do <code>blockquote</code>, com <code>&lt;figure&gt;</code> e <code>&lt;figcaption&gt;</code>.</li>
+  <li>Os erros: <code>blockquote</code> dentro de parágrafo, aspas em dobro, nome de pessoa no atributo <code>cite</code>.</li>
+</ul>
+</div>
+
+<p>Os exemplos são desenhados <strong>pelo seu navegador</strong>, no quadro "Resultado". As mensagens do validador saíram do <code>vnu</code> (o validador do W3C) na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: as aspas e o recuo do livro</h2>
+<p>Num livro, uma frase curta de outra pessoa vai entre aspas, no meio do parágrafo: a avó dizia "bolo bom é bolo feito com calma". Uma citação longa, de várias linhas, ganha um bloco próprio, com <strong>recuo</strong> dos lados, para o leitor ver de longe que aquelas palavras não são do autor. E o nome do livro citado aparece em itálico.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No livro</th><th>Em HTML</th><th>Vem de</th></tr>
+<tr><td>Frase curta entre aspas, no meio do texto</td><td><code>&lt;q&gt;</code></td><td><em>quote</em>, "citação"</td></tr>
+<tr><td>Citação longa, em bloco, com recuo</td><td><code>&lt;blockquote&gt;</code></td><td><em>block quote</em>, "citação em bloco"</td></tr>
+<tr><td>Título da obra, em itálico</td><td><code>&lt;cite&gt;</code></td><td><em>cite</em>, "citar"</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. <code>&lt;blockquote&gt;</code>: a citação longa</h2>
+
+<pre class="file" data-file="blockquote.html" data-resultado>&lt;p&gt;No caderno da vovó, a receita de bolo começa com um conselho:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Bolo bom é bolo que a gente faz com calma. Separe tudo antes,
+  ligue o forno, e não abra a porta antes da hora.&lt;/p&gt;
+  &lt;p&gt;Se murchar, come assim mesmo, que o gosto é o mesmo.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A Ana segue o conselho até hoje.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;blockquote&gt;</dt><dd>Abre a citação em bloco. Como o <code>&lt;p&gt;</code>, é um elemento <strong>de bloco</strong>: começa numa linha nova. O navegador dá a ele um recuo de 40 pixels dos dois lados.</dd>
+  <dt>&lt;p&gt;…&lt;/p&gt; dentro dele</dt><dd>O texto citado vai em parágrafos, um para cada parágrafo do original. Um <code>blockquote</code> pode ter parágrafos, listas, até títulos: tudo o que a citação tiver.</dd>
+  <dt>&lt;/blockquote&gt;</dt><dd>Fecha a citação. O que vem depois volta a ser texto do site.</dd>
+</dl>
+
+<p>Repare que o navegador <strong>não</strong> coloca aspas num <code>blockquote</code>: o recuo já mostra que é citação. Se você quiser outra aparência (uma barra colorida do lado, uma letra diferente), é CSS (quer aprender mais? futuro Guia CSS).</p>
+
+<div class="warning">
+<strong>Não use <code>blockquote</code> para recuar texto</strong>
+<p>Nos primeiros anos da web, muita gente usava <code>&lt;blockquote&gt;</code> só porque ele recua o texto. Não faça isso: para o navegador e para os leitores de tela, ele quer dizer "isto foi dito por outra pessoa". Recuo sem citação é CSS.</p>
+</div>
+
+<h3>O atributo <code>cite</code>: de onde veio</h3>
+<p>Se a citação veio de uma página da web, coloque o endereço dela no atributo <code>cite</code>:</p>
+
+<pre class="file" data-file="atributo-cite.html" data-resultado>&lt;blockquote cite="https://exemplo.com/caderno-da-vovo"&gt;
+  &lt;p&gt;Bolo bom é bolo que a gente faz com calma.&lt;/p&gt;
+&lt;/blockquote&gt;
+</pre>
+
+<p>O atributo <code>cite</code> <strong>não aparece na tela</strong>: os navegadores não mostram esse endereço nem o transformam em link. Ele fica no código para programas (buscadores, ferramentas de pesquisa) e para quem lê o código. Ele aceita só um <strong>endereço</strong> (URL); o nome de quem falou vai em outro lugar, como você vai ver na seção 4. Se quer que o visitante possa clicar na fonte, escreva um link de verdade, com <code>&lt;a&gt;</code> (aula <a href="links.html">Links</a>).</p>
+
+<hr>
+
+<h2>2. <code>&lt;q&gt;</code>: a citação curta</h2>
+<p>Para uma frase curta no meio do texto, use <code>&lt;q&gt;</code>. Repare que você <strong>não</strong> digita as aspas:</p>
+
+<pre class="file" data-file="q.html" data-resultado>&lt;p&gt;A vovó sempre dizia &lt;q&gt;bolo bom é bolo feito com calma&lt;/q&gt;, e tinha razão.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;q&gt;</dt><dd>Abre a citação curta. É um elemento <strong>em linha</strong>: fica dentro do parágrafo.</dd>
+  <dt>as aspas</dt><dd>Quem coloca é o <strong>navegador</strong>, no começo e no fim. Elas não fazem parte do texto: se você selecionar e copiar a frase, em muitos navegadores elas nem vêm junto.</dd>
+  <dt>&lt;/q&gt;</dt><dd>Fecha a citação, e o navegador coloca a aspa de fechamento.</dd>
+</dl>
+
+<h3>As aspas certas para cada língua</h3>
+<p>Cada língua tem as suas aspas, e o navegador escolhe pelo atributo <code>lang</code> da página (aula <a href="estrutura.html">Estrutura de uma Página</a>). Por isso o guia sempre escreve <code>&lt;html lang="pt-BR"&gt;</code>. Uma citação dentro de outra ganha as aspas simples:</p>
+
+<pre class="file" data-file="aspas.html" data-resultado>&lt;p&gt;No Brasil: &lt;q&gt;a vovó dizia &lt;q&gt;calma&lt;/q&gt; o tempo todo&lt;/q&gt;.&lt;/p&gt;
+&lt;p lang="pt-PT"&gt;Em Portugal: &lt;q&gt;a avó dizia &lt;q&gt;calma&lt;/q&gt; a toda a hora&lt;/q&gt;.&lt;/p&gt;
+&lt;p lang="fr"&gt;Em francês: &lt;q&gt;bon appétit&lt;/q&gt;.&lt;/p&gt;
+</pre>
+
+<p>No Chromium (o motor do Chrome e do Edge), em português do Brasil saem as aspas curvas “assim”, e a citação de dentro sai com as simples ‘assim’; em português de Portugal e em francês saem as aspas angulares «assim». O Firefox segue as mesmas regras. O <code>&lt;q&gt;</code> poupa você de escolher as aspas certas para cada língua.</p>
+
+<div class="tryhtml" data-goal="texto:q=bolo bom é bolo feito com calma,nsrc:&quot;bolo|calma&quot;">
+<p class="try-task"><strong>Experimente:</strong> a Ana digitou as aspas na mão. Troque as aspas por um <code>&lt;q&gt;</code> em volta da frase da vovó (apague as aspas digitadas: o navegador coloca as dele).</p>
+<pre class="script" data-file="index.html">&lt;p&gt;A vovó sempre dizia "bolo bom é bolo feito com calma", e tinha razão.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;A vovó sempre dizia &lt;q&gt;bolo bom é bolo feito com calma&lt;/q&gt;, e tinha razão.&lt;/p&gt;
+</pre>
+</div>
+
+<h3><code>&lt;q&gt;</code> ou aspas digitadas?</h3>
+<p>As duas formas são aceitas. Com <code>&lt;q&gt;</code>, o código diz que aquilo é uma citação (e as aspas acompanham a língua); com aspas digitadas, é só texto entre aspas. Use o <code>&lt;q&gt;</code> quando são palavras de outra pessoa. Para aspas que não são citação (uma palavra "entre aspas" por ironia, por exemplo), digite as aspas. O que não pode é <strong>misturar</strong>: aspas digitadas mais <code>&lt;q&gt;</code> dão aspas em dobro (veja em <a href="#errado">Quando dá errado</a>).</p>
+
+<hr>
+
+<h2>3. <code>&lt;cite&gt;</code>: o título da obra</h2>
+<p>O elemento <code>&lt;cite&gt;</code> marca o <strong>título</strong> de uma obra: livro, filme, música, programa de TV, jogo, pintura, site, caderno de receitas. O navegador o mostra em itálico.</p>
+
+<pre class="file" data-file="cite.html" data-resultado>&lt;p&gt;A receita de pudim veio do &lt;cite&gt;Caderno de Receitas da Família&lt;/cite&gt;,
+escrito pela vovó Lurdes.&lt;/p&gt;
+&lt;p&gt;A Ana aprendeu a fazer pão vendo &lt;cite&gt;Cozinha Sem Pressa&lt;/cite&gt;, um programa de TV.&lt;/p&gt;
+</pre>
+
+<div class="warning">
+<strong>O <code>&lt;cite&gt;</code> é para a obra, não para a pessoa</strong>
+<p>"Vovó Lurdes" é o nome de uma <strong>pessoa</strong>, e não o título de uma obra; por isso, no exemplo, o nome dela ficou fora do <code>&lt;cite&gt;</code>. O padrão do HTML é claro: o nome de uma pessoa não é o título de uma obra. Muitos sites usam <code>&lt;cite&gt;</code> no nome de quem falou, mas isso está errado. O validador não percebe (ele não sabe o que é nome e o que é título), então a responsabilidade é sua.</p>
+</div>
+
+<p>Não confunda as duas coisas com o mesmo nome:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>Elemento <code>&lt;cite&gt;</code></th><th>Atributo <code>cite="…"</code></th></tr>
+<tr><td>Onde fica</td><td>No texto: <code>&lt;cite&gt;Título&lt;/cite&gt;</code></td><td>Dentro da tag: <code>&lt;blockquote cite="…"&gt;</code>, <code>&lt;q cite="…"&gt;</code></td></tr>
+<tr><td>O que guarda</td><td>O título de uma obra</td><td>O endereço (URL) da fonte</td></tr>
+<tr><td>Aparece na tela?</td><td>Sim, em itálico</td><td>Não</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>4. Quem disse? A fonte fica fora do <code>blockquote</code></h2>
+<p>Dentro do <code>&lt;blockquote&gt;</code> vai só o que foi <strong>dito</strong>. O nome de quem disse e o título de onde veio ficam <strong>fora</strong>, porque não fazem parte da citação. O jeito mais simples é um parágrafo logo depois:</p>
+
+<pre class="file" data-file="fonte-p.html" data-resultado>&lt;blockquote&gt;
+  &lt;p&gt;Bolo bom é bolo que a gente faz com calma.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;— Vovó Lurdes, no &lt;cite&gt;Caderno de Receitas da Família&lt;/cite&gt;&lt;/p&gt;
+</pre>
+
+<p>O problema dessa forma é que nada no código liga o parágrafo à citação: ele é só o parágrafo seguinte. Para ligar os dois, use um <code>&lt;figure&gt;</code> com um <code>&lt;figcaption&gt;</code> (a "legenda" da figura), que você vai ver com calma na aula <a href="figure.html">figure e figcaption</a>:</p>
+
+<pre class="file" data-file="fonte-figure.html" data-resultado>&lt;figure&gt;
+  &lt;blockquote cite="https://exemplo.com/caderno-da-vovo"&gt;
+    &lt;p&gt;Bolo bom é bolo que a gente faz com calma.&lt;/p&gt;
+  &lt;/blockquote&gt;
+  &lt;figcaption&gt;— Vovó Lurdes, no &lt;cite&gt;Caderno de Receitas da Família&lt;/cite&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;figure&gt;</dt><dd>Uma caixa que junta um conteúdo com a sua legenda. Aqui, o conteúdo é a citação. O navegador dá a ela um recuo próprio, por isso a citação fica ainda mais para dentro.</dd>
+  <dt>&lt;blockquote cite="…"&gt;</dt><dd>A citação, só com as palavras da vovó, e o endereço da fonte no atributo.</dd>
+  <dt>&lt;figcaption&gt;</dt><dd>A legenda: quem disse e onde. Ela fica dentro do <code>figure</code>, mas <strong>fora</strong> do <code>blockquote</code>.</dd>
+  <dt>— </dt><dd>O travessão antes do nome é só costume de escrita; não é obrigatório.</dd>
+  <dt>&lt;cite&gt;Caderno…&lt;/cite&gt;</dt><dd>O título da obra, com o elemento <code>cite</code>. O nome da vovó fica fora dele.</dd>
+</dl>
+
+<hr>
+
+<h2>5. Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>Uma frase curta de alguém, no meio do seu texto</td><td><code>&lt;q&gt;</code></td></tr>
+<tr><td>Um trecho longo, de um ou mais parágrafos</td><td><code>&lt;blockquote&gt;</code> com <code>&lt;p&gt;</code> dentro</td></tr>
+<tr><td>Dizer quem falou e de onde veio</td><td>Fora do <code>blockquote</code>: um <code>&lt;p&gt;</code> depois, ou <code>&lt;figure&gt;</code> + <code>&lt;figcaption&gt;</code></td></tr>
+<tr><td>O nome de um livro, filme, música</td><td><code>&lt;cite&gt;</code></td></tr>
+<tr><td>O nome de uma pessoa</td><td>Texto normal (sem <code>cite</code>)</td></tr>
+<tr><td>O endereço da página de onde veio a citação</td><td>Atributo <code>cite="https://…"</code>, e um link <code>&lt;a&gt;</code> se quiser que seja clicável</td></tr>
+<tr><td>Recuar um texto que não é citação</td><td>CSS</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O navegador não mostra mensagem de erro: ele conserta. Em cada caso, veja o que ele fez de verdade e o que o validador diz.</p>
+
+<div class="cenario">
+<strong><code>blockquote</code> dentro de um parágrafo</strong>
+<pre class="file" data-file="bqp.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;A vovó dizia:
+&lt;blockquote&gt;Bolo bom é bolo que a gente faz com calma.&lt;/blockquote&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> o <code>blockquote</code> é um bloco e não cabe dentro de um parágrafo. O navegador fecha o parágrafo logo antes dele, e o <code>&lt;/p&gt;</code> que sobra vira um parágrafo vazio. Na tela parece certo, mas a página montada ficou assim:</p>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;A vovó dizia:
+&lt;/p&gt;&lt;blockquote&gt;Bolo bom é bolo que a gente faz com calma.&lt;/blockquote&gt;
+&lt;p&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu bqp.html
+"file:/home/ana/site/bqp.html":10.1-10.4: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p>A mesma mensagem que você viu em <a href="paragrafos.html#errado">Parágrafos</a>: "nenhum <code>p</code> aberto, mas apareceu um <code>&lt;/p&gt;</code>". O culpado é o bloco que entrou no parágrafo, na linha 9.</p>
+<p><strong>Como consertar:</strong> feche o parágrafo antes da citação: <code>&lt;p&gt;A vovó dizia:&lt;/p&gt;</code> e, depois, o <code>&lt;blockquote&gt;</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:p:empty=0,nsel:p blockquote=0,texto:blockquote p=com calma,nsel:p=2">
+<p class="try-task"><strong>Missão:</strong> a citação está dentro do parágrafo, e o navegador criou um parágrafo vazio. Conserte: o parágrafo "A vovó dizia:" fecha antes, e a frase da vovó fica num <code>&lt;p&gt;</code> <strong>dentro</strong> do <code>&lt;blockquote&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;A vovó dizia:
+&lt;blockquote&gt;Bolo bom é bolo que a gente faz com calma.&lt;/blockquote&gt;
+&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;A vovó dizia:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Bolo bom é bolo que a gente faz com calma.&lt;/p&gt;
+&lt;/blockquote&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Aspas em dobro</strong>
+<pre class="file" data-file="aspas2.html" data-resultado>&lt;p&gt;A vovó dizia: "&lt;q&gt;Bolo bom é bolo feito com calma.&lt;/q&gt;"&lt;/p&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> mostra as aspas que você digitou <strong>e</strong> as que o <code>&lt;q&gt;</code> coloca: duas de cada lado. O validador não reclama, porque para ele as suas aspas são só texto.</p>
+<p><strong>Como consertar:</strong> escolha uma forma. Ou o <code>&lt;q&gt;</code> sem aspas digitadas, ou as aspas digitadas sem <code>&lt;q&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Nome de pessoa no atributo <code>cite</code></strong>
+<pre class="file" data-file="citenome.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;blockquote cite="Vovó Lurdes"&gt;
+  &lt;p&gt;Bolo bom é bolo que a gente faz com calma.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> nada. O atributo <code>cite</code> não aparece, então o nome da vovó some da tela: ninguém fica sabendo quem disse a frase.</p>
+<pre class="term" data-cwd="~/site">$ vnu citenome.html
+"file:/home/ana/site/citenome.html":8.1-8.31: error: Bad value “Vovó Lurdes” for attribute “cite” on element “blockquote”: Illegal character in path segment. Space is not allowed.</pre>
+<dl class="anatomy">
+  <dt>Bad value “Vovó Lurdes” for attribute “cite” on element “blockquote”</dt><dd>"Valor ruim, <code>Vovó Lurdes</code>, para o atributo <code>cite</code> do <code>blockquote</code>."</dd>
+  <dt>Illegal character in path segment. Space is not allowed.</dt><dd>"Caractere ilegal num trecho do caminho. Espaço não é permitido." O validador tentou ler o valor como um endereço (URL) e tropeçou no espaço, que não pode existir num endereço.</dd>
+</dl>
+<p>Se o nome fosse uma palavra só, sem espaço (<code>cite="Vovó"</code>), o validador aceitaria, achando que é o nome de um arquivo. O erro continuaria lá, só que escondido.</p>
+<p><strong>Como consertar:</strong> o nome vai na tela, fora do <code>blockquote</code> (seção 4). No atributo <code>cite</code>, só um endereço, ou nada.</p>
+</div>
+
+<div class="cenario">
+<strong>Parágrafo dentro de <code>&lt;q&gt;</code></strong>
+<p>O <code>&lt;q&gt;</code> é em linha, então não pode ter parágrafos dentro. Com <code>&lt;q&gt;&lt;p&gt;Bolo bom.&lt;/p&gt;&lt;/q&gt;</code>, o validador diz:</p>
+<pre class="term" data-cwd="~/site">$ vnu qbloco.html
+"file:/home/ana/site/qbloco.html":8.4-8.6: error: Element “p” not allowed as child of element “q” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>Como consertar:</strong> se a citação é tão grande que tem parágrafos, ela é um <code>&lt;blockquote&gt;</code>. Se é curta, tire o <code>&lt;p&gt;</code> de dentro do <code>&lt;q&gt;</code> e coloque o <code>&lt;q&gt;</code> dentro de um parágrafo.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;blockquote&gt;&lt;p&gt;…&lt;/p&gt;&lt;/blockquote&gt;</code></td><td>Citação longa, em bloco, com recuo (sem aspas)</td></tr>
+<tr><td><code>&lt;q&gt;…&lt;/q&gt;</code></td><td>Citação curta, em linha; o navegador põe as aspas da língua</td></tr>
+<tr><td><code>&lt;cite&gt;…&lt;/cite&gt;</code></td><td>Título de uma obra, em itálico (nunca o nome de uma pessoa)</td></tr>
+<tr><td><code>cite="https://…"</code></td><td>Atributo de <code>blockquote</code>, <code>q</code>, <code>del</code> e <code>ins</code>: endereço da fonte, invisível</td></tr>
+<tr><td><code>&lt;figure&gt;&lt;blockquote&gt;…&lt;/blockquote&gt;&lt;figcaption&gt;…&lt;/figcaption&gt;&lt;/figure&gt;</code></td><td>Citação com a legenda de quem disse</td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem do validador</th><th>Quer dizer</th></tr>
+<tr><td><code>No “p” element in scope but a “p” end tag seen.</code></td><td>Um <code>blockquote</code> entrou no parágrafo e o fechou antes (error)</td></tr>
+<tr><td><code>Bad value “…” for attribute “cite” on element “blockquote”: Illegal character in path segment. Space is not allowed.</code></td><td>O atributo <code>cite</code> não tem um endereço (error)</td></tr>
+<tr><td><code>Element “p” not allowed as child of element “q” in this context.</code></td><td>Parágrafo dentro de citação curta (error)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A citação curta</h3>
+<p>Complete para o navegador colocar as aspas sozinho:</p>
+<div class="ex-code">&lt;p&gt;A vovó dizia &lt;<input data-answer="q" aria-label="tag de abertura">&gt;calma&lt;/<input data-answer="q" aria-label="tag de fechamento">&gt; o tempo todo.&lt;/p&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O título do livro</h3>
+<p>Complete com o elemento do título de uma obra:</p>
+<div class="ex-code">&lt;p&gt;A receita está no livro &lt;<input data-answer="cite" aria-label="tag de abertura">&gt;Doces de Vó&lt;/cite&gt;.&lt;/p&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Onde fica o nome de quem disse uma citação em <code>&lt;blockquote&gt;</code>?</p>
+<label><input type="radio" name="q3"> No atributo <code>cite</code></label>
+<label><input type="radio" name="q3"> Fora do <code>blockquote</code>: num parágrafo depois, ou num <code>figcaption</code></label>
+<label><input type="radio" name="q3"> Dentro de um <code>&lt;cite&gt;</code>, dentro do <code>blockquote</code></label>
+<label><input type="radio" name="q3"> No <code>&lt;title&gt;</code> da página</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. A Ana escreveu <code>"&lt;q&gt;calma&lt;/q&gt;"</code>, com aspas digitadas. O que aparece?</p>
+<label><input type="radio" name="q4"> “calma”, porque o navegador tira as aspas repetidas</label>
+<label><input type="radio" name="q4"> Uma mensagem de erro</label>
+<label><input type="radio" name="q4"> calma, sem aspas</label>
+<label><input type="radio" name="q4"> Aspas em dobro: as digitadas e as do <code>&lt;q&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Qual destes deve ficar dentro de <code>&lt;cite&gt;</code>?</p>
+<label><input type="radio" name="q5"> Vovó Lurdes</label>
+<label><input type="radio" name="q5"> https://exemplo.com/caderno</label>
+<label><input type="radio" name="q5"> Caderno de Receitas da Família</label>
+<label><input type="radio" name="q5"> A frase "bolo bom é bolo feito com calma"</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. O atributo <code>cite</code> de um <code>&lt;blockquote&gt;</code> aparece na tela?</p>
+<label><input type="radio" name="q6"> Não: fica só no código, para programas e para quem lê o código</label>
+<label><input type="radio" name="q6"> Sim, como um link embaixo da citação</label>
+<label><input type="radio" name="q6"> Sim, em itálico</label>
+<label><input type="radio" name="q6"> Só quando o mouse passa por cima</label>
+</div>
+
+<h3>Missão final: o conselho da vovó</h3>
+
+<div class="tryhtml" data-goal="sel:figure > blockquote > p,texto:blockquote p=separe tudo antes,texto:figcaption=Vovó Lurdes,texto:figcaption cite=Caderno de Receitas da Família,nsel:blockquote cite=0,nsel:cite=1">
+<p class="try-task"><strong>Missão:</strong> transforme o conselho da vovó numa citação de verdade. Coloque tudo num <code>&lt;figure&gt;</code>: a frase dela num <code>&lt;p&gt;</code> dentro de um <code>&lt;blockquote&gt;</code>, e a linha de quem disse num <code>&lt;figcaption&gt;</code>, com o título do caderno num <code>&lt;cite&gt;</code> (o nome da vovó fica fora do <code>cite</code>).</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;O segredo do bolo&lt;/h2&gt;
+&lt;p&gt;Antes de ligar o forno, separe tudo antes, meça tudo, e só depois comece.&lt;/p&gt;
+&lt;p&gt;— Vovó Lurdes, no Caderno de Receitas da Família&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;O segredo do bolo&lt;/h2&gt;
+&lt;figure&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;Antes de ligar o forno, separe tudo antes, meça tudo, e só depois comece.&lt;/p&gt;
+  &lt;/blockquote&gt;
+  &lt;figcaption&gt;— Vovó Lurdes, no &lt;cite&gt;Caderno de Receitas da Família&lt;/cite&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;blockquote&gt;</code> = citação longa, em bloco, com recuo e sem aspas. O texto vai em <code>&lt;p&gt;</code> dentro dele. Não use só para recuar.</li>
+  <li><code>&lt;q&gt;</code> = citação curta, em linha. O navegador põe as aspas certas da língua (“ ” em pt-BR); não digite as suas junto.</li>
+  <li><code>&lt;cite&gt;</code> = título de uma obra (livro, filme, caderno), em itálico. Nome de pessoa não vai em <code>cite</code>.</li>
+  <li>O atributo <code>cite="https://…"</code> guarda o endereço da fonte e não aparece na tela. Um nome ali dá <code>Bad value … Space is not allowed.</code></li>
+  <li>Quem disse fica <strong>fora</strong> do <code>blockquote</code>: num parágrafo depois, ou num <code>&lt;figcaption&gt;</code> dentro de um <code>&lt;figure&gt;</code>.</li>
+  <li><code>blockquote</code> não entra em parágrafo (o navegador fecha o <code>p</code> antes), e <code>q</code> não tem parágrafo dentro.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
