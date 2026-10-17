@@ -1,0 +1,9 @@
+{
+  "name": "guia-html-tools",
+  "private": true,
+  "description": "Ferramentas do Guia HTML (testador de missões)",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer-core": "^23.11.1"
+  }
+}

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demonstração do Editor | Guia HTML</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<style>body { max-width: 860px; margin: 0 auto; padding: 16px; } .demo-tema { float: right; }</style>
+</head>
+<body>
+<button type="button" class="sim-btn2 secundario demo-tema" id="tema">Tema claro/escuro</button>
+<h1>Demonstração do <span class="hl">Editor</span> do Guia HTML</h1>
+<p>Página de teste do <code>assets/htmlsim.js</code> (não faz parte do menu). Sirva a raiz do site e abra <code>/tools/demo.html</code>. Com <code>?htmlsim=simples</code> no endereço, o editor usa o modo simples (sem service worker).</p>
+
+<h2>1. Missão simples (fragmento)</h2>
+<div class="tryhtml" data-goal="texto:h1=Receitas da Ana" id="d-simples">
+<p class="try-task"><strong>Missão:</strong> troque o título por "Receitas da Ana".</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Meu site&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+</pre>
+</div>
+
+<h2>2. Várias abas: HTML, CSS, JS e outra página</h2>
+<div class="tryhtml" data-goal="css:h1{color}=rgb(199, 64, 31), console:Olá da Ana, sel:a[href=&quot;sobre.html&quot;], attr:html[lang]=pt-BR" id="d-abas">
+<p class="try-task"><strong>Missão:</strong> ligue o <code>estilo.css</code> e o <code>script.js</code> no <code>index.html</code> e crie um link para <code>sobre.html</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bem-vindo!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Sobre a Ana&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+  &lt;p&gt;A Ana faz bolos desde criança.&lt;/p&gt;
+  &lt;p&gt;&lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="estilo.css">h1 {
+  color: #c7401f;
+}
+</pre>
+<pre class="script" data-file="script.js">console.log("Olá da Ana");
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+  &lt;script src="script.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bem-vindo! Conheça a &lt;a href="sobre.html"&gt;Ana&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<h2>3. Imagem com texto alternativo (mídia de exemplo)</h2>
+<div class="tryhtml" data-goal="attr:img[alt]=Bolo de cenoura com cobertura de chocolate, sel:img[src$=&quot;bolo-800.jpg&quot;]" id="d-img">
+<p class="try-task"><strong>Missão:</strong> escreva no <code>alt</code> "Bolo de cenoura com cobertura de chocolate".</p>
+<pre class="script" data-file="index.html">&lt;img src="assets/midia/bolo-800.jpg" width="400" height="300"&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+</pre>
+</div>
+
+<h2>4. Formulários (GET para outra aba, POST sem servidor)</h2>
+<div class="tryhtml" id="d-form">
+<pre class="script" data-file="index.html">&lt;form action="obrigado.html" method="get"&gt;
+  &lt;label for="nome"&gt;Nome:&lt;/label&gt;
+  &lt;input id="nome" name="nome" required&gt;
+  &lt;button&gt;Enviar (GET)&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;form action="https://exemplo.com/pedido" method="post"&gt;
+  &lt;label&gt;Sabor: &lt;select name="sabor"&gt;&lt;option&gt;Cenoura&lt;/option&gt;&lt;option&gt;Chocolate&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+  &lt;label&gt;&lt;input type="checkbox" name="cobertura" value="sim" checked&gt; Com cobertura&lt;/label&gt;
+  &lt;button&gt;Pedir (POST)&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="script" data-file="obrigado.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;Obrigado&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Obrigado!&lt;/h1&gt;
+  &lt;p id="msg"&gt;&lt;/p&gt;
+  &lt;script&gt;
+    const nome = new URLSearchParams(location.search).get("nome");
+    document.getElementById("msg").textContent = "Recebemos o nome: " + nome;
+    console.log("busca:", location.search);
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<h2>5. Proibir algo no código (nsrc) e vírgula no seletor</h2>
+<div class="tryhtml" data-goal="nsrc:&lt;font, nsel:h1\, h2=2, sel:strong" id="d-nsrc">
+<p class="try-task"><strong>Missão:</strong> troque o <code>&lt;font&gt;</code> por <code>&lt;strong&gt;</code> e crie um <code>&lt;h2&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Promoção&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura por &lt;font color="red"&gt;R$ 25&lt;/font&gt;.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Promoção&lt;/h1&gt;
+&lt;h2&gt;Só hoje&lt;/h2&gt;
+&lt;p&gt;Bolo de cenoura por &lt;strong&gt;R$ 25&lt;/strong&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<h2>6. Links especiais e erros de JS</h2>
+<div class="tryhtml" id="d-links">
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;a href="#receita"&gt;Ir para a receita&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="mailto:ana@exemplo.com"&gt;Escreva para a Ana&lt;/a&gt; ·
+   &lt;a href="tel:+5511912345678"&gt;Ligue&lt;/a&gt; ·
+   &lt;a href="https://developer.mozilla.org/pt-BR/"&gt;MDN&lt;/a&gt; ·
+   &lt;a href="contato.html"&gt;Contato (não existe)&lt;/a&gt; ·
+   &lt;a href="assets/midia/receita-bolo.pdf" download&gt;Baixar a receita (PDF)&lt;/a&gt;&lt;/p&gt;
+&lt;img src="assets/midia/fotoo.jpg" alt="Foto com o nome errado"&gt;
+&lt;p style="height: 400px"&gt;(espaço)&lt;/p&gt;
+&lt;h2 id="receita"&gt;Receita&lt;/h2&gt;
+&lt;button onclick="console.log('clicou!'); naoExiste()"&gt;Clique&lt;/button&gt;
+</pre>
+</div>
+
+<h2>7. Documento sem DOCTYPE (modo quirks)</h2>
+<div class="tryhtml" data-goal="texto:p=CSS1Compat" id="d-quirks">
+<p class="try-task"><strong>Missão:</strong> ponha o <code>&lt;!DOCTYPE html&gt;</code> e veja o modo mudar.</p>
+<pre class="script" data-file="index.html">&lt;html lang="pt-BR"&gt;
+&lt;head&gt;&lt;title&gt;Sem DOCTYPE&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Sem DOCTYPE&lt;/h1&gt;
+  &lt;script&gt;document.write("&lt;p&gt;Modo: " + document.compatMode + "&lt;/p&gt;");&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;Com DOCTYPE&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Com DOCTYPE&lt;/h1&gt;
+  &lt;script&gt;document.write("&lt;p&gt;Modo: " + document.compatMode + "&lt;/p&gt;");&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<h2>8. Código com o Resultado embaixo (<code>pre.file[data-resultado]</code>)</h2>
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+</pre>
+
+<p>Um erro que o navegador conserta sozinho:</p>
+<pre class="file" data-file="erro.html" data-resultado>&lt;h1&gt;Oi&lt;/h2&gt;
+&lt;p&gt;Este parágrafo ficou dentro do h1?&lt;/p&gt;
+</pre>
+
+<p>Imagens responsivas e mídia:</p>
+<pre class="file" data-file="midia.html" data-resultado>&lt;img src="assets/midia/bolo-800.jpg"
+     srcset="assets/midia/bolo-400.jpg 400w, assets/midia/bolo-800.jpg 800w, assets/midia/bolo-1200.jpg 1200w"
+     sizes="(max-width: 600px) 100vw, 400px"
+     alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+&lt;audio controls src="assets/midia/campainha.mp3"&gt;&lt;/audio&gt;
+&lt;video controls width="320" poster="assets/midia/video-bolo-poster.jpg"&gt;
+  &lt;source src="assets/midia/video-bolo.webm" type="video/webm"&gt;
+  &lt;source src="assets/midia/video-bolo.mp4" type="video/mp4"&gt;
+  &lt;track src="assets/midia/video-bolo.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
+&lt;/video&gt;
+</pre>
+
+<script src="../assets/htmlsim.js"></script>
+<script>
+document.getElementById("tema").addEventListener("click", function () {
+  var r = document.documentElement, t = r.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  r.setAttribute("data-theme", t === "dark" ? "light" : "dark");
+});
+</script>
+</body>
+</html>
