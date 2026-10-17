@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Espaços e Quebras de Linha — por que o Enter não aparece | Guia HTML</title>
+<meta name="description" content="Espaços e quebras de linha no HTML para quem nunca fez um site: o navegador junta vários espaços e Enters num espaço só, a indentação não muda nada, como quebrar a linha com br e p, como manter os espaços com pre e &amp;nbsp;, espaço dentro e fora das tags e os erros de espaço no lugar errado, com as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Espaços e Quebras de Linha</span></h1>
+
+<p class="intro">Todo mundo que começa no HTML passa por isto: você aperta <kbd>Enter</kbd> no código para pular uma linha, abre a página, e o texto aparece todo emendado numa linha só. Ou dá cinco espaços para afastar uma palavra, e aparece um só. Não é defeito: o navegador <strong>junta</strong> os espaços de propósito. Nesta aula você vai entender essa regra, ver por que ela é boa, e aprender os jeitos certos de quebrar uma linha e de manter os espaços quando você precisa deles.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>A regra: vários espaços, tabulações e <kbd>Enter</kbd>s seguidos viram <strong>um espaço só</strong>.</li>
+  <li>Por que a indentação e as linhas em branco do código não mudam a página.</li>
+  <li>Como quebrar a linha de verdade: <code>&lt;br&gt;</code> e <code>&lt;p&gt;</code>.</li>
+  <li>Como manter os espaços: <code>&lt;pre&gt;</code> e <code>&amp;nbsp;</code>.</li>
+  <li>Onde um espaço muda o resultado (entre palavras e tags) e onde ele é um erro (dentro da tag, depois do <code>&lt;</code>).</li>
+  <li>Por que não usar <code>&lt;br&gt;</code> e parágrafos vazios para dar espaço entre as partes.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code> 26.10.12, aula <a href="validar.html">Validar o HTML</a>) na máquina fictícia da Ana, na pasta <code>~/site/espacos</code>, e abertos no Chromium. Os exemplos mostram só o que vai dentro do <code>&lt;body&gt;</code>.</p>
+
+<hr>
+
+<h2>A ideia: o texto que se ajusta à janela</h2>
+<p>Pense numa mensagem de celular. Você não decide onde cada linha acaba: o texto se ajusta sozinho à largura da tela. No celular deitado, cabem mais palavras por linha; em pé, menos.</p>
+
+<p>Uma página da web é igual. Ela vai ser vista num celular, num notebook, numa TV, cada um com uma largura diferente. Por isso o navegador decide sozinho onde quebrar as linhas do texto, e trata os espaços e os <kbd>Enter</kbd>s do seu código só como "aqui tem uma separação entre palavras". Quem decide onde um parágrafo começa é o HTML, com tags. Os espaços do código ficam livres para outra coisa: deixar o código <strong>organizado</strong> para você.</p>
+
+<hr>
+
+<h2>1. A regra: tudo vira um espaço</h2>
+<p>A Ana escreveu um poema com quebras de linha e alguns espaços a mais:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Bolo de cenoura,
+cobertura     de chocolate,
+       café passado
+na hora.&lt;/p&gt;
+</pre>
+
+<p>No resultado, tudo saiu numa linha só (ou quebrado onde a janela acaba), com um espaço entre cada palavra. A regra do navegador, para o texto comum:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No código</th><th>Na tela</th></tr>
+<tr><td>vários espaços seguidos</td><td>um espaço</td></tr>
+<tr><td>uma tabulação (<kbd>Tab</kbd>)</td><td>um espaço</td></tr>
+<tr><td>uma quebra de linha (<kbd>Enter</kbd>)</td><td>um espaço</td></tr>
+<tr><td>uma mistura de tudo isso, seguida</td><td>um espaço</td></tr>
+<tr><td>espaços no começo e no fim de um parágrafo</td><td>nada: somem</td></tr>
+</table>
+</div>
+
+<p>Esses caracteres invisíveis (espaço, tabulação, quebra de linha) têm um nome coletivo: <strong>espaço em branco</strong> (em inglês, <em>whitespace</em>). A regra de juntá-los vem do CSS, a linguagem da aparência (quer aprender mais? futuro Guia CSS, a propriedade <code>white-space</code>).</p>
+
+<h3>É por isso que a indentação não atrapalha</h3>
+<p>Graças a essa regra, você pode indentar o código e separar as partes com linhas em branco (aula <a href="aninhamento.html">Aninhamento</a>) sem mudar nada na página. Os dois códigos abaixo dão <strong>o mesmo</strong> resultado:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ul&gt;&lt;li&gt;3 cenouras&lt;/li&gt;&lt;li&gt;3 ovos&lt;/li&gt;&lt;/ul&gt;
+</pre>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ul&gt;
+
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+
+    &lt;li&gt;3 ovos&lt;/li&gt;
+
+&lt;/ul&gt;
+</pre>
+
+<p>O segundo é muito mais fácil de ler, e é assim que o guia escreve (com dois espaços por nível).</p>
+
+<hr>
+
+<h2>2. Quebrar a linha de verdade</h2>
+<p>Se o <kbd>Enter</kbd> não quebra a linha, quem quebra? Uma <strong>tag</strong>. Depende do que você quer dizer:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th><th>Aula</th></tr>
+<tr><td>um assunto novo, um bloco de texto separado</td><td><code>&lt;p&gt;…&lt;/p&gt;</code>, um parágrafo novo</td><td><a href="paragrafos.html">Parágrafos</a></td></tr>
+<tr><td>uma linha nova <strong>dentro</strong> do mesmo assunto (endereço, poema, letra de música)</td><td><code>&lt;br&gt;</code></td><td><a href="quebras.html">Quebras</a></td></tr>
+<tr><td>uma lista de coisas, uma por linha</td><td><code>&lt;ul&gt;</code> e <code>&lt;li&gt;</code></td><td><a href="listas.html">Listas</a></td></tr>
+</table>
+</div>
+
+<p>O poema da Ana, agora com <code>&lt;br&gt;</code> no fim de cada verso (o <kbd>Enter</kbd> depois do <code>&lt;br&gt;</code> é só para o código ficar legível):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Bolo de cenoura,&lt;br&gt;
+cobertura de chocolate,&lt;br&gt;
+café passado&lt;br&gt;
+na hora.&lt;/p&gt;
+</pre>
+
+<div class="tryhtml" data-goal="nsel:p=1,nsel:p br=2,texto:p=Rua das Flores\, 10">
+<p class="try-task"><strong>Missão:</strong> o endereço da lojinha deveria aparecer em <strong>três linhas</strong>: a rua, o bairro e a cidade. A Ana deu <kbd>Enter</kbd> no código, mas saiu tudo emendado. Use <code>&lt;br&gt;</code> para quebrar as linhas, dentro do mesmo parágrafo.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;p&gt;Rua das Flores, 10
+Jardim Primavera
+São Paulo&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;p&gt;Rua das Flores, 10&lt;br&gt;
+Jardim Primavera&lt;br&gt;
+São Paulo&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Manter os espaços</h2>
+
+<h3><code>&lt;pre&gt;</code>: o texto exatamente como está</h3>
+<p>O elemento <code>&lt;pre&gt;</code> (de <em>preformatted</em>, "pré-formatado") desliga a regra: dentro dele, cada espaço e cada <kbd>Enter</kbd> aparecem como estão no código, e a letra muda para uma fonte em que todos os caracteres têm a mesma largura. Ele serve para código de programa, arte com letras e textos em que a posição importa (aula <a href="codigo.html">Código</a>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;pre&gt;
+Ingrediente     Quantidade
+cenoura         3
+ovo             3
+farinha         2 xícaras
+&lt;/pre&gt;
+</pre>
+
+<p>Repare que as colunas ficaram alinhadas. Para uma tabela de verdade, porém, use <code>&lt;table&gt;</code> (aula <a href="tabelas.html">Tabelas</a>): o leitor de tela entende uma tabela, mas não entende colunas feitas com espaços.</p>
+
+<h3><code>&amp;nbsp;</code>: o espaço que não quebra</h3>
+<p>Às vezes você quer que duas palavras <strong>nunca</strong> fiquem separadas em linhas diferentes: "40 minutos", "R$ 25", "Dona Lúcia". Para isso existe o <strong>espaço inquebrável</strong>, escrito <code>&amp;nbsp;</code> (<em>non-breaking space</em>, "espaço que não quebra"):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Asse por 40&amp;nbsp;minutos e sirva com café.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&amp;</dt><dd>Começa uma <strong>entidade</strong>: um código que vira um caractere especial (aula <a href="entidades.html">Entidades</a>).</dd>
+  <dt>nbsp</dt><dd>O nome da entidade: o espaço inquebrável.</dd>
+  <dt>;</dt><dd>Termina a entidade.</dd>
+</dl>
+
+<p>Na tela, ele parece um espaço comum. A diferença aparece quando a linha acaba: o navegador nunca quebra a linha ali, então "40" e "minutos" vão juntos para a linha de baixo. Diminua a janela (ou abra a página no celular) e compare com o "sirva com café", que pode se separar.</p>
+
+<div class="warning">
+<strong>Não use <code>&amp;nbsp;</code> nem <code>&lt;br&gt;</code> para dar espaço</strong>
+<p>É tentador escrever <code>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;</code> para afastar uma palavra, ou <code>&lt;br&gt;&lt;br&gt;&lt;br&gt;</code> e <code>&lt;p&gt;&amp;nbsp;&lt;/p&gt;</code> para separar as partes da página. O validador nem reclama, mas o resultado muda de tela para tela, e o leitor de tela anuncia linhas vazias. Espaçamento é trabalho do CSS (<code>margin</code>, <code>padding</code>; quer aprender mais? futuro Guia CSS). No HTML, use os elementos pelo que eles <strong>significam</strong>.</p>
+</div>
+
+<hr>
+
+<h2>4. Quando um espaço faz diferença</h2>
+
+<h3>Entre as palavras e as tags</h3>
+<p>A regra junta vários espaços em um, mas <strong>nenhum</strong> espaço continua sendo nenhum. Um elemento de frase, como o <code>&lt;strong&gt;</code>, fica colado no texto ao lado se não houver espaço no código:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Asse por&lt;strong&gt;40 minutos&lt;/strong&gt;em forno médio.&lt;/p&gt;
+&lt;p&gt;Asse por &lt;strong&gt;40 minutos&lt;/strong&gt; em forno médio.&lt;/p&gt;
+</pre>
+
+<p>No primeiro parágrafo, "por40" e "minutosem" ficaram grudados. O espaço entre as palavras tem de existir no código, <strong>fora</strong> das tags (ou dentro delas: <code>&lt;strong&gt; 40 minutos &lt;/strong&gt;</code> também funciona, mas o costume é deixar o espaço do lado de fora).</p>
+
+<h3>Dentro da tag</h3>
+<p>Dentro da tag, o espaço segue regras próprias:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Resultado</th></tr>
+<tr><td><code>&lt;p title="Bolo"&gt;</code></td><td>Certo: um espaço entre o nome do elemento e o atributo</td></tr>
+<tr><td><code>&lt;p   title="Bolo"&gt;</code>, ou com <kbd>Enter</kbd> entre os atributos</td><td>Certo: vários espaços ou quebras também valem (útil para tags com muitos atributos)</td></tr>
+<tr><td><code>&lt;p title = "Bolo"&gt;</code></td><td>Válido, mas fora do costume</td></tr>
+<tr><td><code>&lt;p &gt;</code> e <code>&lt;/p &gt;</code></td><td>Válido: espaço antes do <code>&gt;</code> é aceito</td></tr>
+<tr><td><code>&lt; p&gt;</code> e <code>&lt; /p&gt;</code></td><td><strong>Erro</strong>: espaço depois do <code>&lt;</code> (veja abaixo)</td></tr>
+<tr><td><code>&lt;/ p&gt;</code></td><td><strong>Erro</strong>: espaço depois do <code>&lt;/</code> (veja abaixo)</td></tr>
+<tr><td><code>href="minhas receitas.html"</code></td><td><strong>Erro</strong>: endereço com espaço (veja abaixo)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Espaço depois do <code>&lt;/</code>: <code>Garbage after “&lt;/”.</code></strong>
+<pre class="file" data-file="espaco-fecha.html · erro de propósito">&lt;p&gt;Bolo de cenoura.&lt;/ p&gt;
+&lt;p&gt;Pudim de leite.&lt;/p&gt;
+</pre>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;Bolo de cenoura.&lt;!-- p--&gt;
+&lt;/p&gt;&lt;p&gt;Pudim de leite.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/espacos">$ vnu espaco-fecha.html
+"file:/home/ana/site/espacos/espaco-fecha.html":8.20-8.22: error: Garbage after “&lt;/”.</pre>
+<p><strong>O que significa:</strong> "lixo depois de <code>&lt;/</code>". Depois do <code>&lt;/</code> tem de vir o nome do elemento. Com o espaço, o navegador não reconhece um fechamento e transforma o pedaço inteiro num <strong>comentário</strong> (aula <a href="comentarios.html">Comentários</a>): <code>&lt;!-- p--&gt;</code>. <strong>No navegador:</strong> por sorte, nada muda na tela: o segundo <code>&lt;p&gt;</code> fecha o primeiro sozinho. Mas um <code>&lt;/ h1&gt;</code> ou um <code>&lt;/ strong&gt;</code> deixaria o elemento aberto, com os problemas da aula <a href="aninhamento.html">Aninhamento</a>. <strong>Como consertar:</strong> <code>&lt;/p&gt;</code>, tudo junto.</p>
+</div>
+
+<div class="cenario">
+<strong>Espaço depois do <code>&lt;</code>: <code>Bad character “ ” after “&lt;”.</code></strong>
+<pre class="file" data-file="espaco-fecha2.html · erro de propósito">&lt;p&gt;Bolo de cenoura.&lt; /p&gt;
+&lt;p&gt;Pudim de leite.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/espacos">$ vnu espaco-fecha2.html
+"file:/home/ana/site/espacos/espaco-fecha2.html":8.20-8.21: error: Bad character “ ” after “&lt;”. Probable cause: Unescaped “&lt;”. Try escaping it as “&amp;lt;”.</pre>
+<p><strong>O que significa:</strong> com o espaço logo depois do <code>&lt;</code>, ele vira um sinal de "menor que" no texto. <strong>No navegador:</strong> aparece escrito na tela "Bolo de cenoura.&lt; /p&gt;". <strong>Como consertar:</strong> nada de espaço logo depois do <code>&lt;</code>, nem na abertura, nem no fechamento.</p>
+</div>
+
+<div class="cenario">
+<strong>Espaço num endereço: <code>Illegal character in path segment. Space is not allowed.</code></strong>
+<pre class="term" data-cwd="~/site/espacos">$ sed -n 8p href-meio.html
+&lt;p&gt;&lt;a href="minhas receitas.html"&gt;Receitas&lt;/a&gt;&lt;/p&gt;
+$ vnu href-meio.html
+"file:/home/ana/site/espacos/href-meio.html":8.4-8.34: error: Bad value “minhas receitas.html” for attribute “href” on element “a”: Illegal character in path segment. Space is not allowed.</pre>
+<p><strong>O que significa:</strong> "valor ruim para o <code>href</code>: caractere ilegal no caminho. Espaço não é permitido". Endereços da web não podem ter espaço. <strong>No navegador:</strong> o link até funciona, porque o navegador troca o espaço por <code>%20</code> sozinho, mas o endereço fica feio e alguns programas se confundem. Espaços nas <strong>pontas</strong> (<code>href=" receitas.html "</code>) são cortados e não dão erro. <strong>Como consertar:</strong> não use espaço em nome de arquivo. Troque por hífen: <code>minhas-receitas.html</code> (aula <a href="organizar-arquivos.html">Organizar os Arquivos de um Site</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>"Apertei Enter e não pulou a linha"</strong>
+<p><strong>O que significa:</strong> não é erro, e o validador não diz nada: é a regra da seção 1. <strong>Como consertar:</strong> decida o que a quebra quer dizer. Assunto novo: <code>&lt;p&gt;</code>. Linha nova no mesmo assunto: <code>&lt;br&gt;</code>. Espaço maior entre as partes: CSS.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Na tela</th></tr>
+<tr><td>Vários espaços, <kbd>Tab</kbd>s e <kbd>Enter</kbd>s seguidos</td><td>Um espaço</td></tr>
+<tr><td>Espaços no começo e no fim do parágrafo</td><td>Nada</td></tr>
+<tr><td><code>&lt;br&gt;</code></td><td>Linha nova no mesmo parágrafo</td></tr>
+<tr><td><code>&lt;p&gt;…&lt;/p&gt;</code></td><td>Parágrafo novo</td></tr>
+<tr><td><code>&lt;pre&gt;…&lt;/pre&gt;</code></td><td>Espaços e quebras exatamente como no código</td></tr>
+<tr><td><code>&amp;nbsp;</code></td><td>Um espaço em que a linha nunca quebra</td></tr>
+<tr><td><code>por&lt;strong&gt;40&lt;/strong&gt;</code></td><td>Palavras grudadas: "por40"</td></tr>
+<tr><td><code>&lt;/ p&gt;</code>, <code>&lt; /p&gt;</code></td><td>Erros: <code>Garbage after “&lt;/”</code>, <code>Bad character “ ” after “&lt;”</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">1. No código, a Ana escreveu <code>Bolo</code>, cinco espaços e <code>de cenoura</code>. Quantos espaços aparecem entre "Bolo" e "de" na tela?</p>
+<label><input type="radio" name="q1"> Cinco</label>
+<label><input type="radio" name="q1"> Um</label>
+<label><input type="radio" name="q1"> Nenhum</label>
+<label><input type="radio" name="q1"> Depende do tamanho da janela</label>
+</div>
+
+<div class="exercise">
+<h3>2. Linha nova</h3>
+<p>Complete para que "São Paulo" apareça na linha de baixo, no mesmo parágrafo:</p>
+<div class="ex-code">&lt;p&gt;Rua das Flores, 10<input data-answer="&lt;br&gt;|&lt;br/&gt;|&lt;br /&gt;" aria-label="quebra">São Paulo&lt;/p&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. O espaço que não quebra</h3>
+<p>Complete para que "R$" e "25" nunca fiquem em linhas diferentes:</p>
+<div class="ex-code">&lt;p&gt;Bolo de cenoura: R$<input data-answer="&amp;nbsp;" aria-label="espaço inquebrável">25&lt;/p&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Qual elemento mostra os espaços e as quebras de linha exatamente como estão no código?</p>
+<label><input type="radio" name="q4"> <code>&lt;p&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;br&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;pre&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;strong&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. O que o navegador faz com <code>&lt;/ p&gt;</code>, com espaço depois da barra?</p>
+<label><input type="radio" name="q5"> Transforma num comentário, e o parágrafo não é fechado ali</label>
+<label><input type="radio" name="q5"> Fecha o parágrafo normalmente, e o validador aceita</label>
+<label><input type="radio" name="q5"> Mostra uma tela de erro</label>
+<label><input type="radio" name="q5"> Apaga o parágrafo</label>
+</div>
+
+<h3>Missão final: o poema da padaria</h3>
+
+<div class="tryhtml" data-goal="nsel:p=2,nsel:p:first-of-type br=3,nsel:br=3,src:40&amp;nbsp;minutos,texto:p:last-of-type=asse por 40 minutos em forno">
+<p class="try-task"><strong>Missão:</strong> a Ana quer o poema da padaria com <strong>um verso por linha</strong> (são quatro versos, no mesmo parágrafo). Ela tentou separar o poema da dica com <code>&lt;br&gt;</code>s e um parágrafo vazio: tire esses "espaçadores". Por fim, na dica, troque o espaço entre <code>40</code> e <code>minutos</code> por um espaço que não quebra, e deixe espaço antes e depois do <code>&lt;strong&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Padaria da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Padaria da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura,
+cobertura de chocolate,
+café passado
+na hora.&lt;/p&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Dica: asse por&lt;strong&gt;40 minutos&lt;/strong&gt;em forno médio.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Padaria da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Padaria da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura,&lt;br&gt;
+cobertura de chocolate,&lt;br&gt;
+café passado&lt;br&gt;
+na hora.&lt;/p&gt;
+&lt;p&gt;Dica: asse por &lt;strong&gt;40&amp;nbsp;minutos&lt;/strong&gt; em forno médio.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Repare que o <code>&amp;nbsp;</code> foi conferido no <strong>código</strong>: na página desenhada, ele parece um espaço comum, e a diferença só aparece quando a linha quebra.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>No texto comum, vários espaços, <kbd>Tab</kbd>s e <kbd>Enter</kbd>s seguidos viram <strong>um espaço</strong>, e os das pontas do parágrafo somem. O navegador decide onde a linha quebra.</li>
+  <li>Por isso você pode indentar e pular linhas no código à vontade: a página não muda.</li>
+  <li>Para quebrar a linha: <code>&lt;p&gt;</code> (assunto novo) ou <code>&lt;br&gt;</code> (linha nova no mesmo assunto).</li>
+  <li>Para manter espaços: <code>&lt;pre&gt;</code> (tudo como está) ou <code>&amp;nbsp;</code> (um espaço que não quebra).</li>
+  <li>Nada de <code>&lt;br&gt;</code> repetidos, parágrafos vazios ou <code>&amp;nbsp;</code> em fila para dar espaço: isso é trabalho do CSS.</li>
+  <li>Sem espaço no código, as palavras grudam nas tags. Espaço logo depois do <code>&lt;</code> ou do <code>&lt;/</code> é erro; espaço em endereço também.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
