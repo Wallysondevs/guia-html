@@ -277,7 +277,7 @@ Keyboard interrupt received, exiting.
 <hr>
 
 <h2>6. No editor do guia</h2>
-<p>O editor "Experimente" deste guia funciona como um pequeno servidor: cada aba vira um arquivo com endereço, como num site publicado. Por isso o <code>fetch</code> e os caminhos se comportam como no <code>http://</code>, e não como no <code>file://</code>.</p>
+<p>O editor "Experimente" deste guia funciona como um pequeno servidor: cada aba vira um arquivo com endereço, como num site publicado. Por isso o <code>fetch</code> e os caminhos se comportam como no <code>http://</code>, e não como no <code>file://</code>. (Numa janela anônima do Firefox, ou com o guia aberto direto do disco, o editor não consegue montar esse "servidor" e usa um modo simples, em que a primeira missão abaixo não funciona.)</p>
 
 <div class="tryhtml" data-goal="console:2 receitas">
 <p class="try-task"><strong>Missão:</strong> o script busca a lista de receitas, mas o console mostra um erro: o servidor respondeu 404. Compare o nome pedido no <code>fetch</code> com o nome da aba e conserte o <code>script.js</code>. O console deve mostrar <code>2 receitas</code>.</p>
