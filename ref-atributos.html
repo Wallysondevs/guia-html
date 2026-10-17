@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Atributos — globais, de cada elemento, booleanos e obsoletos | Guia HTML</title>
+<meta name="description" content="Referência dos atributos do HTML: anatomia, tipos de valor (texto, número, booleano, lista fixa, endereço), atributos globais (class, id, style, lang, hidden, tabindex, data-*…), os atributos de cada elemento (a, img, video, iframe, script, form, input, table, ol…), os obsoletos e os valores errados, com as mensagens reais do validador W3C e a aula de cada um.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Atributos</span></h1>
+
+<p class="intro">Os <strong>atributos</strong> são as informações extras de um elemento: o endereço de um link, o texto alternativo de uma imagem, o idioma da página. Esta página de consulta junta, em tabelas, os atributos que <strong>todo</strong> elemento aceita (os globais), os atributos de cada elemento, os atributos antigos que não devem mais ser usados e os valores errados mais comuns, com a mensagem real do validador W3C. Para aprender com calma, veja a aula <a href="atributos.html">Atributos</a>.</p>
+
+<div class="note">
+<strong>Como usar esta página</strong>
+<ul>
+  <li>Procure com <kbd>Ctrl</kbd>+<kbd>F</kbd> pelo nome do atributo seguido de <code>=</code>, por exemplo <code>href=</code>, ou pelo nome do elemento, por exemplo <code>&lt;img</code>.</li>
+  <li>As mensagens do validador saíram do <code>vnu</code> (o mesmo do validator.w3.org) na máquina da Ana, na pasta <code>~/ref</code>. No seu computador, o nome do arquivo e o número da linha mudam; o texto da mensagem é o mesmo.</li>
+  <li>Os <code>type</code> do <code>&lt;input&gt;</code> estão na referência <a href="ref-input.html">Tipos de input</a>, e os <code>&lt;meta&gt;</code>, em <a href="ref-meta.html">Metas do head</a>.</li>
+</ul>
+</div>
+
+<p>Atalhos: <a href="#anatomia">Anatomia</a> · <a href="#valores">Tipos de valor</a> · <a href="#booleanos">Booleanos</a> · <a href="#globais">Globais</a> · <a href="#eventos">Eventos</a> · <a href="#links">Links</a> · <a href="#imagens">Imagens</a> · <a href="#midia">Áudio e vídeo</a> · <a href="#iframe">iframe</a> · <a href="#head">head e scripts</a> · <a href="#formularios">Formulários</a> · <a href="#tabelas">Tabelas e listas</a> · <a href="#texto">Texto</a> · <a href="#interativos">Interativos</a> · <a href="#obsoletos">Obsoletos</a> · <a href="#errados">Valores errados</a> · <a href="#experimente">Experimente</a></p>
+
+<hr>
+
+<h2 id="anatomia">Anatomia de um atributo</h2>
+<p>Os atributos ficam <strong>sempre na tag de abertura</strong>, depois do nome do elemento, separados por espaços:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;a href="receitas.html" title="Todas as receitas" class="botao"&gt;Ver receitas&lt;/a&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt><code>href</code></dt><dd>O <strong>nome</strong> do atributo. <code>href</code> = "hypertext reference", o endereço do link. O HTML não diferencia maiúsculas de minúsculas nos nomes, mas o costume é escrever tudo em minúsculas.</dd>
+  <dt><code>=</code></dt><dd>Liga o nome ao valor. Sem espaços em volta é o costume.</dd>
+  <dt><code>"receitas.html"</code></dt><dd>O <strong>valor</strong>, entre aspas duplas. Aspas simples (<code>'…'</code>) também valem. Sem aspas funciona só se o valor não tiver espaço nem caracteres como <code>"</code>, <code>'</code>, <code>=</code>, <code>&lt;</code>, <code>&gt;</code> e <code>`</code>; o guia sempre usa aspas.</dd>
+  <dt><code>title="…" class="…"</code></dt><dd>Outros atributos, em qualquer ordem. O mesmo atributo <strong>não pode</strong> aparecer duas vezes na mesma tag.</dd>
+</dl>
+<p>Passe o mouse sobre o link do resultado: a dica "Todas as receitas" é o <code>title</code>.</p>
+
+<h2 id="valores">Tipos de valor</h2>
+<p>Cada atributo espera um tipo de valor. Quando o valor não é do tipo certo, o navegador geralmente <strong>ignora</strong> o atributo sem avisar, e o validador dá o erro <code>Bad value</code> ("valor ruim"; veja <a href="#errados">Valores errados</a>).</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tipo</th><th>Como é</th><th>Exemplos</th></tr>
+<tr><td>Texto livre</td><td>Qualquer texto.</td><td><code>alt="Bolo de cenoura"</code>, <code>title="Dica"</code>, <code>placeholder="Seu nome"</code></td></tr>
+<tr><td>Número</td><td>Só algarismos, <strong>sem unidade</strong>. Largura e altura são em pixels, mas sem o <code>px</code>.</td><td><code>width="300"</code>, <code>colspan="2"</code>, <code>maxlength="40"</code></td></tr>
+<tr><td>Booleano</td><td>Liga ou desliga. Estar presente = ligado. Veja <a href="#booleanos">abaixo</a>.</td><td><code>required</code>, <code>disabled</code>, <code>controls</code>, <code>open</code></td></tr>
+<tr><td>Lista fixa (enumerado)</td><td>Uma palavra de uma lista definida pelo HTML, quase sempre em inglês.</td><td><code>type="email"</code>, <code>dir="rtl"</code>, <code>loading="lazy"</code>, <code>target="_blank"</code></td></tr>
+<tr><td>Endereço (URL)</td><td>Um caminho relativo ou absoluto. Espaços viram <code>%20</code>.</td><td><code>href="sobre.html"</code>, <code>src="img/bolo.jpg"</code>, <code>href="https://exemplo.com"</code></td></tr>
+<tr><td>Identificador</td><td>Um nome sem espaços, único na página.</td><td><code>id="contato"</code>, <code>for="nome"</code>, <code>list="sabores"</code></td></tr>
+<tr><td>Lista de palavras</td><td>Várias palavras separadas por espaço.</td><td><code>class="botao grande"</code>, <code>rel="noopener noreferrer"</code></td></tr>
+<tr><td>Data e hora</td><td>No formato das máquinas: ano-mês-dia, horas com dois-pontos.</td><td><code>datetime="2026-10-17"</code>, <code>datetime="19:30"</code>, <code>min="2026-01-01"</code></td></tr>
+<tr><td>Idioma</td><td>Um código de idioma (BCP 47), com hífen.</td><td><code>lang="pt-BR"</code>, <code>lang="en"</code>, <code>srclang="es"</code></td></tr>
+</table>
+</div>
+
+<h2 id="booleanos">Atributos booleanos: a pegadinha do "false"</h2>
+<p>Um atributo booleano funciona como um interruptor: <strong>estar escrito</strong> já liga. As três formas abaixo são iguais e válidas:</p>
+<pre class="file" data-file="index.html" data-resultado>&lt;label&gt;&lt;input type="checkbox" checked&gt; Com cobertura&lt;/label&gt;
+&lt;label&gt;&lt;input type="checkbox" checked=""&gt; Com granulado&lt;/label&gt;
+&lt;label&gt;&lt;input type="checkbox" checked="checked"&gt; Com morango&lt;/label&gt;
+</pre>
+<p>Para desligar, <strong>apague o atributo</strong>. Escrever <code>="false"</code> não desliga: o navegador vê que o atributo está lá e liga do mesmo jeito. O validador acusa o erro (trechos das saídas):</p>
+<pre class="term" data-cwd="~/ref">$ vnu attr.html
+"file:/home/ana/ref/attr.html":17.1-17.47: error: Bad value “true” for attribute “checked” on element “input”.
+$ vnu attr2.html
+"file:/home/ana/ref/attr2.html":10.1-10.45: error: Bad value “false” for attribute “required” on element “input”.</pre>
+<p>Atributos booleanos comuns: <code>hidden</code>, <code>autofocus</code>, <code>inert</code>, <code>disabled</code>, <code>readonly</code>, <code>required</code>, <code>checked</code>, <code>selected</code>, <code>multiple</code>, <code>novalidate</code>, <code>formnovalidate</code>, <code>controls</code>, <code>autoplay</code>, <code>muted</code>, <code>loop</code>, <code>playsinline</code>, <code>default</code>, <code>reversed</code>, <code>open</code>, <code>async</code>, <code>defer</code>, <code>nomodule</code>, <code>allowfullscreen</code>.</p>
+<div class="warning">
+<strong>Nem todo "liga e desliga" é booleano</strong>
+<p><code>contenteditable</code>, <code>draggable</code> e <code>spellcheck</code> são <strong>enumerados</strong>: o valor é <code>"true"</code> ou <code>"false"</code> por extenso, e <code>draggable</code> sozinho é um erro (<code>Bad value “” for attribute “draggable” on element “p”.</code>). Já <code>translate</code> usa <code>"yes"</code> ou <code>"no"</code>.</p>
+</div>
+
+<h2 id="globais">Atributos globais (valem em qualquer elemento)</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>O que faz</th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td><code>id</code></td><td>Um nome <strong>único</strong> na página, para links (<code>#id</code>), <code>label for</code>, CSS e JavaScript.</td><td><code>id="contato"</code></td><td><a href="class-id.html">class e id</a></td></tr>
+<tr><td><code>class</code></td><td>Uma ou mais classes, separadas por espaço, para dar estilo a vários elementos de uma vez.</td><td><code>class="receita destaque"</code></td><td><a href="class-id.html">class e id</a></td></tr>
+<tr><td><code>style</code></td><td>CSS só para este elemento.</td><td><code>style="color: darkred"</code></td><td><a href="atributo-style.html">O Atributo style</a></td></tr>
+<tr><td><code>title</code></td><td>Uma dica que aparece quando o mouse para em cima. Não aparece no celular: não guarde nela nada importante.</td><td><code>title="Abre em nova aba"</code></td><td><a href="atributos.html">Atributos</a></td></tr>
+<tr><td><code>lang</code></td><td>O idioma do conteúdo. No <code>&lt;html&gt;</code>, o da página toda; num trecho, o daquele trecho.</td><td><code>lang="pt-BR"</code>, <code>&lt;i lang="en"&gt;</code></td><td><a href="estrutura.html">Estrutura de uma Página</a></td></tr>
+<tr><td><code>dir</code></td><td>A direção do texto: <code>ltr</code> (da esquerda para a direita), <code>rtl</code> (árabe, hebraico) ou <code>auto</code>.</td><td><code>dir="rtl"</code></td><td><a href="atributos-globais.html">Atributos Globais</a></td></tr>
+<tr><td><code>hidden</code></td><td>Esconde o elemento (booleano). <code>hidden="until-found"</code> esconde, mas a busca do navegador (<kbd>Ctrl</kbd>+<kbd>F</kbd>) acha e mostra.</td><td><code>&lt;p hidden&gt;</code></td><td><a href="atributos-globais.html">Atributos Globais</a></td></tr>
+<tr><td><code>tabindex</code></td><td>Põe o elemento na ordem da tecla <kbd>Tab</kbd> (<code>0</code>) ou só permite o foco por JavaScript (<code>-1</code>). Evite números maiores que 0.</td><td><code>tabindex="0"</code></td><td><a href="teclado.html">Teclado e Foco</a></td></tr>
+<tr><td><code>accesskey</code></td><td>Uma tecla de atalho para o elemento. A combinação (Alt, Alt+Shift…) muda de navegador para navegador.</td><td><code>accesskey="b"</code></td><td><a href="teclado.html">Teclado e Foco</a></td></tr>
+<tr><td><code>autofocus</code></td><td>Põe o foco no elemento quando a página abre (booleano). Só um por página.</td><td><code>&lt;input autofocus&gt;</code></td><td><a href="atributos-input.html">placeholder, value…</a></td></tr>
+<tr><td><code>inert</code></td><td>Desliga o elemento e tudo dentro dele: não recebe clique, foco nem leitura de tela (booleano).</td><td><code>&lt;main inert&gt;</code></td><td><a href="atributos-globais.html">Atributos Globais</a></td></tr>
+<tr><td><code>contenteditable</code></td><td>Deixa o leitor editar o texto do elemento direto na página.</td><td><code>contenteditable="true"</code></td><td><a href="contenteditable.html">contenteditable</a></td></tr>
+<tr><td><code>draggable</code></td><td>Diz se o elemento pode ser arrastado com o mouse.</td><td><code>draggable="true"</code></td><td><a href="arrastar-soltar.html">Arrastar e Soltar</a></td></tr>
+<tr><td><code>spellcheck</code></td><td>Liga ou desliga o corretor ortográfico num campo ou texto editável.</td><td><code>spellcheck="false"</code></td><td><a href="atributos-globais.html">Atributos Globais</a></td></tr>
+<tr><td><code>translate</code></td><td>Pede aos tradutores automáticos que não traduzam o trecho (um nome de marca).</td><td><code>translate="no"</code></td><td><a href="atributos-globais.html">Atributos Globais</a></td></tr>
+<tr><td><code>popover</code></td><td>Transforma o elemento numa caixa que aparece por cima da página, aberta por um botão com <code>popovertarget</code>.</td><td><code>&lt;div id="dica" popover&gt;</code></td><td><a href="popover.html">popover</a></td></tr>
+<tr><td><code>data-*</code></td><td>Dados seus, com o nome que você quiser depois de <code>data-</code>. Lidos pelo JavaScript e pelo CSS.</td><td><code>data-preco="12.50"</code></td><td><a href="data-atributos.html">Atributos data-*</a></td></tr>
+<tr><td><code>role</code>, <code>aria-*</code></td><td>Informações para os leitores de tela, quando o HTML sozinho não basta.</td><td><code>aria-label="Fechar"</code></td><td><a href="aria.html">ARIA</a></td></tr>
+<tr><td><code>inputmode</code></td><td>Qual teclado o celular mostra num campo editável: <code>numeric</code>, <code>tel</code>, <code>email</code>…</td><td><code>inputmode="numeric"</code></td><td><a href="atributos-input.html">placeholder, value…</a></td></tr>
+<tr><td><code>enterkeyhint</code></td><td>O que a tecla Enter do teclado do celular mostra: <code>send</code> (enviar), <code>search</code>, <code>next</code>…</td><td><code>enterkeyhint="send"</code></td><td><a href="atributos-input.html">placeholder, value…</a></td></tr>
+<tr><td><code>autocapitalize</code></td><td>Se o teclado do celular põe maiúsculas sozinho: <code>sentences</code>, <code>words</code>, <code>none</code>…</td><td><code>autocapitalize="words"</code></td><td><a href="atributos-input.html">placeholder, value…</a></td></tr>
+<tr><td><code>nonce</code></td><td>Um código que autoriza um <code>&lt;script&gt;</code> ou <code>&lt;style&gt;</code> numa política de segurança (CSP).</td><td><code>nonce="abc123"</code></td><td><a href="seguranca.html">Segurança</a></td></tr>
+</table>
+</div>
+
+<h2 id="eventos">Atributos de evento (<code>on…</code>)</h2>
+<p>Todo elemento aceita atributos que rodam JavaScript quando algo acontece: <code>onclick</code> (clique), <code>oninput</code> (o campo mudou), <code>onsubmit</code> (o formulário vai ser enviado), <code>onload</code> (terminou de carregar)… Eles são válidos, mas misturam o JavaScript com o HTML. O guia prefere o <code>addEventListener</code> num <code>&lt;script&gt;</code>; veja <a href="script.html">O Elemento script</a>.</p>
+
+<h2 id="links">Links (<code>&lt;a&gt;</code>)</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>O que faz</th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td><code>href</code></td><td>O endereço de destino. Sem <code>href</code>, o <code>&lt;a&gt;</code> não é um link.</td><td><code>href="sobre.html"</code>, <code>href="#contato"</code></td><td><a href="links.html">Links</a>, <a href="ancoras.html">Âncoras</a></td></tr>
+<tr><td><code>href="mailto:…"</code>, <code>"tel:…"</code></td><td>Abre o programa de e-mail ou o discador.</td><td><code>href="tel:+5511999990000"</code></td><td><a href="links-email-tel.html">E-mail e Telefone</a></td></tr>
+<tr><td><code>target</code></td><td>Onde abrir: <code>_blank</code> (nova aba), <code>_self</code> (a mesma, o padrão), ou o nome de um <code>iframe</code>.</td><td><code>target="_blank"</code></td><td><a href="links-target.html">Nova Aba</a></td></tr>
+<tr><td><code>rel</code></td><td>A relação com o destino: <code>noopener</code>, <code>noreferrer</code>, <code>nofollow</code>, <code>external</code>…</td><td><code>rel="noopener"</code></td><td><a href="links-target.html">Nova Aba</a></td></tr>
+<tr><td><code>download</code></td><td>Baixa o arquivo em vez de abrir. O valor (opcional) é o nome sugerido.</td><td><code>download="cardapio.pdf"</code></td><td><a href="download.html">Baixar Arquivos</a></td></tr>
+<tr><td><code>hreflang</code></td><td>O idioma da página de destino.</td><td><code>hreflang="en"</code></td><td><a href="links.html">Links</a></td></tr>
+<tr><td><code>type</code></td><td>O tipo do arquivo de destino (tipo MIME), só como dica.</td><td><code>type="application/pdf"</code></td><td><a href="download.html">Baixar Arquivos</a></td></tr>
+<tr><td><code>referrerpolicy</code></td><td>Quanto do endereço atual o destino fica sabendo.</td><td><code>referrerpolicy="no-referrer"</code></td><td><a href="seguranca.html">Segurança</a></td></tr>
+</table>
+</div>
+
+<h2 id="imagens">Imagens (<code>&lt;img&gt;</code>, <code>&lt;picture&gt;</code>, <code>&lt;source&gt;</code>)</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>O que faz</th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td><code>src</code></td><td>O arquivo da imagem ("source", fonte).</td><td><code>src="img/bolo.jpg"</code></td><td><a href="imagens.html">Imagens</a></td></tr>
+<tr><td><code>alt</code></td><td>O texto alternativo: lido pelo leitor de tela e mostrado se a imagem não carregar. Obrigatório. Imagem só de enfeite: <code>alt=""</code>.</td><td><code>alt="Bolo de cenoura fatiado"</code></td><td><a href="imagens-alt.html">Texto Alternativo</a></td></tr>
+<tr><td><code>width</code>, <code>height</code></td><td>Largura e altura em pixels, <strong>sem</strong> <code>px</code>. Reservam o espaço antes de a imagem chegar.</td><td><code>width="600" height="400"</code></td><td><a href="imagens-tamanho.html">Largura e Altura</a></td></tr>
+<tr><td><code>srcset</code>, <code>sizes</code></td><td>Várias versões da imagem, para o navegador escolher a melhor para a tela.</td><td><code>srcset="p.jpg 480w, g.jpg 1200w"</code></td><td><a href="imagens-responsivas.html">Imagens Responsivas</a></td></tr>
+<tr><td><code>loading</code></td><td><code>lazy</code>: só carrega quando a imagem chega perto da tela.</td><td><code>loading="lazy"</code></td><td><a href="lazy-loading.html">Carregamento Preguiçoso</a></td></tr>
+<tr><td><code>decoding</code></td><td>Dica de como preparar a imagem: <code>async</code>, <code>sync</code> ou <code>auto</code>.</td><td><code>decoding="async"</code></td><td><a href="lazy-loading.html">Carregamento Preguiçoso</a></td></tr>
+<tr><td><code>fetchpriority</code></td><td>A prioridade do download: <code>high</code>, <code>low</code> ou <code>auto</code>.</td><td><code>fetchpriority="high"</code></td><td><a href="preload.html">Desempenho</a></td></tr>
+<tr><td><code>usemap</code></td><td>Liga a imagem a um <code>&lt;map&gt;</code> de áreas clicáveis.</td><td><code>usemap="#mapa"</code></td><td><a href="imagens.html">Imagens</a></td></tr>
+<tr><td><code>media</code>, <code>type</code> (no <code>source</code>)</td><td>Para qual tela (<code>media</code>) ou formato (<code>type</code>) é essa opção.</td><td><code>type="image/avif"</code></td><td><a href="picture.html">O Elemento picture</a></td></tr>
+</table>
+</div>
+
+<h2 id="midia">Áudio e vídeo (<code>&lt;audio&gt;</code>, <code>&lt;video&gt;</code>, <code>&lt;track&gt;</code>)</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>O que faz</th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td><code>src</code></td><td>O arquivo de som ou vídeo (ou use vários <code>&lt;source&gt;</code> dentro).</td><td><code>src="receita.mp4"</code></td><td><a href="video.html">Vídeo</a></td></tr>
+<tr><td><code>controls</code></td><td>Mostra os botões de tocar, pausar e volume (booleano). Sem ele, o leitor não tem como dar play.</td><td><code>&lt;video controls&gt;</code></td><td><a href="video.html">Vídeo</a>, <a href="audio.html">Áudio</a></td></tr>
+<tr><td><code>autoplay</code></td><td>Começa a tocar sozinho (booleano). Em geral, os navegadores só deixam se o vídeo estiver sem som (<code>muted</code>).</td><td><code>autoplay muted</code></td><td><a href="video.html">Vídeo</a></td></tr>
+<tr><td><code>muted</code>, <code>loop</code></td><td>Começa sem som; recomeça ao terminar (booleanos).</td><td><code>muted loop</code></td><td><a href="video.html">Vídeo</a></td></tr>
+<tr><td><code>poster</code></td><td>A imagem mostrada antes do play (só <code>video</code>).</td><td><code>poster="capa.jpg"</code></td><td><a href="video.html">Vídeo</a></td></tr>
+<tr><td><code>preload</code></td><td>Quanto baixar antes do play: <code>none</code>, <code>metadata</code> ou <code>auto</code>.</td><td><code>preload="metadata"</code></td><td><a href="video.html">Vídeo</a></td></tr>
+<tr><td><code>playsinline</code></td><td>No celular, toca dentro da página em vez de abrir em tela cheia (booleano).</td><td><code>playsinline</code></td><td><a href="video.html">Vídeo</a></td></tr>
+<tr><td><code>width</code>, <code>height</code></td><td>Tamanho do vídeo em pixels, sem <code>px</code>.</td><td><code>width="640" height="360"</code></td><td><a href="video.html">Vídeo</a></td></tr>
+<tr><td><code>kind</code>, <code>src</code>, <code>srclang</code>, <code>label</code>, <code>default</code> (no <code>track</code>)</td><td>O tipo (<code>subtitles</code>, <code>captions</code>, <code>chapters</code>…), o arquivo <code>.vtt</code>, o idioma, o nome no menu e qual vem ligada.</td><td><code>kind="subtitles" srclang="pt-BR"</code></td><td><a href="legendas.html">Legendas</a></td></tr>
+</table>
+</div>
+
+<h2 id="iframe">iframe</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>O que faz</th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td><code>src</code></td><td>A página que vai dentro do quadro.</td><td><code>src="mapa.html"</code></td><td><a href="iframes.html">iframe</a></td></tr>
+<tr><td><code>srcdoc</code></td><td>O HTML do quadro, escrito direto no atributo (com <code>&amp;quot;</code> no lugar de <code>"</code>).</td><td><code>srcdoc="&lt;p&gt;Oi&lt;/p&gt;"</code></td><td><a href="iframes.html">iframe</a></td></tr>
+<tr><td><code>title</code></td><td>Diz ao leitor de tela o que tem no quadro. Sempre coloque.</td><td><code>title="Mapa da loja"</code></td><td><a href="iframes.html">iframe</a></td></tr>
+<tr><td><code>width</code>, <code>height</code></td><td>O tamanho do quadro, em pixels, sem <code>px</code>.</td><td><code>width="560" height="315"</code></td><td><a href="iframes.html">iframe</a></td></tr>
+<tr><td><code>name</code></td><td>Um nome, para links com <code>target</code> abrirem dentro dele.</td><td><code>name="visor"</code></td><td><a href="iframes.html">iframe</a></td></tr>
+<tr><td><code>loading</code></td><td><code>lazy</code>: só carrega quando chega perto da tela.</td><td><code>loading="lazy"</code></td><td><a href="lazy-loading.html">Carregamento Preguiçoso</a></td></tr>
+<tr><td><code>sandbox</code></td><td>Prende a página de dentro: sem scripts, formulários nem janelas, a não ser o que você liberar.</td><td><code>sandbox="allow-scripts"</code></td><td><a href="seguranca.html">Segurança</a></td></tr>
+<tr><td><code>allow</code>, <code>allowfullscreen</code></td><td>Libera recursos para o quadro: tela cheia, câmera, localização…</td><td><code>allow="fullscreen"</code></td><td><a href="incorporar.html">Incorporar</a></td></tr>
+<tr><td><code>referrerpolicy</code></td><td>Quanto do endereço da sua página o site de dentro fica sabendo.</td><td><code>referrerpolicy="no-referrer"</code></td><td><a href="seguranca.html">Segurança</a></td></tr>
+</table>
+</div>
+
+<h2 id="head">head e scripts (<code>&lt;html&gt;</code>, <code>&lt;link&gt;</code>, <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;base&gt;</code>)</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento e atributo</th><th>O que faz</th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td><code>html lang</code></td><td>O idioma da página. Ajuda o leitor de tela a pronunciar certo e o tradutor a acertar.</td><td><code>&lt;html lang="pt-BR"&gt;</code></td><td><a href="estrutura.html">Estrutura de uma Página</a></td></tr>
+<tr><td><code>link rel</code>, <code>href</code></td><td>O que é o arquivo ligado (<code>stylesheet</code>, <code>icon</code>, <code>preload</code>, <code>canonical</code>…) e onde ele está.</td><td><code>&lt;link rel="stylesheet" href="estilo.css"&gt;</code></td><td><a href="ligar-css.html">Ligar CSS</a></td></tr>
+<tr><td><code>link sizes</code>, <code>type</code></td><td>O tamanho e o formato de um ícone.</td><td><code>sizes="32x32" type="image/png"</code></td><td><a href="favicon.html">Favicon</a></td></tr>
+<tr><td><code>link as</code></td><td>Com <code>rel="preload"</code>: o tipo do arquivo que deve ser baixado antes (<code>image</code>, <code>font</code>, <code>style</code>…).</td><td><code>rel="preload" as="image"</code></td><td><a href="preload.html">Desempenho</a></td></tr>
+<tr><td><code>link media</code>, <code>style media</code></td><td>Para que tela ou situação vale o CSS (<code>print</code> = impressão).</td><td><code>media="print"</code></td><td><a href="ligar-css.html">Ligar CSS</a></td></tr>
+<tr><td><code>script src</code></td><td>O arquivo de JavaScript. Mesmo com <code>src</code>, feche com <code>&lt;/script&gt;</code>.</td><td><code>&lt;script src="app.js"&gt;&lt;/script&gt;</code></td><td><a href="script.html">O Elemento script</a></td></tr>
+<tr><td><code>script defer</code>, <code>async</code></td><td><code>defer</code>: roda depois que o HTML todo foi lido, na ordem. <code>async</code>: roda assim que chega, em qualquer ordem.</td><td><code>&lt;script src="app.js" defer&gt;</code></td><td><a href="preload.html">Desempenho</a></td></tr>
+<tr><td><code>script type</code></td><td><code>module</code> (JavaScript moderno, com <code>import</code>), <code>importmap</code> ou <code>application/ld+json</code> (dados estruturados). Para JavaScript comum, não escreva <code>type</code>.</td><td><code>type="module"</code></td><td><a href="script.html">O Elemento script</a>, <a href="dados-estruturados.html">JSON-LD</a></td></tr>
+<tr><td><code>script integrity</code>, <code>crossorigin</code></td><td>Confere que o arquivo baixado de outro site é exatamente o esperado.</td><td><code>integrity="sha384-…"</code></td><td><a href="seguranca.html">Segurança</a></td></tr>
+<tr><td><code>base href</code>, <code>target</code></td><td>O endereço de partida dos links relativos e o <code>target</code> padrão de todos os links.</td><td><code>&lt;base href="/receitas/"&gt;</code></td><td><a href="caminhos.html">Caminhos</a></td></tr>
+<tr><td><code>meta name</code>, <code>content</code>, <code>charset</code></td><td>Veja a referência <a href="ref-meta.html">Metas do head</a>.</td><td><code>&lt;meta charset="utf-8"&gt;</code></td><td><a href="meta.html">title e meta</a></td></tr>
+</table>
+</div>
+
+<h2 id="formularios">Formulários</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento e atributo</th><th>O que faz</th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td><code>form action</code></td><td>Para onde os dados vão.</td><td><code>action="/cadastro"</code></td><td><a href="enviar-formulario.html">Enviar</a></td></tr>
+<tr><td><code>form method</code></td><td>Como vão: <code>get</code> (no endereço, o padrão), <code>post</code> (no corpo do pedido) ou <code>dialog</code> (fecha o <code>&lt;dialog&gt;</code>).</td><td><code>method="post"</code></td><td><a href="enviar-formulario.html">Enviar</a></td></tr>
+<tr><td><code>form enctype</code></td><td>O formato do envio. Para mandar arquivos: <code>multipart/form-data</code>.</td><td><code>enctype="multipart/form-data"</code></td><td><a href="enviar-formulario.html">Enviar</a></td></tr>
+<tr><td><code>form novalidate</code></td><td>Envia sem conferir <code>required</code>, <code>pattern</code> e companhia (booleano).</td><td><code>&lt;form novalidate&gt;</code></td><td><a href="validacao.html">Validação</a></td></tr>
+<tr><td><code>name</code> (nos campos)</td><td>O nome com que o valor é enviado. Campo sem <code>name</code> não é enviado.</td><td><code>name="email"</code></td><td><a href="formularios.html">Formulários</a></td></tr>
+<tr><td><code>input type</code></td><td>O tipo do campo. Todos estão em <a href="ref-input.html">Tipos de input</a>.</td><td><code>type="email"</code></td><td><a href="tipos-input.html">Tipos de input</a></td></tr>
+<tr><td><code>value</code></td><td>O valor inicial do campo (ou o valor enviado, num checkbox, radio ou botão).</td><td><code>value="1"</code></td><td><a href="atributos-input.html">placeholder, value…</a></td></tr>
+<tr><td><code>placeholder</code></td><td>Um exemplo em cinza dentro do campo vazio. Não substitui o <code>label</code>.</td><td><code>placeholder="ana@exemplo.com"</code></td><td><a href="atributos-input.html">placeholder, value…</a></td></tr>
+<tr><td><code>required</code></td><td>Campo obrigatório (booleano).</td><td><code>required</code></td><td><a href="validacao.html">Validação</a></td></tr>
+<tr><td><code>disabled</code>, <code>readonly</code></td><td><code>disabled</code>: desligado e <strong>não enviado</strong>. <code>readonly</code>: não dá para mudar, mas é enviado (booleanos).</td><td><code>readonly</code></td><td><a href="atributos-input.html">placeholder, value…</a></td></tr>
+<tr><td><code>min</code>, <code>max</code>, <code>step</code></td><td>Menor valor, maior valor e o tamanho do passo (números e datas).</td><td><code>min="1" max="10" step="1"</code></td><td><a href="validacao.html">Validação</a></td></tr>
+<tr><td><code>minlength</code>, <code>maxlength</code></td><td>Mínimo e máximo de caracteres.</td><td><code>maxlength="40"</code></td><td><a href="validacao.html">Validação</a></td></tr>
+<tr><td><code>pattern</code></td><td>Uma expressão regular que o texto precisa seguir.</td><td><code>pattern="[0-9]{5}-[0-9]{3}"</code></td><td><a href="validacao.html">Validação</a></td></tr>
+<tr><td><code>autocomplete</code></td><td>Ajuda o navegador a preencher sozinho: <code>name</code>, <code>email</code>, <code>tel</code>, <code>postal-code</code>, <code>off</code>… São nomes fixos, em inglês.</td><td><code>autocomplete="email"</code></td><td><a href="atributos-input.html">placeholder, value…</a></td></tr>
+<tr><td><code>checked</code></td><td>Checkbox ou radio já marcado (booleano).</td><td><code>checked</code></td><td><a href="checkbox-radio.html">checkbox e radio</a></td></tr>
+<tr><td><code>multiple</code></td><td>Aceita vários valores: vários arquivos, vários e-mails, várias opções no <code>select</code> (booleano).</td><td><code>multiple</code></td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>accept</code></td><td>Que tipos de arquivo um <code>type="file"</code> aceita.</td><td><code>accept="image/*"</code></td><td><a href="tipos-input.html">Tipos de input</a></td></tr>
+<tr><td><code>list</code></td><td>Liga o campo a um <code>&lt;datalist&gt;</code> de sugestões, pelo <code>id</code>.</td><td><code>list="sabores"</code></td><td><a href="datalist.html">datalist</a></td></tr>
+<tr><td><code>form</code></td><td>Liga um campo que está fora do <code>&lt;form&gt;</code> a ele, pelo <code>id</code>.</td><td><code>form="cadastro"</code></td><td><a href="formularios.html">Formulários</a></td></tr>
+<tr><td><code>label for</code></td><td>O <code>id</code> do campo a que o rótulo pertence.</td><td><code>&lt;label for="email"&gt;</code></td><td><a href="label.html">label</a></td></tr>
+<tr><td><code>button type</code></td><td><code>submit</code> (enviar, o padrão dentro de um <code>form</code>), <code>reset</code> (limpar) ou <code>button</code> (não faz nada sozinho).</td><td><code>type="button"</code></td><td><a href="botoes.html">Botões</a></td></tr>
+<tr><td><code>button popovertarget</code></td><td>Abre e fecha o <code>popover</code> com esse <code>id</code>, sem JavaScript.</td><td><code>popovertarget="dica"</code></td><td><a href="popover.html">popover</a></td></tr>
+<tr><td><code>button commandfor</code>, <code>command</code></td><td>Comanda outro elemento sem JavaScript, por exemplo abrir um <code>&lt;dialog&gt;</code> (<code>command="show-modal"</code>). Recente (2025).</td><td><code>commandfor="caixa" command="show-modal"</code></td><td><a href="dialog.html">dialog</a></td></tr>
+<tr><td><code>formaction</code>, <code>formmethod</code>, <code>formnovalidate</code> (no botão)</td><td>Trocam o <code>action</code>, o <code>method</code> ou a validação só para aquele botão.</td><td><code>formnovalidate</code></td><td><a href="botoes.html">Botões</a></td></tr>
+<tr><td><code>option value</code>, <code>selected</code>, <code>disabled</code></td><td>O valor enviado, a opção já escolhida e a opção desligada.</td><td><code>&lt;option value="sp" selected&gt;</code></td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>optgroup label</code></td><td>O título do grupo de opções.</td><td><code>&lt;optgroup label="Doces"&gt;</code></td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>select size</code></td><td>Quantas opções aparecem de uma vez (vira uma caixa de lista).</td><td><code>size="4"</code></td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>textarea rows</code>, <code>cols</code></td><td>Altura em linhas e largura em caracteres.</td><td><code>rows="5" cols="40"</code></td><td><a href="textarea.html">textarea</a></td></tr>
+<tr><td><code>fieldset disabled</code></td><td>Desliga todos os campos de dentro (booleano).</td><td><code>&lt;fieldset disabled&gt;</code></td><td><a href="fieldset.html">fieldset e legend</a></td></tr>
+<tr><td><code>output for</code></td><td>Os <code>id</code> dos campos usados no cálculo.</td><td><code>for="a b"</code></td><td><a href="output-progress.html">output, progress e meter</a></td></tr>
+<tr><td><code>progress value</code>, <code>max</code></td><td>Quanto já foi feito e o total. Sem <code>value</code>: barra "carregando" sem fim.</td><td><code>value="30" max="100"</code></td><td><a href="output-progress.html">output, progress e meter</a></td></tr>
+<tr><td><code>meter value</code>, <code>min</code>, <code>max</code>, <code>low</code>, <code>high</code>, <code>optimum</code></td><td>O valor, a faixa e as zonas "baixa", "alta" e "ideal", que mudam a cor da barra.</td><td><code>value="0.8" low="0.3" high="0.7"</code></td><td><a href="output-progress.html">output, progress e meter</a></td></tr>
+</table>
+</div>
+
+<h2 id="tabelas">Tabelas e listas</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento e atributo</th><th>O que faz</th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td><code>td colspan</code>, <code>th colspan</code></td><td>A célula ocupa várias colunas.</td><td><code>colspan="2"</code></td><td><a href="tabelas-mesclar.html">Mesclar Células</a></td></tr>
+<tr><td><code>td rowspan</code>, <code>th rowspan</code></td><td>A célula ocupa várias linhas.</td><td><code>rowspan="3"</code></td><td><a href="tabelas-mesclar.html">Mesclar Células</a></td></tr>
+<tr><td><code>th scope</code></td><td>De quem o cabeçalho é: da coluna (<code>col</code>), da linha (<code>row</code>) ou de um grupo (<code>colgroup</code>, <code>rowgroup</code>).</td><td><code>scope="col"</code></td><td><a href="tabelas-legenda.html">Legenda e Acessibilidade</a></td></tr>
+<tr><td><code>th abbr</code></td><td>Uma versão curta do cabeçalho, para o leitor de tela repetir.</td><td><code>abbr="Qtd"</code></td><td><a href="tabelas-legenda.html">Legenda e Acessibilidade</a></td></tr>
+<tr><td><code>td headers</code></td><td>Os <code>id</code> dos <code>th</code> da célula, em tabelas complicadas.</td><td><code>headers="preco sabado"</code></td><td><a href="tabelas-legenda.html">Legenda e Acessibilidade</a></td></tr>
+<tr><td><code>col span</code>, <code>colgroup span</code></td><td>Quantas colunas aquele <code>col</code> representa.</td><td><code>&lt;col span="2"&gt;</code></td><td><a href="tabelas-legenda.html">Legenda e Acessibilidade</a></td></tr>
+<tr><td><code>ol start</code></td><td>O número do primeiro item.</td><td><code>start="5"</code></td><td><a href="listas-ordenadas.html">Listas Numeradas</a></td></tr>
+<tr><td><code>ol reversed</code></td><td>Conta de trás para frente (booleano).</td><td><code>&lt;ol reversed&gt;</code></td><td><a href="listas-ordenadas.html">Listas Numeradas</a></td></tr>
+<tr><td><code>ol type</code></td><td>O tipo de numeração: <code>1</code>, <code>a</code>, <code>A</code>, <code>i</code>, <code>I</code>. (No <code>ul</code>, <code>type</code> é obsoleto.)</td><td><code>type="I"</code></td><td><a href="listas-ordenadas.html">Listas Numeradas</a></td></tr>
+<tr><td><code>li value</code></td><td>O número daquele item (num <code>ol</code>); os seguintes continuam dele.</td><td><code>&lt;li value="10"&gt;</code></td><td><a href="listas-ordenadas.html">Listas Numeradas</a></td></tr>
+</table>
+</div>
+
+<h2 id="texto">Texto</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento e atributo</th><th>O que faz</th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td><code>abbr title</code>, <code>dfn title</code></td><td>A forma por extenso da abreviação, ou o termo definido.</td><td><code>&lt;abbr title="Cascading Style Sheets"&gt;CSS&lt;/abbr&gt;</code></td><td><a href="abreviacoes.html">Abreviações</a></td></tr>
+<tr><td><code>time datetime</code></td><td>A data ou hora no formato das máquinas.</td><td><code>&lt;time datetime="2026-10-17"&gt;hoje&lt;/time&gt;</code></td><td><a href="time.html">time e data</a></td></tr>
+<tr><td><code>data value</code></td><td>O valor para máquinas.</td><td><code>&lt;data value="7891234"&gt;Bolo&lt;/data&gt;</code></td><td><a href="time.html">time e data</a></td></tr>
+<tr><td><code>blockquote cite</code>, <code>q cite</code></td><td>O endereço de onde a citação foi tirada (não aparece na tela).</td><td><code>cite="https://exemplo.com/fonte"</code></td><td><a href="citacoes.html">Citações</a></td></tr>
+<tr><td><code>del cite</code>, <code>datetime</code> (e <code>ins</code>)</td><td>Por que e quando o trecho foi removido ou acrescentado.</td><td><code>&lt;del datetime="2026-10-17"&gt;</code></td><td><a href="formatacao.html">Formatação</a></td></tr>
+<tr><td><code>bdo dir</code></td><td>A direção forçada do texto: <code>ltr</code> ou <code>rtl</code> (obrigatório no <code>bdo</code>).</td><td><code>&lt;bdo dir="rtl"&gt;</code></td><td><a href="acentos-utf8.html">Acentos e UTF-8</a></td></tr>
+</table>
+</div>
+
+<h2 id="interativos">Interativos e desenho</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento e atributo</th><th>O que faz</th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td><code>details open</code></td><td>Já começa aberto (booleano).</td><td><code>&lt;details open&gt;</code></td><td><a href="details.html">details e summary</a></td></tr>
+<tr><td><code>details name</code></td><td>Vários <code>details</code> com o mesmo <code>name</code> formam uma "sanfona": abrir um fecha os outros.</td><td><code>name="faq"</code></td><td><a href="details.html">details e summary</a></td></tr>
+<tr><td><code>dialog open</code></td><td>A caixa já aparece aberta, sem bloquear a página (booleano). Para abrir como janela modal, use JavaScript ou <code>command="show-modal"</code>.</td><td><code>&lt;dialog open&gt;</code></td><td><a href="dialog.html">dialog</a></td></tr>
+<tr><td><code>dialog closedby</code></td><td>Como o leitor pode fechar a caixa: <code>any</code> (clique fora ou <kbd>Esc</kbd>), <code>closerequest</code> (só <kbd>Esc</kbd>) ou <code>none</code>.</td><td><code>closedby="any"</code></td><td><a href="dialog.html">dialog</a></td></tr>
+<tr><td><code>canvas width</code>, <code>height</code></td><td>O tamanho da área de desenho, em pixels, sem <code>px</code>.</td><td><code>width="300" height="150"</code></td><td><a href="canvas.html">canvas</a></td></tr>
+<tr><td><code>area shape</code>, <code>coords</code>, <code>href</code>, <code>alt</code></td><td>A forma (<code>rect</code>, <code>circle</code>, <code>poly</code>), as coordenadas, o destino e o texto alternativo de uma área clicável.</td><td><code>shape="circle" coords="50,50,40"</code></td><td><a href="imagens.html">Imagens</a></td></tr>
+</table>
+</div>
+
+<h2 id="obsoletos">Atributos obsoletos</h2>
+<p>Antes do CSS, a aparência era decidida com atributos: <code>align</code>, <code>bgcolor</code>, <code>border</code>… Os navegadores ainda obedecem à maioria deles, e o <code>vnu</code> 26.10 os aponta como <strong>avisos</strong> (<code>info warning</code>), não como erros. Mesmo assim, não use: o lugar da aparência é o CSS. Um trecho da saída:</p>
+<pre class="term" data-cwd="~/ref">$ vnu attr.html
+"file:/home/ana/ref/attr.html":10.1-10.23: info warning: The “bgcolor” attribute on the “body” element is obsolete. Use CSS instead.
+"file:/home/ana/ref/attr.html":11.1-11.18: info warning: The “align” attribute on the “p” element is obsolete. Use CSS instead.</pre>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo antigo</th><th>Mensagem real do validador</th><th>Use no lugar</th></tr>
+<tr><td><code>align</code> (em <code>p</code>, <code>td</code>, <code>div</code>, <code>img</code>…)</td><td><code>The “align” attribute on the “p” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>text-align</code> (texto)</td></tr>
+<tr><td><code>bgcolor</code></td><td><code>The “bgcolor” attribute on the “body” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>background-color</code></td></tr>
+<tr><td><code>width</code> em <code>table</code> e <code>td</code></td><td><code>The “width” attribute on the “td” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>width</code>. (Em <code>img</code>, <code>video</code>, <code>iframe</code> e <code>canvas</code>, <code>width</code> é válido.)</td></tr>
+<tr><td><code>border</code> em <code>table</code> e <code>img</code></td><td><code>The “border” attribute on the “table” element is obsolete. Consider specifying “img { border: 0; }” in CSS instead.</code></td><td>CSS: <code>border</code>. A sugestão do validador sobre <code>img</code> sai igual até na tabela: é uma frase pronta dele.</td></tr>
+<tr><td><code>cellpadding</code>, <code>cellspacing</code></td><td><code>The “cellpadding” attribute on the “table” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>padding</code> nas células e <code>border-spacing</code></td></tr>
+<tr><td><code>name</code> em <code>a</code></td><td><code>The “name” attribute on the “a” element is obsolete. Consider putting an “id” attribute on the nearest container instead.</code></td><td><code>id</code> no título ou na seção de destino (<a href="ancoras.html">Âncoras</a>)</td></tr>
+<tr><td><code>clear</code> em <code>br</code></td><td><code>The “clear” attribute on the “br” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>clear</code></td></tr>
+<tr><td><code>noshade</code>, <code>size</code> em <code>hr</code></td><td><code>The “noshade” attribute on the “hr” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>border</code> e <code>height</code></td></tr>
+<tr><td><code>type</code> em <code>ul</code></td><td><code>The “type” attribute on the “ul” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>list-style-type</code></td></tr>
+<tr><td><code>frameborder</code>, <code>scrolling</code> em <code>iframe</code></td><td><code>The “frameborder” attribute on the “iframe” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>border: 0</code> e <code>overflow</code></td></tr>
+<tr><td><code>language</code> em <code>script</code></td><td><code>The “language” attribute on the “script” element is obsolete. Use the “type” attribute instead.</code></td><td>Nada: para JavaScript comum, não precisa de atributo nenhum.</td></tr>
+<tr><td><code>type="text/javascript"</code> em <code>script</code></td><td><code>The “type” attribute is unnecessary for JavaScript resources.</code></td><td>Apague o <code>type</code>.</td></tr>
+<tr><td><code>type="text/css"</code> em <code>style</code></td><td><code>The “type” attribute for the “style” element is not needed and should be omitted.</code></td><td>Apague o <code>type</code>.</td></tr>
+</table>
+</div>
+
+<h2 id="errados">Valores errados e outros erros de atributo</h2>
+<p>Estes já são <strong>erros</strong> (<code>error</code>). Todos saíram do <code>vnu</code> com arquivos de teste da Ana. Muitas vezes o navegador não reclama: simplesmente ignora o valor, e você fica sem entender por que nada mudou.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Código</th><th>Mensagem real do validador</th><th>O que significa e como consertar</th></tr>
+<tr><td><code>&lt;img src="a.png"&gt;</code></td><td><code>An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</code></td><td>Falta o <code>alt</code>. Descreva a imagem, ou use <code>alt=""</code> se ela for só enfeite (<a href="imagens-alt.html">Texto Alternativo</a>).</td></tr>
+<tr><td><code>width="200px"</code></td><td><code>Bad value “200px” for attribute “width” on element “img”: Expected a digit but saw “p” instead.</code></td><td>O validador esperava um algarismo e achou o <code>p</code>. Tire o <code>px</code>: <code>width="200"</code>.</td></tr>
+<tr><td><code>&lt;html lang="pt_BR"&gt;</code></td><td><code>Bad value “pt_BR” for attribute “lang” on element “html”: The language subtag “pt_br” is not a valid language subtag.</code></td><td>Código de idioma usa hífen, não sublinhado: <code>pt-BR</code>.</td></tr>
+<tr><td><code>id="um dois"</code></td><td><code>Bad value “um dois” for attribute “id” on element “div”: An ID must not contain whitespace.</code></td><td>Um <code>id</code> não pode ter espaço. Use <code>um-dois</code>.</td></tr>
+<tr><td>Dois <code>id="x"</code></td><td><code>Duplicate ID “x”.</code> e, logo depois, <code>The first occurrence of ID “x” was here.</code></td><td>O <code>id</code> precisa ser único na página. A segunda mensagem (um aviso) aponta a linha do primeiro.</td></tr>
+<tr><td><code>class="a" class="b"</code></td><td><code>Duplicate attribute “class”.</code></td><td>O mesmo atributo duas vezes: o navegador fica só com o primeiro. Junte: <code>class="a b"</code>.</td></tr>
+<tr><td><code>&lt;p tamanho="5"&gt;</code></td><td><code>Attribute “tamanho” not allowed on element “p” at this point.</code></td><td>Atributo inventado. Para guardar um dado seu, use <code>data-tamanho="5"</code> (<a href="data-atributos.html">data-*</a>).</td></tr>
+<tr><td><code>&lt;p data-="x"&gt;</code></td><td><code>Attribute “data-” not allowed on element “p” at this point.</code></td><td>Depois de <code>data-</code> precisa vir um nome.</td></tr>
+<tr><td><code>href="minha pagina.html"</code></td><td><code>Bad value “minha pagina.html” for attribute “href” on element “a”: Illegal character in path segment. Space is not allowed.</code></td><td>Endereço com espaço. Troque o espaço por <code>%20</code> ou, melhor, renomeie o arquivo: <code>minha-pagina.html</code> (<a href="organizar-arquivos.html">Organizar os Arquivos</a>).</td></tr>
+<tr><td><code>&lt;a name="topo"&gt;</code> sem <code>href</code></td><td><code>Element “a” is missing required attribute “href”.</code></td><td>Aqui o <code>a</code> só tinha o <code>name</code> antigo, e o validador pede o <code>href</code>. Use <code>id</code> no destino.</td></tr>
+<tr><td><code>&lt;button type="enviar"&gt;</code></td><td><code>Bad value “enviar” for attribute “type” on element “button”.</code></td><td>Os valores são em inglês: <code>submit</code>, <code>reset</code> ou <code>button</code>.</td></tr>
+<tr><td><code>colspan="0"</code></td><td><code>Bad value “0” for attribute “colspan” on element “td”: Zero is not a positive integer.</code></td><td>O menor valor é <code>1</code>.</td></tr>
+<tr><td><code>&lt;ol start="a"&gt;</code></td><td><code>Bad value “a” for attribute “start” on element “ol”: Expected a minus sign or a digit but saw “a” instead.</code></td><td><code>start</code> é sempre um número, mesmo com <code>type="a"</code>: para começar no "c", use <code>start="3"</code>.</td></tr>
+<tr><td><code>datetime="17/10/2026"</code></td><td><code>Bad value “17/10/2026” for attribute “datetime” on element “time”: The literal did not satisfy the time-datetime format.</code></td><td>Formato de máquina: ano-mês-dia, <code>2026-10-17</code> (<a href="time.html">time e data</a>).</td></tr>
+<tr><td><code>dir="direita"</code></td><td><code>Bad value “direita” for attribute “dir” on element “p”.</code></td><td>Só <code>ltr</code>, <code>rtl</code> ou <code>auto</code>.</td></tr>
+<tr><td><code>hidden="false"</code></td><td><code>Bad value “false” for attribute “hidden” on element “p”.</code></td><td>O elemento <strong>continua escondido</strong>. Para mostrar, apague o <code>hidden</code>.</td></tr>
+<tr><td><code>spellcheck="yes"</code>, <code>translate="nao"</code></td><td><code>Bad value “yes” for attribute “spellcheck” on element “p”.</code></td><td><code>spellcheck</code> usa <code>true</code>/<code>false</code>; <code>translate</code> usa <code>yes</code>/<code>no</code>.</td></tr>
+<tr><td><code>contenteditable="sim"</code></td><td><code>Bad value “sim” for attribute “contenteditable” on element “p”.</code></td><td>Use <code>true</code>, <code>false</code> ou <code>plaintext-only</code>.</td></tr>
+<tr><td><code>loading="preguicoso"</code></td><td><code>Bad value “preguicoso” for attribute “loading” on element “img”.</code></td><td>Só <code>lazy</code> ou <code>eager</code>.</td></tr>
+<tr><td><code>autoplay="false"</code></td><td><code>Bad value “false” for attribute “autoplay” on element “video”.</code></td><td>Booleano: o vídeo <strong>toca</strong> sozinho (se estiver sem som). Para não tocar, apague o <code>autoplay</code>.</td></tr>
+<tr><td><code>autocomplete="nome"</code></td><td><code>Bad value “nome” for attribute “autocomplete” on element “input”: The string “nome” is not a valid autofill field name.</code></td><td>Os nomes são fixos e em inglês: <code>name</code>, <code>email</code>, <code>tel</code>…</td></tr>
+<tr><td><code>&lt;div role="botao"&gt;</code></td><td><code>Bad value “botao” for attribute “role” on element “div”.</code></td><td>Os papéis ARIA são fixos e em inglês (<code>button</code>). Melhor ainda: use um <code>&lt;button&gt;</code> de verdade (<a href="aria.html">ARIA</a>).</td></tr>
+<tr><td><code>&lt;label for="nao-existe"&gt;</code></td><td><code>The value of the “for” attribute of the “label” element must be the ID of a non-hidden form control.</code></td><td>Nenhum campo tem esse <code>id</code>. Confira se o <code>for</code> e o <code>id</code> estão escritos igual (<a href="label.html">label</a>).</td></tr>
+<tr><td><code>headers="h"</code> sem <code>th id="h"</code></td><td><code>The “headers” attribute on the element “td” refers to the ID “h”, but there is no “th” element with that ID in the same table.</code></td><td>O <code>headers</code> aponta para um cabeçalho que não existe.</td></tr>
+</table>
+</div>
+
+<div class="cenario">
+<strong>Quando dá errado: o "false" que liga</strong>
+<p>A Ana queria um vídeo que <strong>não</strong> começasse sozinho e escreveu <code>&lt;video src="receita.mp4" autoplay="false" muted&gt;</code>. O vídeo começa a tocar assim que a página abre. O navegador não olha o valor de um atributo booleano, só se ele existe. O validador avisa: <code>Bad value “false” for attribute “autoplay” on element “video”.</code></p>
+<p><strong>Como consertar:</strong> apague o atributo inteiro: <code>&lt;video src="receita.mp4" controls muted&gt;</code>.</p>
+</div>
+
+<h2 id="experimente">Experimente</h2>
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> apague e recoloque os atributos booleanos (<code>open</code>, <code>disabled</code>, <code>checked</code>, <code>hidden</code>) e veja o resultado mudar. Depois troque um deles por <code>="false"</code>: nada muda.</p>
+<pre class="script" data-file="index.html">&lt;details open&gt;
+  &lt;summary&gt;Ingredientes&lt;/summary&gt;
+  &lt;p&gt;3 cenouras, 4 ovos e 2 xícaras de farinha.&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;p&gt;&lt;label&gt;&lt;input type="checkbox" checked&gt; Com cobertura&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;Cupom: &lt;input type="text" value="ANA10" disabled&gt;&lt;/label&gt;&lt;/p&gt;
+&lt;p hidden&gt;Este parágrafo está escondido.&lt;/p&gt;
+&lt;p title="Passe o mouse aqui"&gt;Passe o mouse sobre esta frase.&lt;/p&gt;
+</pre>
+</div>
+
+<div class="tryhtml" data-goal="attr:img[alt]=Bolo de cenoura com cobertura de chocolate,attr:img[width]=300,attr:img[height]=200">
+<p class="try-task"><strong>Missão:</strong> a imagem da Ana tem dois problemas que o validador acusa: falta o texto alternativo, e a largura e a altura estão com <code>px</code>. Coloque o <code>alt</code> "Bolo de cenoura com cobertura de chocolate" e deixe a largura <code>300</code> e a altura <code>200</code>, só com algarismos.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="bolo.jpg" width="300px" height="200px"&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="bolo.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="300" height="200"&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Atributos ficam na tag de abertura: <code>nome="valor"</code>, com aspas, sem repetir o mesmo atributo.</li>
+  <li>Globais (em qualquer elemento): <code>id</code>, <code>class</code>, <code>style</code>, <code>title</code>, <code>lang</code>, <code>dir</code>, <code>hidden</code>, <code>tabindex</code>, <code>data-*</code>, <code>aria-*</code>…</li>
+  <li>Booleanos ligam só de estar escritos. <code>="false"</code> <strong>não</strong> desliga: apague o atributo.</li>
+  <li>Números sem unidade (<code>width="300"</code>), datas como <code>2026-10-17</code>, idiomas como <code>pt-BR</code>, valores de lista em inglês (<code>submit</code>, <code>lazy</code>, <code>email</code>).</li>
+  <li>Atributos de aparência (<code>align</code>, <code>bgcolor</code>, <code>border</code>…) são obsoletos: o validador avisa, e o lugar deles é o CSS.</li>
+  <li>Um valor errado quase nunca dá erro no navegador; ele só é ignorado. O <a href="validar.html">validador</a> mostra.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
