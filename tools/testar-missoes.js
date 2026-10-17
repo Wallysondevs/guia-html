@@ -138,13 +138,19 @@ function validarNoLab(docs) {
     fs.writeFileSync(path.join(dir, f), d.texto);
     porArq[f] = d;
   });
-  const r = spawnSync(path.join(LAB, "lab"), ["-n", "htmlsim-nativo", "--", "bash", "-c", "cd " + sub + " && vnu --format json --also-check-css --exit-zero-always " + Object.keys(porArq).join(" ") + " 2>&1"], { encoding: "utf8", timeout: 300000, maxBuffer: 64 << 20 });
+  // HTML e CSS em duas rodadas: com --also-check-css, o vnu 26.10.12 conta as linhas do HTML uma a menos
+  const htmls = Object.keys(porArq).filter((f) => f.endsWith(".html")), csss = Object.keys(porArq).filter((f) => f.endsWith(".css"));
+  const cmd = "cd " + sub + (htmls.length ? " && vnu --format json --exit-zero-always " + htmls.join(" ") + " 2>&1; echo @@@" : "") + (csss.length ? "; vnu --format json --css --exit-zero-always " + csss.join(" ") + " 2>&1" : "");
+  const r = spawnSync(path.join(LAB, "lab"), ["-n", "htmlsim-nativo", "--", "bash", "-c", cmd], { encoding: "utf8", timeout: 300000, maxBuffer: 64 << 20 });
   fs.rmSync(dir, { recursive: true, force: true });
-  let j;
-  try { j = JSON.parse(r.stdout.slice(r.stdout.indexOf("{"))); } catch (e) { throw new Error("o vnu não respondeu JSON: " + (r.stdout || r.stderr || r.error).toString().slice(0, 400)); }
+  const mensagens = [];
+  for (const parte of String(r.stdout || "").split("@@@")) {
+    if (!parte.trim()) continue;
+    try { mensagens.push(...(JSON.parse(parte.slice(parte.indexOf("{"))).messages || [])); } catch (e) { throw new Error("o vnu não respondeu JSON: " + (parte || r.stderr || r.error).toString().slice(0, 400)); }
+  }
   const out = {};
   docs.forEach((d) => { out[d.id] = []; });
-  (j.messages || []).forEach((m) => {
+  mensagens.forEach((m) => {
     const f = (m.url || "").replace(/^.*\//, ""), d = porArq[f];
     if (!d) return;
     out[d.id].push(m);
@@ -152,12 +158,11 @@ function validarNoLab(docs) {
   return out;
 }
 // mensagem do vnu no formato da linha de comando (com as linhas do código do autor)
-function linhaVnu(nome, m, desloc) {
-  const aj = (n) => (n ? n - desloc : n);
-  const fl = aj(m.firstLine || m.lastLine), ll = aj(m.lastLine);
-  const pos = ll ? (fl && fl > 0 ? fl : ll) + "." + (m.firstColumn || "") + "-" + ll + "." + (m.lastColumn || "") : "";
+function linhaVnu(nome, m, v) {
+  const ini = HS.posicaoNoCodigo(v, m.firstLine || m.lastLine, m.firstColumn), fim = HS.posicaoNoCodigo(v, m.lastLine, m.lastColumn);
+  const pos = ini && fim ? ini.linha + "." + ini.coluna + "-" + fim.linha + "." + fim.coluna : "";
   const tipo = m.type === "info" ? (m.subType === "warning" ? "warning" : "info") : m.type;
-  return "\"" + nome + "\":" + pos + ": " + tipo + ": " + m.message + (ll !== undefined && ll <= 0 ? "  (no esqueleto que o testador pôs em volta do fragmento)" : "");
+  return "\"" + nome + "\":" + pos + ": " + tipo + ": " + m.message + (m.lastLine && !fim ? "  (no esqueleto que o testador pôs em volta do fragmento)" : "");
 }
 
 function trecho(s, n) { s = String(s || "").replace(/\n$/, ""); if (!s) return "        │ (vazio)"; const l = s.split("\n"); return (l.length > n ? l.slice(0, n).concat(["… (" + (l.length - n) + " linhas a mais)"]) : l).map((x) => "        │ " + x).join("\n"); }
@@ -316,11 +321,11 @@ async function main() {
       lista.filter((c) => c.meta && !c.problemas.length).forEach((c) => c.solucao.forEach((s, k) => {
         if (!HS.ehHtml(s.nome) && !/\.css$/i.test(s.nome)) return;
         const v = HS.ehHtml(s.nome) ? HS.paraValidar(s.codigo) : { texto: s.codigo, deslocamento: 0 };
-        docs.push({ id: "c" + c.i + "-" + k, nome: s.nome, texto: v.texto, deslocamento: v.deslocamento, alvo: c, tipo: "solução", fragmento: v.deslocamento > 0 });
+        docs.push({ id: "c" + c.i + "-" + k, nome: s.nome, texto: v.texto, v, alvo: c, tipo: "solução", fragmento: v.deslocamento > 0 });
       }));
       resultados.filter((r) => !r.problemas.length).forEach((r) => {
         const v = HS.paraValidar(r.codigo);
-        docs.push({ id: "r" + r.i, nome: r.nome, texto: v.texto, deslocamento: v.deslocamento, alvo: r, tipo: "resultado", fragmento: v.deslocamento > 0 });
+        docs.push({ id: "r" + r.i, nome: r.nome, texto: v.texto, v, alvo: r, tipo: "resultado", fragmento: v.deslocamento > 0 });
       });
       try {
         const msgs = validarNoLab(docs);
@@ -329,7 +334,7 @@ async function main() {
           const erros = ms.filter((m) => m.type === "error" || m.type === "non-document-error");
           const mostrar = ms.filter((m) => m.type !== "info" || m.subType === "warning");
           const cab = d.alvo.rot + " — W3C (" + d.nome + (d.fragmento ? ", fragmento dentro do esqueleto mínimo" : "") + ")";
-          const corpo = mostrar.map((m) => "      " + linhaVnu(d.nome, m, d.deslocamento)).join("\n");
+          const corpo = mostrar.map((m) => "      " + linhaVnu(d.nome, m, d.v)).join("\n");
           if (d.tipo === "solução" && erros.length) { nVnu++; falha(cab + ": a solução não é HTML válido\n" + corpo); }
           else if (mostrar.length) saida.push("  · " + cab + (erros.length ? " (exemplo com erro? normal no \"quando dá errado\")" : "") + "\n" + corpo);
           else if (verboso) saida.push("  ✓ " + cab + ": válido");

@@ -233,15 +233,25 @@
     var sobra = /(?:\s|<!--[\s\S]*?-->)*$/.exec(cabeca)[0];
     if (sobra) { cabeca = cabeca.slice(0, cabeca.length - sobra.length); resto = sobra + resto; }
     var temTitulo = /<title\b/i.test(cabeca), temCharset = /<meta\b[^>]*charset/i.test(cabeca);
+    var antes = "<!DOCTYPE html><html lang=\"pt-BR\"><head>" + (temCharset ? "" : "<meta charset=\"utf-8\">") + (temTitulo ? "" : "<title>Exemplo</title>") + "\n" + cabeca;
+    var linhas = antes.split("\n");
     return {
-      texto: "<!DOCTYPE html><html lang=\"pt-BR\"><head>" + (temCharset ? "" : "<meta charset=\"utf-8\">") + (temTitulo ? "" : "<title>Exemplo</title>") + "\n" +
-        cabeca + "</head><body>" + resto + (/\n$/.test(resto) ? "" : "\n") + "</body></html>\n",
-      deslocamento: 1
+      texto: antes + "</head><body>" + resto + (/\n$/.test(resto) ? "" : "\n") + "</body></html>\n",
+      deslocamento: 1,
+      // onde entrou o "</head><body>" (linha e coluna no documento), para corrigir as colunas
+      ins: { linha: linhas.length, coluna: linhas[linhas.length - 1].length + 1, n: 13 }
     };
   }
   HS.esqueleto = esqueleto;
   // o documento que vai para o validador
   HS.paraValidar = function (codigo) { return ehFragmento(codigo) ? esqueleto(codigo) : { texto: String(codigo), deslocamento: 0 }; };
+  // linha/coluna do validador → linha/coluna no código do autor (null = no esqueleto)
+  HS.posicaoNoCodigo = function (v, linha, coluna) {
+    if (!linha) return null;
+    if (v.ins && linha === v.ins.linha && coluna >= v.ins.coluna + v.ins.n) coluna -= v.ins.n;
+    linha -= v.deslocamento || 0;
+    return linha > 0 ? { linha: linha, coluna: coluna } : null;
+  };
 
   var TIPOS = { html: "text/html", htm: "text/html", css: "text/css", js: "text/javascript", mjs: "text/javascript", json: "application/json", svg: "image/svg+xml", txt: "text/plain", vtt: "text/vtt", xml: "application/xml", md: "text/markdown", csv: "text/csv" };
   function tipoDe(nome) { var m = /\.([a-z0-9]+)$/i.exec(nome); return (m && TIPOS[m[1].toLowerCase()]) || "text/plain"; }
@@ -713,7 +723,7 @@
     var doc = HS.paraValidar(codigo);
     return fetch("https://validator.w3.org/nu/?out=json", { method: "POST", headers: { "Content-Type": "text/html; charset=utf-8" }, body: doc.texto })
       .then(function (r) { if (!r.ok) throw new Error("o validador respondeu " + r.status); return r.json(); })
-      .then(function (j) { return { msgs: (j.messages || []), deslocamento: doc.deslocamento, fragmento: doc.deslocamento > 0 }; });
+      .then(function (j) { return { msgs: (j.messages || []), doc: doc, fragmento: doc.deslocamento > 0 }; });
   }
   HS.validarW3C = validarW3C;
   function mostrarW3C(caixa, res, nomeAba) {
@@ -725,8 +735,8 @@
     var lista = erros.concat(avisos);
     if (lista.length) {
       h += "<ol>" + lista.map(function (m) {
-        var l = m.lastLine || m.firstLine, ln = l ? l - res.deslocamento : null;
-        var onde = ln && ln > 0 ? "linha " + ln + (m.firstColumn ? ", coluna " + m.firstColumn : "") : (ln !== null ? "no esqueleto que o editor pôs em volta" : "");
+        var l = m.firstLine || m.lastLine, p = HS.posicaoNoCodigo(res.doc, l, m.firstColumn);
+        var onde = p ? "linha " + p.linha + (m.firstColumn ? ", coluna " + p.coluna : "") : (l ? "no esqueleto que o editor pôs em volta" : "");
         return "<li><span class=\"" + (m.type === "error" ? "hs-e\">Error" : "hs-a\">Warning") + "</span>" + (onde ? " (" + onde + ")" : "") + ": " + escHtml(m.message) + (m.extract ? "<br><code>" + escHtml(m.extract.replace(/\n/g, "↵")) + "</code>" : "") + "</li>";
       }).join("") + "</ol>";
     }
