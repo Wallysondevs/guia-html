@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Abreviações — abbr e dfn | Guia HTML</title>
+<meta name="description" content="Abreviações e definições em HTML para quem nunca fez um site: abbr com o atributo title, a dica que aparece ao passar o mouse e por que ela não basta, como escrever a forma completa no texto, dfn para o termo que está sendo definido, abbr dentro de dfn, a tag obsoleta acronym e as mensagens reais do validador W3C, com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Abreviações</span></h1>
+
+<p class="intro">CEP, ONU, HTML, Sr., kg: o português vive de abreviações, e quem lê nem sempre sabe o que elas querem dizer. Num site, você pode marcar cada abreviação com <code>&lt;abbr&gt;</code> e deixar a forma completa guardada nela. E quando o texto <strong>explica</strong> o que uma palavra quer dizer, como "tempero verde é a mistura de salsinha e cebolinha", o termo explicado ganha o <code>&lt;dfn&gt;</code>. São duas tags pequenas, ligadas a uma ideia só: ajudar o leitor a entender palavras que ele talvez não conheça.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li><code>&lt;abbr&gt;</code>: marcar uma abreviação, com a forma completa no atributo <code>title</code>.</li>
+  <li>A "dica" que aparece ao passar o mouse, e por que ela não basta (celular, teclado, leitores de tela).</li>
+  <li>Como escrever a forma completa no próprio texto, na primeira vez.</li>
+  <li><code>&lt;dfn&gt;</code>: o termo que está sendo <strong>definido</strong> naquele trecho.</li>
+  <li><code>&lt;dfn&gt;</code> com <code>&lt;abbr&gt;</code> dentro, para definir uma sigla.</li>
+  <li>A tag obsoleta <code>&lt;acronym&gt;</code> e os erros reais do validador.</li>
+</ul>
+</div>
+
+<p>Os exemplos são desenhados <strong>pelo seu navegador</strong>, no quadro "Resultado". As mensagens do validador saíram do <code>vnu</code> (o validador do W3C) na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: a nota de rodapé que mora na palavra</h2>
+<p>Num livro, quando aparece uma sigla difícil, o autor escreve a forma completa na primeira vez: "a Organização das Nações Unidas (ONU)". Depois, usa só "ONU". E quando o livro apresenta uma palavra nova, ele a destaca no parágrafo em que a explica, para você achá-la de novo depois.</p>
+
+<p>No HTML, as duas coisas têm tag:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tag</th><th>Vem de</th><th>Marca</th><th>Aparência padrão</th></tr>
+<tr><td><code>&lt;abbr&gt;</code></td><td><em>abbreviation</em>, "abreviação"</td><td>Uma abreviação ou sigla</td><td>Normal; com <code>title</code>, um sublinhado pontilhado no Chromium e no Firefox</td></tr>
+<tr><td><code>&lt;dfn&gt;</code></td><td><em>definition</em>, "definição"</td><td>O termo que o trecho está definindo</td><td>Itálico</td></tr>
+</table>
+</div>
+
+<p>As duas são elementos <strong>em linha</strong>: ficam no meio da frase, dentro de um parágrafo.</p>
+
+<hr>
+
+<h2>1. <code>&lt;abbr&gt;</code> com <code>title</code></h2>
+
+<pre class="file" data-file="abbr.html" data-resultado>&lt;p&gt;Para a entrega, informe o &lt;abbr title="Código de Endereçamento Postal"&gt;CEP&lt;/abbr&gt;.&lt;/p&gt;
+&lt;p&gt;A lojinha manda pelo correio para todo o Brasil.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;abbr</dt><dd>Abre a abreviação.</dd>
+  <dt>title="Código de Endereçamento Postal"</dt><dd>O atributo <code>title</code> ("título") guarda a <strong>forma completa</strong>. No <code>&lt;abbr&gt;</code>, ele deve ter só isso: a forma completa, e nada mais.</dd>
+  <dt>CEP</dt><dd>A abreviação, do jeito que aparece no texto.</dd>
+  <dt>&lt;/abbr&gt;</dt><dd>Fecha a abreviação.</dd>
+</dl>
+
+<p>Se você estiver num computador, passe o mouse sobre o "CEP" no quadro "Resultado": depois de um instante, aparece uma caixinha (a <strong>dica</strong>, ou <em>tooltip</em>) com "Código de Endereçamento Postal". Repare também no sublinhado pontilhado embaixo da sigla: é o jeito de o navegador dizer "tem algo aqui". Sem <code>title</code>, o sublinhado não aparece.</p>
+
+<div class="tryhtml" data-goal="texto:abbr=ONU,attr:abbr[title]=Organização das Nações Unidas">
+<p class="try-task"><strong>Experimente:</strong> marque a sigla "ONU" com <code>&lt;abbr&gt;</code> e coloque a forma completa, <code>Organização das Nações Unidas</code>, no <code>title</code>. Depois passe o mouse sobre ela no resultado.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;A receita de pão de milho apareceu num livro de receitas da ONU.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;A receita de pão de milho apareceu num livro de receitas da &lt;abbr title="Organização das Nações Unidas"&gt;ONU&lt;/abbr&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. A dica não basta: escreva a forma completa</h2>
+<p>A dica do <code>title</code> parece perfeita, mas só funciona para quem usa <strong>mouse</strong>:</p>
+<ul>
+  <li>no <strong>celular</strong> e no tablet não existe "passar o mouse por cima", então a dica nunca aparece;</li>
+  <li>quem navega pelo <strong>teclado</strong> também não consegue abrir a dica de um <code>&lt;abbr&gt;</code>;</li>
+  <li>os <strong>leitores de tela</strong> não se comportam todos igual: alguns leem o <code>title</code>, outros não, e muitos só com uma configuração ligada.</li>
+</ul>
+
+<p>Por isso, a recomendação é: na <strong>primeira vez</strong> que uma abreviação aparece na página, escreva a forma completa <strong>no próprio texto</strong>. Depois, use só a sigla. O <code>&lt;abbr&gt;</code> com <code>title</code> continua útil, como um reforço.</p>
+
+<pre class="file" data-file="primeira-vez.html" data-resultado>&lt;p&gt;Este site foi feito com HyperText Markup Language (&lt;abbr&gt;HTML&lt;/abbr&gt;), a linguagem das páginas da web.&lt;/p&gt;
+&lt;p&gt;Se você nunca escreveu &lt;abbr title="HyperText Markup Language"&gt;HTML&lt;/abbr&gt;, comece pela primeira aula.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>HyperText Markup Language (&lt;abbr&gt;HTML&lt;/abbr&gt;)</dt><dd>A primeira vez: a forma completa no texto, a sigla entre parênteses. Todo mundo lê, em qualquer aparelho. O <code>&lt;abbr&gt;</code> sem <code>title</code> é válido: ele só diz "isto é uma abreviação", e a forma completa já está ao lado.</dd>
+  <dt>&lt;abbr title="…"&gt;HTML&lt;/abbr&gt;</dt><dd>As vezes seguintes: só a sigla, com a forma completa guardada no <code>title</code> para quem pular direto para esse parágrafo.</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>Exemplo</th><th>Quando</th></tr>
+<tr><td>Forma completa, sigla entre parênteses</td><td>Código de Endereçamento Postal (<code>&lt;abbr&gt;CEP&lt;/abbr&gt;</code>)</td><td>Na primeira vez, o mais recomendado</td></tr>
+<tr><td>Sigla, forma completa entre parênteses</td><td><code>&lt;abbr&gt;CEP&lt;/abbr&gt;</code> (Código de Endereçamento Postal)</td><td>Na primeira vez, quando a sigla é mais conhecida que o nome</td></tr>
+<tr><td>Só a sigla, com <code>title</code></td><td><code>&lt;abbr title="Código de Endereçamento Postal"&gt;CEP&lt;/abbr&gt;</code></td><td>Nas vezes seguintes</td></tr>
+<tr><td>Só a sigla, sem marcação</td><td>CEP</td><td>Siglas que todo mundo conhece no contexto do site</td></tr>
+</table>
+</div>
+
+<div class="tip">
+<strong>Precisa marcar toda abreviação?</strong>
+<p>Não. Ninguém marca cada "Sr." ou "etc.". Marque as abreviações que o seu leitor talvez não conheça. Num site de receitas, "CEP" e "kg" dispensam explicação; uma sigla técnica de cozinha profissional, não. E se a abreviação estiver no plural ("os CEPs"), a forma completa vai no plural também: <code>title="Códigos de Endereçamento Postal"</code>.</p>
+</div>
+
+<hr>
+
+<h2>3. <code>&lt;dfn&gt;</code>: o termo sendo definido</h2>
+<p>O <code>&lt;dfn&gt;</code> marca a palavra no lugar exato em que o texto a <strong>explica</strong>. Ela não marca toda vez que a palavra aparece: só a vez da definição. O parágrafo (ou a seção) em volta do <code>&lt;dfn&gt;</code> precisa conter a explicação.</p>
+
+<pre class="file" data-file="dfn.html" data-resultado>&lt;p&gt;O &lt;dfn&gt;tempero verde&lt;/dfn&gt; é a mistura de salsinha e cebolinha picadas.
+Muitas receitas da Ana terminam com ele.&lt;/p&gt;
+&lt;p&gt;Coloque o tempero verde só no fim, para ele não murchar.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;dfn&gt;tempero verde&lt;/dfn&gt;</dt><dd>O termo definido. O navegador o mostra em itálico.</dd>
+  <dt>é a mistura de salsinha e cebolinha picadas.</dt><dd>A definição, no mesmo parágrafo. É isso que faz do <code>&lt;dfn&gt;</code> um <code>dfn</code>: sem a explicação ao lado, ele está no lugar errado.</dd>
+  <dt>o segundo "tempero verde"</dt><dd>Fica sem marcação: ali a palavra só é usada, e não definida.</dd>
+</dl>
+
+<p>Para que serve, se o leitor só vê um itálico? Programas que leem a página (buscadores, ferramentas de glossário) podem achar onde cada termo é definido. E você pode dar um <code>id</code> ao <code>&lt;dfn&gt;</code> e fazer links para a definição de qualquer parte do site: <code>&lt;dfn id="tempero-verde"&gt;</code> e, em outra página, <code>&lt;a href="glossario.html#tempero-verde"&gt;</code> (os links para um ponto da página estão em <a href="ancoras.html">Âncoras na Mesma Página</a>).</p>
+
+<div class="tryhtml" data-goal="texto:dfn=ponto de fio,nsel:dfn=1">
+<p class="try-task"><strong>Experimente:</strong> este parágrafo explica o que é "ponto de fio". Marque o termo com <code>&lt;dfn&gt;</code>, só onde ele está sendo definido.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;O ponto de fio é o ponto da calda de açúcar em que ela forma um fio fino ao escorrer da colher.&lt;/p&gt;
+&lt;p&gt;Para o doce de abóbora, a calda deve chegar ao ponto de fio.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;O &lt;dfn&gt;ponto de fio&lt;/dfn&gt; é o ponto da calda de açúcar em que ela forma um fio fino ao escorrer da colher.&lt;/p&gt;
+&lt;p&gt;Para o doce de abóbora, a calda deve chegar ao ponto de fio.&lt;/p&gt;
+</pre>
+</div>
+
+<h3>Definir uma sigla: <code>&lt;dfn&gt;</code> com <code>&lt;abbr&gt;</code> dentro</h3>
+<p>Quando o termo definido é uma sigla, junte os dois:</p>
+
+<pre class="file" data-file="dfn-abbr.html" data-resultado>&lt;p&gt;&lt;dfn&gt;&lt;abbr title="Cascading Style Sheets"&gt;CSS&lt;/abbr&gt;&lt;/dfn&gt; é a linguagem que dá aparência às páginas: cores, letras, espaços.&lt;/p&gt;
+</pre>
+
+<p>O <code>&lt;dfn&gt;</code> diz "este termo está sendo definido aqui"; o <code>&lt;abbr&gt;</code> dentro dele diz "e o termo é uma sigla, cuja forma completa é esta". A ordem importa: o <code>abbr</code> fica <strong>dentro</strong> do <code>dfn</code>.</p>
+
+<hr>
+
+<h2>4. Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>Uma sigla ou abreviação que o leitor talvez não conheça</td><td><code>&lt;abbr&gt;</code>, com a forma completa no texto na 1ª vez e no <code>title</code> depois</td></tr>
+<tr><td>Um termo sendo explicado naquele parágrafo</td><td><code>&lt;dfn&gt;</code></td></tr>
+<tr><td>Uma sigla sendo explicada</td><td><code>&lt;dfn&gt;&lt;abbr title="…"&gt;…&lt;/abbr&gt;&lt;/dfn&gt;</code></td></tr>
+<tr><td>Um termo estrangeiro, sem definição ao lado</td><td><code>&lt;i lang="…"&gt;</code> (aula <a href="negrito-italico.html">Negrito e Itálico</a>)</td></tr>
+<tr><td>O título de um livro</td><td><code>&lt;cite&gt;</code> (aula <a href="citacoes.html">Citações</a>)</td></tr>
+<tr><td>Uma lista de termos com as suas definições (um glossário)</td><td>Uma lista de descrição, <code>&lt;dl&gt;</code> (aula <a href="listas-descricao.html">Listas de Descrição</a>), com o <code>&lt;dfn&gt;</code> em cada termo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O navegador não mostra mensagem de erro. Em cada caso, veja o que ele fez de verdade e o que o validador diz.</p>
+
+<div class="cenario">
+<strong><code>&lt;acronym&gt;</code>: a tag antiga</strong>
+<p>Antigamente havia duas tags: <code>&lt;abbr&gt;</code> para abreviações (Sr., etc.) e <code>&lt;acronym&gt;</code> para siglas lidas como palavra (ONU, CEP). A diferença confundia todo mundo, e o HTML ficou só com o <code>&lt;abbr&gt;</code>, que serve para os dois casos.</p>
+<pre class="file" data-file="acronym.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Informe o &lt;acronym title="Código de Endereçamento Postal"&gt;CEP&lt;/acronym&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> ainda entende, e mostra a dica ao passar o mouse, para não quebrar sites antigos.</p>
+<pre class="term" data-cwd="~/site">$ vnu acronym.html
+"file:/home/ana/site/acronym.html":8.14-8.61: error: The “acronym” element is obsolete. Use the “abbr” element instead.</pre>
+<p>"O elemento <code>acronym</code> é obsoleto. Use o elemento <code>abbr</code> no lugar." É um <strong>erro</strong>, e o próprio validador diz o conserto.</p>
+<p><strong>Como consertar:</strong> troque <code>acronym</code> por <code>abbr</code>, na abertura e no fechamento. O <code>title</code> continua igual.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:acronym=0,texto:abbr=ONU,attr:abbr[title]=Organização das Nações Unidas">
+<p class="try-task"><strong>Missão:</strong> este código usa a tag obsoleta <code>&lt;acronym&gt;</code>. Troque pela tag de hoje, mantendo o <code>title</code>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;A &lt;acronym title="Organização das Nações Unidas"&gt;ONU&lt;/acronym&gt; tem um programa contra a fome.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;A &lt;abbr title="Organização das Nações Unidas"&gt;ONU&lt;/abbr&gt; tem um programa contra a fome.&lt;/p&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Um <code>&lt;dfn&gt;</code> dentro de outro</strong>
+<pre class="file" data-file="dfndfn.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;&lt;dfn&gt;Bolo de &lt;dfn&gt;pote&lt;/dfn&gt;&lt;/dfn&gt; é um bolo servido num pote.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> monta os dois, um dentro do outro, e tudo sai em itálico. Na tela, não se vê o problema.</p>
+<pre class="term" data-cwd="~/site">$ vnu dfndfn.html
+"file:/home/ana/site/dfndfn.html":8.17-8.21: error: The element “dfn” must not appear as a descendant of the “dfn” element.</pre>
+<p>"O elemento <code>dfn</code> não pode aparecer como descendente do elemento <code>dfn</code>." <em>Descendente</em> é qualquer elemento que está dentro de outro, em qualquer nível (aula <a href="aninhamento.html">Aninhamento</a>). Um trecho define <strong>um</strong> termo; se o parágrafo explica dois termos, cada um ganha o seu <code>&lt;dfn&gt;</code>, lado a lado.</p>
+<p><strong>Como consertar:</strong> <code>&lt;dfn&gt;Bolo de pote&lt;/dfn&gt; é um bolo servido num pote.</code></p>
+</div>
+
+<div class="cenario">
+<strong>Parágrafo dentro de <code>&lt;abbr&gt;</code></strong>
+<p>O <code>&lt;abbr&gt;</code> é em linha, então não pode ter um parágrafo dentro. Com <code>&lt;abbr title="Código de Endereçamento Postal"&gt;&lt;p&gt;CEP&lt;/p&gt;&lt;/abbr&gt;</code>:</p>
+<pre class="term" data-cwd="~/site">$ vnu abbrp.html
+"file:/home/ana/site/abbrp.html":8.46-8.48: error: Element “p” not allowed as child of element “abbr” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>Como consertar:</strong> o parágrafo por fora, o <code>&lt;abbr&gt;</code> por dentro: <code>&lt;p&gt;&lt;abbr title="…"&gt;CEP&lt;/abbr&gt;&lt;/p&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Informação importante só no <code>title</code></strong>
+<p>Não é erro de validador, é de acessibilidade: escrever no <code>title</code> algo que o leitor <strong>precisa</strong> saber, como <code>&lt;abbr title="Entrega só em São Paulo"&gt;SP&lt;/abbr&gt;</code>. Além de não ser a forma completa da sigla, a informação some para quem usa celular ou teclado. O validador aceita esse código sem nenhuma mensagem.</p>
+<p><strong>Como consertar:</strong> no <code>title</code> do <code>abbr</code>, só a forma completa ("São Paulo"). O aviso vai no texto: "Entregamos só em São Paulo".</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;abbr title="forma completa"&gt;SIGLA&lt;/abbr&gt;</code></td><td>Abreviação com a forma completa na dica (mouse); sublinhado pontilhado</td></tr>
+<tr><td><code>Forma completa (&lt;abbr&gt;SIGLA&lt;/abbr&gt;)</code></td><td>Primeira vez: a forma completa no texto</td></tr>
+<tr><td><code>&lt;dfn&gt;termo&lt;/dfn&gt;</code></td><td>O termo que o parágrafo define; itálico</td></tr>
+<tr><td><code>&lt;dfn id="…"&gt;termo&lt;/dfn&gt;</code></td><td>Definição que pode receber links</td></tr>
+<tr><td><code>&lt;dfn&gt;&lt;abbr title="…"&gt;SIGLA&lt;/abbr&gt;&lt;/dfn&gt;</code></td><td>Definição de uma sigla</td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem do validador</th><th>Quer dizer</th></tr>
+<tr><td><code>The “acronym” element is obsolete. Use the “abbr” element instead.</code></td><td>Troque <code>acronym</code> por <code>abbr</code> (error)</td></tr>
+<tr><td><code>The element “dfn” must not appear as a descendant of the “dfn” element.</code></td><td>Um <code>dfn</code> dentro de outro (error)</td></tr>
+<tr><td><code>Element “p” not allowed as child of element “abbr” in this context.</code></td><td>Bloco dentro de elemento em linha (error)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A forma completa</h3>
+<p>Complete com o atributo que guarda a forma completa:</p>
+<div class="ex-code">&lt;abbr <input data-answer="title" aria-label="atributo">="Organização Mundial da Saúde"&gt;OMS&lt;/abbr&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A definição</h3>
+<p>Complete com a tag do termo que está sendo definido:</p>
+<div class="ex-code">&lt;p&gt;&lt;<input data-answer="dfn" aria-label="tag de abertura">&gt;Banho-maria&lt;/dfn&gt; é cozinhar dentro de uma forma colocada em outra com água quente.&lt;/p&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Por que não basta colocar a forma completa no <code>title</code>?</p>
+<label><input type="radio" name="q3"> Porque o validador dá erro</label>
+<label><input type="radio" name="q3"> Porque o <code>title</code> só aceita uma palavra</label>
+<label><input type="radio" name="q3"> Porque a dica só aparece com o mouse: no celular e pelo teclado ela não aparece</label>
+<label><input type="radio" name="q3"> Porque o navegador apaga o <code>title</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">4. Em qual frase o <code>&lt;dfn&gt;</code> está no lugar certo?</p>
+<label><input type="radio" name="q4"> <code>&lt;dfn&gt;Brigadeiro&lt;/dfn&gt; é um doce de leite condensado e chocolate.</code></label>
+<label><input type="radio" name="q4"> <code>Hoje eu fiz &lt;dfn&gt;brigadeiro&lt;/dfn&gt; de novo.</code></label>
+<label><input type="radio" name="q4"> <code>&lt;dfn&gt;Receitas da Ana&lt;/dfn&gt;</code> no título da página</label>
+<label><input type="radio" name="q4"> Em toda vez que a palavra "brigadeiro" aparece</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O que o validador diz de <code>&lt;acronym title="Código de Endereçamento Postal"&gt;CEP&lt;/acronym&gt;</code>?</p>
+<label><input type="radio" name="q5"> Nada: é válido</label>
+<label><input type="radio" name="q5"> Que falta o <code>&lt;dfn&gt;</code></label>
+<label><input type="radio" name="q5"> Um <code>info warning</code></label>
+<label><input type="radio" name="q5"> <code>error: The “acronym” element is obsolete. Use the “abbr” element instead.</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">6. Como se define uma sigla?</p>
+<label><input type="radio" name="q6"> <code>&lt;abbr&gt;&lt;dfn title="…"&gt;CSS&lt;/dfn&gt;&lt;/abbr&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;dfn&gt;&lt;abbr title="…"&gt;CSS&lt;/abbr&gt;&lt;/dfn&gt;</code>, com a definição no mesmo parágrafo</label>
+<label><input type="radio" name="q6"> <code>&lt;dfn&gt;&lt;dfn&gt;CSS&lt;/dfn&gt;&lt;/dfn&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;acronym&gt;CSS&lt;/acronym&gt;</code></label>
+</div>
+
+<h3>Missão final: a página "Como este site foi feito"</h3>
+
+<div class="tryhtml" data-goal="sel:dfn > abbr,attr:dfn > abbr[title]=HyperText Markup Language,texto:dfn=HTML,nsel:dfn=1,attr:p + p abbr[title]=Código de Endereçamento Postal,texto:p + p abbr=CEP">
+<p class="try-task"><strong>Missão:</strong> no primeiro parágrafo, o texto <strong>define</strong> o que é HTML: marque a sigla com um <code>&lt;dfn&gt;</code> e, dentro dele, um <code>&lt;abbr&gt;</code> com <code>title="HyperText Markup Language"</code>. No segundo parágrafo, o CEP só é <strong>usado</strong>: marque-o com <code>&lt;abbr&gt;</code> e <code>title="Código de Endereçamento Postal"</code>, sem <code>dfn</code>.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Como este site foi feito&lt;/h2&gt;
+&lt;p&gt;HTML é a linguagem que diz ao navegador o que é cada parte de uma página: título, parágrafo, imagem.&lt;/p&gt;
+&lt;p&gt;Para receber as encomendas da lojinha, informe o CEP no formulário.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Como este site foi feito&lt;/h2&gt;
+&lt;p&gt;&lt;dfn&gt;&lt;abbr title="HyperText Markup Language"&gt;HTML&lt;/abbr&gt;&lt;/dfn&gt; é a linguagem que diz ao navegador o que é cada parte de uma página: título, parágrafo, imagem.&lt;/p&gt;
+&lt;p&gt;Para receber as encomendas da lojinha, informe o &lt;abbr title="Código de Endereçamento Postal"&gt;CEP&lt;/abbr&gt; no formulário.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;abbr&gt;</code> marca uma abreviação ou sigla; o <code>title</code> guarda só a forma completa, que aparece numa dica ao passar o mouse, com um sublinhado pontilhado.</li>
+  <li>A dica não aparece no celular nem pelo teclado, e os leitores de tela variam. Na primeira vez, escreva a forma completa no texto: "Código de Endereçamento Postal (<abbr>CEP</abbr>)".</li>
+  <li><code>&lt;dfn&gt;</code> marca o termo no lugar onde ele é <strong>definido</strong>, e a definição fica no mesmo parágrafo. Com <code>id</code>, pode receber links.</li>
+  <li>Para definir uma sigla: <code>&lt;dfn&gt;&lt;abbr title="…"&gt;…&lt;/abbr&gt;&lt;/dfn&gt;</code>. Nunca um <code>dfn</code> dentro de outro.</li>
+  <li><code>&lt;acronym&gt;</code> é obsoleto: <code>error: The “acronym” element is obsolete. Use the “abbr” element instead.</code></li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
