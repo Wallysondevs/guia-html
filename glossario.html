@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Glossário — os termos do guia explicados em poucas palavras | Guia HTML</title>
+<meta name="description" content="Glossário do Guia HTML, de A a Z: tag, elemento, atributo, elemento vazio, aninhamento, DOCTYPE, DOM, head, body, semântica, bloco e em linha, entidade, UTF-8, caminho relativo, âncora, formulário, GET e POST, validador W3C, acessibilidade, ARIA, leitor de tela, SEO, Open Graph, viewport, servidor local, GitHub Pages e muito mais, cada termo com o link para a aula.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Glossário</span></h1>
+
+<p class="intro">Os termos que aparecem no guia, em ordem alfabética, explicados em uma ou duas frases, cada um com o link para a aula em que ele é explicado com calma. Os termos em inglês vêm com a tradução. Quando o nome em inglês é o mais usado no dia a dia (como <em>tag</em> ou <em>link</em>), ele é o título do verbete.</p>
+
+<div class="tip">
+<strong>Dica</strong>
+<p>Use <kbd>Ctrl</kbd>+<kbd>F</kbd> no navegador para achar um termo, ou o índice de letras abaixo. Para consultas rápidas, veja também as referências de <a href="ref-elementos.html">Todos os Elementos</a>, <a href="ref-atributos.html">Atributos</a>, <a href="ref-input.html">Tipos de input</a>, <a href="ref-entidades.html">Entidades</a>, <a href="ref-meta.html">Metas do head</a> e <a href="ref-erros.html">Mensagens do Validador</a>.</p>
+</div>
+
+<p class="indice-letras"><a href="#g-A">A</a> · <a href="#g-B">B</a> · <a href="#g-C">C</a> · <a href="#g-D">D</a> · <a href="#g-E">E</a> · <a href="#g-F">F</a> · <a href="#g-G">G</a> · <a href="#g-H">H</a> · <a href="#g-I">I</a> · <a href="#g-J">J</a> · <a href="#g-L">L</a> · <a href="#g-M">M</a> · <a href="#g-N">N</a> · <a href="#g-O">O</a> · <a href="#g-P">P</a> · <a href="#g-Q">Q</a> · <a href="#g-R">R</a> · <a href="#g-S">S</a> · <a href="#g-T">T</a> · <a href="#g-U">U</a> · <a href="#g-V">V</a> · <a href="#g-W">W</a></p>
+
+<h2 id="g-A">A</h2>
+<dl class="glossario">
+<dt><strong>Acessibilidade</strong></dt>
+<dd>Fazer a página funcionar para todo mundo: quem não enxerga e usa leitor de tela, quem só usa o teclado, quem enxerga pouco e dá zoom. Começa com HTML bem escrito: <code>alt</code> nas imagens, <code>label</code> nos campos, títulos em ordem e o <code>lang</code> da página. Veja: <a href="acessibilidade.html">Acessibilidade</a>.</dd>
+<dt><strong>action</strong></dt>
+<dd>O atributo do <code>&lt;form&gt;</code> que diz <strong>para onde</strong> os dados vão quando o formulário é enviado. Veja: <a href="enviar-formulario.html">Enviar (action, method, GET e POST)</a>.</dd>
+<dt><strong>alt</strong> (texto alternativo)</dt>
+<dd>O atributo do <code>&lt;img&gt;</code> com a descrição da imagem, lida pelo leitor de tela e mostrada quando a imagem não carrega. É obrigatório; numa imagem só de enfeite, fica vazio: <code>alt=""</code>. Veja: <a href="imagens-alt.html">Texto Alternativo (alt)</a>.</dd>
+<dt><strong>Âncora</strong></dt>
+<dd>Um link para um ponto da <strong>mesma</strong> página: <code>&lt;a href="#contato"&gt;</code> leva ao elemento com <code>id="contato"</code>. O nome do elemento <code>&lt;a&gt;</code> vem de <em>anchor</em>, âncora. Veja: <a href="ancoras.html">Âncoras na Mesma Página</a>.</dd>
+<dt><strong>Aninhamento</strong></dt>
+<dd>Colocar um elemento dentro de outro: <code>&lt;p&gt;Bolo de &lt;strong&gt;cenoura&lt;/strong&gt;&lt;/p&gt;</code>. O que abre por último fecha primeiro, como caixas umas dentro das outras. Veja: <a href="aninhamento.html">Aninhamento</a>.</dd>
+<dt><strong>ARIA</strong></dt>
+<dd>"Accessible Rich Internet Applications": atributos <code>role</code> e <code>aria-*</code> que dão informações extras aos leitores de tela. A primeira regra do ARIA é: se existe um elemento HTML que faz o serviço (um <code>&lt;button&gt;</code>), use o elemento. Veja: <a href="aria.html">ARIA</a>.</dd>
+<dt><strong>async</strong> e <strong>defer</strong></dt>
+<dd>Atributos do <code>&lt;script src&gt;</code> que fazem o navegador baixar o JavaScript sem parar de ler o HTML. Com <code>defer</code>, ele roda no fim, na ordem; com <code>async</code>, assim que chega. Veja: <a href="preload.html">Desempenho (preload e defer)</a>.</dd>
+<dt><strong>Atributo</strong></dt>
+<dd>Uma informação extra na tag de abertura, no formato <code>nome="valor"</code>: em <code>&lt;a href="sobre.html"&gt;</code>, o atributo é <code>href</code>. Veja: <a href="atributos.html">Atributos</a> e a referência <a href="ref-atributos.html">Atributos</a>.</dd>
+<dt><strong>Atributo booleano</strong></dt>
+<dd>Um atributo que funciona como interruptor: estar escrito já liga (<code>required</code>, <code>disabled</code>, <code>checked</code>). Escrever <code>="false"</code> <strong>não</strong> desliga; para desligar, apague o atributo. Veja: <a href="ref-atributos.html#booleanos">Atributos booleanos</a>.</dd>
+<dt><strong>Atributos globais</strong></dt>
+<dd>Os atributos que valem em qualquer elemento: <code>id</code>, <code>class</code>, <code>style</code>, <code>title</code>, <code>lang</code>, <code>hidden</code>, <code>tabindex</code>, <code>data-*</code>… Veja: <a href="atributos-globais.html">Atributos Globais</a>.</dd>
+<dt><strong>AVIF</strong></dt>
+<dd>Um formato de imagem moderno que costuma dar arquivos bem menores que o JPG com a mesma qualidade. Veja: <a href="formatos-imagem.html">Formatos (JPG, PNG, WebP, SVG, AVIF)</a>.</dd>
+<dt><strong>Aviso</strong> (<em>warning</em>)</dt>
+<dd>Uma mensagem do validador que não é erro: o HTML vale, mas há algo a melhorar. No <code>vnu</code>, aparece como <code>info warning</code>. Veja: <a href="ref-erros.html#tipos">Mensagens do Validador</a>.</dd>
+</dl>
+
+<h2 id="g-B">B</h2>
+<dl class="glossario">
+<dt><strong>Baseline</strong></dt>
+<dd>Um selo que diz se um recurso da web já funciona em todos os navegadores principais (Chrome, Edge, Firefox e Safari). Ajuda a decidir se uma novidade já pode ser usada. Veja: <a href="novidades.html">Novidades do HTML</a>.</dd>
+<dt><strong>Bloco</strong> (elemento de bloco)</dt>
+<dd>Um elemento que começa numa linha nova e ocupa a largura toda, como <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;div&gt;</code> e <code>&lt;ul&gt;</code>. O contrário é "em linha". Veja: <a href="bloco-inline.html">Bloco × Em Linha</a>.</dd>
+<dt><strong>body</strong></dt>
+<dd>O "corpo" da página: tudo o que aparece na tela fica dentro de <code>&lt;body&gt;</code>. Veja: <a href="estrutura.html">Estrutura de uma Página</a>.</dd>
+</dl>
+
+<h2 id="g-C">C</h2>
+<dl class="glossario">
+<dt><strong>Caminho absoluto</strong></dt>
+<dd>Um endereço completo, com o site: <code>https://exemplo.com/receitas/bolo.html</code>. Use para links para outros sites. Veja: <a href="caminhos.html">Caminhos Relativos e Absolutos</a>.</dd>
+<dt><strong>Caminho relativo</strong></dt>
+<dd>Um endereço que parte da página atual: <code>bolo.html</code> (mesma pasta), <code>img/bolo.jpg</code> (uma pasta abaixo), <code>../index.html</code> (uma pasta acima). É o jeito certo de ligar as páginas do seu próprio site. Veja: <a href="caminhos.html">Caminhos Relativos e Absolutos</a>.</dd>
+<dt><strong>charset</strong></dt>
+<dd>"Character set", a codificação dos caracteres do arquivo. Toda página do guia começa o <code>head</code> com <code>&lt;meta charset="utf-8"&gt;</code>. Veja: <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>.</dd>
+<dt><strong>class</strong></dt>
+<dd>Atributo que dá um ou mais nomes a um elemento, para o CSS e o JavaScript acharem grupos de elementos: <code>class="receita destaque"</code>. Vários elementos podem ter a mesma classe. Veja: <a href="class-id.html">class e id</a>.</dd>
+<dt><strong>Código-fonte</strong></dt>
+<dd>O texto HTML de uma página, como foi escrito. Na maioria dos navegadores de computador, <kbd>Ctrl</kbd>+<kbd>U</kbd> mostra o código-fonte da página aberta. Veja: <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor (F12)</a>.</dd>
+<dt><strong>Comentário</strong></dt>
+<dd>Um texto entre <code>&lt;!--</code> e <code>--&gt;</code>, que o navegador não mostra. Serve para anotações. Atenção: quem abre o código-fonte vê. Veja: <a href="comentarios.html">Comentários</a>.</dd>
+<dt><strong>Componente</strong> (Web Component)</dt>
+<dd>Um elemento que você mesmo cria, com nome próprio (como <code>&lt;cartao-receita&gt;</code>) e comportamento em JavaScript. Veja: <a href="web-components.html">Web Components</a>.</dd>
+<dt><strong>CSP</strong></dt>
+<dd>"Content Security Policy", política de segurança de conteúdo: uma regra que diz de onde a página pode carregar scripts, estilos e imagens. Atrapalha quem tenta injetar código na sua página. Veja: <a href="seguranca.html">Segurança (rel, sandbox, CSP)</a>.</dd>
+<dt><strong>CSS</strong></dt>
+<dd>"Cascading Style Sheets", folhas de estilo em cascata: a linguagem que cuida da <strong>aparência</strong> (cores, fontes, espaços, posição). O HTML diz o que cada coisa é; o CSS, como ela fica. Veja: <a href="ligar-css.html">Ligar CSS (link e style)</a>.</dd>
+</dl>
+
+<h2 id="g-D">D</h2>
+<dl class="glossario">
+<dt><strong>data-*</strong></dt>
+<dd>Atributos com nome livre depois de <code>data-</code>, para guardar dados seus num elemento: <code>data-preco="12.90"</code>. O JavaScript lê pelo <code>dataset</code>. Veja: <a href="data-atributos.html">Atributos data-*</a>.</dd>
+<dt><strong>Dados estruturados</strong></dt>
+<dd>Informações escritas num formato que os buscadores entendem (o mais comum é o JSON-LD), como o tempo de preparo e a nota de uma receita. Podem aparecer como resultados "enriquecidos" na busca. Veja: <a href="dados-estruturados.html">Dados Estruturados (JSON-LD)</a>.</dd>
+<dt><strong>DevTools</strong> (F12)</dt>
+<dd>As Ferramentas do Desenvolvedor do navegador: mostram o DOM, o CSS, o console e os arquivos carregados. Abrem com <kbd>F12</kbd> na maioria dos navegadores de computador. Veja: <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor (F12)</a>.</dd>
+<dt><strong>DOCTYPE</strong></dt>
+<dd>A primeira linha da página, <code>&lt;!DOCTYPE html&gt;</code>. Não é uma tag: é um aviso para o navegador desenhar a página no modo padrão de hoje, e não no modo quirks. Veja: <a href="doctype.html">O DOCTYPE</a>.</dd>
+<dt><strong>DOM</strong></dt>
+<dd>"Document Object Model", modelo de objetos do documento: a <strong>árvore</strong> de elementos que o navegador monta depois de ler o HTML, já com os erros consertados. É o que o DevTools mostra e o que o JavaScript altera. Veja: <a href="como-funciona.html">Como o Navegador Lê HTML</a>.</dd>
+</dl>
+
+<h2 id="g-E">E</h2>
+<dl class="glossario">
+<dt><strong>Editor de código</strong></dt>
+<dd>Um programa para escrever código, com cores, sugestões e atalhos, como o VS Code. O HTML também pode ser escrito num editor de texto simples, mas nunca num processador de texto como o Word. Veja: <a href="editores.html">Editores (VS Code e outros)</a>.</dd>
+<dt><strong>Elemento</strong></dt>
+<dd>Uma peça da página: tag de abertura, conteúdo e tag de fechamento, como <code>&lt;p&gt;Olá&lt;/p&gt;</code>. Veja: <a href="elementos.html">Elementos e Tags</a> e a lista em <a href="ref-elementos.html">Todos os Elementos</a>.</dd>
+<dt><strong>Elemento vazio</strong></dt>
+<dd>Um elemento sem conteúdo e sem tag de fechamento. São 13: <code>area</code>, <code>base</code>, <code>br</code>, <code>col</code>, <code>embed</code>, <code>hr</code>, <code>img</code>, <code>input</code>, <code>link</code>, <code>meta</code>, <code>source</code>, <code>track</code> e <code>wbr</code>. Veja: <a href="ref-elementos.html#vazios">Os elementos vazios</a>.</dd>
+<dt><strong>Em linha</strong> (<em>inline</em>)</dt>
+<dd>Um elemento que fica no meio do texto, sem quebrar a linha, como <code>&lt;a&gt;</code>, <code>&lt;strong&gt;</code> e <code>&lt;span&gt;</code>. Veja: <a href="bloco-inline.html">Bloco × Em Linha</a>.</dd>
+<dt><strong>Entidade</strong> (referência de caractere)</dt>
+<dd>Um código entre <code>&amp;</code> e <code>;</code> que vira um caractere: <code>&amp;lt;</code> vira <code>&lt;</code>, <code>&amp;amp;</code> vira <code>&amp;</code>, <code>&amp;nbsp;</code> vira um espaço que não quebra. Veja: <a href="entidades.html">Entidades</a> e a tabela em <a href="ref-entidades.html">Entidades</a>.</dd>
+<dt><strong>Escapar</strong></dt>
+<dd>Trocar um caractere especial pela entidade dele, para que ele apareça como texto em vez de virar código: escrever <code>&amp;lt;p&amp;gt;</code> para mostrar <code>&lt;p&gt;</code>. Veja: <a href="entidades.html">Entidades</a> e <a href="codigo.html">Código (code, pre, kbd)</a>.</dd>
+</dl>
+
+<h2 id="g-F">F</h2>
+<dl class="glossario">
+<dt><strong>Favicon</strong></dt>
+<dd>O ícone pequeno que aparece na aba do navegador e nos favoritos, ligado com <code>&lt;link rel="icon"&gt;</code>. Veja: <a href="favicon.html">Ícone da Aba (favicon)</a>.</dd>
+<dt><strong>Filho</strong>, <strong>pai</strong> e <strong>descendente</strong></dt>
+<dd>Os parentescos da árvore do HTML: em <code>&lt;ul&gt;&lt;li&gt;…&lt;/li&gt;&lt;/ul&gt;</code>, o <code>li</code> é filho do <code>ul</code>, e o <code>ul</code> é pai do <code>li</code>. Descendente é quem está dentro, em qualquer nível. Veja: <a href="aninhamento.html">Aninhamento</a>.</dd>
+<dt><strong>Foco</strong></dt>
+<dd>O elemento que recebe o que você digita agora. A tecla <kbd>Tab</kbd> passa o foco de um link, botão ou campo para o próximo; o navegador costuma desenhar um contorno no elemento com foco. Veja: <a href="teclado.html">Teclado e Foco (tabindex)</a>.</dd>
+<dt><strong>Formulário</strong></dt>
+<dd>Um conjunto de campos (<code>input</code>, <code>select</code>, <code>textarea</code>…) dentro de <code>&lt;form&gt;</code>, que o leitor preenche e envia. Veja: <a href="formularios.html">Formulários</a>.</dd>
+</dl>
+
+<h2 id="g-G">G</h2>
+<dl class="glossario">
+<dt><strong>GET</strong> e <strong>POST</strong></dt>
+<dd>Os dois jeitos de enviar um formulário (<code>method</code>). No GET, os dados vão no endereço, depois do <code>?</code> (bom para buscas); no POST, vão no corpo do pedido (bom para cadastros, senhas e arquivos). Veja: <a href="enviar-formulario.html">Enviar (action, method, GET e POST)</a>.</dd>
+<dt><strong>GitHub Pages</strong></dt>
+<dd>Um serviço gratuito do GitHub que publica um site estático (HTML, CSS, imagens) a partir de um repositório. Veja: <a href="publicar.html">Publicar no GitHub Pages</a>.</dd>
+</dl>
+
+<h2 id="g-H">H</h2>
+<dl class="glossario">
+<dt><strong>head</strong></dt>
+<dd>A "cabeça" da página: título, codificação, CSS, ícone e metas. O que está no <code>&lt;head&gt;</code> não aparece na tela. Veja: <a href="head.html">O head</a>.</dd>
+<dt><strong>Hipertexto</strong></dt>
+<dd>Texto com links que levam a outros textos. É o "HT" de HTML e de HTTP. Veja: <a href="introducao.html">O que é HTML</a>.</dd>
+<dt><strong>href</strong></dt>
+<dd>"Hypertext reference": o atributo com o endereço de destino de um link (<code>&lt;a&gt;</code>) ou de um arquivo ligado (<code>&lt;link&gt;</code>). Veja: <a href="links.html">Links</a>.</dd>
+<dt><strong>HTML</strong></dt>
+<dd>"HyperText Markup Language", linguagem de marcação de hipertexto: a linguagem que diz <strong>o que</strong> cada parte de uma página é (título, parágrafo, link, imagem). Não é uma linguagem de programação. Veja: <a href="introducao.html">O que é HTML</a>.</dd>
+<dt><strong>HTML Living Standard</strong> (HTML5)</dt>
+<dd>A versão do HTML de hoje, mantida pelo WHATWG e atualizada aos poucos, sem números de versão. É o que muita gente ainda chama de "HTML5". Veja: <a href="versoes.html">Versões do HTML</a>.</dd>
+<dt><strong>HTTP</strong> e <strong>HTTPS</strong></dt>
+<dd>As regras de conversa entre o navegador e o servidor: o navegador pede um arquivo, o servidor responde. O HTTPS é a versão com criptografia (o cadeado na barra de endereço). Veja: <a href="como-funciona.html">Como o Navegador Lê HTML</a> e <a href="servidor-local.html">Servidor Local</a>.</dd>
+</dl>
+
+<h2 id="g-I">I</h2>
+<dl class="glossario">
+<dt><strong>id</strong></dt>
+<dd>Atributo que dá um nome <strong>único</strong> a um elemento na página. É usado por âncoras (<code>#id</code>), pelo <code>label for</code>, pelo CSS e pelo JavaScript. Veja: <a href="class-id.html">class e id</a>.</dd>
+<dt><strong>iframe</strong></dt>
+<dd>"Inline frame": um quadro que mostra outra página dentro da sua, como um mapa ou um vídeo de outro site. Veja: <a href="iframes.html">iframe</a>.</dd>
+<dt><strong>index.html</strong></dt>
+<dd>O nome da página inicial de uma pasta. Quando alguém abre o endereço de uma pasta do site, o servidor entrega o <code>index.html</code> dela. Veja: <a href="organizar-arquivos.html">Organizar os Arquivos de um Site</a>.</dd>
+<dt><strong>input</strong></dt>
+<dd>O campo de formulário, um elemento vazio cujo atributo <code>type</code> muda tudo: texto, e-mail, data, caixa de marcar, cor… Veja: <a href="input.html">O Elemento input</a> e <a href="ref-input.html">Tipos de input</a>.</dd>
+</dl>
+
+<h2 id="g-J">J</h2>
+<dl class="glossario">
+<dt><strong>JavaScript</strong></dt>
+<dd>A linguagem de programação dos navegadores: faz a página reagir a cliques, conferir formulários e mudar o conteúdo. Entra no HTML pelo elemento <code>&lt;script&gt;</code>. Veja: <a href="script.html">O Elemento script</a>.</dd>
+<dt><strong>JSON-LD</strong></dt>
+<dd>O formato mais usado para dados estruturados: um bloco <code>&lt;script type="application/ld+json"&gt;</code> com as informações da página para os buscadores. Veja: <a href="dados-estruturados.html">Dados Estruturados (JSON-LD)</a>.</dd>
+</dl>
+
+<h2 id="g-L">L</h2>
+<dl class="glossario">
+<dt><strong>label</strong></dt>
+<dd>O rótulo de um campo de formulário. Ligado ao campo (pelo <code>for</code> ou envolvendo-o), faz o leitor de tela dizer o nome do campo, e um clique no rótulo põe o cursor no campo. Veja: <a href="label.html">label</a>.</dd>
+<dt><strong>lang</strong></dt>
+<dd>Atributo que diz o idioma do conteúdo. No <code>&lt;html lang="pt-BR"&gt;</code>, vale para a página inteira e ajuda o leitor de tela a pronunciar certo. Veja: <a href="estrutura.html">Estrutura de uma Página</a>.</dd>
+<dt><strong>Lazy loading</strong> (carregamento preguiçoso)</dt>
+<dd>Deixar uma imagem ou um iframe para ser baixado só quando ele chega perto da tela: <code>loading="lazy"</code>. Veja: <a href="lazy-loading.html">Carregamento Preguiçoso (loading)</a>.</dd>
+<dt><strong>Leitor de tela</strong></dt>
+<dd>Um programa que lê a tela em voz alta (ou em braile) para quem não enxerga, como o NVDA, o VoiceOver e o TalkBack. Ele se guia pelo HTML: títulos, links, <code>alt</code>, rótulos. Veja: <a href="leitores-tela.html">Leitores de Tela</a>.</dd>
+<dt><strong>Link</strong> (hiperligação)</dt>
+<dd>Um texto ou imagem que leva a outro endereço quando clicado: <code>&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;</code>. Não confunda com o elemento <code>&lt;link&gt;</code> do <code>head</code>, que liga arquivos (como o CSS) à página. Veja: <a href="links.html">Links</a>.</dd>
+<dt><strong>localhost</strong></dt>
+<dd>"O próprio computador": o endereço que você usa para ver um site servido por um servidor local, como <code>http://localhost:8000/</code>. Veja: <a href="servidor-local.html">Servidor Local</a>.</dd>
+</dl>
+
+<h2 id="g-M">M</h2>
+<dl class="glossario">
+<dt><strong>Marcação</strong> (<em>markup</em>)</dt>
+<dd>Marcar um texto com etiquetas que dizem o que cada pedaço é, como um professor que circula o título e sublinha as palavras importantes. É o "M" de HTML. Veja: <a href="introducao.html">O que é HTML</a>.</dd>
+<dt><strong>meta</strong></dt>
+<dd>Elemento vazio do <code>head</code> com informações sobre a página: codificação, viewport, descrição, imagem de compartilhamento. Veja: <a href="meta.html">title e meta</a> e <a href="ref-meta.html">Metas do head</a>.</dd>
+<dt><strong>Metadados</strong></dt>
+<dd>Dados sobre os dados: as informações <strong>sobre</strong> a página (título, idioma, autor, codificação), que ficam no <code>head</code>. Veja: <a href="head.html">O head</a>.</dd>
+<dt><strong>method</strong></dt>
+<dd>O atributo do <code>&lt;form&gt;</code> que escolhe como os dados vão: <code>get</code> (o padrão) ou <code>post</code>. Veja: <a href="enviar-formulario.html">Enviar (action, method, GET e POST)</a>.</dd>
+<dt><strong>Modo quirks</strong></dt>
+<dd>O "modo de manias": como o navegador desenha uma página sem <code>&lt;!DOCTYPE html&gt;</code>, imitando os erros de navegadores muito antigos. O contrário é o modo padrão. Veja: <a href="doctype.html">O DOCTYPE</a>.</dd>
+</dl>
+
+<h2 id="g-N">N</h2>
+<dl class="glossario">
+<dt><strong>name</strong></dt>
+<dd>Num campo de formulário, o nome com que o valor é enviado: <code>name="email"</code> envia <code>email=…</code>. Campo sem <code>name</code> não é enviado. Veja: <a href="formularios.html">Formulários</a>.</dd>
+<dt><strong>Navegador</strong> (<em>browser</em>)</dt>
+<dd>O programa que pede as páginas, lê o HTML, monta o DOM e desenha o resultado: Chrome, Edge, Firefox, Safari. Veja: <a href="como-funciona.html">Como o Navegador Lê HTML</a>.</dd>
+</dl>
+
+<h2 id="g-O">O</h2>
+<dl class="glossario">
+<dt><strong>Obsoleto</strong></dt>
+<dd>Um elemento ou atributo que saiu do HTML, como <code>&lt;center&gt;</code>, <code>&lt;font&gt;</code> e <code>bgcolor</code>. O navegador ainda costuma obedecer, mas o validador acusa. Veja: <a href="versoes.html">Versões do HTML</a> e <a href="ref-elementos.html#obsoletos">Elementos obsoletos</a>.</dd>
+<dt><strong>Open Graph</strong></dt>
+<dd>As metas <code>og:title</code>, <code>og:description</code>, <code>og:image</code>… que as redes sociais e os aplicativos de mensagem leem para montar o cartão de um link compartilhado. Veja: <a href="open-graph.html">Open Graph (Redes Sociais)</a>.</dd>
+</dl>
+
+<h2 id="g-P">P</h2>
+<dl class="glossario">
+<dt><strong>Parser</strong> (analisador)</dt>
+<dd>A parte do navegador que lê o texto HTML, letra por letra, e monta a árvore do DOM. É ele que conserta sozinho as tags mal fechadas. Veja: <a href="como-funciona.html">Como o Navegador Lê HTML</a>.</dd>
+<dt><strong>Pasta raiz</strong></dt>
+<dd>A pasta principal do site, onde fica o <code>index.html</code> e de onde partem as outras pastas (<code>img/</code>, <code>css/</code>). Veja: <a href="organizar-arquivos.html">Organizar os Arquivos de um Site</a>.</dd>
+<dt><strong>placeholder</strong></dt>
+<dd>O texto de exemplo, em cinza, que aparece dentro de um campo vazio e some quando você digita. Não substitui o <code>label</code>. Veja: <a href="atributos-input.html">placeholder, value, autocomplete…</a>.</dd>
+<dt><strong>popover</strong></dt>
+<dd>Atributo que transforma um elemento numa caixa que aparece por cima da página, aberta e fechada por um botão com <code>popovertarget</code>, sem JavaScript. Veja: <a href="popover.html">popover</a>.</dd>
+<dt><strong>Porta</strong></dt>
+<dd>O número que vem depois dos dois-pontos num endereço, como o <code>8000</code> de <code>localhost:8000</code>. Diz com qual programa do computador o navegador está falando. Veja: <a href="servidor-local.html">Servidor Local</a>.</dd>
+</dl>
+
+<h2 id="g-Q">Q</h2>
+<dl class="glossario">
+<dt><strong>Quebra de linha</strong></dt>
+<dd>No código, apertar Enter não quebra a linha na tela: o navegador junta os espaços e as quebras. Para quebrar dentro de um texto, use <code>&lt;br&gt;</code>; para um assunto novo, um novo <code>&lt;p&gt;</code>. Veja: <a href="espacos.html">Espaços e Quebras de Linha</a> e <a href="quebras.html">Quebras (br e hr)</a>.</dd>
+</dl>
+
+<h2 id="g-R">R</h2>
+<dl class="glossario">
+<dt><strong>rel</strong></dt>
+<dd>Atributo que diz a relação entre a página e o destino de um link ou arquivo: <code>rel="stylesheet"</code> (é o CSS), <code>rel="icon"</code> (é o ícone), <code>rel="noopener"</code> (abra sem dar acesso a esta página). Veja: <a href="links-target.html">Nova Aba (target e rel)</a>.</dd>
+<dt><strong>Responsivo</strong></dt>
+<dd>Um site que se ajusta a qualquer tela, do celular ao monitor grande. No HTML, começa com a meta <code>viewport</code> e com imagens em vários tamanhos (<code>srcset</code>). Veja: <a href="meta-viewport.html">Celular (meta viewport)</a> e <a href="imagens-responsivas.html">Imagens Responsivas (srcset)</a>.</dd>
+<dt><strong>robots.txt</strong></dt>
+<dd>Um arquivo de texto na raiz do site com pedidos para os robôs dos buscadores (o que podem visitar). É um pedido, não uma tranca. Veja: <a href="robots-sitemap.html">robots.txt e sitemap</a>.</dd>
+</dl>
+
+<h2 id="g-S">S</h2>
+<dl class="glossario">
+<dt><strong>sandbox</strong></dt>
+<dd>"Caixa de areia": o atributo do <code>&lt;iframe&gt;</code> que prende a página de dentro, sem scripts, formulários nem janelas, a não ser o que você liberar. Veja: <a href="seguranca.html">Segurança (rel, sandbox, CSP)</a>.</dd>
+<dt><strong>Semântica</strong> (HTML semântico)</dt>
+<dd>Escolher o elemento pelo <strong>significado</strong>, e não pela aparência: <code>&lt;nav&gt;</code> para o menu, <code>&lt;button&gt;</code> para um botão, <code>&lt;h2&gt;</code> para um subtítulo. Ajuda os leitores de tela e os buscadores. Veja: <a href="semantica.html">HTML Semântico</a>.</dd>
+<dt><strong>SEO</strong></dt>
+<dd>"Search Engine Optimization", otimização para buscadores: cuidar para que a página seja bem entendida e bem mostrada no Google e companhia (título, descrição, títulos em ordem, texto alternativo). Veja: <a href="seo.html">HTML e SEO</a>.</dd>
+<dt><strong>Servidor</strong></dt>
+<dd>O programa (e o computador) que entrega os arquivos do site quando o navegador pede. Para testar, você pode rodar um no próprio computador: <code>python3 -m http.server</code>. Veja: <a href="servidor-local.html">Servidor Local</a>.</dd>
+<dt><strong>Site estático</strong></dt>
+<dd>Um site feito só de arquivos prontos (HTML, CSS, imagens, JavaScript), entregues como estão, sem programa no servidor montando as páginas. É o que o GitHub Pages publica, e o que este guia é. Veja: <a href="publicar.html">Publicar no GitHub Pages</a>.</dd>
+<dt><strong>sitemap</strong></dt>
+<dd>Um arquivo (<code>sitemap.xml</code>) com a lista das páginas do site, para os buscadores acharem todas. Veja: <a href="robots-sitemap.html">robots.txt e sitemap</a>.</dd>
+<dt><strong>src</strong></dt>
+<dd>"Source", fonte: o atributo com o endereço do arquivo de uma imagem, vídeo, áudio, script ou iframe. Veja: <a href="imagens.html">Imagens</a>.</dd>
+<dt><strong>srcset</strong></dt>
+<dd>Atributo do <code>&lt;img&gt;</code> com várias versões da imagem em tamanhos diferentes; o navegador escolhe a melhor para a tela. Veja: <a href="imagens-responsivas.html">Imagens Responsivas (srcset)</a>.</dd>
+<dt><strong>SVG</strong></dt>
+<dd>"Scalable Vector Graphics": um formato de imagem feito de formas descritas em texto, que fica nítido em qualquer tamanho. Pode ser um arquivo ou ir direto no HTML. Veja: <a href="svg.html">SVG no HTML</a>.</dd>
+</dl>
+
+<h2 id="g-T">T</h2>
+<dl class="glossario">
+<dt><strong>tabindex</strong></dt>
+<dd>Atributo que põe um elemento na ordem da tecla <kbd>Tab</kbd> (<code>0</code>) ou só permite o foco por JavaScript (<code>-1</code>). Valores maiores que 0 bagunçam a ordem e devem ser evitados. Veja: <a href="teclado.html">Teclado e Foco (tabindex)</a>.</dd>
+<dt><strong>Tag</strong></dt>
+<dd>A etiqueta entre <code>&lt;</code> e <code>&gt;</code> que abre (<code>&lt;p&gt;</code>) ou fecha (<code>&lt;/p&gt;</code>) um elemento. Tag é o pedaço de código; elemento é a peça inteira. Veja: <a href="elementos.html">Elementos e Tags</a>.</dd>
+<dt><strong>target</strong></dt>
+<dd>Atributo de link que diz onde abrir o destino: <code>_blank</code> abre numa nova aba. Veja: <a href="links-target.html">Nova Aba (target e rel)</a>.</dd>
+<dt><strong>template</strong></dt>
+<dd>Elemento que guarda um pedaço de HTML sem mostrá-lo, para o JavaScript copiar e usar várias vezes. Veja: <a href="template.html">template e slot</a>.</dd>
+<dt><strong>title</strong></dt>
+<dd>Dois usos: o elemento <code>&lt;title&gt;</code>, no <code>head</code>, é o título da aba e da busca (obrigatório); o atributo <code>title</code> é a dica que aparece quando o mouse para sobre um elemento. Veja: <a href="meta.html">title e meta</a> e <a href="atributos.html">Atributos</a>.</dd>
+</dl>
+
+<h2 id="g-U">U</h2>
+<dl class="glossario">
+<dt><strong>Unicode</strong></dt>
+<dd>A grande tabela que dá um número a cada caractere de todas as escritas do mundo, e aos emojis: o © é o U+00A9, o 🎂 é o U+1F382. As entidades numéricas usam esses números. Veja: <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>.</dd>
+<dt><strong>URL</strong></dt>
+<dd>"Uniform Resource Locator": o endereço de um arquivo na web, como <code>https://exemplo.com/receitas/bolo.html</code>. Veja: <a href="caminhos.html">Caminhos Relativos e Absolutos</a>.</dd>
+<dt><strong>UTF-8</strong></dt>
+<dd>O jeito de gravar os caracteres do Unicode num arquivo usado por quase toda a web. Com <code>&lt;meta charset="utf-8"&gt;</code> e o arquivo salvo em UTF-8, acentos e emojis aparecem certos. Veja: <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>.</dd>
+</dl>
+
+<h2 id="g-V">V</h2>
+<dl class="glossario">
+<dt><strong>Validador</strong></dt>
+<dd>O programa que confere se o HTML segue as regras do padrão e diz onde estão os erros. O oficial é o do W3C: on-line, em validator.w3.org/nu, ou no terminal, com o <code>vnu</code>. Veja: <a href="validar.html">Validar o HTML</a> e <a href="ref-erros.html">Mensagens do Validador</a>.</dd>
+<dt><strong>value</strong></dt>
+<dd>O valor de um campo: o texto inicial de um <code>input</code>, ou o que é enviado por uma opção, uma caixa de marcar ou um botão. Veja: <a href="atributos-input.html">placeholder, value, autocomplete…</a>.</dd>
+<dt><strong>viewport</strong></dt>
+<dd>A área da tela onde a página é desenhada. A meta <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code> faz a página caber na largura do celular. Veja: <a href="meta-viewport.html">Celular (meta viewport)</a>.</dd>
+<dt><strong>vnu</strong></dt>
+<dd>O "Nu Html Checker", o validador do W3C em forma de programa de terminal. É o mesmo que roda no validator.w3.org. Veja: <a href="validar.html">Validar o HTML</a>.</dd>
+<dt><strong>VS Code</strong></dt>
+<dd>O Visual Studio Code, um editor de código gratuito, o mais usado hoje. Veja: <a href="editores.html">Editores (VS Code e outros)</a>.</dd>
+</dl>
+
+<h2 id="g-W">W</h2>
+<dl class="glossario">
+<dt><strong>W3C</strong></dt>
+<dd>"World Wide Web Consortium": o consórcio que cuida de padrões da web (como o CSS) e mantém o validador oficial. Veja: <a href="versoes.html">Versões do HTML</a>.</dd>
+<dt><strong>WCAG</strong></dt>
+<dd>"Web Content Accessibility Guidelines": as diretrizes de acessibilidade do W3C, a lista de critérios usada para dizer se um site é acessível. Veja: <a href="acessibilidade.html">Acessibilidade</a>.</dd>
+<dt><strong>WebP</strong></dt>
+<dd>Um formato de imagem moderno, aceito por todos os navegadores atuais, que costuma dar arquivos menores que o JPG e o PNG. Veja: <a href="formatos-imagem.html">Formatos (JPG, PNG, WebP, SVG, AVIF)</a>.</dd>
+<dt><strong>WebVTT</strong></dt>
+<dd>O formato de arquivo de legendas (<code>.vtt</code>) usado pelo elemento <code>&lt;track&gt;</code> nos vídeos. Veja: <a href="legendas.html">Legendas (track e WebVTT)</a>.</dd>
+<dt><strong>WHATWG</strong></dt>
+<dd>"Web Hypertext Application Technology Working Group": o grupo, formado pelas empresas dos navegadores, que escreve o HTML Living Standard. Veja: <a href="versoes.html">Versões do HTML</a>.</dd>
+</dl>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
