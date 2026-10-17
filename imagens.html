@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Imagens — o elemento img, src e alt | Guia HTML</title>
+<meta name="description" content="Imagens em HTML para quem nunca fez um site: o elemento img com src e alt, onde guardar o arquivo e como escrever o caminho, a imagem no meio do texto e dentro de um link, a imagem quebrada que o navegador mostra de verdade e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Imagens</span></h1>
+
+<p class="intro">Até aqui, as páginas da Ana só tinham texto. Mas um site de receitas sem foto do bolo não abre o apetite de ninguém. Nesta aula você vai pôr a primeira foto na página com o elemento <code>&lt;img&gt;</code>. São só duas informações: <strong>qual arquivo</strong> mostrar e <strong>o que ele mostra</strong>, em palavras. E você vai ver, no seu próprio navegador, o que acontece quando o arquivo não é encontrado.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Por que a foto <strong>não fica dentro</strong> do arquivo <code>.html</code>, e o que o navegador faz para buscá-la.</li>
+  <li>Como escrever <code>&lt;img src="…" alt="…"&gt;</code>, parte por parte, e por que ele não tem tag de fechamento.</li>
+  <li>Onde guardar as imagens do site e como escrever o caminho até elas.</li>
+  <li>O que acontece quando a imagem fica no meio de um parágrafo, e como transformar uma imagem num link.</li>
+  <li>Como é uma <strong>imagem quebrada</strong> de verdade e as causas mais comuns (nome errado, maiúscula, barra invertida).</li>
+  <li>Os erros reais do validador: sem <code>alt</code>, sem <code>src</code>, <code>&lt;/img&gt;</code>, <code>&lt;image&gt;</code>.</li>
+</ul>
+</div>
+
+<p>Antes, é bom ter visto <a href="caminhos.html">Caminhos Relativos e Absolutos</a>: o <code>src</code> de uma imagem é um caminho, igual ao <code>href</code> de um link. As mensagens do validador saíram do <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>). Os exemplos com "Resultado" são desenhados agora pelo seu navegador, com as imagens de verdade do guia.</p>
+
+<hr>
+
+<h2>A ideia: o recado "cole a foto aqui"</h2>
+<p>Pense num caderno de receitas montado à mão. A Ana escreve o texto e, onde quer uma foto, deixa um recado: "cole aqui a foto do bolo, aquela da gaveta, envelope 3". A foto não está escrita no caderno; o recado diz <strong>onde buscá-la</strong>. E, se a foto se perder, o recado ainda conta o que devia estar ali.</p>
+
+<p>O <code>&lt;img&gt;</code> é esse recado. O arquivo <code>.html</code> é só texto; a foto é <strong>outro arquivo</strong> (<code>.jpg</code>, <code>.png</code>, <code>.webp</code>…), guardado ao lado. O navegador lê o HTML, encontra o recado e vai buscar a foto:</p>
+
+<ol class="passo">
+  <li>O navegador pede a página (<code>index.html</code>) ao servidor e começa a ler.</li>
+  <li>Encontra um <code>&lt;img src="imagens/bolo.jpg"&gt;</code>. Separa um lugar na tela e faz um <strong>segundo pedido</strong> ao servidor: "me manda o <code>imagens/bolo.jpg</code>".</li>
+  <li>Quando a foto chega, ele a desenha no lugar separado. Se ela não chegar, desenha o texto do recado (o <code>alt</code>).</li>
+</ol>
+
+<p>No laboratório, a pasta do site da Ana tem a página e, numa pasta <code>imagens</code>, a foto. Repare no tamanho dos dois arquivos: a página tem 291 bytes; a foto, 25020. A foto não está "dentro" da página. Com um servidor local (aula <a href="servidor-local.html">Servidor Local</a>) e o <code>curl</code>, dá para fazer os mesmos dois pedidos que o navegador faz:</p>
+
+<pre class="term" data-cwd="~/receitas">$ ls -l index.html imagens
+-rw-rw-r-- 1 ana ana  291 out 17 15:53 index.html
+
+imagens:
+total 36
+-rw-rw-r-- 1 ana ana 25020 out 17 15:53 bolo.jpg
+-rw-rw-r-- 1 ana ana  4586 out 17 15:53 logo.png
+$ python3 -m http.server &amp;
+[1] 39
+$ curl -sI http://localhost:8000/index.html                « 1º pedido: a página
+127.0.0.1 - - [17/Oct/2026 15:53:53] "HEAD /index.html HTTP/1.1" 200 -
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:53:53 GMT
+Content-type: text/html
+Content-Length: 291
+Last-Modified: Sat, 17 Oct 2026 18:53:51 GMT
+
+$ curl -sI http://localhost:8000/imagens/bolo.jpg          « 2º pedido: a foto
+127.0.0.1 - - [17/Oct/2026 15:53:53] "HEAD /imagens/bolo.jpg HTTP/1.1" 200 -
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:53:53 GMT
+Content-type: image/jpeg                                   « "isto é uma foto JPEG"
+Content-Length: 25020
+Last-Modified: Sat, 17 Oct 2026 18:53:51 GMT
+
+$ kill %1</pre>
+
+<p>Uma página com dez fotos são onze pedidos: a página e cada foto. É por isso que as fotos às vezes aparecem <strong>depois</strong> do texto, quando a internet está lenta.</p>
+
+<hr>
+
+<h2>1. A primeira imagem</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura de duas camadas com cobertura de chocolate, num prato branco"&gt;
+&lt;p&gt;O bolo preferido da família da Ana.&lt;/p&gt;
+</pre>
+
+<p>A foto aparece no tamanho real dela, 800 pixels de largura por 600 de altura. Numa tela estreita, ela fica maior que o quadro do Resultado, e você precisa rolar para o lado para vê-la inteira. A aula <a href="imagens-tamanho.html">Largura e Altura</a> ensina a mudar isso. (Nos exemplos do guia, as imagens ficam na pasta <code>assets/midia/</code> deste site; no site da Ana, na pasta <code>imagens/</code>. O jeito de escrever é o mesmo.)</p>
+
+<dl class="anatomy">
+  <dt>&lt;img</dt><dd>O elemento de imagem. O nome vem de <em>image</em>, "imagem".</dd>
+  <dt>src="assets/midia/bolo-800.jpg"</dt><dd><code>src</code> vem de <em>source</em>, "fonte", "origem": o <strong>caminho</strong> do arquivo da imagem. Aqui ele começa na pasta da página, entra em <code>assets</code>, depois em <code>midia</code>, e acha <code>bolo-800.jpg</code>.</dd>
+  <dt>alt="Bolo de cenoura com…"</dt><dd><code>alt</code> vem de <em>alternative</em>, "alternativo": o <strong>texto que substitui a imagem</strong> para quem não pode vê-la. Um leitor de tela lê esse texto em voz alta; o navegador o mostra se a foto não carregar; o Google o usa para entender a foto. É obrigatório e tem aula própria: <a href="imagens-alt.html">Texto Alternativo</a>.</dd>
+  <dt>&gt;</dt><dd>Fim da tag. E fim do elemento: não existe <code>&lt;/img&gt;</code>.</dd>
+</dl>
+
+<h3>Um elemento vazio</h3>
+<p>Um <code>&lt;p&gt;</code> tem conteúdo: o texto entre <code>&lt;p&gt;</code> e <code>&lt;/p&gt;</code>. O <code>&lt;img&gt;</code> não tem conteúdo nenhum: tudo o que ele precisa está nos atributos. Elementos assim se chamam <strong>elementos vazios</strong> (<em>void elements</em>), como o <code>&lt;br&gt;</code> e o <code>&lt;hr&gt;</code> da aula <a href="quebras.html">Quebras</a>. Por isso ele não tem tag de fechamento.</p>
+
+<p>Você vai encontrar, em sites e livros antigos, a forma com barra: <code>&lt;img src="bolo.jpg" alt="Bolo" /&gt;</code>. Ela vem do XHTML, um primo antigo do HTML. Hoje a barra não faz nada, e o validador avisa isso com uma mensagem do tipo <code>info</code> (só informação, não é erro):</p>
+
+<pre class="term" data-cwd="~/img">$ vnu barra.html
+"file:/home/ana/img/barra.html":8.1-8.44: info: Trailing slash on void elements has no effect and interacts badly with unquoted attribute values.</pre>
+
+<p>"A barra no fim de elementos vazios não tem efeito e se dá mal com valores de atributo sem aspas." O guia escreve sem barra.</p>
+
+<div class="tryhtml" data-goal="attr:img[src]=assets/midia/bolo-800.jpg,sel:img[alt]:not([alt=&quot;&quot;])">
+<p class="try-task"><strong>Missão:</strong> ponha a foto do bolo entre o título e o parágrafo. O arquivo é <code>assets/midia/bolo-800.jpg</code>. Não esqueça o <code>alt</code>, com uma frase que conte o que a foto mostra.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+
+&lt;p&gt;Fica pronto em 50 minutos.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate"&gt;
+&lt;p&gt;Fica pronto em 50 minutos.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Onde guardar as imagens e como escrever o caminho</h2>
+<p>O <code>src</code> segue as mesmas regras do <code>href</code> da aula <a href="caminhos.html">Caminhos</a>. O mais comum é juntar as imagens numa pasta própria. O site da Ana ficou assim:</p>
+
+<pre class="term" data-cwd="~/receitas">$ tree
+.
+├── imagens
+│   ├── bolo.jpg
+│   └── logo.png
+├── index.html
+└── paginas
+    └── bolo.html
+
+3 directories, 4 files</pre>
+
+<p>O <code>tree</code> mostra as pastas em forma de árvore: o <code>.</code> é a pasta do site (<code>~/receitas</code>); dentro dela, a pasta <code>imagens</code> com duas imagens, a página principal e a pasta <code>paginas</code> com a página do bolo. A última linha conta: 3 pastas e 4 arquivos. Daqui, o <code>src</code> de cada página:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>De qual página</th><th>Para qual imagem</th><th>O <code>src</code></th><th>Leia como</th></tr>
+<tr><td><code>index.html</code></td><td><code>imagens/bolo.jpg</code></td><td><code>src="imagens/bolo.jpg"</code></td><td>"entre na pasta <code>imagens</code> e pegue <code>bolo.jpg</code>"</td></tr>
+<tr><td><code>paginas/bolo.html</code></td><td><code>imagens/bolo.jpg</code></td><td><code>src="../imagens/bolo.jpg"</code></td><td>"suba uma pasta (<code>..</code>), entre em <code>imagens</code>…"</td></tr>
+<tr><td>qualquer página</td><td><code>imagens/logo.png</code></td><td><code>src="/imagens/logo.png"</code></td><td>"comece da raiz do site" (veja o aviso abaixo)</td></tr>
+<tr><td>qualquer página</td><td>uma foto de outro site</td><td><code>src="https://exemplo.com/foto.jpg"</code></td><td>endereço completo (absoluto)</td></tr>
+</table>
+</div>
+
+<div class="warning">
+<strong>O <code>/</code> do começo e o GitHub Pages</strong>
+<p>Um <code>src</code> que começa com <code>/</code> parte da <strong>raiz do servidor</strong>. No GitHub Pages, um site de projeto fica em <code>https://ana.github.io/receitas/</code>, e a raiz do servidor é <code>https://ana.github.io/</code>: o <code>/imagens/logo.png</code> procura a foto fora do seu site. Prefira caminhos <strong>relativos</strong> (<code>imagens/…</code>, <code>../imagens/…</code>), que funcionam no seu computador e publicados. A aula <a href="publicar.html">Publicar no GitHub Pages</a> mostra esse erro.</p>
+</div>
+
+<h3>Imagem de outro site</h3>
+<p>Funciona, mas a foto continua no outro site. Se o dono apagar ou trocar o arquivo, a sua página fica com uma imagem quebrada (ou com outra foto!), e cada visita sua gasta a internet do servidor dele. Além disso, a foto tem dono: usar sem permissão pode violar direitos autorais. Para o seu site, baixe (com permissão) ou tire as suas fotos e guarde-as na sua pasta.</p>
+
+<div class="tip">
+<strong>Nomes de arquivo de imagem</strong>
+<p>Os mesmos do resto do site (aula <a href="organizar-arquivos.html">Organizar os Arquivos de um Site</a>): minúsculas, sem acento, sem espaço, com hífen. <code>bolo-de-cenoura.jpg</code>, e não <code>Foto Bolo Cenoura.JPG</code>. A seção 5 mostra por que a maiúscula derruba a imagem quando o site é publicado.</p>
+</div>
+
+<hr>
+
+<h2>3. A imagem no meio do texto</h2>
+<p>O <code>&lt;img&gt;</code> é um elemento <strong>em linha</strong> (aula <a href="bloco-inline.html">Bloco × Em Linha</a>): ele entra na linha do texto, como se fosse uma letra enorme. Veja o que acontece com uma foto dentro de um parágrafo:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Este é o bolo &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura" width="160" height="120"&gt; que a Ana faz aos domingos.&lt;/p&gt;
+</pre>
+
+<p>A foto ficou <strong>na linha</strong> do texto, e o pé dela se alinha com o pé das letras. O resto da frase continuou à direita ou pulou para a linha de baixo, dependendo da largura da sua tela. (Os <code>width</code> e <code>height</code> deixam a foto pequena para caber no exemplo. Eles são o assunto da aula <a href="imagens-tamanho.html">Largura e Altura</a>.)</p>
+
+<p>Para uma foto que é o destaque, como a de uma receita, deixe-a fora do parágrafo, sozinha na linha dela, como na seção 1. Quando a foto tem uma legenda, o elemento certo é o <code>&lt;figure&gt;</code> (aula <a href="figure.html">figure e figcaption</a>). Imagens pequenas no meio do texto fazem sentido para ícones e emojis desenhados.</p>
+
+<hr>
+
+<h2>4. Uma imagem que é um link</h2>
+<p>Para a foto levar a outra página, coloque o <code>&lt;img&gt;</code> <strong>dentro</strong> de um <code>&lt;a&gt;</code>. A foto inteira vira a área de clique:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Receitas da semana&lt;/h2&gt;
+&lt;a href="receitas/bolo.html"&gt;&lt;img src="assets/midia/bolo-800.jpg" alt="Receita do bolo de cenoura" width="240" height="180"&gt;&lt;/a&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;a href="receitas/bolo.html"&gt;</dt><dd>O link, como na aula <a href="links.html">Links</a>.</dd>
+  <dt>&lt;img … alt="Receita do bolo de cenoura"&gt;</dt><dd>O conteúdo do link é a imagem, e não um texto. Por isso o <code>alt</code> diz <strong>para onde o link leva</strong>: é ele que o leitor de tela lê como nome do link.</dd>
+  <dt>&lt;/a&gt;</dt><dd>Fecha o link logo depois da imagem.</dd>
+</dl>
+
+<p>Passe o mouse sobre a foto no Resultado: o ponteiro vira a mãozinha de link, e o endereço aparece no canto da janela.</p>
+
+<h3>E o <code>title</code>?</h3>
+<p>O atributo <code>title</code> ("título") mostra uma dica quando o mouse para em cima da imagem: <code>&lt;img src="…" alt="Bolo de cenoura" title="Receita da vó Lúcia"&gt;</code>. Ele <strong>não substitui</strong> o <code>alt</code>: no celular não existe "passar o mouse", e muitos leitores de tela não leem o <code>title</code>. Use-o só para uma informação extra, que pode faltar sem prejuízo.</p>
+
+<hr>
+
+<h2>5. A imagem quebrada</h2>
+<p>Se o navegador não consegue o arquivo, ele não dá erro: mostra no lugar da foto um <strong>ícone de imagem quebrada</strong> e, ao lado, o texto do <code>alt</code>. No exemplo abaixo, o nome do arquivo foi digitado errado (<code>.jgp</code> no lugar de <code>.jpg</code>). Esta é a imagem quebrada de verdade, no seu navegador:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jgp" alt="Bolo de cenoura com cobertura de chocolate"&gt;
+&lt;p&gt;O bolo preferido da família da Ana.&lt;/p&gt;
+</pre>
+
+<p>O desenho exato muda de navegador para navegador: o Chrome e o Edge mostram um iconezinho de "foto rasgada" seguido do <code>alt</code>; o Firefox costuma mostrar só o texto do <code>alt</code>. O que todos fazem é deixar o texto do <code>alt</code> disponível. É por isso que um bom <code>alt</code> salva a página: a pessoa ainda sabe que ali havia "um bolo de cenoura com cobertura de chocolate".</p>
+
+<p>E sem <code>alt</code>? Veja na caixa abaixo: só sobra o ícone (ou nada). Depois, acrescente um <code>alt</code> e repare na diferença.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> esta imagem está quebrada e sem <code>alt</code> (o validador reclamaria das duas coisas). Acrescente <code>alt="Bolo de cenoura"</code> e veja o texto aparecer. Depois conserte a extensão para <code>.jpg</code>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Antes da imagem.&lt;/p&gt;
+&lt;img src="assets/midia/bolo-800.jgp"&gt;
+&lt;p&gt;Depois da imagem.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Repare também no <strong>console</strong> que apareceu embaixo do Resultado. No editor do guia, ele avisa: <code>Não foi possível carregar "assets/midia/bolo-800.jgp" (&lt;img&gt;). Confira o nome e o caminho do arquivo.</code> Esse aviso é do editor, para ajudar você aqui no guia.</p>
+
+<p>O validador <strong>não</strong> percebe arquivos que faltam: ele confere o HTML, e não o disco. Quem descobre é o servidor (um <code>404</code>) e o navegador. Na sua página de verdade, para achar imagens quebradas numa página, abra as Ferramentas do Desenvolvedor (F12, aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>): a aba de rede (<em>Network</em>) mostra, em vermelho, os pedidos que falharam, e o console mostra um erro com o endereço que deu 404.</p>
+
+<h3>As causas de sempre</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O <code>src</code></th><th>O arquivo de verdade</th><th>O problema</th></tr>
+<tr><td><code>bolo.jgp</code></td><td><code>bolo.jpg</code></td><td>letra trocada no nome ou na extensão</td></tr>
+<tr><td><code>bolo.jpeg</code></td><td><code>bolo.jpg</code></td><td><code>.jpg</code> e <code>.jpeg</code> são o mesmo formato, mas são nomes diferentes</td></tr>
+<tr><td><code>bolo.jpg</code></td><td><code>imagens/bolo.jpg</code></td><td>esqueceu a pasta</td></tr>
+<tr><td><code>imagens/bolo.jpg</code></td><td><code>imagens/bolo.jpg</code>, mas a página está em <code>paginas/</code></td><td>faltou subir uma pasta: <code>../imagens/bolo.jpg</code></td></tr>
+<tr><td><code>Bolo.JPG</code></td><td><code>bolo.jpg</code></td><td>maiúsculas: veja abaixo</td></tr>
+<tr><td><code>C:\Users\Ana\Fotos\bolo.jpg</code></td><td>no computador da Ana</td><td>caminho do Windows: só existe no computador dela (e o validador reclama)</td></tr>
+</table>
+</div>
+
+<h3>A maiúscula que só quebra depois de publicar</h3>
+<p>No Windows e no macOS, <code>Bolo.JPG</code> e <code>bolo.jpg</code> são o mesmo arquivo. No Linux, e nos servidores (o do GitHub Pages também), são dois nomes diferentes. A Ana testou no computador dela, estava tudo certo; publicou, e a foto sumiu. No servidor local do laboratório, que roda no Linux, dá para ver:</p>
+
+<pre class="term" data-cwd="~/receitas">$ ls imagens
+bolo.jpg  logo.png
+$ python3 -m http.server &amp;
+[1] 39
+$ curl -sI http://localhost:8000/imagens/Bolo.JPG
+127.0.0.1 - - [17/Oct/2026 15:53:53] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 15:53:53] "HEAD /imagens/Bolo.JPG HTTP/1.1" 404 -
+HTTP/1.0 404 File not found                    « "arquivo não encontrado"
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:53:53 GMT
+Connection: close
+Content-Type: text/html;charset=utf-8
+Content-Length: 460
+
+$ kill %1</pre>
+
+<p>A regra que evita esse susto: escreva <strong>todos</strong> os nomes de arquivo em minúsculas, e copie o nome do arquivo para o <code>src</code> em vez de digitar.</p>
+
+<div class="tryhtml" data-goal="attr:img[src]=assets/midia/bolo-800.jpg">
+<p class="try-task"><strong>Missão:</strong> a foto não aparece: você vê o ícone de imagem quebrada e o texto do <code>alt</code>. O arquivo certo é <code>assets/midia/bolo-800.jpg</code>. Encontre os <strong>dois</strong> erros no <code>src</code> e conserte.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/media/Bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate"&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate"&gt;
+</pre>
+</div>
+
+<p>Os dois erros: a pasta é <code>midia</code> (em português, sem o <code>e</code> do inglês <em>media</em>) e o nome do arquivo começa com <code>b</code> minúsculo.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: An “img” element must have an “alt” attribute, except under certain conditions.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>&lt;img src="bolo.jpg"&gt;</code>, sem <code>alt</code>.</p>
+<pre class="term" data-cwd="~/img">$ vnu sem-alt.html
+"file:/home/ana/img/sem-alt.html":8.1-8.20: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
+<p>"Um elemento <code>img</code> precisa ter um atributo <code>alt</code>, a não ser em certas condições. Para detalhes, consulte as orientações sobre alternativas em texto para imagens." O navegador mostra a foto normalmente; quem perde é quem não a vê.</p>
+<p><strong>Como consertar:</strong> descreva a foto no <code>alt</code>. Se a imagem é só enfeite, use <code>alt=""</code> (vazio de propósito). As "certas condições" e o jeito de escrever um bom <code>alt</code> estão em <a href="imagens-alt.html">Texto Alternativo</a>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “img” is missing one or more of the following attributes: “src”, “srcset”.</code></strong>
+<p><strong>O que aconteceu:</strong> a imagem ficou sem endereço. Acontece de três jeitos: esquecer o <code>src</code> (<code>&lt;img alt="Bolo"&gt;</code>), escrever <code>scr</code> (letras trocadas) ou usar <code>href</code>, que é do link:</p>
+<pre class="term" data-cwd="~/img">$ vnu scr.html
+"file:/home/ana/img/scr.html":8.1-8.42: error: Attribute “scr” not allowed on element “img” at this point.
+"file:/home/ana/img/scr.html":8.1-8.42: error: Element “img” is missing one or more of the following attributes: “src”, “srcset”.
+$ vnu href.html
+"file:/home/ana/img/href.html":8.1-8.43: error: Attribute “href” not allowed on element “img” at this point.
+"file:/home/ana/img/href.html":8.1-8.43: error: Element “img” is missing one or more of the following attributes: “src”, “srcset”.</pre>
+<p>"Falta ao elemento <code>img</code> um ou mais destes atributos: <code>src</code>, <code>srcset</code>." (O <code>srcset</code> é da aula <a href="imagens-responsivas.html">Imagens Responsivas</a>.) No navegador, sem endereço, sobra o texto do <code>alt</code>.</p>
+<p><strong>Como consertar:</strong> <code>src</code>, de <em>source</em>: s-r-c.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “” for attribute “src” on element “img”: Must be non-empty.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>&lt;img src="" alt="Bolo de cenoura"&gt;</code>, um "depois eu ponho o arquivo" que ficou para trás.</p>
+<pre class="term" data-cwd="~/img">$ vnu src-vazio.html
+"file:/home/ana/img/src-vazio.html":8.1-8.34: error: Bad value “” for attribute “src” on element “img”: Must be non-empty.</pre>
+<p>"Valor ruim para o atributo <code>src</code>: não pode ser vazio."</p>
+<p><strong>Como consertar:</strong> ponha o caminho do arquivo, ou tire o <code>&lt;img&gt;</code> até ter a foto.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Stray end tag “img”.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>&lt;img src="bolo.jpg" alt="Bolo de cenoura"&gt;&lt;/img&gt;</code>.</p>
+<pre class="term" data-cwd="~/img">$ vnu fecha.html
+"file:/home/ana/img/fecha.html":8.43-8.48: error: Stray end tag “img”.</pre>
+<p>"Tag de fechamento <code>img</code> perdida": não existe <code>&lt;/img&gt;</code>. O navegador simplesmente a ignora e a foto aparece igual.</p>
+<p><strong>Como consertar:</strong> apague o <code>&lt;/img&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Saw a start tag “image”.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>&lt;image src="bolo.jpg" alt="Bolo de cenoura"&gt;</code>, com a palavra inteira.</p>
+<pre class="term" data-cwd="~/img">$ vnu image.html
+"file:/home/ana/img/image.html":8.1-8.44: error: Saw a start tag “image”.</pre>
+<p>"Encontrei uma tag de abertura <code>image</code>." Aqui o navegador faz um conserto curioso: as regras de leitura do HTML mandam <strong>trocar</strong> <code>&lt;image&gt;</code> por <code>&lt;img&gt;</code>, porque esse engano é muito antigo e comum. A foto aparece! Veja na caixa (e troque <code>image</code> por <code>img</code>: nada muda na tela):</p>
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;image src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura" width="240" height="180"&gt;
+</pre>
+</div>
+<p>Funcionar não quer dizer estar certo: o validador reclama, e outros programas que leem HTML podem não fazer o mesmo conserto.</p>
+<p><strong>Como consertar:</strong> <code>&lt;img&gt;</code>, com três letras.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “imagens\bolo.jpg” for attribute “src” on element “img”: Backslash ("\") used as path segment delimiter.</code></strong>
+<p><strong>O que aconteceu:</strong> o caminho usa a barra invertida do Windows (<code>\</code>), ou é o caminho inteiro do computador da Ana:</p>
+<pre class="term" data-cwd="~/img">$ vnu contrabarra.html windows.html
+"file:/home/ana/img/contrabarra.html":8.1-8.50: error: Bad value “imagens\bolo.jpg” for attribute “src” on element “img”: Backslash ("\") used as path segment delimiter.
+"file:/home/ana/img/windows.html":8.1-8.61: error: Bad value “C:\Users\Ana\Fotos\bolo.jpg” for attribute “src” on element “img”: Illegal character after “c:”. “\” is not allowed.</pre>
+<p>"Barra invertida usada para separar pastas" e "caractere proibido depois de <code>c:</code>". Endereços da web usam a barra normal, <code>/</code>. E um caminho como <code>C:\Users\Ana\Fotos\bolo.jpg</code> (ou <code>file:///home/ana/Fotos/bolo.jpg</code>, que o validador aceita) aponta para o disco da Ana: no computador de qualquer outra pessoa, a foto não existe.</p>
+<p><strong>Como consertar:</strong> copie a foto para a pasta do site e use um caminho relativo com <code>/</code>: <code>imagens/bolo.jpg</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “foto do bolo.jpg” for attribute “src” on element “img”: Illegal character in path segment. Space is not allowed.</code></strong>
+<p><strong>O que aconteceu:</strong> o nome do arquivo tem espaços.</p>
+<pre class="term" data-cwd="~/img">$ vnu espaco.html
+"file:/home/ana/img/espaco.html":8.1-8.50: error: Bad value “foto do bolo.jpg” for attribute “src” on element “img”: Illegal character in path segment. Space is not allowed.</pre>
+<p><strong>Como consertar:</strong> renomeie o arquivo para <code>foto-do-bolo.jpg</code> e use esse nome no <code>src</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Attribute “de” not allowed on element “img” at this point.</code></strong>
+<p><strong>O que aconteceu:</strong> o <code>alt</code> com várias palavras ficou sem aspas: <code>&lt;img src=bolo.jpg alt=Bolo de cenoura&gt;</code>.</p>
+<pre class="term" data-cwd="~/img">$ vnu semaspas.html
+"file:/home/ana/img/semaspas.html":8.1-8.38: error: Attribute “de” not allowed on element “img” at this point.
+"file:/home/ana/img/semaspas.html":8.1-8.38: error: Attribute “cenoura” not allowed on element “img” at this point.</pre>
+<p>Sem aspas, o valor acaba no primeiro espaço: o <code>alt</code> virou só "Bolo", e "de" e "cenoura" viraram dois atributos inventados. O leitor de tela lê "Bolo".</p>
+<p><strong>Como consertar:</strong> sempre aspas: <code>alt="Bolo de cenoura"</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;img src="arquivo.jpg" alt="descrição"&gt;</code></td><td>Mostra a imagem; <code>alt</code> é o texto que a substitui</td></tr>
+<tr><td><code>src="imagens/bolo.jpg"</code></td><td>Caminho relativo: pasta <code>imagens</code> ao lado da página</td></tr>
+<tr><td><code>src="../imagens/bolo.jpg"</code></td><td>Sobe uma pasta antes</td></tr>
+<tr><td><code>src="https://…/foto.jpg"</code></td><td>Imagem de outro site (depende dele e dos direitos da foto)</td></tr>
+<tr><td><code>alt=""</code></td><td>Imagem só de enfeite: o leitor de tela pula</td></tr>
+<tr><td><code>&lt;a href="…"&gt;&lt;img … alt="destino"&gt;&lt;/a&gt;</code></td><td>Imagem que é um link; o <code>alt</code> diz para onde vai</td></tr>
+<tr><td><code>title="…"</code></td><td>Dica ao passar o mouse; não substitui o <code>alt</code></td></tr>
+<tr><td><code>width</code> e <code>height</code></td><td>Tamanho da imagem (aula <a href="imagens-tamanho.html">Largura e Altura</a>)</td></tr>
+<tr><td>Sem <code>&lt;/img&gt;</code></td><td>Elemento vazio: não tem fechamento</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O atributo do arquivo</h3>
+<p>Complete com o atributo que diz qual arquivo mostrar:</p>
+<div class="ex-code">&lt;img <input data-answer="src" aria-label="atributo">="imagens/torta.jpg" alt="Torta de limão"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Subir uma pasta</h3>
+<p>A página está em <code>receitas/torta.html</code> e a foto em <code>imagens/torta.jpg</code>. Complete o caminho:</p>
+<div class="ex-code">&lt;img src="<input data-answer="../imagens/torta.jpg" aria-label="caminho">" alt="Torta de limão"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. O que o navegador mostra quando o arquivo do <code>src</code> não existe?</p>
+<label><input type="radio" name="q3"> Uma página de erro no lugar do site inteiro</label>
+<label><input type="radio" name="q3"> Um ícone de imagem quebrada e/ou o texto do <code>alt</code>, e o resto da página normal</label>
+<label><input type="radio" name="q3"> Uma foto qualquer, escolhida pelo navegador</label>
+<label><input type="radio" name="q3"> Um erro do validador na tela</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Qual destas linhas está certa?</p>
+<label><input type="radio" name="q4"> <code>&lt;img src="bolo.jpg"&gt;Bolo de cenoura&lt;/img&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;img href="bolo.jpg" alt="Bolo de cenoura"&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;img src="bolo.jpg" alt="Bolo de cenoura"&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;image src="bolo.jpg" alt="Bolo de cenoura"&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. No computador da Ana (Windows) a foto aparece, mas no site publicado ela sumiu. O <code>src</code> é <code>Imagens/Bolo.jpg</code> e a pasta é <code>imagens/bolo.jpg</code>. O que houve?</p>
+<label><input type="radio" name="q5"> O servidor diferencia maiúsculas de minúsculas, e o Windows não</label>
+<label><input type="radio" name="q5"> O GitHub Pages não aceita fotos JPG</label>
+<label><input type="radio" name="q5"> Faltou o <code>&lt;/img&gt;</code></label>
+<label><input type="radio" name="q5"> A foto é grande demais</label>
+</div>
+
+<h3>Missão final: o card da receita</h3>
+
+<div class="tryhtml" data-goal="nsel:img=2,attr:h1 + img[src]=assets/midia/bolo-800.jpg,sel:h1 + img[alt]:not([alt=&quot;&quot;]),sel:a[href=&quot;receitas/bolo.html&quot;] img[alt],nsrc:&lt;/img&gt;">
+<p class="try-task"><strong>Missão:</strong> monte a página. (1) Logo depois do <code>&lt;h1&gt;</code>, a foto <code>assets/midia/bolo-800.jpg</code>, com um <code>alt</code> que descreva o bolo. (2) No fim, a mesma foto pequena (<code>width="120" height="90"</code>) <strong>dentro de um link</strong> para <code>receitas/bolo.html</code>, com um <code>alt</code> que diga para onde o link leva. E tire a tag que não existe.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolos da Ana&lt;/h1&gt;
+&lt;p&gt;Receitas testadas na cozinha da Ana, com fotos de verdade.&lt;/p&gt;
+&lt;h2&gt;Veja também&lt;/h2&gt;
+&lt;p&gt;&lt;a href="receitas/bolo.html"&gt;Receita do bolo de cenoura&lt;/a&gt;&lt;/p&gt;&lt;/img&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolos da Ana&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate"&gt;
+&lt;p&gt;Receitas testadas na cozinha da Ana, com fotos de verdade.&lt;/p&gt;
+&lt;h2&gt;Veja também&lt;/h2&gt;
+&lt;p&gt;&lt;a href="receitas/bolo.html"&gt;&lt;img src="assets/midia/bolo-800.jpg" alt="Receita do bolo de cenoura" width="120" height="90"&gt;&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<p>Repare que o texto "Receita do bolo de cenoura", que era o conteúdo do link, foi para o <code>alt</code>. Quem usa leitor de tela continua ouvindo o mesmo nome de link de antes.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>A imagem é um <strong>arquivo separado</strong>. O <code>&lt;img&gt;</code> diz onde buscá-lo, e o navegador faz um pedido a mais ao servidor para cada imagem.</li>
+  <li><code>&lt;img src="caminho" alt="descrição"&gt;</code>: <code>src</code> é o arquivo, <code>alt</code> é o texto que o substitui. Elemento vazio: sem <code>&lt;/img&gt;</code>, e a barra <code>/&gt;</code> não faz nada.</li>
+  <li>O <code>src</code> segue as regras de caminho do <code>href</code>. Guarde as fotos numa pasta do site e prefira caminhos relativos. Imagens de outros sites dependem do outro site e têm dono.</li>
+  <li>O <code>&lt;img&gt;</code> é em linha: dentro de um parágrafo, ele entra na linha do texto. Dentro de um <code>&lt;a&gt;</code>, vira um link, e o <code>alt</code> diz o destino.</li>
+  <li>Arquivo não encontrado = imagem quebrada: ícone e/ou o texto do <code>alt</code>. O validador não percebe; o F12 e o servidor (404) mostram. Nomes em minúsculas evitam a surpresa do servidor.</li>
+  <li>O validador pega: sem <code>alt</code>, sem <code>src</code> (ou <code>scr</code>, <code>href</code>), <code>src=""</code>, <code>&lt;/img&gt;</code>, <code>&lt;image&gt;</code>, barra invertida e espaço no caminho.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
