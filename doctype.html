@@ -175,7 +175,7 @@ código de saída: 0          « nenhuma mensagem: os dois estão certos</pre>
 
 <div class="note">
 <strong>Se o resultado mostrar <code>CSS1Compat</code> mesmo sem DOCTYPE</strong>
-<p>O editor tem um "modo simples", usado quando o guia é aberto direto do disco ou numa janela anônima do Firefox. Nesse modo, o quadro de resultado nunca entra em modo quirks: é uma regra dos navegadores para esse tipo de quadro (o <code>srcdoc</code>). No guia publicado na internet, você vê o modo de verdade. A caixa a seguir funciona nos dois casos.</p>
+<p>O editor tem um "modo simples", usado quando o navegador não deixa o editor ligar o seu "servidor de mentirinha" (o <em>service worker</em>): por exemplo, com o guia aberto direto do disco (<code>file://</code>), num endereço <code>http://</code> que não seja o do próprio computador ou numa janela anônima do Firefox. Nesse modo, o quadro de resultado nunca entra em modo quirks: é uma regra dos navegadores para esse tipo de quadro (o <code>srcdoc</code>). No guia publicado na internet, você vê o modo de verdade. A caixa a seguir funciona nos dois casos.</p>
 </div>
 
 <h3>Testar vários DOCTYPEs de uma vez</h3>
