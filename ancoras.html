@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Âncoras — links para um ponto da página (#id) | Guia HTML</title>
+<meta name="description" content="Âncoras em HTML para quem nunca fez um site: o atributo id como alvo, o link href=&quot;#id&quot;, sumário no começo da página, voltar ao topo, link para um ponto de outra página (bolo.html#ingredientes), o link para pular para o conteúdo, e os erros reais do validador W3C (id duplicado, id com espaço, o antigo a name).">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Âncoras na Mesma Página</span></h1>
+
+<p class="intro">A receita de bolo da Ana ficou comprida: história do bolo, ingredientes, modo de preparo, dicas. Quem só quer ver a lista de ingredientes precisa rolar a página até achar. Um link pode levar não só a outra página, mas a um <strong>ponto exato</strong> de uma página: é a <strong>âncora</strong>. Nesta aula você vai marcar os pontos da receita com <code>id</code>, criar um sumário clicável no começo e um "voltar ao topo" no fim.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como marcar um ponto da página com o atributo <code>id</code>.</li>
+  <li>Como fazer um link para esse ponto: <code>href="#ingredientes"</code>.</li>
+  <li>Como montar um sumário e um link "voltar ao topo".</li>
+  <li>Como levar a um ponto de <strong>outra</strong> página: <code>bolo.html#ingredientes</code>.</li>
+  <li>As regras de um bom <code>id</code>: único, sem espaços, e cuidado com maiúsculas.</li>
+  <li>Os erros reais do validador: <code>id</code> repetido, <code>id</code> com espaço, vazio, e o antigo <code>&lt;a name&gt;</code>.</li>
+</ul>
+</div>
+
+<p>Os resultados desta aula são desenhados pelo <strong>seu</strong> navegador, logo abaixo de cada código: clique nos links e veja o quadro rolar. As mensagens de erro são do validador W3C (<code>vnu</code>, a mesma ferramenta do <a href="validar.html">validator.w3.org</a>), rodado na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: o marcador de página</h2>
+<p>Num livro de receitas, você cola <strong>marcadores</strong> nas páginas que mais usa e escreve neles: "bolo", "pão". Depois, para achar o bolo, puxa o marcador certo.</p>
+<p>Na página, o marcador é o atributo <code>id</code>: ele dá um <strong>nome</strong> a um elemento. O link aponta para esse nome com um <code>#</code> na frente. São duas partes, e as duas são necessárias:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Parte</th><th>No livro</th><th>Na página</th></tr>
+<tr><td>O alvo</td><td>O marcador colado na página</td><td><code>&lt;h2 id="ingredientes"&gt;</code></td></tr>
+<tr><td>O caminho até ele</td><td>"Puxe o marcador <em>ingredientes</em>"</td><td><code>&lt;a href="#ingredientes"&gt;</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. A primeira âncora</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;p&gt;&lt;a href="#ingredientes"&gt;Ir para os ingredientes&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;A história do bolo&lt;/h2&gt;
+&lt;p style="height: 500px"&gt;A avó da Ana fazia este bolo todo domingo… (um texto bem comprido)&lt;/p&gt;
+
+&lt;h2 id="ingredientes"&gt;Ingredientes&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;2 xícaras de fubá&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+  &lt;li&gt;1 colher de erva-doce&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>id="ingredientes"</dt><dd>O <strong>alvo</strong>. O <code>id</code> (de <em>identifier</em>, "identificador") dá um nome único ao título. Ele não aparece na tela. Qualquer elemento pode ter um <code>id</code> (aula <a href="class-id.html">class e id</a>).</dd>
+  <dt>href="#ingredientes"</dt><dd>O <strong>link</strong> para o alvo. O <code>#</code> (cerquilha, ou "jogo da velha") quer dizer "nesta página, o elemento cujo <code>id</code> é…". O nome depois do <code>#</code> é igual ao do <code>id</code>, letra por letra, mas o <code>id</code> em si vai <strong>sem</strong> o <code>#</code>.</dd>
+  <dt>style="height: 500px"</dt><dd>Só para o exemplo: deixa o parágrafo alto, como se tivesse muito texto, para a página precisar rolar. Sem rolagem, não há para onde pular.</dd>
+</dl>
+
+<p>Clique no link do resultado: o quadro rola até o título "Ingredientes", que fica no alto. Num site de verdade, o endereço na barra do navegador ganha um <code>#ingredientes</code> no fim, e o botão <strong>Voltar</strong> do navegador leva de volta ao ponto onde você estava.</p>
+
+<div class="note">
+<strong>O pedaço depois do <code>#</code> tem nome</strong>
+<p>Em <code>https://ana.example/bolo.html#ingredientes</code>, a parte <code>#ingredientes</code> se chama <strong>fragmento</strong> (em inglês, <em>fragment</em>, ou <em>hash</em>). Ele nunca vai para o servidor: o navegador pede a página <code>bolo.html</code> inteira e, sozinho, rola até o fragmento.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:h2#modo-de-preparo,sel:a[href='#modo-de-preparo']">
+<p class="try-task"><strong>Missão:</strong> dê o <code>id="modo-de-preparo"</code> ao título "Modo de preparo" e transforme "Ir para o modo de preparo" num link para ele. Clique no link para testar.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;p&gt;Ir para o modo de preparo&lt;/p&gt;
+
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;p style="height: 500px"&gt;Fubá, ovos, leite, açúcar, óleo, fermento e erva-doce.&lt;/p&gt;
+
+&lt;h2&gt;Modo de preparo&lt;/h2&gt;
+&lt;p&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;p&gt;&lt;a href="#modo-de-preparo"&gt;Ir para o modo de preparo&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;p style="height: 500px"&gt;Fubá, ovos, leite, açúcar, óleo, fermento e erva-doce.&lt;/p&gt;
+
+&lt;h2 id="modo-de-preparo"&gt;Modo de preparo&lt;/h2&gt;
+&lt;p&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O sumário e o "voltar ao topo"</h2>
+<p>O uso mais comum das âncoras é o <strong>sumário</strong>: uma lista de links no começo de uma página comprida, um para cada parte. E, no fim de cada parte, um link de volta para o começo.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1 id="topo"&gt;Bolo de fubá&lt;/h1&gt;
+
+&lt;nav aria-label="Sumário"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="#ingredientes"&gt;Ingredientes&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#modo-de-preparo"&gt;Modo de preparo&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#dicas"&gt;Dicas&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+
+&lt;h2 id="ingredientes"&gt;Ingredientes&lt;/h2&gt;
+&lt;p style="height: 300px"&gt;Fubá, ovos, leite, açúcar, óleo, fermento e erva-doce.&lt;/p&gt;
+
+&lt;h2 id="modo-de-preparo"&gt;Modo de preparo&lt;/h2&gt;
+&lt;p style="height: 300px"&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+
+&lt;h2 id="dicas"&gt;Dicas&lt;/h2&gt;
+&lt;p&gt;Unte a forma com manteiga e fubá.&lt;/p&gt;
+&lt;p&gt;&lt;a href="#topo"&gt;Voltar ao topo&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;h1 id="topo"&gt;</dt><dd>O alvo do "voltar ao topo": o título principal ganhou um <code>id</code>.</dd>
+  <dt>&lt;nav aria-label="Sumário"&gt;</dt><dd>O <code>&lt;nav&gt;</code> marca um bloco de <strong>navegação</strong> (aula <a href="nav.html">nav</a>). O <code>aria-label</code> dá um nome a ele, para o leitor de tela anunciar "navegação Sumário" (aula <a href="aria.html">ARIA</a>). O sumário funcionaria sem os dois, mas assim ele fica mais fácil de achar.</dd>
+  <dt>&lt;ul&gt; e &lt;li&gt;</dt><dd>Uma lista com marcadores (aula <a href="listas.html">Listas</a>): cada item é um link.</dd>
+  <dt>href="#topo"</dt><dd>Volta para o <code>h1</code>.</dd>
+</dl>
+
+<div class="tip">
+<strong>Dois atalhos para o topo</strong>
+<p>O HTML tem duas âncoras especiais que funcionam <strong>sem</strong> nenhum <code>id</code>: <code>href="#top"</code> e <code>href="#"</code> levam sempre ao começo da página (desde que nenhum elemento tenha <code>id="top"</code>). O guia prefere o <code>id="topo"</code> explícito: quem lê o código entende na hora aonde o link vai.</p>
+</div>
+
+<hr>
+
+<h2>3. Um ponto de outra página</h2>
+<p>O fragmento pode vir no fim de qualquer endereço. Na página inicial, a Ana quer um link que abra a receita <strong>já nos ingredientes</strong>:</p>
+
+<pre class="file" data-file="index.html">&lt;p&gt;&lt;a href="bolo.html#ingredientes"&gt;Ingredientes do bolo de fubá&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>bolo.html</dt><dd>O caminho da página, como em qualquer link (aula <a href="caminhos.html">Caminhos</a>). Poderia ser <code>receitas/bolo.html</code> ou um endereço completo.</dd>
+  <dt>#ingredientes</dt><dd>O fragmento: depois de abrir <code>bolo.html</code>, o navegador rola até o elemento com <code>id="ingredientes"</code> <strong>daquela</strong> página.</dd>
+</dl>
+
+<p>Com endereços completos é igual: <code>https://ana.example/bolo.html#ingredientes</code>. É assim que você manda para alguém um link "direto para a parte que interessa". Se a outra página não tiver aquele <code>id</code>, ela abre normalmente, no começo, sem erro nenhum.</p>
+
+<div class="tryhtml" data-goal="sel:a[href='bolo.html#modo-de-preparo'],src:id=[&quot;']modo-de-preparo">
+<p class="try-task"><strong>Missão:</strong> no <code>index.html</code>, transforme "Como fazer o bolo" num link que abra o <code>bolo.html</code> direto no modo de preparo. Na aba <code>bolo.html</code>, dê o <code>id="modo-de-preparo"</code> ao título certo. Clique e confira: o quadro troca de página e já rola até o modo de preparo.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Como fazer o bolo&lt;/p&gt;
+</pre>
+<pre class="script" data-file="bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;p style="height: 500px"&gt;Fubá, ovos, leite, açúcar, óleo, fermento e erva-doce.&lt;/p&gt;
+&lt;h2&gt;Modo de preparo&lt;/h2&gt;
+&lt;p&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="bolo.html#modo-de-preparo"&gt;Como fazer o bolo&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;p style="height: 500px"&gt;Fubá, ovos, leite, açúcar, óleo, fermento e erva-doce.&lt;/p&gt;
+&lt;h2 id="modo-de-preparo"&gt;Modo de preparo&lt;/h2&gt;
+&lt;p&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Regras de um bom <code>id</code></h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Regra</th><th>Certo</th><th>Errado</th></tr>
+<tr><td><strong>Único</strong> na página: dois elementos não podem ter o mesmo <code>id</code></td><td><code>ingredientes</code> e <code>ingredientes-cobertura</code></td><td>dois <code>id="ingredientes"</code></td></tr>
+<tr><td><strong>Sem espaços</strong>: use hífen</td><td><code>modo-de-preparo</code></td><td><code>modo de preparo</code></td></tr>
+<tr><td><strong>Não vazio</strong></td><td><code>id="dicas"</code></td><td><code>id=""</code></td></tr>
+<tr><td><strong>Maiúsculas contam</strong>: o <code>href</code> tem de ser idêntico</td><td><code>id="dicas"</code> e <code>href="#dicas"</code></td><td><code>id="Dicas"</code> e <code>href="#dicas"</code></td></tr>
+<tr><td>De preferência <strong>minúsculas, sem acentos</strong>, com palavras que dizem o conteúdo</td><td><code>modo-de-preparo</code></td><td><code>secao2</code>, <code>Preparação</code></td></tr>
+</table>
+</div>
+
+<p>As três primeiras regras o validador confere. A das maiúsculas, não: o link para <code>#dicas</code> com o alvo <code>id="Dicas"</code> passa no validador e, ao clicar, a página <strong>não rola</strong>. Teste:</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> clique em "Dicas" no resultado: nada acontece, porque o <code>id</code> é <code>Dicas</code>, com maiúscula. Troque o <code>id</code> para <code>dicas</code> e clique de novo.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;a href="#dicas"&gt;Dicas&lt;/a&gt;&lt;/p&gt;
+&lt;p style="height: 500px"&gt;(o resto da receita)&lt;/p&gt;
+&lt;h2 id="Dicas"&gt;Dicas&lt;/h2&gt;
+&lt;p&gt;Unte a forma com manteiga e fubá.&lt;/p&gt;
+</pre>
+</div>
+
+<div class="tip">
+<strong>Pular para o conteúdo</strong>
+<p>Muitos sites começam com um link escondido, que aparece quando a pessoa aperta <kbd>Tab</kbd>: "Pular para o conteúdo". Ele é uma âncora para o <code>&lt;main id="conteudo"&gt;</code>, e poupa quem navega pelo teclado de passar por todos os links do menu em cada página. O guia mostra como fazer em <a href="teclado.html">Teclado e Foco</a>.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>O link não leva a lugar nenhum (e o validador não avisa)</strong>
+<p><strong>O que acontece:</strong> com <code>href="#preparo"</code> e o alvo <code>id="modo-de-preparo"</code>, o clique não faz nada (só o endereço ganha o <code>#preparo</code>). O mesmo com uma letra maiúscula diferente.</p>
+<p><strong>O que o validador diz:</strong> nada. Ele confere se cada <code>id</code> e cada <code>href</code> estão bem escritos, mas não confere se o <code>#nome</code> de um link existe na página.</p>
+<p><strong>Como consertar:</strong> copie o <code>id</code> do alvo e cole no <code>href</code>, depois do <code>#</code>. E clique em cada link do sumário antes de publicar.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Duplicate ID</code>: o mesmo <code>id</code> duas vezes</strong>
+<pre class="file" data-file="duplo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de fubá&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;p&gt;&lt;a href="#ingredientes"&gt;Ingredientes&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="ingredientes"&gt;Ingredientes&lt;/h2&gt;
+&lt;h2 id="ingredientes"&gt;Ingredientes da cobertura&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu duplo.html
+"file:/home/ana/site/duplo.html":11.1-11.22: error: Duplicate ID “ingredientes”.
+"file:/home/ana/site/duplo.html":10.1-10.22: info warning: The first occurrence of ID “ingredientes” was here.</pre>
+<p><strong>O que significa:</strong> "<code>id</code> duplicado". A segunda linha é uma informação extra (<em>info warning</em>), apontando a primeira vez que o nome apareceu. O navegador leva o link para o <strong>primeiro</strong> elemento com aquele <code>id</code>; o segundo nunca é alcançado. O CSS e o JavaScript também se confundem com nomes repetidos.</p>
+<p><strong>Como consertar:</strong> nomes diferentes: <code>ingredientes</code> e <code>ingredientes-cobertura</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Espaço no <code>id</code>: <code>An ID must not contain whitespace</code></strong>
+<p>A Ana escreveu o nome do título como ele aparece na tela, com espaços, nas linhas 9 e 10:</p>
+<pre class="term" data-cwd="~/site">$ grep 'preparo' espaco.html
+&lt;p&gt;&lt;a href="#modo de preparo"&gt;Modo de preparo&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="modo de preparo"&gt;Modo de preparo&lt;/h2&gt;
+$ vnu espaco.html
+"file:/home/ana/site/espaco.html":9.4-9.30: error: Bad value “#modo de preparo” for attribute “href” on element “a”: Illegal character in fragment. Space is not allowed.
+"file:/home/ana/site/espaco.html":10.1-10.25: error: Bad value “modo de preparo” for attribute “id” on element “h2”: An ID must not contain whitespace.</pre>
+<p><strong>O que significa:</strong> dois erros, um de cada lado: "caractere ilegal no fragmento: espaço não é permitido" (no <code>href</code>) e "um ID não pode conter espaços" (no <code>id</code>).</p>
+<p><strong>Como consertar:</strong> <code>modo-de-preparo</code>, com hífens, nos dois lugares.</p>
+</div>
+
+<div class="cenario">
+<strong><code>id</code> vazio: <code>An ID must not be the empty string</code></strong>
+<p>Com <code>&lt;h2 id=""&gt;</code> na linha 10:</p>
+<pre class="term" data-cwd="~/site">$ vnu vazio.html
+"file:/home/ana/site/vazio.html":10.1-10.10: error: Bad value “” for attribute “id” on element “h2”: An ID must not be the empty string.</pre>
+<p><strong>Como consertar:</strong> dê um nome, ou apague o atributo.</p>
+</div>
+
+<div class="cenario">
+<strong>O jeito antigo: <code>&lt;a name="…"&gt;</code></strong>
+<p>Tutoriais antigos marcam o alvo com um link sem endereço: <code>&lt;h2&gt;&lt;a name="ingredientes"&gt;Ingredientes&lt;/a&gt;&lt;/h2&gt;</code>. Os navegadores ainda entendem, mas, na linha 10:</p>
+<pre class="term" data-cwd="~/site">$ vnu nome.html
+"file:/home/ana/site/nome.html":10.5-10.27: error: Element “a” is missing required attribute “href”.
+"file:/home/ana/site/nome.html":10.5-10.27: info: The “name” attribute is never allowed on the “a” element.
+"file:/home/ana/site/nome.html":10.5-10.27: info warning: The “name” attribute on the “a” element is obsolete. Consider putting an “id” attribute on the nearest container instead.</pre>
+<p><strong>O que significa:</strong> o atributo <code>name</code> no <code>a</code> é <strong>obsoleto</strong> ("considere colocar um atributo <code>id</code> no elemento mais próximo que o contém"). As três linhas apontam o mesmo <code>&lt;a&gt;</code>: um link sem <code>href</code>, com um atributo que o HTML atual não aceita mais nele (<em>never allowed</em>, "nunca permitido"). A saída mistura os três níveis de mensagem: <code>error</code>, <code>info</code> e <code>info warning</code>.</p>
+<p><strong>Como consertar:</strong> exatamente o que ele sugere: <code>&lt;h2 id="ingredientes"&gt;Ingredientes&lt;/h2&gt;</code>, sem o <code>&lt;a&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;h2 id="ingredientes"&gt;</code></td><td>Marca o alvo (sem <code>#</code>)</td></tr>
+<tr><td><code>&lt;a href="#ingredientes"&gt;</code></td><td>Link para o alvo nesta página</td></tr>
+<tr><td><code>&lt;a href="bolo.html#ingredientes"&gt;</code></td><td>Abre outra página já no alvo</td></tr>
+<tr><td><code>&lt;a href="https://ana.example/bolo.html#ingredientes"&gt;</code></td><td>O mesmo, com endereço completo</td></tr>
+<tr><td><code>&lt;a href="#topo"&gt;</code> + <code>&lt;h1 id="topo"&gt;</code></td><td>Voltar ao topo (recomendado)</td></tr>
+<tr><td><code>&lt;a href="#top"&gt;</code> ou <code>&lt;a href="#"&gt;</code></td><td>Começo da página, sem <code>id</code> nenhum</td></tr>
+<tr><td><code>&lt;nav aria-label="Sumário"&gt;</code> + lista de âncoras</td><td>Sumário de uma página longa</td></tr>
+<tr><td><code>id</code></td><td>Único, sem espaços, não vazio; maiúsculas contam</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O link</h3>
+<p>Complete o link para o elemento com <code>id="dicas"</code>:</p>
+<div class="ex-code">&lt;a href="<input data-answer="#dicas" aria-label="href">"&gt;Dicas&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O alvo</h3>
+<p>Complete o título para ser o alvo de <code>href="#cobertura"</code>:</p>
+<div class="ex-code">&lt;h2 <input data-answer="id" aria-label="atributo">="<input data-answer="cobertura" aria-label="nome">"&gt;Cobertura&lt;/h2&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Outra página</h3>
+<p>Complete o link que abre <code>pao.html</code> já no ponto <code>id="forno"</code>:</p>
+<div class="ex-code">&lt;a href="<input data-answer="pao.html#forno|./pao.html#forno" aria-label="href">"&gt;Temperatura do forno&lt;/a&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. A página tem <code>&lt;h2 id="Dicas"&gt;</code> e o link <code>&lt;a href="#dicas"&gt;</code>. O que acontece ao clicar?</p>
+<label><input type="radio" name="q4"> A página rola até as dicas</label>
+<label><input type="radio" name="q4"> O validador mostra um erro</label>
+<label><input type="radio" name="q4"> Nada: maiúsculas contam, e o validador não avisa</label>
+<label><input type="radio" name="q4"> Abre uma página 404</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Dois títulos têm <code>id="ingredientes"</code>. Para onde vai o link <code>#ingredientes</code>?</p>
+<label><input type="radio" name="q5"> Para o primeiro; e o validador avisa <code>Duplicate ID</code></label>
+<label><input type="radio" name="q5"> Para o segundo</label>
+<label><input type="radio" name="q5"> Para os dois, alternando</label>
+<label><input type="radio" name="q5"> Para lugar nenhum</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">6. Qual destes é o melhor <code>id</code> para o título "Modo de preparo"?</p>
+<label><input type="radio" name="q6"> <code>modo de preparo</code></label>
+<label><input type="radio" name="q6"> <code>modo-de-preparo</code></label>
+<label><input type="radio" name="q6"> <code>#modo-de-preparo</code></label>
+<label><input type="radio" name="q6"> <code>secao2</code></label>
+</div>
+
+<h3>Missão final: o sumário da receita</h3>
+
+<div class="tryhtml" data-goal="nsel:nav a[href^='#']=3,sel:h2#ingredientes,sel:h2#modo-de-preparo,sel:h2#dicas,sel:nav a[href='#ingredientes'],sel:nav a[href='#modo-de-preparo'],sel:nav a[href='#dicas'],sel:h1#topo,sel:a[href='#topo']">
+<p class="try-task"><strong>Missão:</strong> monte a navegação da receita. (1) Dê os <code>id</code> <code>ingredientes</code>, <code>modo-de-preparo</code> e <code>dicas</code> aos três títulos <code>h2</code>. (2) No <code>&lt;nav&gt;</code>, transforme cada item num link para a sua parte. (3) Dê o <code>id="topo"</code> ao <code>h1</code> e transforme o "Voltar ao topo" num link para ele. Teste cada link no resultado.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+
+&lt;nav aria-label="Sumário"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Ingredientes&lt;/li&gt;
+    &lt;li&gt;Modo de preparo&lt;/li&gt;
+    &lt;li&gt;Dicas&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;p style="height: 300px"&gt;Fubá, ovos, leite, açúcar, óleo, fermento e erva-doce.&lt;/p&gt;
+
+&lt;h2&gt;Modo de preparo&lt;/h2&gt;
+&lt;p style="height: 300px"&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+
+&lt;h2&gt;Dicas&lt;/h2&gt;
+&lt;p&gt;Unte a forma com manteiga e fubá.&lt;/p&gt;
+&lt;p&gt;Voltar ao topo&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1 id="topo"&gt;Bolo de fubá&lt;/h1&gt;
+
+&lt;nav aria-label="Sumário"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="#ingredientes"&gt;Ingredientes&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#modo-de-preparo"&gt;Modo de preparo&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#dicas"&gt;Dicas&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+
+&lt;h2 id="ingredientes"&gt;Ingredientes&lt;/h2&gt;
+&lt;p style="height: 300px"&gt;Fubá, ovos, leite, açúcar, óleo, fermento e erva-doce.&lt;/p&gt;
+
+&lt;h2 id="modo-de-preparo"&gt;Modo de preparo&lt;/h2&gt;
+&lt;p style="height: 300px"&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+
+&lt;h2 id="dicas"&gt;Dicas&lt;/h2&gt;
+&lt;p&gt;Unte a forma com manteiga e fubá.&lt;/p&gt;
+&lt;p&gt;&lt;a href="#topo"&gt;Voltar ao topo&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Uma âncora tem duas partes: o <strong>alvo</strong>, marcado com <code>id="nome"</code>, e o <strong>link</strong>, <code>href="#nome"</code>. O <code>#</code> só vai no link.</li>
+  <li>Sumário: uma lista de âncoras no começo (de preferência num <code>&lt;nav&gt;</code>). Voltar ao topo: <code>href="#topo"</code> com <code>&lt;h1 id="topo"&gt;</code>; <code>#top</code> e <code>#</code> também levam ao começo.</li>
+  <li>Para um ponto de outra página: <code>bolo.html#ingredientes</code>. O fragmento (o pedaço depois do <code>#</code>) nunca vai ao servidor.</li>
+  <li>O <code>id</code> é único, sem espaços, não vazio, e as maiúsculas contam. Prefira minúsculas com hífen: <code>modo-de-preparo</code>.</li>
+  <li>Validador: <code>Duplicate ID</code>, <code>An ID must not contain whitespace</code>, <code>must not be the empty string</code> e o <code>name</code> obsoleto no <code>a</code>. Um <code>#nome</code> que não existe ou com maiúscula trocada passa calado: clique para testar.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
