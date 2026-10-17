@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Carregamento Preguiçoso — loading="lazy" em imagens e iframes | Guia HTML</title>
+<meta name="description" content="O atributo loading para quem nunca fez um site: loading=&quot;lazy&quot; e &quot;eager&quot; em imagens e iframes, ver no console a imagem que só é baixada quando chega perto da tela, por que width e height importam, por que não usar lazy na primeira imagem, e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Carregamento Preguiçoso</span></h1>
+
+<p class="intro">Quando uma página abre, o navegador baixa <strong>todas</strong> as imagens dela, até as que estão lá embaixo, que o visitante talvez nunca veja. Numa página de receitas com trinta fotos, isso gasta tempo e o plano de dados de quem está no celular. O atributo <strong><code>loading="lazy"</code></strong> ("carregamento preguiçoso") pede ao navegador: "só baixe esta imagem quando ela estiver chegando perto da tela". É uma palavra no HTML, sem JavaScript. Nesta aula você vai ver isso acontecer de verdade, no console, e aprender onde <strong>não</strong> usar.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que <code>loading="lazy"</code> e <code>loading="eager"</code> fazem numa <code>&lt;img&gt;</code> e num <code>&lt;iframe&gt;</code>.</li>
+  <li>Como ver, no console, a imagem sendo baixada só quando você rola até ela.</li>
+  <li>Por que <code>width</code> e <code>height</code> ficam ainda mais importantes com o <code>lazy</code>.</li>
+  <li>Por que a <strong>primeira</strong> imagem da página nunca deve ser <code>lazy</code>.</li>
+  <li>O que acontece com o JavaScript desligado e nos navegadores antigos.</li>
+  <li>Os erros reais do validador W3C.</li>
+</ul>
+</div>
+
+<p>As mensagens do validador desta aula saíram do <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. O comportamento foi conferido no Chromium, e você o confere no seu navegador, nos editores da página. As fotos dos exemplos são as imagens de exemplo do guia, em <code>assets/midia/</code>.</p>
+
+<hr>
+
+<h2>A ideia: o garçom que traz o prato na hora</h2>
+<p>Num rodízio, o garçom não despeja todos os pratos na mesa assim que você senta: a comida esfriaria, e muita coisa iria para o lixo. Ele traz cada prato <strong>quando você está quase pedindo</strong>.</p>
+<p>Sem o <code>lazy</code>, o navegador é o garçom apressado: baixa tudo de uma vez. Com <code>loading="lazy"</code>, ele vira o garçom atento: as imagens de cima chegam logo, e as de baixo chegam à medida que o visitante <strong>rola</strong> a página. Quem nunca chega ao fim da página nunca baixa as últimas fotos.</p>
+
+<hr>
+
+<h2>1. O atributo loading</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura inteiro, com cobertura de chocolate, num prato branco"
+     width="400" height="300" loading="lazy"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>loading="lazy"</dt><dd><em>Lazy</em> = "preguiçoso". O navegador adia o download até a imagem estar <strong>perto</strong> da área visível da tela. A distância exata, cada navegador escolhe (e pode mudar com a velocidade da internet): ele começa um pouco antes, para a foto já estar pronta quando aparecer.</dd>
+  <dt>width="400" height="300"</dt><dd>A largura e a altura da imagem, em pixels. Com o <code>lazy</code>, são quase obrigatórias (seção 3).</dd>
+  <dt>alt="…"</dt><dd>O texto alternativo de sempre (aula <a href="imagens-alt.html">Texto Alternativo</a>). O <code>lazy</code> não muda nada nele.</dd>
+</dl>
+
+<p>Aqui o resultado parece igual a uma imagem comum: ela está no topo, perto da tela, então foi baixada logo. O <code>lazy</code> só faz diferença nas imagens que estão <strong>longe</strong>, como você vai ver na seção 2.</p>
+
+<p>O atributo tem dois valores:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Valor</th><th>O que o navegador faz</th></tr>
+<tr><td><code>eager</code> (o padrão)</td><td><em>Eager</em> = "ansioso": baixa já, esteja a imagem onde estiver. É o que acontece sem o atributo.</td></tr>
+<tr><td><code>lazy</code></td><td>Espera a imagem chegar perto da tela.</td></tr>
+</table>
+</div>
+
+<p>O <code>loading</code> vale para <code>&lt;img&gt;</code> e <code>&lt;iframe&gt;</code> (o <code>&lt;picture&gt;</code> obedece ao <code>loading</code> da <code>&lt;img&gt;</code> de dentro dele). Nas imagens, todos os navegadores atuais entendem desde 2022 (o Safari foi o último); nos iframes, desde o fim de 2023 (o Firefox foi o último). Um navegador antigo que não conhece o atributo simplesmente o ignora e baixa tudo, como antes: nada quebra.</p>
+
+<hr>
+
+<h2>2. Ver o preguiçoso trabalhando</h2>
+<p>Esta página de teste tem uma foto no topo, um parágrafo bem alto no meio (para empurrar o resto para longe) e duas fotos <code>lazy</code> lá embaixo. Cada imagem tem um <code>onload</code>: um pedacinho de JavaScript que escreve no console quando o download <strong>termina</strong>.</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;h1&gt;Galeria da Ana&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura inteiro no prato"
+     width="400" height="300" onload="console.log('baixou: foto do topo')"&gt;
+
+&lt;p style="height: 3000px"&gt;Role o quadro do resultado até o fim, devagar, olhando o console. ⬇&lt;/p&gt;
+
+&lt;img src="assets/midia/bolo-quadrado-400.jpg" alt="O bolo de perto, com cenourinhas de enfeite"
+     width="400" height="400" loading="lazy" onload="console.log('baixou: foto do meio')"&gt;
+
+&lt;p style="height: 1500px"&gt;Continue rolando. ⬇&lt;/p&gt;
+
+&lt;img src="assets/midia/video-bolo-poster.jpg" alt="O bolo visto de lado, com a calda escorrendo"
+     width="640" height="360" loading="lazy" onload="console.log('baixou: foto do fim')"&gt;
+</pre>
+</div>
+
+<p>O que você deve ver:</p>
+<ol class="passo">
+  <li>Assim que o quadro aparece, o console mostra só <code>baixou: foto do topo</code>. As outras duas ainda <strong>não foram baixadas</strong>.</li>
+  <li>Role o resultado para baixo. Um pouco <strong>antes</strong> de a foto do meio aparecer, surge <code>baixou: foto do meio</code>.</li>
+  <li>Continue rolando: perto do fim, aparece <code>baixou: foto do fim</code>.</li>
+</ol>
+
+<dl class="anatomy">
+  <dt>onload="console.log('…')"</dt><dd><em>On load</em> = "ao carregar": o navegador roda esse JavaScript quando a imagem termina de baixar. Está aqui só para você <strong>ver</strong> o momento do download; num site de verdade, não precisa.</dd>
+  <dt>style="height: 3000px"</dt><dd>Um parágrafo de 3000 pixels de altura, só para afastar as fotos de baixo. É CSS de teste (aula <a href="atributo-style.html">O Atributo style</a>).</dd>
+</dl>
+
+<p>Agora apague os dois <code>loading="lazy"</code> e rode de novo: as três mensagens aparecem de uma vez, sem você rolar nada. É o comportamento padrão, o <code>eager</code>.</p>
+
+<div class="note">
+<strong>No F12: a aba Rede</strong>
+<p>Nas <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>, a aba de <strong>rede</strong> lista cada arquivo que a página baixa, na hora em que baixa. Abra uma página sua com várias imagens <code>lazy</code>, deixe essa aba aberta e role a página: as imagens entram na lista uma a uma, conforme você chega perto delas.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:img.galeria[loading=lazy]=3,nsel:#capa[loading=lazy]=0">
+<p class="try-task"><strong>Missão:</strong> a página de receitas tem a foto de capa e, lá embaixo, uma galeria com três fotos. Faça as três fotos da <strong>galeria</strong> (<code>class="galeria"</code>) serem baixadas só quando o visitante chegar perto delas. A capa continua como está.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img id="capa" src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura inteiro no prato" width="400" height="300"&gt;
+
+&lt;h2&gt;Modo de fazer&lt;/h2&gt;
+&lt;p style="height: 2500px"&gt;Bata as cenouras com os ovos e o óleo, misture a farinha e o açúcar, e asse por 40 minutos.&lt;/p&gt;
+
+&lt;h2&gt;Galeria&lt;/h2&gt;
+&lt;img class="galeria" src="assets/midia/bolo-quadrado-400.jpg" alt="O bolo de perto, com cenourinhas de enfeite" width="400" height="400"&gt;
+&lt;img class="galeria" src="assets/midia/video-bolo-poster.jpg" alt="O bolo visto de lado, com a calda escorrendo" width="640" height="360"&gt;
+&lt;img class="galeria" src="assets/midia/bolo-800.jpg" alt="O bolo inteiro, em tamanho grande" width="800" height="600"&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img id="capa" src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura inteiro no prato" width="400" height="300"&gt;
+
+&lt;h2&gt;Modo de fazer&lt;/h2&gt;
+&lt;p style="height: 2500px"&gt;Bata as cenouras com os ovos e o óleo, misture a farinha e o açúcar, e asse por 40 minutos.&lt;/p&gt;
+
+&lt;h2&gt;Galeria&lt;/h2&gt;
+&lt;img class="galeria" src="assets/midia/bolo-quadrado-400.jpg" alt="O bolo de perto, com cenourinhas de enfeite" width="400" height="400" loading="lazy"&gt;
+&lt;img class="galeria" src="assets/midia/video-bolo-poster.jpg" alt="O bolo visto de lado, com a calda escorrendo" width="640" height="360" loading="lazy"&gt;
+&lt;img class="galeria" src="assets/midia/bolo-800.jpg" alt="O bolo inteiro, em tamanho grande" width="800" height="600" loading="lazy"&gt;
+</pre>
+</div>
+
+<p>A meta confere as duas metades da regra: as três da galeria com <code>lazy</code>, e a capa <strong>sem</strong>. A seção 4 explica por que a capa fica de fora.</p>
+
+<hr>
+
+<h2>3. width e height: reservar o lugar</h2>
+<p>Enquanto uma imagem não chega, o navegador não sabe o tamanho dela. Sem <code>width</code> e <code>height</code>, ele reserva um espaço de <strong>zero</strong> pixels. Quando a foto chega, ela abre espaço de repente, e tudo o que está embaixo <strong>pula</strong> para baixo: o visitante perde a linha que estava lendo, ou clica no botão errado.</p>
+<p>Com o <code>lazy</code>, isso acontece justamente enquanto o visitante está rolando e lendo. Conferido no Chromium: uma imagem <code>lazy</code> sem <code>width</code> e <code>height</code>, ainda não baixada, ocupava 0 × 0 pixels; depois do download, passou a ocupar 400 × 250.</p>
+
+<pre class="file" data-file="index.html">&lt;!-- ruim: o navegador não sabe o tamanho até a foto chegar --&gt;
+&lt;img src="assets/midia/mapa-400.png" alt="Mapa da lojinha" loading="lazy"&gt;
+
+&lt;!-- bom: o lugar de 400 × 250 fica reservado desde o começo --&gt;
+&lt;img src="assets/midia/mapa-400.png" alt="Mapa da lojinha" width="400" height="250" loading="lazy"&gt;
+</pre>
+
+<p>Os números são o tamanho <strong>real</strong> do arquivo (ou a mesma proporção). Mesmo que o CSS depois mude o tamanho na tela, o navegador usa a proporção para reservar o lugar certo (aula <a href="imagens-tamanho.html">Largura e Altura</a>). O validador não reclama da imagem sem <code>width</code> e <code>height</code>: o pulo é um problema de qualidade, não de sintaxe.</p>
+
+<hr>
+
+<h2>4. Onde não usar: a primeira imagem</h2>
+<p>Parece uma boa ideia pôr <code>lazy</code> em <strong>todas</strong> as imagens. Não é. Uma imagem <code>lazy</code> só começa a baixar depois que o navegador montou a página e calculou onde cada coisa fica. Para uma foto que já está na tela quando a página abre (a capa, o logo, a foto principal de um produto), isso é só um <strong>atraso</strong>: ela seria baixada de qualquer jeito, só que mais tarde.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Imagem</th><th><code>loading</code></th><th>Por quê</th></tr>
+<tr><td>Capa, logo, foto principal (aparece sem rolar)</td><td>nenhum (o padrão, <code>eager</code>)</td><td>o visitante vê na hora; não pode atrasar</td></tr>
+<tr><td>Fotos mais abaixo, galeria, comentários com avatar</td><td><code>lazy</code></td><td>talvez nunca sejam vistas; economiza dados</td></tr>
+<tr><td>Mapa ou vídeo incorporado no fim da página (<code>&lt;iframe&gt;</code>)</td><td><code>lazy</code></td><td>um iframe carrega uma página inteira, com os arquivos dela</td></tr>
+</table>
+</div>
+
+<p>Os buscadores, como o Google, medem quanto tempo a <strong>maior</strong> imagem ou texto do topo da página demora para aparecer. Uma capa <code>lazy</code> piora essa medida. Para a capa, existe até o pedido contrário: <code>fetchpriority="high"</code> ("prioridade de busca: alta"), que a aula <a href="preload.html">Desempenho</a> explica.</p>
+
+<hr>
+
+<h2>5. Iframes: o mapa da lojinha</h2>
+<p>Um <code>&lt;iframe&gt;</code> mostra uma página <strong>dentro</strong> da sua: um mapa, um vídeo, um formulário (aula <a href="iframes.html">iframe</a>). Cada iframe baixa uma página inteira, com as imagens e os scripts dela. Por isso, um iframe no fim da página é o lugar ideal para o <code>lazy</code>:</p>
+
+<pre class="file" data-file="index.html">&lt;h2&gt;Como chegar&lt;/h2&gt;
+&lt;iframe src="mapa.html" title="Mapa: a lojinha fica na Avenida Central, esquina com a Rua das Flores"
+        width="420" height="280" loading="lazy"&gt;&lt;/iframe&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>src="mapa.html"</dt><dd>A página que aparece dentro do quadro.</dd>
+  <dt>title="…"</dt><dd>O nome do quadro para leitores de tela: num iframe, ele faz o papel do <code>alt</code>.</dd>
+  <dt>loading="lazy"</dt><dd>O <code>mapa.html</code> (e tudo o que ele carrega) só é baixado quando o visitante chega perto da seção "Como chegar".</dd>
+</dl>
+
+<div class="note">
+<strong>Novidade: <code>loading</code> em vídeo e áudio</strong>
+<p>O validador W3C atual aceita <code>loading="lazy"</code> também em <code>&lt;video&gt;</code> e <code>&lt;audio&gt;</code>, um acréscimo recente ao HTML. O Chromium que conferiu esta aula (o motor do Chrome, versão 155) já entende o atributo nesses elementos. Como é novo, confira o suporte nos navegadores do seu público antes de contar com ele; um navegador que não conhece simplesmente o ignora. Para vídeos, o atributo <code>preload</code> (aula <a href="video.html">Vídeo</a>) continua sendo o jeito mais conhecido de economizar dados.</p>
+</div>
+
+<hr>
+
+<h2>6. Detalhes que surpreendem</h2>
+<ul>
+  <li><strong>Com o JavaScript desligado, o <code>lazy</code> não vale.</strong> As regras do HTML mandam o navegador baixar tudo, como <code>eager</code>. O motivo é privacidade: o momento em que cada imagem é pedida contaria ao servidor até onde a pessoa rolou a página, e quem desliga o JavaScript costuma querer justamente não ser acompanhado.</li>
+  <li><strong>Imagens escondidas</strong> (por exemplo, dentro de um <code>&lt;details&gt;</code> fechado) e com <code>lazy</code> só são baixadas quando aparecem.</li>
+</ul>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>Bad value “preguicoso” for attribute “loading” on element “img”.</code></strong>
+<p><strong>O que o navegador faz:</strong> ignora o valor que não conhece e usa o padrão, <code>eager</code>: a imagem é baixada na hora, sem nenhum aviso. Você acha que está economizando, e não está.</p>
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;img src="bolo.jpg" alt="Bolo de cenoura" loading="preguicoso"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.63: error: Bad value “preguicoso” for attribute “loading” on element “img”.</pre>
+<p><strong>Como consertar:</strong> os valores são em inglês, <code>lazy</code> ou <code>eager</code>. Com <code>loading=""</code> (vazio), o validador também reclama: <code>Bad value “” for attribute “loading” on element “img”.</code> Já <code>loading="Lazy"</code>, com maiúscula, passa: nesse atributo, maiúsculas não importam.</p>
+</div>
+
+<div class="cenario">
+<strong>A capa demora para aparecer</strong>
+<p><strong>O que significa:</strong> a primeira imagem da página está com <code>loading="lazy"</code>. O validador não reclama (o HTML está certo), mas a foto que o visitante vê primeiro chega por último.</p>
+<p><strong>Como consertar:</strong> tire o <code>loading="lazy"</code> das imagens que aparecem sem rolar (seção 4).</p>
+</div>
+
+<div class="cenario">
+<strong>O texto pula enquanto o visitante lê</strong>
+<p><strong>O que significa:</strong> imagens <code>lazy</code> sem <code>width</code> e <code>height</code>. Cada foto que chega empurra o texto para baixo. O validador não reclama.</p>
+<p><strong>Como consertar:</strong> ponha <code>width</code> e <code>height</code> com o tamanho real do arquivo (seção 3).</p>
+</div>
+
+<div class="cenario">
+<strong>A imagem não aparece, e o console mostra <code>Não foi possível carregar</code></strong>
+<p><strong>O que significa:</strong> o problema não é o <code>lazy</code>: o caminho do arquivo está errado. O editor do guia mostra <code>Não foi possível carregar "…" (&lt;img&gt;). Confira o nome e o caminho do arquivo.</code>; o console do F12 mostra um erro 404 ("não encontrado"). Com o <code>lazy</code>, o erro só aparece quando você rola até a imagem, o que pode confundir: não é o <code>lazy</code> que "quebrou" a foto.</p>
+<p><strong>Como consertar:</strong> confira o <code>src</code> (aula <a href="caminhos.html">Caminhos Relativos e Absolutos</a>).</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;img … loading="lazy"&gt;</code></td><td>Baixa a imagem só quando ela chega perto da tela</td></tr>
+<tr><td><code>&lt;img … loading="eager"&gt;</code> ou sem <code>loading</code></td><td>Baixa na hora (o padrão)</td></tr>
+<tr><td><code>&lt;iframe … loading="lazy"&gt;</code></td><td>Carrega a página do quadro só quando ele chega perto da tela</td></tr>
+<tr><td><code>width</code> e <code>height</code></td><td>Reservam o lugar da imagem antes de ela chegar (evitam o pulo)</td></tr>
+<tr><td>Imagens do topo</td><td>Nunca <code>lazy</code>; a principal pode ganhar <code>fetchpriority="high"</code></td></tr>
+<tr><td>JavaScript desligado</td><td>O <code>lazy</code> é ignorado: tudo é baixado na hora</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Preguiçoso</h3>
+<p>Complete para a foto da galeria esperar o visitante chegar perto:</p>
+<div class="ex-code">&lt;img src="fatia.jpg" alt="Fatia do bolo" width="400" height="300" loading="<input data-answer="lazy" aria-label="valor">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O padrão</h3>
+<p>Qual é o valor do <code>loading</code> quando você não escreve o atributo?</p>
+<div class="ex-code">loading="<input data-answer="eager" aria-label="valor padrão">"</div>
+</div>
+
+<div class="exercise">
+<h3>3. Reservar o lugar</h3>
+<p>Complete os atributos que evitam o pulo do texto (a imagem tem 400 × 300):</p>
+<div class="ex-code">&lt;img src="bolo.jpg" alt="Bolo" <input data-answer="width" aria-label="atributo 1">="400" <input data-answer="height" aria-label="atributo 2">="300" loading="lazy"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Qual imagem <strong>não</strong> deve ter <code>loading="lazy"</code>?</p>
+<label><input type="radio" name="q4"> A décima foto de uma galeria</label>
+<label><input type="radio" name="q4"> O avatar de um comentário no fim da página</label>
+<label><input type="radio" name="q4"> A foto de capa, que aparece assim que a página abre</label>
+<label><input type="radio" name="q4"> Um mapa no rodapé</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. A Ana escreveu <code>loading="preguicoso"</code>. O que o navegador faz?</p>
+<label><input type="radio" name="q5"> Trata como <code>lazy</code></label>
+<label><input type="radio" name="q5"> Ignora o valor e baixa a imagem na hora (<code>eager</code>)</label>
+<label><input type="radio" name="q5"> Não mostra a imagem</label>
+<label><input type="radio" name="q5"> Mostra um erro na página</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Com o JavaScript desligado, uma imagem <code>lazy</code> no fim da página…</p>
+<label><input type="radio" name="q6"> nunca é baixada</label>
+<label><input type="radio" name="q6"> só é baixada quando o visitante clica nela</label>
+<label><input type="radio" name="q6"> continua esperando o visitante rolar</label>
+<label><input type="radio" name="q6"> é baixada na hora, como <code>eager</code></label>
+</div>
+
+<h3>Missão final: a página "Como chegar"</h3>
+
+<div class="tryhtml" data-goal="attr:iframe[loading]=lazy,attr:iframe[title],nsel:img.avatar[loading=lazy][width][height]=2,nsel:#logo[loading=lazy]=0">
+<p class="try-task"><strong>Missão:</strong> deixe a página leve, sem atrasar o que aparece primeiro:</p>
+<ol>
+  <li>o logo do topo (<code>#logo</code>) continua baixando na hora;</li>
+  <li>os dois avatares dos comentários (<code>class="avatar"</code>, fotos de 96 × 96) ficam <code>lazy</code> e ganham <code>width</code> e <code>height</code>;</li>
+  <li>o <code>&lt;iframe&gt;</code> do mapa fica <code>lazy</code> e ganha um <code>title</code> que descreva o mapa.</li>
+</ol>
+<p>Abra a aba <code>mapa.html</code> para ver a página que aparece dentro do quadro.</p>
+<pre class="script" data-file="index.html">&lt;img id="logo" src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;
+&lt;h1&gt;Como chegar&lt;/h1&gt;
+&lt;p style="height: 2000px"&gt;Estamos no centro, perto da praça. Role para ver o mapa e os comentários.&lt;/p&gt;
+
+&lt;iframe src="mapa.html" width="420" height="280"&gt;&lt;/iframe&gt;
+
+&lt;h2&gt;Comentários&lt;/h2&gt;
+&lt;p&gt;&lt;img class="avatar" src="assets/midia/avatar-ana-96.jpg" alt=""&gt; "Fácil de achar!"&lt;/p&gt;
+&lt;p&gt;&lt;img class="avatar" src="assets/midia/avatar-ana-96.jpg" alt=""&gt; "O bolo vale a viagem."&lt;/p&gt;
+</pre>
+<pre class="script" data-file="mapa.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Mapa da Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;img src="assets/midia/mapa-400.png" width="400" height="250"
+     alt="Mapa: a Lojinha da Ana fica na Avenida Central, esquina com a Rua das Flores, ao lado da Praça da Árvore"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;img id="logo" src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana" width="200" height="80"&gt;
+&lt;h1&gt;Como chegar&lt;/h1&gt;
+&lt;p style="height: 2000px"&gt;Estamos no centro, perto da praça. Role para ver o mapa e os comentários.&lt;/p&gt;
+
+&lt;iframe src="mapa.html" title="Mapa: a lojinha fica na Avenida Central, esquina com a Rua das Flores" width="420" height="280" loading="lazy"&gt;&lt;/iframe&gt;
+
+&lt;h2&gt;Comentários&lt;/h2&gt;
+&lt;p&gt;&lt;img class="avatar" src="assets/midia/avatar-ana-96.jpg" alt="" width="96" height="96" loading="lazy"&gt; "Fácil de achar!"&lt;/p&gt;
+&lt;p&gt;&lt;img class="avatar" src="assets/midia/avatar-ana-96.jpg" alt="" width="96" height="96" loading="lazy"&gt; "O bolo vale a viagem."&lt;/p&gt;
+</pre>
+</div>
+
+<p>Os avatares têm <code>alt=""</code> (vazio) de propósito: são enfeite ao lado do comentário, e o leitor de tela pode pulá-los. Isso é uma escolha de acessibilidade, e não tem nada a ver com o <code>lazy</code>.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>loading="lazy"</code> numa <code>&lt;img&gt;</code> ou num <code>&lt;iframe&gt;</code> faz o navegador esperar o elemento chegar perto da tela para baixá-lo. O padrão é <code>eager</code>: baixar na hora.</li>
+  <li>Use nas imagens e iframes de <strong>baixo</strong> da página; nunca na capa ou no logo, que aparecem sem rolar.</li>
+  <li>Ponha <code>width</code> e <code>height</code> com o tamanho real: reservam o lugar e evitam que o texto pule quando a foto chega.</li>
+  <li>Os valores são só <code>lazy</code> e <code>eager</code>; um valor errado vira <code>eager</code>, em silêncio (o validador acusa).</li>
+  <li>Com o JavaScript desligado, o <code>lazy</code> é ignorado. Navegadores que não o conhecem baixam tudo, como antes.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
