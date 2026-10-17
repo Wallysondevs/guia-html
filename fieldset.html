@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML fieldset e legend — agrupar campos com um título | Guia HTML</title>
+<meta name="description" content="fieldset e legend em HTML para quem nunca fez um site: agrupar campos com um título, dar nome a um grupo de rádio ou de caixas de marcar, dividir um formulário grande, fieldset dentro de fieldset e disabled no grupo inteiro, com o resultado real no seu navegador, as mensagens reais do validador W3C e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">fieldset e legend</span></h1>
+
+<p class="intro">Na aula <a href="checkbox-radio.html">checkbox e radio</a>, a pergunta "Tamanho:" ficou num parágrafo solto, em cima dos três botões. Quem enxerga a tela entende que o parágrafo é o título dos botões. Quem usa leitor de tela, não: ele ouve "Pequeno, botão de opção" sem saber de que pergunta. O HTML tem um par de elementos feito para isso: o <code>&lt;fieldset&gt;</code>, que <strong>agrupa</strong> campos, e o <code>&lt;legend&gt;</code>, que dá um <strong>título</strong> ao grupo. Nesta aula você vai usar os dois para dar nome aos grupos de opções e dividir um formulário grande em partes.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como agrupar campos com <code>&lt;fieldset&gt;</code> e dar um título com <code>&lt;legend&gt;</code>.</li>
+  <li>Por que todo grupo de rádio e de caixas de marcar deve estar num <code>&lt;fieldset&gt;</code>.</li>
+  <li>Como dividir um formulário grande em partes ("Seus dados", "Entrega").</li>
+  <li>Como pôr um grupo dentro de outro.</li>
+  <li>Como desligar um grupo inteiro de uma vez com <code>disabled</code>.</li>
+  <li>As regras de lugar do <code>&lt;legend&gt;</code> e as mensagens reais do validador W3C.</li>
+</ul>
+</div>
+
+<p>Você vai precisar de <a href="formularios.html">Formulários</a>, <a href="label.html">label</a> e <a href="checkbox-radio.html">checkbox e radio</a>. Os exemplos com o resultado embaixo são desenhados pelo <strong>seu</strong> navegador. Os comportamentos foram conferidos no <strong>Chromium 155</strong>, e as validações com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: os quadros da ficha de papel</h2>
+<p>Pegue uma ficha de cadastro de papel, dessas de consultório. Ela não é uma lista corrida de linhas: é dividida em <strong>quadros</strong>, cada um com um título escrito na borda. "DADOS PESSOAIS", com nome e data de nascimento. "ENDEREÇO", com rua, número e bairro. O título diz do que o quadro trata, e você sabe que "Número" é o número da casa, e não do documento, porque ele está no quadro "ENDEREÇO".</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na ficha de papel</th><th>No HTML</th></tr>
+<tr><td>O quadro com borda</td><td><code>&lt;fieldset&gt;</code> (<em>field</em> = "campo", <em>set</em> = "conjunto": "conjunto de campos")</td></tr>
+<tr><td>O título escrito na borda</td><td><code>&lt;legend&gt;</code> ("legenda")</td></tr>
+<tr><td>As linhas dentro do quadro</td><td>os campos, cada um com o seu <code>&lt;label&gt;</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O primeiro grupo</h2>
+<p>O <code>&lt;fieldset&gt;</code> fica em volta dos campos do grupo, e o <code>&lt;legend&gt;</code> é o <strong>primeiro</strong> elemento dentro dele:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;fieldset&gt;
+  &lt;legend&gt;Tamanho do bolo&lt;/legend&gt;
+  &lt;label&gt;&lt;input type="radio" name="tamanho" value="p"&gt; Pequeno&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="tamanho" value="m"&gt; Médio&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="tamanho" value="g"&gt; Grande&lt;/label&gt;
+&lt;/fieldset&gt;
+</pre>
+
+<p>Sem nenhum CSS, o navegador desenha um <strong>quadro com borda</strong> em volta dos botões, e o título "Tamanho do bolo" aparece <strong>em cima da linha da borda</strong>, interrompendo-a, igual à ficha de papel. Essa aparência pode ser mudada com CSS (quer aprender mais? futuro Guia CSS); o que importa no HTML é o significado.</p>
+
+<dl class="anatomy">
+  <dt>&lt;fieldset&gt;</dt><dd>Começa o grupo. Tudo o que estiver até o <code>&lt;/fieldset&gt;</code> faz parte dele.</dd>
+  <dt>&lt;legend&gt;Tamanho do bolo&lt;/legend&gt;</dt><dd>O título do grupo. Tem de ser o <strong>primeiro filho</strong> do <code>&lt;fieldset&gt;</code>, e só pode haver um.</dd>
+  <dt>&lt;label&gt;&lt;input …&gt; Pequeno&lt;/label&gt;</dt><dd>Cada campo continua com o seu rótulo. O <code>legend</code> não substitui o <code>label</code>: o <code>legend</code> é o nome da <strong>pergunta</strong>, o <code>label</code> é o nome de <strong>cada resposta</strong>.</dd>
+  <dt>&lt;/fieldset&gt;</dt><dd>Fecha o grupo.</dd>
+</dl>
+
+<h3>O que muda para o leitor de tela</h3>
+<p>O <code>&lt;fieldset&gt;</code> com <code>&lt;legend&gt;</code> vira um <strong>grupo com nome</strong> para as tecnologias assistivas (aula <a href="leitores-tela.html">Leitores de Tela</a>). Quando a pessoa entra no primeiro botão, o leitor de tela anuncia também o nome do grupo, "Tamanho do bolo", e não só "Pequeno". As palavras exatas mudam de um leitor de tela para outro, mas a informação chega. Com o <code>&lt;p&gt;Tamanho:&lt;/p&gt;</code> solto, ela não chegava.</p>
+
+<div class="tip">
+<strong>Regra prática</strong>
+<p>Todo grupo de <code>radio</code> e todo grupo de <code>checkbox</code> que respondem a uma mesma pergunta vão num <code>&lt;fieldset&gt;</code>, e a pergunta vai no <code>&lt;legend&gt;</code>. Uma caixa sozinha ("Li e aceito as regras") não precisa: o <code>&lt;label&gt;</code> dela já diz tudo.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:fieldset=2,sel:fieldset &gt; legend:first-child,texto:fieldset legend=Tamanho,nsel:fieldset input[name=tamanho]=3,nsel:fieldset input[name=adicionais]=2,nsel:form &gt; p=0">
+<p class="try-task"><strong>Missão:</strong> esta é a ficha da aula passada, com as perguntas em parágrafos. Troque cada <code>&lt;p&gt;</code> por um <code>&lt;fieldset&gt;</code> com um <code>&lt;legend&gt;</code> (<code>Tamanho</code> e <code>Adicionais</code>), envolvendo os botões da sua pergunta. O botão de enviar fica fora dos dois grupos.</p>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;Tamanho:&lt;/p&gt;
+  &lt;label&gt;&lt;input type="radio" name="tamanho" value="p"&gt; Pequeno&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="tamanho" value="m" checked&gt; Médio&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="tamanho" value="g"&gt; Grande&lt;/label&gt;
+
+  &lt;p&gt;Adicionais:&lt;/p&gt;
+  &lt;label&gt;&lt;input type="checkbox" name="adicionais" value="vela"&gt; Vela&lt;/label&gt;
+  &lt;label&gt;&lt;input type="checkbox" name="adicionais" value="cartao"&gt; Cartão&lt;/label&gt;
+
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Tamanho&lt;/legend&gt;
+    &lt;label&gt;&lt;input type="radio" name="tamanho" value="p"&gt; Pequeno&lt;/label&gt;
+    &lt;label&gt;&lt;input type="radio" name="tamanho" value="m" checked&gt; Médio&lt;/label&gt;
+    &lt;label&gt;&lt;input type="radio" name="tamanho" value="g"&gt; Grande&lt;/label&gt;
+  &lt;/fieldset&gt;
+
+  &lt;fieldset&gt;
+    &lt;legend&gt;Adicionais&lt;/legend&gt;
+    &lt;label&gt;&lt;input type="checkbox" name="adicionais" value="vela"&gt; Vela&lt;/label&gt;
+    &lt;label&gt;&lt;input type="checkbox" name="adicionais" value="cartao"&gt; Cartão&lt;/label&gt;
+  &lt;/fieldset&gt;
+
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Dividir um formulário grande</h2>
+<p>O <code>&lt;fieldset&gt;</code> também serve para os campos de texto: ele divide um formulário comprido em partes com nome, e cada parte fica mais fácil de preencher.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Seus dados&lt;/legend&gt;
+    &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;label for="tel"&gt;Telefone:&lt;/label&gt; &lt;input type="tel" id="tel" name="tel"&gt;&lt;/p&gt;
+  &lt;/fieldset&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Entrega&lt;/legend&gt;
+    &lt;p&gt;&lt;label for="rua"&gt;Rua:&lt;/label&gt; &lt;input type="text" id="rua" name="rua"&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;label for="numero"&gt;Número:&lt;/label&gt; &lt;input type="text" id="numero" name="numero"&gt;&lt;/p&gt;
+  &lt;/fieldset&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Repare nos <code>&lt;p&gt;</code> em volta de cada linha: eles só põem um campo embaixo do outro. Aqui eles são permitidos, porque estão <strong>dentro</strong> do grupo, cada um com um campo. O que não pode é o contrário, um <code>&lt;fieldset&gt;</code> dentro de um <code>&lt;p&gt;</code> (veja em <a href="#errado">Quando dá errado</a>).</p>
+
+<div class="note">
+<strong>O <code>fieldset</code> não muda o envio</strong>
+<p>Os campos são enviados exatamente como antes: <code>nome=…&amp;tel=…&amp;rua=…&amp;numero=…</code>. O grupo não tem valor e não entra no envio. Por isso, dois campos em grupos diferentes ainda precisam de <code>name</code> diferentes. Testamos no Chromium 155: um <code>&lt;fieldset name="grupo"&gt;</code> não apareceu entre os dados enviados, só os campos de dentro dele.</p>
+</div>
+
+<h3>Um título maior: um <code>&lt;h2&gt;</code> dentro do <code>&lt;legend&gt;</code></h3>
+<p>Num formulário de várias partes, cada parte pode merecer um título de verdade na estrutura da página (aula <a href="titulos.html">Títulos</a>). O <code>&lt;legend&gt;</code> aceita um título dentro dele, e o validador não reclama:</p>
+
+<pre class="file" data-file="index.html">&lt;fieldset&gt;
+  &lt;legend&gt;&lt;h2&gt;Entrega&lt;/h2&gt;&lt;/legend&gt;
+  …
+&lt;/fieldset&gt;
+</pre>
+
+<p>Assim, quem navega pelos títulos (um recurso comum dos leitores de tela) encontra "Entrega" na lista de títulos da página.</p>
+
+<hr>
+
+<h2>3. Um grupo dentro de outro</h2>
+<p>Às vezes uma parte do formulário tem, dentro dela, uma pergunta de opções. Na parte "Entrega", a cliente escolhe o período. Um <code>&lt;fieldset&gt;</code> pode ficar dentro de outro:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;fieldset&gt;
+  &lt;legend&gt;Entrega&lt;/legend&gt;
+  &lt;p&gt;&lt;label for="rua"&gt;Rua:&lt;/label&gt; &lt;input type="text" id="rua" name="rua"&gt;&lt;/p&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Período&lt;/legend&gt;
+    &lt;label&gt;&lt;input type="radio" name="periodo" value="manha"&gt; Manhã&lt;/label&gt;
+    &lt;label&gt;&lt;input type="radio" name="periodo" value="tarde"&gt; Tarde&lt;/label&gt;
+  &lt;/fieldset&gt;
+&lt;/fieldset&gt;
+</pre>
+
+<p>Aparecem dois quadros, um dentro do outro. Não exagere: dois níveis já bastam. Grupos dentro de grupos dentro de grupos cansam quem ouve a página, porque cada nível é anunciado.</p>
+
+<hr>
+
+<h2>4. Desligar o grupo inteiro: <code>disabled</code></h2>
+<p>O atributo booleano <code>disabled</code> ("desabilitado") no <code>&lt;fieldset&gt;</code> desliga <strong>todos</strong> os campos e botões de dentro de uma vez, sem escrever <code>disabled</code> em cada um:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;fieldset disabled&gt;
+  &lt;legend&gt;Entrega (só para pedidos acima de 50 reais)&lt;/legend&gt;
+  &lt;p&gt;&lt;label for="rua"&gt;Rua:&lt;/label&gt; &lt;input type="text" id="rua" name="rua"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="numero"&gt;Número:&lt;/label&gt; &lt;input type="text" id="numero" name="numero"&gt;&lt;/p&gt;
+&lt;/fieldset&gt;
+</pre>
+
+<p>Os dois campos ficam apagados: não dá para clicar, nem chegar neles com <kbd>Tab</kbd>. E, como todo campo desligado, eles <strong>não são enviados</strong>. Testamos no Chromium 155: num formulário com um <code>&lt;fieldset disabled&gt;</code>, nada do que estava dentro dele entrou no envio, nem os botões funcionaram.</p>
+
+<dl class="anatomy">
+  <dt>A exceção: o que está dentro do <code>legend</code></dt><dd>Um campo dentro do <code>&lt;legend&gt;</code> <strong>continua ligado</strong>. Testamos no Chromium 155 com uma caixa de marcar dentro do <code>legend</code> de um grupo desligado: ela continuou clicável e foi enviada. Isso existe para um caso comum: uma caixa "Entregar em outro endereço" no título, que um script usa para ligar e desligar o grupo.</dd>
+</dl>
+
+<p>Ligar e desligar o grupo enquanto a pessoa preenche exige JavaScript (aula <a href="script.html">O Elemento script</a>). Aqui o importante é saber que o <code>disabled</code> do grupo vale para tudo de dentro.</p>
+
+<hr>
+
+<h2>Formas diferentes: qual usar?</h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>O leitor de tela liga o título aos campos?</th><th>Quando usar</th></tr>
+<tr><td><code>&lt;fieldset&gt;</code> + <code>&lt;legend&gt;</code></td><td>Sim</td><td>Grupos de rádio e de caixas de marcar, e partes de um formulário. É a forma padrão.</td></tr>
+<tr><td><code>&lt;p&gt;Pergunta:&lt;/p&gt;</code> + campos</td><td>Não</td><td>Evite para grupos de opções.</td></tr>
+<tr><td><code>&lt;h2&gt;</code> + campos, sem <code>fieldset</code></td><td>Não (mas o título aparece na lista de títulos)</td><td>Partes de um formulário grande, quando os campos de texto já têm rótulos claros. Melhor ainda: <code>&lt;legend&gt;&lt;h2&gt;…&lt;/h2&gt;&lt;/legend&gt;</code>.</td></tr>
+<tr><td><code>&lt;div role="group" aria-labelledby="…"&gt;</code></td><td>Sim</td><td>Quando um <code>fieldset</code> não pode ser usado. É ARIA, a aula <a href="aria.html">ARIA</a>; a regra número 1 de lá é: se existe um elemento HTML que faz isso, use o elemento.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos desta seção são páginas completas com o mesmo começo de 7 linhas (<code>&lt;!DOCTYPE html&gt;</code> até <code>&lt;body&gt;</code>, como em <a href="estrutura.html">Estrutura de uma Página</a>). O código mostrado começa na <strong>linha 8</strong>.</p>
+
+<div class="cenario">
+<strong>O <code>legend</code> depois dos campos</strong>
+<pre class="file" data-file="depois.html">&lt;fieldset&gt;
+  &lt;label&gt;&lt;input type="radio" name="tam" value="p"&gt; Pequeno&lt;/label&gt;
+  &lt;legend&gt;Tamanho&lt;/legend&gt;
+&lt;/fieldset&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu depois.html
+"file:/home/ana/site/depois.html":10.3-10.10: error: Element “legend” not allowed as child of element “fieldset” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> "o elemento <code>legend</code> não é permitido como filho de <code>fieldset</code> neste contexto". O contexto é a posição: o <code>legend</code> só pode ser o <strong>primeiro</strong> filho.</p>
+<p><strong>O que o navegador faz:</strong> conserta a aparência. No Chromium 155, "Tamanho" foi desenhado em cima da borda, como se estivesse no lugar certo. Mas o código fica enganoso para quem lê, e o validador acusa.</p>
+<p><strong>Como consertar:</strong> mova o <code>&lt;legend&gt;</code> para logo depois do <code>&lt;fieldset&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Dois <code>legend</code> no mesmo grupo</strong>
+<pre class="file" data-file="dois.html">&lt;fieldset&gt;
+  &lt;legend&gt;Tamanho&lt;/legend&gt;
+  &lt;legend&gt;Escolha um&lt;/legend&gt;
+&lt;/fieldset&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dois.html
+"file:/home/ana/site/dois.html":10.3-10.10: error: Element “legend” not allowed as child of element “fieldset” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> a mesma mensagem, agora apontando o <strong>segundo</strong> <code>legend</code>: só o primeiro filho pode ser um <code>legend</code>.</p>
+<p><strong>O que o navegador faz:</strong> põe o primeiro na borda e mostra o segundo como um texto comum dentro do quadro (foi o que o Chromium 155 desenhou).</p>
+<p><strong>Como consertar:</strong> uma instrução extra vai num parágrafo comum dentro do grupo, ou no próprio <code>legend</code>: <code>&lt;legend&gt;Tamanho (escolha um)&lt;/legend&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>legend</code> sem <code>fieldset</code></strong>
+<pre class="file" data-file="solto.html">&lt;legend&gt;Tamanho&lt;/legend&gt;
+&lt;label&gt;&lt;input type="radio" name="tam" value="p"&gt; Pequeno&lt;/label&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu solto.html
+"file:/home/ana/site/solto.html":8.1-8.8: error: Element “legend” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> "o elemento <code>legend</code> não é permitido como filho de <code>body</code>". Um título de grupo sem grupo não é título de nada.</p>
+<p><strong>Como consertar:</strong> envolva o <code>legend</code> e os campos num <code>&lt;fieldset&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>fieldset</code> dentro de um parágrafo</strong>
+<pre class="file" data-file="paragrafo.html">&lt;form&gt;
+&lt;p&gt;Entrega:
+&lt;fieldset&gt;
+  &lt;legend&gt;Endereço&lt;/legend&gt;
+&lt;/fieldset&gt;
+&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu paragrafo.html
+"file:/home/ana/site/paragrafo.html":13.1-13.4: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p><strong>O que significa:</strong> "nenhum elemento <code>p</code> aberto, mas uma tag de fechamento <code>p</code> foi vista". Como assim, se o <code>&lt;p&gt;</code> está na linha 9? É que um parágrafo não pode conter um <code>&lt;fieldset&gt;</code>. Ao ler o <code>&lt;fieldset&gt;</code>, o navegador (e o validador, que lê do mesmo jeito) <strong>fecha o parágrafo</strong> sozinho. Quando chega o <code>&lt;/p&gt;</code> da linha 13, não há mais parágrafo aberto.</p>
+<p><strong>O que o navegador faz:</strong> no Chromium 155, o <code>fieldset</code> ficou fora do parágrafo, direto no <code>form</code>, e o <code>&lt;/p&gt;</code> perdido virou um parágrafo vazio a mais. É o mesmo conserto da aula <a href="paragrafos.html">Parágrafos</a>.</p>
+<p><strong>Como consertar:</strong> tire o <code>fieldset</code> do parágrafo. O texto "Entrega:" pode virar o <code>legend</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>fieldset</code> sem <code>legend</code></strong>
+<p><code>&lt;fieldset&gt;</code> sem <code>&lt;legend&gt;</code> é válido: o <code>vnu</code> não dá mensagem nenhuma. Mas o grupo fica <strong>sem nome</strong>: o navegador desenha só a borda, e o leitor de tela não tem o que anunciar. Foi o que aconteceu no Chromium 155: um quadro vazio em volta dos campos, sem título.</p>
+<p><strong>Como consertar:</strong> se é um grupo de opções, ele precisa de um <code>legend</code> com a pergunta. Se você só queria a borda, isso é CSS, e não <code>fieldset</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;fieldset&gt;…&lt;/fieldset&gt;</code></td><td>Agrupa campos; o navegador desenha um quadro com borda</td></tr>
+<tr><td><code>&lt;legend&gt;Título&lt;/legend&gt;</code></td><td>O título do grupo: primeiro filho do <code>fieldset</code>, um só</td></tr>
+<tr><td><code>&lt;legend&gt;&lt;h2&gt;Título&lt;/h2&gt;&lt;/legend&gt;</code></td><td>Título do grupo que também entra na lista de títulos da página</td></tr>
+<tr><td><code>&lt;fieldset disabled&gt;</code></td><td>Desliga todos os campos e botões de dentro (menos os do <code>legend</code>); eles não são enviados</td></tr>
+<tr><td><code>fieldset</code> dentro de <code>fieldset</code></td><td>Permitido: um grupo dentro de uma parte do formulário</td></tr>
+<tr><td><code>fieldset</code> dentro de <code>p</code></td><td>Não pode: o navegador fecha o parágrafo antes</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O grupo</h3>
+<p>Complete o elemento que agrupa os campos:</p>
+<div class="ex-code">&lt;<input data-answer="fieldset" aria-label="elemento">&gt; &lt;legend&gt;Pagamento&lt;/legend&gt; …</div>
+</div>
+
+<div class="exercise">
+<h3>2. O título</h3>
+<p>Complete o elemento do título do grupo:</p>
+<div class="ex-code">&lt;fieldset&gt; &lt;<input data-answer="legend" aria-label="elemento">&gt;Pagamento&lt;/legend&gt; …</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Onde o <code>&lt;legend&gt;</code> deve ficar?</p>
+<label><input type="radio" name="q3"> Antes do <code>&lt;fieldset&gt;</code></label>
+<label><input type="radio" name="q3"> Em qualquer lugar dentro do <code>&lt;fieldset&gt;</code></label>
+<label><input type="radio" name="q3"> Como o primeiro filho do <code>&lt;fieldset&gt;</code></label>
+<label><input type="radio" name="q3"> Dentro de cada <code>&lt;label&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Um <code>&lt;fieldset disabled&gt;</code> tem dois campos de texto preenchidos. O que é enviado deles?</p>
+<label><input type="radio" name="q4"> Os dois, normalmente</label>
+<label><input type="radio" name="q4"> Nada</label>
+<label><input type="radio" name="q4"> Só o primeiro</label>
+<label><input type="radio" name="q4"> Os nomes, com os valores vazios</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Por que pôr um grupo de rádio num <code>fieldset</code> com <code>legend</code>, se um <code>&lt;p&gt;</code> com a pergunta fica igual na tela?</p>
+<label><input type="radio" name="q5"> Para o leitor de tela anunciar a pergunta junto com as opções</label>
+<label><input type="radio" name="q5"> Porque sem <code>fieldset</code> os rádios não formam um grupo</label>
+<label><input type="radio" name="q5"> Porque o <code>legend</code> é enviado junto com a resposta</label>
+<label><input type="radio" name="q5"> Porque o validador exige <code>fieldset</code> em todo rádio</label>
+</div>
+
+<h3>Missão final: a ficha em duas partes</h3>
+
+<div class="tryhtml" data-goal="nsel:form &gt; fieldset=2,texto:form &gt; fieldset:nth-of-type(1) &gt; legend=Seus dados,texto:form &gt; fieldset:nth-of-type(2) &gt; legend=Entrega,sel:form &gt; fieldset:nth-of-type(1) input#nome,sel:form &gt; fieldset:nth-of-type(2) fieldset &gt; legend:first-child,nsel:form &gt; fieldset:nth-of-type(2) fieldset input[type=radio][name=periodo]=2,texto:fieldset fieldset legend=Período">
+<p class="try-task"><strong>Missão:</strong> organize a ficha em dois grupos, nesta ordem:</p>
+<ul class="try-task">
+  <li><code>Seus dados</code>: o campo do nome;</li>
+  <li><code>Entrega</code>: o campo da rua e, <strong>dentro</strong> dele, outro grupo, <code>Período</code>, com os dois rádios.</li>
+</ul>
+<p class="try-task">O botão fica fora dos grupos.</p>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="rua"&gt;Rua:&lt;/label&gt; &lt;input type="text" id="rua" name="rua"&gt;&lt;/p&gt;
+  &lt;label&gt;&lt;input type="radio" name="periodo" value="manha"&gt; Manhã&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="periodo" value="tarde"&gt; Tarde&lt;/label&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Seus dados&lt;/legend&gt;
+    &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;&lt;/p&gt;
+  &lt;/fieldset&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Entrega&lt;/legend&gt;
+    &lt;p&gt;&lt;label for="rua"&gt;Rua:&lt;/label&gt; &lt;input type="text" id="rua" name="rua"&gt;&lt;/p&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Período&lt;/legend&gt;
+      &lt;label&gt;&lt;input type="radio" name="periodo" value="manha"&gt; Manhã&lt;/label&gt;
+      &lt;label&gt;&lt;input type="radio" name="periodo" value="tarde"&gt; Tarde&lt;/label&gt;
+    &lt;/fieldset&gt;
+  &lt;/fieldset&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;fieldset&gt;</code> agrupa campos; <code>&lt;legend&gt;</code>, o primeiro filho dele, dá o título. O navegador desenha um quadro com o título na borda.</li>
+  <li>Todo grupo de rádio ou de caixas que respondem à mesma pergunta vai num <code>fieldset</code>, com a pergunta no <code>legend</code>: assim o leitor de tela anuncia a pergunta. Cada opção continua com o seu <code>label</code>.</li>
+  <li><code>fieldset</code> também divide formulários grandes em partes; pode ficar dentro de outro <code>fieldset</code>, mas não dentro de um <code>&lt;p&gt;</code>.</li>
+  <li>O grupo não entra no envio; os campos de dentro são enviados normalmente.</li>
+  <li><code>&lt;fieldset disabled&gt;</code> desliga tudo de dentro (menos o que está no <code>legend</code>), e nada disso é enviado.</li>
+  <li><code>legend</code> fora do lugar, repetido ou solto dá erro no validador; <code>fieldset</code> sem <code>legend</code> é válido, mas fica sem nome.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
