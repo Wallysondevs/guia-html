@@ -140,10 +140,46 @@ código de saída: 0          « nenhuma mensagem: os dois estão certos</pre>
 </table>
 </div>
 
-<p>Salvando o mesmo arquivo <strong>sem</strong> a primeira linha e abrindo-o no navegador (como em <a href="primeiro-arquivo.html">Criar e Abrir um Arquivo .html</a>), o parágrafo passa a mostrar <code>Modo desta página: BackCompat</code>. Foi o que o Chromium mostrou na máquina da Ana; o Firefox e o Safari dão a mesma resposta.</p>
+<p>Salvando o mesmo arquivo <strong>sem</strong> a primeira linha e abrindo-o no navegador (como em <a href="primeiro-arquivo.html">Criar e Abrir um Arquivo .html</a>), o parágrafo passa a mostrar <code>Modo desta página: BackCompat</code>. Foi o que o Chromium mostrou na máquina da Ana; o Firefox e o Safari seguem a mesma regra. O editor do guia também: ele desenha a sua página do jeitinho que ela está, então uma página sem DOCTYPE fica em modo quirks ali dentro. Veja:</p>
+
+<div class="tryhtml" data-goal="texto:#modo=CSS1Compat">
+<p class="try-task"><strong>Missão:</strong> esta página esqueceu o DOCTYPE, e o resultado mostra <code>BackCompat</code>. Escreva <code>&lt;!DOCTYPE html&gt;</code> na primeira linha e veja a resposta mudar para <code>CSS1Compat</code>. Depois apague de novo, ou escreva errado (<code>&lt;!DOCTYPE htm&gt;</code>), para ver a volta ao modo quirks.</p>
+<pre class="script" data-file="index.html">&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Qual é o modo?&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p id="modo"&gt;&lt;/p&gt;
+&lt;script&gt;
+  document.getElementById("modo").textContent = "Modo desta página: " + document.compatMode;
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Qual é o modo?&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p id="modo"&gt;&lt;/p&gt;
+&lt;script&gt;
+  document.getElementById("modo").textContent = "Modo desta página: " + document.compatMode;
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<div class="note">
+<strong>Se o resultado mostrar <code>CSS1Compat</code> mesmo sem DOCTYPE</strong>
+<p>O editor tem um "modo simples", usado quando o guia é aberto direto do disco ou numa janela anônima do Firefox. Nesse modo, o quadro de resultado nunca entra em modo quirks: é uma regra dos navegadores para esse tipo de quadro (o <code>srcdoc</code>). No guia publicado na internet, você vê o modo de verdade. A caixa a seguir funciona nos dois casos.</p>
+</div>
 
 <h3>Testar vários DOCTYPEs de uma vez</h3>
-<p>Existe um jeito de testar sem criar um arquivo para cada caso: o <code>DOMParser</code> ("leitor de documentos") lê um texto como se fosse uma página nova e diz em que modo ela ficaria. Cada <code>console.log</code> escreve uma linha no <strong>console</strong>, que aparece embaixo do resultado:</p>
+<p>Existe também um jeito de testar vários casos sem criar um arquivo para cada um: o <code>DOMParser</code> ("leitor de documentos") lê um texto como se fosse uma página nova e diz em que modo ela ficaria. Cada <code>console.log</code> escreve uma linha no <strong>console</strong>, que aparece embaixo do resultado:</p>
 
 <div class="tryhtml" data-goal="console:Teste: CSS1Compat">
 <p class="try-task"><strong>Missão:</strong> veja no console o modo de cada texto. O terceiro, <code>teste</code>, tem um erro de digitação no DOCTYPE e caiu no modo quirks. Conserte só esse texto para o console mostrar <code>Teste: CSS1Compat</code>. Depois, se quiser, invente outros testes: troque para minúsculas, apague o espaço, escreva uma palavra antes…</p>
@@ -238,10 +274,29 @@ código de saída: 0          « nenhuma mensagem: os dois estão certos</pre>
 
 <p><em>“ff0000” is not a “color” value</em> = "<code>ff0000</code> não é um valor de cor". <em>Only “0” can be a “unit”. You must put a unit after your number</em> = "só o 0 pode ficar sem unidade. Você precisa pôr uma unidade depois do número". Mais um motivo para validar: o validador vê o que o modo quirks esconde.</p>
 
-<div class="note">
-<strong>Por que o resultado não está desenhado aqui embaixo?</strong>
-<p>Nos outros exemplos, o guia desenha o resultado ao vivo. Este é diferente: a página do guia tem DOCTYPE, e o quadro de resultado fica dentro dela, então não dá para garantir que você veria o modo quirks ali. Para ver de verdade, salve o código num arquivo <code>quirks.html</code>, abra no seu navegador, e depois acrescente <code>&lt;!DOCTYPE html&gt;</code> na primeira linha e recarregue.</p>
+<p>Veja você mesmo. Esta caixa não tem missão: é o mesmo <code>quirks.html</code>. Olhe o resultado (título vermelho, aviso estreito, tabela com letra menor), escreva <code>&lt;!DOCTYPE html&gt;</code> na primeira linha e compare. Depois conserte o CSS (<code>#ff0000</code> e <code>200px</code>) e veja o vermelho e a largura voltarem, agora do jeito certo:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="quirks.html">&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;style&gt;
+  body { font-size: 24px; }
+  h1 { color: ff0000; }
+  .aviso { width: 200; border: 2px solid; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p class="aviso"&gt;Receita nova toda sexta.&lt;/p&gt;
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;Bolo de cenoura&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
 </div>
+
+<p>(No modo simples do editor, explicado na seção 2, o quadro já começa no modo padrão e o título aparece preto. Para ver o modo quirks nesse caso, salve o código num arquivo e abra no navegador.)</p>
 
 <p>Existem dezenas de outras manias do modo quirks, quase todas ligadas a altura de caixas, tabelas e espaço entre linhas. Você não precisa decorar nenhuma: basta nunca cair nele.</p>
 
