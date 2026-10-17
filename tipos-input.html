@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Tipos de input — text, email, number, date, color… | Guia HTML</title>
+<meta name="description" content="Os tipos do input do HTML para quem nunca fez um site: text, search, email, tel, url, password, number, range, date, time, datetime-local, month, week, color, file e hidden, com o resultado ao vivo de cada um, o formato do value, o que muda no celular, o que o navegador faz com um valor errado e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Tipos de input</span></h1>
+
+<p class="intro">Na aula anterior, o <code>&lt;input&gt;</code> foi comparado a um carregador com pontas trocáveis, e a ponta é o atributo <code>type</code>. Agora é hora de conhecer as pontas: o campo de e-mail que confere o <code>@</code>, o de número com setinhas, o calendário, o seletor de cor, o botão de escolher arquivo. Trocar uma palavra no código dá ao seu formulário um teclado certo no celular, uma conferência antes do envio e um campo mais fácil de preencher, sem nenhuma linha de JavaScript.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Os tipos de <strong>texto</strong>: <code>text</code>, <code>search</code>, <code>email</code>, <code>tel</code>, <code>url</code> e <code>password</code>.</li>
+  <li>Os de <strong>número</strong>: <code>number</code> e <code>range</code> (com <code>min</code>, <code>max</code> e <code>step</code>).</li>
+  <li>Os de <strong>data e hora</strong>: <code>date</code>, <code>time</code>, <code>datetime-local</code>, <code>month</code> e <code>week</code>, e por que o <code>value</code> é sempre <code>2026-10-17</code>, mesmo que a tela mostre 17/10/2026.</li>
+  <li>O <code>color</code>, o <code>file</code> e o <code>hidden</code>.</li>
+  <li>Onde estão os outros (<code>checkbox</code>, <code>radio</code>, <code>submit</code>…).</li>
+  <li>O que o navegador faz com um <code>value</code> no formato errado, e o que o validador W3C diz (e o que ele <strong>não</strong> pega).</li>
+</ul>
+</div>
+
+<p>Os exemplos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>); o que o navegador faz com valores errados foi conferido no Chromium. Os quadros "Resultado" são desenhados pelo <strong>seu</strong> navegador, então o que você vê depende dele.</p>
+
+<div class="warning">
+<strong>Cada navegador desenha do seu jeito</strong>
+<p>O calendário do <code>date</code>, a paleta do <code>color</code>, as setinhas do <code>number</code> e o botão do <code>file</code> são desenhados pelo navegador e pelo sistema, e mudam bastante entre o Chrome, o Firefox e o Safari, entre o Windows, o Mac e o Linux, e entre o computador e o celular. Por isso esta aula descreve o que cada campo <strong>faz</strong>, e não o desenho dele. Abra esta página em dois navegadores e compare.</p>
+</div>
+
+<hr>
+
+<h2>A ideia: o campo certo para cada pergunta</h2>
+<p>Numa ficha de papel, a pergunta "Data de nascimento" costuma vir com quadradinhos: <code>__/__/____</code>. Ninguém escreve "dia de São João" ali, porque o desenho da linha já mostra o que se espera. Os tipos de <code>&lt;input&gt;</code> fazem isso, e mais: no celular, abrem o teclado de números para o telefone, e, antes de enviar, o navegador confere se o e-mail tem <code>@</code>.</p>
+
+<hr>
+
+<h2>1. Tipos de texto</h2>
+
+<pre class="file" data-file="cadastro.html" data-resultado>&lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="busca"&gt;Buscar:&lt;/label&gt; &lt;input type="search" id="busca" name="q"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt; &lt;input type="email" id="email" name="email"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="tel"&gt;Celular:&lt;/label&gt; &lt;input type="tel" id="tel" name="tel"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="site"&gt;Seu site:&lt;/label&gt; &lt;input type="url" id="site" name="site"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="senha"&gt;Senha:&lt;/label&gt; &lt;input type="password" id="senha" name="senha"&gt;&lt;/p&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>type</code></th><th>Para</th><th>O que muda</th></tr>
+<tr><td><code>text</code></td><td>Qualquer texto de uma linha</td><td>Nada: é o padrão.</td></tr>
+<tr><td><code>search</code></td><td>Uma busca</td><td>Muitos navegadores mostram um "x" para limpar o campo quando há texto, e o <kbd>Esc</kbd> limpa. No celular, a tecla Enter pode virar "Buscar". O leitor de tela anuncia "campo de busca".</td></tr>
+<tr><td><code>email</code></td><td>Um e-mail</td><td>O navegador <strong>confere</strong> se tem cara de e-mail (um <code>@</code> com algo antes e depois) e não envia se não tiver. No celular, o teclado ganha o <code>@</code>.</td></tr>
+<tr><td><code>tel</code></td><td>Um telefone</td><td>No celular, abre o teclado de números. Não confere nada: telefones têm formatos diferentes em cada país.</td></tr>
+<tr><td><code>url</code></td><td>Um endereço de site</td><td>Confere se é um endereço <strong>completo</strong>, com <code>https://</code> na frente. No celular, o teclado ganha <code>/</code> e <code>.com</code>.</td></tr>
+<tr><td><code>password</code></td><td>Uma senha</td><td>Esconde o que é digitado. Os gerenciadores de senha do navegador reconhecem o campo.</td></tr>
+</table>
+</div>
+
+<p>Teste no resultado: digite "ana" no e-mail e "www.exemplo.com.br" no site. Nada acontece ainda, porque não há botão de enviar. A conferência aparece na hora do envio, como você vai ver no Experimente logo abaixo.</p>
+
+<div class="tip">
+<strong>CPF, CEP e cartão não são <code>number</code></strong>
+<p>Um CEP tem só algarismos, mas não é um <strong>número</strong>: ninguém soma CEPs, e o zero da frente importa (<code>01310-100</code>). Para esses códigos, use <code>type="text"</code> e, se quiser o teclado numérico no celular, o atributo <code>inputmode="numeric"</code>. O <code>type="number"</code> é para quantidades: idade, fatias, quilos.</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:#email[type]=email,attr:#tel[type]=tel,attr:#site[type]=url">
+<p class="try-task"><strong>Missão:</strong> todos os campos estão como <code>text</code>. Troque o tipo do e-mail para <code>email</code>, o do celular para <code>tel</code> e o do site para <code>url</code>. Depois escreva "ana" no e-mail e clique em Enviar: o navegador não deixa enviar e mostra um aviso (o texto do aviso é do seu navegador). Corrija para "ana@exemplo.com.br" e envie de novo.</p>
+<pre class="script" data-file="index.html">&lt;form action="cadastro.html"&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt; &lt;input type="text" id="email" name="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Celular:&lt;/label&gt; &lt;input type="text" id="tel" name="tel"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="site"&gt;Seu site:&lt;/label&gt; &lt;input type="text" id="site" name="site"&gt;&lt;/p&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="cadastro.html"&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt; &lt;input type="email" id="email" name="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Celular:&lt;/label&gt; &lt;input type="tel" id="tel" name="tel"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="site"&gt;Seu site:&lt;/label&gt; &lt;input type="url" id="site" name="site"&gt;&lt;/p&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>A conferência do navegador ajuda a pessoa a não errar, mas ela pode ser desligada por quem entende um pouco de HTML. O servidor sempre precisa conferir de novo. Mais sobre isso em <a href="validacao.html">Validação</a>.</p>
+
+<hr>
+
+<h2>2. Números: <code>number</code> e <code>range</code></h2>
+
+<pre class="file" data-file="pedido.html" data-resultado>&lt;p&gt;
+  &lt;label for="fatias"&gt;Fatias:&lt;/label&gt;
+  &lt;input type="number" id="fatias" name="fatias" min="1" max="24" value="8"&gt;
+&lt;/p&gt;
+&lt;p&gt;
+  &lt;label for="peso"&gt;Peso (kg):&lt;/label&gt;
+  &lt;input type="number" id="peso" name="peso" min="0.5" step="0.5" value="1.5"&gt;
+&lt;/p&gt;
+&lt;p&gt;
+  &lt;label for="doce"&gt;Doçura:&lt;/label&gt;
+  &lt;input type="range" id="doce" name="doce" min="0" max="10" value="7"&gt;
+&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>type="number"</dt><dd>Só aceita números. Muitos navegadores mostram setinhas para aumentar e diminuir, e as setas do teclado fazem o mesmo. No celular, abre o teclado numérico.</dd>
+  <dt>min="1" max="24"</dt><dd>O menor e o maior valor permitidos. As setinhas param nesses limites, e o navegador não envia um valor fora deles (aula <a href="validacao.html">Validação</a>).</dd>
+  <dt>step="0.5"</dt><dd>O "passo": de quanto em quanto o valor anda. Sem <code>step</code>, o passo é 1, e um valor como <code>1.5</code> seria recusado no envio.</dd>
+  <dt>value="1.5"</dt><dd>No código, número com casa decimal usa <strong>ponto</strong>, como no inglês. O que o navegador <strong>mostra</strong> na tela pode seguir o seu idioma, mas o <code>value</code> e o que vai no envio usam ponto.</dd>
+  <dt>type="range"</dt><dd>Uma barrinha de arrastar, para quando o valor exato importa pouco ("mais doce, menos doce"). Ela <strong>não mostra o número</strong> escolhido. Sem <code>min</code> e <code>max</code>, vai de 0 a 100; sem <code>value</code>, começa no meio (50).</dd>
+</dl>
+
+<hr>
+
+<h2>3. Datas e horas</h2>
+
+<pre class="file" data-file="encomenda.html" data-resultado>&lt;p&gt;&lt;label for="dia"&gt;Dia da entrega:&lt;/label&gt; &lt;input type="date" id="dia" name="dia" value="2026-10-24"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="hora"&gt;Horário:&lt;/label&gt; &lt;input type="time" id="hora" name="hora" value="15:00"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="festa"&gt;Início da festa:&lt;/label&gt; &lt;input type="datetime-local" id="festa" name="festa" value="2026-10-24T19:30"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="mes"&gt;Mês da assinatura:&lt;/label&gt; &lt;input type="month" id="mes" name="mes" value="2026-11"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="semana"&gt;Semana:&lt;/label&gt; &lt;input type="week" id="semana" name="semana" value="2026-W43"&gt;&lt;/p&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>type</code></th><th>Escolhe</th><th>Formato do <code>value</code> (e do envio)</th></tr>
+<tr><td><code>date</code></td><td>um dia</td><td><code>2026-10-24</code></td></tr>
+<tr><td><code>time</code></td><td>uma hora</td><td><code>15:00</code></td></tr>
+<tr><td><code>datetime-local</code></td><td>dia e hora, sem fuso horário</td><td><code>2026-10-24T19:30</code></td></tr>
+<tr><td><code>month</code></td><td>um mês</td><td><code>2026-11</code></td></tr>
+<tr><td><code>week</code></td><td>uma semana do ano</td><td><code>2026-W43</code></td></tr>
+</table>
+</div>
+
+<p>Reconhece esses formatos? São os mesmos do atributo <code>datetime</code> da aula <a href="time.html">time e data</a>: ano-mês-dia, com dois dígitos e do maior para o menor. Duas coisas confundem no começo:</p>
+<ul>
+  <li><strong>A tela e o código são diferentes.</strong> O campo <strong>mostra</strong> a data no formato do idioma do navegador ou do sistema (em português, <code>24/10/2026</code>; num navegador em inglês dos Estados Unidos, <code>10/24/2026</code>), mas o <code>value</code> no código e o que vai no envio são sempre <code>2026-10-24</code>. Você escreve um formato só, e cada pessoa vê o seu.</li>
+  <li><strong>O seletor depende do navegador.</strong> O calendário que abre, a roda de horas do celular, até o ícone: tudo muda. O <code>month</code> e o <code>week</code> ainda não têm seletor em todos os navegadores; onde não têm, aparecem como uma caixa de texto comum. Para eles, teste no navegador do seu público ou use dois campos (<code>select</code> de mês e <code>number</code> de ano).</li>
+</ul>
+
+<hr>
+
+<h2>4. Cor, arquivo e escondido</h2>
+
+<pre class="file" data-file="bolo.html" data-resultado>&lt;form action="bolo.html" method="post" enctype="multipart/form-data"&gt;
+  &lt;p&gt;
+    &lt;label for="cor"&gt;Cor da cobertura:&lt;/label&gt;
+    &lt;input type="color" id="cor" name="cor" value="#ff8800"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="foto"&gt;Foto de inspiração:&lt;/label&gt;
+    &lt;input type="file" id="foto" name="foto" accept="image/*"&gt;
+  &lt;/p&gt;
+  &lt;input type="hidden" name="origem" value="site"&gt;
+  &lt;button&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>type="color"</dt><dd>Abre o seletor de cores do navegador ou do sistema. O <code>value</code> é a cor em <strong>hexadecimal</strong>: <code>#</code> e seis algarismos de 0 a 9 e letras de a até f (<code>#ff8800</code> é um laranja). Sem <code>value</code>, começa preto (<code>#000000</code>).</dd>
+  <dt>type="file"</dt><dd>Um botão para escolher um arquivo do computador ou do celular (no celular, pode oferecer a câmera). O texto do botão ("Escolher arquivo", "Procurar…") é do navegador, no idioma dele.</dd>
+  <dt>accept="image/*"</dt><dd>"Aceitar": sugere quais arquivos mostrar. <code>image/*</code> = qualquer imagem; também vale uma lista como <code>.pdf,.jpg</code>. É só uma sugestão para a janela de escolha.</dd>
+  <dt>method="post" enctype="multipart/form-data"</dt><dd>Para o <strong>arquivo</strong> ir junto no envio, o formulário precisa dessas duas coisas: <code>post</code> e o <code>enctype</code> ("tipo de codificação") que divide a mensagem em partes. Sem elas, vai só o <strong>nome</strong> do arquivo. Detalhes em <a href="enviar-formulario.html">Enviar</a>.</dd>
+  <dt>type="hidden"</dt><dd>Um campo <strong>escondido</strong>: não aparece na tela, mas vai no envio (<code>origem=site</code>). Serve para dados que o site precisa e a pessoa não precisa ver, como de qual página o pedido veio. <strong>Escondido não é secreto</strong>: qualquer pessoa vê o valor no código da página.</dd>
+</dl>
+
+<p>Escolha uma cor e um arquivo e clique em "Enviar pedido": na tabela do editor, o arquivo aparece com o nome e o tamanho em bytes, e o <code>origem</code> aparece mesmo sem nunca ter estado na tela.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> um campo de cada tipo. Mexa em todos e envie para ver o que cada um manda. Depois troque um <code>type</code> por outro (por exemplo, o <code>range</code> por <code>number</code>) e veja o mesmo dado num campo diferente. Se tiver outro navegador, abra esta página nele e compare os desenhos.</p>
+<pre class="script" data-file="index.html">&lt;form action="teste.html"&gt;
+  &lt;p&gt;&lt;label for="a"&gt;search:&lt;/label&gt; &lt;input type="search" id="a" name="busca"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="b"&gt;number:&lt;/label&gt; &lt;input type="number" id="b" name="numero" value="3"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="c"&gt;range:&lt;/label&gt; &lt;input type="range" id="c" name="faixa"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="d"&gt;date:&lt;/label&gt; &lt;input type="date" id="d" name="dia"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="e"&gt;time:&lt;/label&gt; &lt;input type="time" id="e" name="hora"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="f"&gt;color:&lt;/label&gt; &lt;input type="color" id="f" name="cor"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="g"&gt;password:&lt;/label&gt; &lt;input type="password" id="g" name="senha"&gt;&lt;/p&gt;
+  &lt;input type="hidden" name="escondido" value="eu existo"&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. Os outros tipos</h2>
+<p>Alguns tipos de <code>&lt;input&gt;</code> não são campos de digitar, e têm aula própria:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>type</code></th><th>O que é</th><th>Aula</th></tr>
+<tr><td><code>checkbox</code></td><td>Caixinha de marcar (várias podem ser marcadas)</td><td><a href="checkbox-radio.html">checkbox e radio</a></td></tr>
+<tr><td><code>radio</code></td><td>Bolinha de escolher (só uma do grupo)</td><td><a href="checkbox-radio.html">checkbox e radio</a></td></tr>
+<tr><td><code>submit</code>, <code>reset</code>, <code>button</code></td><td>Botões feitos com <code>&lt;input&gt;</code> (hoje se prefere o <code>&lt;button&gt;</code>)</td><td><a href="botoes.html">Botões</a></td></tr>
+<tr><td><code>image</code></td><td>Uma imagem que funciona como botão de enviar</td><td><a href="botoes.html">Botões</a></td></tr>
+</table>
+</div>
+<p>A lista completa, com todos os atributos que cada tipo aceita, está na referência <a href="ref-input.html">Tipos de input</a>.</p>
+
+<hr>
+
+<h2>Qual tipo usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>A pergunta é…</th><th>Use</th></tr>
+<tr><td>Nome, endereço, cidade, CPF, CEP</td><td><code>text</code> (com <code>inputmode="numeric"</code> para CPF e CEP, se quiser)</td></tr>
+<tr><td>E-mail</td><td><code>email</code></td></tr>
+<tr><td>Telefone</td><td><code>tel</code></td></tr>
+<tr><td>Site ou link</td><td><code>url</code></td></tr>
+<tr><td>Senha</td><td><code>password</code></td></tr>
+<tr><td>Busca</td><td><code>search</code></td></tr>
+<tr><td>Quantidade, idade</td><td><code>number</code></td></tr>
+<tr><td>Uma nota aproximada (volume, doçura)</td><td><code>range</code></td></tr>
+<tr><td>Data, hora, data e hora</td><td><code>date</code>, <code>time</code>, <code>datetime-local</code></td></tr>
+<tr><td>Cor</td><td><code>color</code></td></tr>
+<tr><td>Arquivo, foto</td><td><code>file</code> (com <code>post</code> e <code>multipart/form-data</code>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Nos tipos especiais, o <code>value</code> tem de estar no formato do tipo. Quando não está, o navegador <strong>não avisa a pessoa</strong>: ele simplesmente descarta o valor (ou o troca por outro). As páginas abaixo têm o esqueleto de sempre nas linhas 1 a 7, um <code>&lt;label&gt;</code> na linha 8 e o <code>&lt;input&gt;</code> na <strong>linha 9</strong>. Nos quadros "Resultado", veja com os próprios olhos o que o seu navegador faz.</p>
+
+<div class="cenario">
+<strong>Data no formato brasileiro: <code>value="17/10/2026"</code></strong>
+<pre class="file" data-file="data.html" data-resultado>&lt;label for="entrega"&gt;Entrega:&lt;/label&gt;
+&lt;input type="date" id="entrega" name="entrega" value="17/10/2026"&gt;
+</pre>
+<pre class="term" data-cwd="~/tipos">$ vnu data.html
+"file:/home/ana/tipos/data.html":9.1-9.66: error: Bad value “17/10/2026” for attribute “value” on element “input”: The literal did not satisfy the date format.</pre>
+<p><strong>O que o navegador faz:</strong> o campo aparece <strong>vazio</strong>, como se não houvesse <code>value</code>. No Chrome, o console das <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor (F12)</a> mostra um aviso: <code>The specified value "17/10/2026" does not conform to the required format, "yyyy-MM-dd".</code> ("o valor não segue o formato exigido, ano-mês-dia").</p>
+<p><strong>Como consertar:</strong> <code>value="2026-10-17"</code>. A pessoa continua vendo 17/10/2026.</p>
+</div>
+
+<div class="cenario">
+<strong>Vírgula no número: <code>value="1,5"</code></strong>
+<pre class="file" data-file="numero.html" data-resultado>&lt;label for="peso"&gt;Peso (kg):&lt;/label&gt;
+&lt;input type="number" id="peso" name="peso" value="1,5"&gt;
+</pre>
+<pre class="term" data-cwd="~/tipos">$ vnu numero.html
+"file:/home/ana/tipos/numero.html":9.1-9.55: error: Bad value “1,5” for attribute “value” on element “input”: Expected a decimal point, “e”, “E” or a digit but saw “,” instead.</pre>
+<p><strong>O validador diz:</strong> "Esperava um ponto decimal, um <code>e</code> ou um algarismo, mas encontrou uma vírgula". (O <code>e</code> é da notação científica, como <code>1e3</code> = 1000.)</p>
+<p><strong>O que o navegador faz:</strong> campo vazio. O Chrome avisa no console: <code>The specified value "1,5" cannot be parsed, or is out of range.</code></p>
+<p><strong>Como consertar:</strong> <code>value="1.5"</code> e, como o passo padrão é 1, <code>step="0.5"</code> (ou <code>step="any"</code>, "qualquer").</p>
+</div>
+
+<div class="cenario">
+<strong>Cor por nome: <code>value="red"</code></strong>
+<pre class="term" data-cwd="~/tipos">$ vnu cor.html
+"file:/home/ana/tipos/cor.html":9.1-9.52: error: Bad value “red” for attribute “value” on element “input”: Incorrect length for color string.</pre>
+<p><strong>O validador diz:</strong> "Tamanho errado para uma cor": ele espera exatamente <code>#</code> + 6 caracteres.</p>
+<p><strong>O que o navegador faz:</strong> depende do navegador, e é por isso que este exemplo não tem quadro "Resultado". No Chromium usado para conferir este guia, <code>red</code> foi aceito e virou <code>#ff0000</code>, porque os navegadores recentes começaram a aceitar nomes de cor do CSS nesse campo. Navegadores mais antigos descartam o valor e mostram preto (<code>#000000</code>).</p>
+<p><strong>Como consertar:</strong> escreva sempre em hexadecimal: <code>value="#ff0000"</code>. Funciona em todos e passa no validador.</p>
+</div>
+
+<div class="cenario">
+<strong>Um tipo que não existe mais: <code>type="datetime"</code></strong>
+<pre class="term" data-cwd="~/tipos">$ vnu datetime.html
+"file:/home/ana/tipos/datetime.html":9.1-9.49: error: Bad value “datetime” for attribute “type” on element “input”.</pre>
+<p><strong>O que significa:</strong> o <code>datetime</code> (com fuso horário) chegou a existir num rascunho do HTML5 e foi removido. Muitos tutoriais antigos ainda o usam. O navegador o trata como tipo desconhecido, ou seja, <code>text</code>.</p>
+<p><strong>Como consertar:</strong> <code>type="datetime-local"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Endereço sem <code>https://</code></strong>
+<pre class="term" data-cwd="~/tipos">$ vnu url.html
+"file:/home/ana/tipos/url.html":9.1-9.67: error: Bad value “www.exemplo.com.br” for attribute “value” on element “input”: The string “www.exemplo.com.br” is not an absolute URL.</pre>
+<p><strong>O que significa:</strong> "Não é um endereço absoluto". No <code>type="url"</code>, endereço válido é completo: <code>https://www.exemplo.com.br</code> (aula <a href="caminhos.html">Caminhos</a>).</p>
+<p><strong>O que o navegador faz:</strong> mostra o valor, mas o considera <strong>inválido</strong> e não deixa enviar o formulário até alguém consertar.</p>
+</div>
+
+<div class="cenario">
+<strong>O que o validador <em>não</em> pega</strong>
+<p>Estas duas linhas passaram no validador sem nenhum erro:</p>
+<pre class="term" data-cwd="~/tipos">$ sed -n 9p email.html
+&lt;input type="email" id="email" name="email" value="ana.exemplo.com.br"&gt;
+$ vnu email.html
+$ sed -n 9p faixa.html
+&lt;input type="range" id="doce" name="doce" min="0" max="10" value="15"&gt;
+$ vnu faixa.html</pre>
+<ul>
+  <li>O e-mail sem <code>@</code>: o validador não confere o <code>value</code> de um <code>type="email"</code>. O <strong>navegador</strong> confere, e não deixa enviar.</li>
+  <li>O <code>value="15"</code> com <code>max="10"</code>: o navegador põe a barrinha no máximo, e o valor vira <code>10</code>, sem aviso.</li>
+</ul>
+<p>Por isso, além de validar, teste o formulário de verdade: preencha, envie e confira o que chegou.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>type</code></th><th>Formato do <code>value</code></th><th>Observação</th></tr>
+<tr><td><code>text</code>, <code>search</code>, <code>tel</code>, <code>password</code></td><td>qualquer texto</td><td><code>tel</code> não confere o formato</td></tr>
+<tr><td><code>email</code></td><td><code>ana@exemplo.com.br</code></td><td>confere no envio</td></tr>
+<tr><td><code>url</code></td><td><code>https://www.exemplo.com.br</code></td><td>endereço completo</td></tr>
+<tr><td><code>number</code></td><td><code>1.5</code> (ponto)</td><td><code>min</code>, <code>max</code>, <code>step</code></td></tr>
+<tr><td><code>range</code></td><td><code>7</code></td><td>padrão 0 a 100, começa em 50; não mostra o número</td></tr>
+<tr><td><code>date</code></td><td><code>2026-10-24</code></td><td>a tela mostra no formato do idioma</td></tr>
+<tr><td><code>time</code></td><td><code>15:00</code></td><td></td></tr>
+<tr><td><code>datetime-local</code></td><td><code>2026-10-24T19:30</code></td><td>sem fuso; <code>datetime</code> não existe</td></tr>
+<tr><td><code>month</code> / <code>week</code></td><td><code>2026-11</code> / <code>2026-W43</code></td><td>sem seletor em alguns navegadores</td></tr>
+<tr><td><code>color</code></td><td><code>#ff8800</code></td><td>padrão <code>#000000</code></td></tr>
+<tr><td><code>file</code></td><td>(não tem <code>value</code> no código)</td><td><code>accept</code>; precisa de <code>post</code> + <code>multipart/form-data</code></td></tr>
+<tr><td><code>hidden</code></td><td>qualquer texto</td><td>não aparece, mas vai no envio</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O e-mail</h3>
+<p>Complete o tipo que confere o <code>@</code> antes de enviar:</p>
+<div class="ex-code">&lt;input type="<input data-answer="email" aria-label="tipo">" id="email" name="email"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A data</h3>
+<p>Complete o <code>value</code> para o campo começar em 5 de março de 2027:</p>
+<div class="ex-code">&lt;input type="date" name="dia" value="<input data-answer="2027-03-05" aria-label="data">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. A cor</h3>
+<p>Complete o tipo do campo que abre um seletor de cores:</p>
+<div class="ex-code">&lt;input type="<input data-answer="color" aria-label="tipo">" name="cor" value="#ff8800"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Qual tipo usar para o CEP <code>01310-100</code>?</p>
+<label><input type="radio" name="q4"> <code>number</code>, porque só tem algarismos</label>
+<label><input type="radio" name="q4"> <code>tel</code></label>
+<label><input type="radio" name="q4"> <code>text</code> (com <code>inputmode="numeric"</code>, se quiser o teclado de números)</label>
+<label><input type="radio" name="q4"> <code>range</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Um <code>&lt;input type="date" value="24/10/2026"&gt;</code> aparece como?</p>
+<label><input type="radio" name="q5"> Com 24/10/2026</label>
+<label><input type="radio" name="q5"> Vazio: o navegador descarta o valor fora do formato</label>
+<label><input type="radio" name="q5"> Com uma mensagem de erro vermelha</label>
+<label><input type="radio" name="q5"> Como um campo de texto</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Num campo <code>type="date"</code> com <code>value="2026-10-24"</code>, a pessoa vê "24/10/2026". O que vai no envio?</p>
+<label><input type="radio" name="q6"> <code>24/10/2026</code></label>
+<label><input type="radio" name="q6"> <code>24-10-2026</code></label>
+<label><input type="radio" name="q6"> Depende do idioma de quem preencheu</label>
+<label><input type="radio" name="q6"> <code>2026-10-24</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">7. O que um <code>type="hidden"</code> faz?</p>
+<label><input type="radio" name="q7"> Não aparece na tela, mas o valor vai no envio (e aparece no código)</label>
+<label><input type="radio" name="q7"> Guarda uma senha em segredo</label>
+<label><input type="radio" name="q7"> Esconde o formulário inteiro</label>
+<label><input type="radio" name="q7"> Não aparece e não é enviado</label>
+</div>
+
+<h3>Missão final: a encomenda de bolo</h3>
+
+<div class="tryhtml" data-goal="attr:#fatias[type]=number,attr:#fatias[value]=12,attr:#dia[type]=date,attr:#dia[value]=2026-10-24,attr:#hora[type]=time,attr:#cor[type]=color,attr:#cor[value]=#ff8800,attr:#telefone[type]=tel">
+<p class="try-task"><strong>Missão:</strong> deixe cada campo com o tipo certo: <code>fatias</code> é um número que começa em <code>12</code>; <code>dia</code> é uma data que começa em 24 de outubro de 2026; <code>hora</code> é um horário; <code>cor</code> é uma cor que começa em <code>#ff8800</code>; <code>telefone</code> é um telefone. Os valores iniciais têm de estar no formato do tipo. Depois preencha e envie para ver o que chega.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Encomenda de bolo&lt;/h1&gt;
+&lt;form action="encomenda.html" method="post"&gt;
+  &lt;p&gt;&lt;label for="fatias"&gt;Fatias:&lt;/label&gt; &lt;input id="fatias" name="fatias"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="dia"&gt;Dia:&lt;/label&gt; &lt;input id="dia" name="dia"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="hora"&gt;Hora de buscar:&lt;/label&gt; &lt;input id="hora" name="hora"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="cor"&gt;Cor da cobertura:&lt;/label&gt; &lt;input id="cor" name="cor"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="telefone"&gt;Telefone:&lt;/label&gt; &lt;input id="telefone" name="telefone"&gt;&lt;/p&gt;
+  &lt;button&gt;Encomendar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Encomenda de bolo&lt;/h1&gt;
+&lt;form action="encomenda.html" method="post"&gt;
+  &lt;p&gt;&lt;label for="fatias"&gt;Fatias:&lt;/label&gt; &lt;input type="number" id="fatias" name="fatias" value="12"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="dia"&gt;Dia:&lt;/label&gt; &lt;input type="date" id="dia" name="dia" value="2026-10-24"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="hora"&gt;Hora de buscar:&lt;/label&gt; &lt;input type="time" id="hora" name="hora"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="cor"&gt;Cor da cobertura:&lt;/label&gt; &lt;input type="color" id="cor" name="cor" value="#ff8800"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="telefone"&gt;Telefone:&lt;/label&gt; &lt;input type="tel" id="telefone" name="telefone"&gt;&lt;/p&gt;
+  &lt;button&gt;Encomendar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>Se quiser ir além, limite as fatias entre 8 e 40 com <code>min</code> e <code>max</code> e tente enviar 50.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Texto: <code>text</code> (padrão), <code>search</code>, <code>email</code> (confere o <code>@</code>), <code>tel</code> (teclado de números, sem conferência), <code>url</code> (endereço completo) e <code>password</code> (esconde).</li>
+  <li>Números: <code>number</code> (com <code>min</code>, <code>max</code>, <code>step</code>; decimal com ponto) e <code>range</code> (barrinha, 0 a 100, não mostra o número). Códigos como CEP e CPF são <code>text</code>.</li>
+  <li>Datas: <code>date</code>, <code>time</code>, <code>datetime-local</code>, <code>month</code>, <code>week</code>. O <code>value</code> é sempre ano-mês-dia (<code>2026-10-24</code>); a tela mostra no formato do idioma de quem vê.</li>
+  <li><code>color</code> (<code>#rrggbb</code>), <code>file</code> (precisa de <code>post</code> + <code>multipart/form-data</code>) e <code>hidden</code> (vai no envio, mas não é secreto).</li>
+  <li>Um <code>value</code> fora do formato é descartado sem aviso para a pessoa; o validador acusa <code>Bad value … for attribute “value”</code>. A aparência de cada campo muda de um navegador e de um sistema para outro.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
