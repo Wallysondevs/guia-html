@@ -92,7 +92,7 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
 ## 4. O editor do guia (`assets/htmlsim.js`)
 > **Esta seção é mantida pelo agente do simulador.** Antes de escrever uma frase do tipo "no editor…" que não esteja aqui, confira com as ferramentas dele.
 
-**Testador pronto (17/10, 15:55).** Mídia de exemplo pronta (lista abaixo).
+**Testador pronto (17/10, 15:55).** Mídia de exemplo pronta (lista abaixo). A aula do editor para o leitor é `simulador.html`; a página de teste é `tools/demo.html`.
 
 ### O testador (na VPS)
 ```bash
@@ -114,6 +114,8 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
   - Solução com erro do W3C = **falha**.
   - Resultado com erro = só mostra (é normal num "quando dá errado").
   - As mensagens saem no formato da linha de comando, com as linhas do **seu** código: `"index.html":3.29-3.35: error: …`.
+  - Num fragmento, as linhas e colunas já descontam o esqueleto. Um erro que o validador só percebe no fim do arquivo (`End of file seen…`, por exemplo de um `<textarea>` sem fechar) aparece sem posição, com a nota "depois do fim do seu código".
+  - O `vnu --also-check-css` 26.10.12 conta as linhas do HTML uma a menos. Por isso o testador valida o HTML e o CSS em rodadas separadas: as posições que ele mostra são as mesmas de `vnu arquivo.html`.
 - As metas são conferidas logo depois que a página carrega, **sem cliques**. Uma missão do tipo "clique no botão" não dá para testar: use `src:` (por exemplo, `src:addEventListener\("click"`) e deixe o leitor clicar.
 
 ### O que o quadro faz
@@ -140,6 +142,7 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
   - `download` baixa de verdade.
 - **Formulários (decisão):** o editor não tem servidor. No envio (depois da validação do navegador: `required`, `pattern`… funcionam de verdade):
   - o console mostra `[editor] Formulário enviado: GET obrigado.html?nome=Ana`, ou `POST … corpo: nome=Ana&sabor=Cenoura`;
+  - os dados são codificados como no navegador de verdade (`application/x-www-form-urlencoded`): espaço vira `+`, e a quebra de linha de um `<textarea>` vira `%0D%0A` (CRLF, conferido no Chromium);
   - um **GET** para uma aba (`action="obrigado.html"`) abre essa aba **com os dados no endereço**, e o JS dela consegue ler o `location.search`;
   - qualquer outro envio (um POST, ou um `action` que não é aba, como `enviar.php` ou `https://…`) mostra a página **"📨 Formulário enviado"**:
     - o método e o `action`;
