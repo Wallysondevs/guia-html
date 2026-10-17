@@ -18,7 +18,7 @@
 
 <h1>HTML <span class="hl">Legendas</span></h1>
 
-<p class="intro">O vídeo do bolo de cenoura fez sucesso, e chegaram três pedidos: uma cliente surda quer entender o que a Ana fala; um amigo de Portugal assiste no trem, sem som; e uma prima que mora no Canadá quer mostrar o vídeo para o marido, que não fala português. A resposta para os três é a mesma: <strong>legendas</strong>. No HTML, elas ficam num arquivo de texto à parte, no formato <strong>WebVTT</strong>, e entram no vídeo pelo elemento <code>&lt;track&gt;</code>. Nesta aula você vai escrever um arquivo de legendas de verdade, ligá-lo ao vídeo e ver o que acontece quando um detalhe do arquivo está errado.</p>
+<p class="intro">O vídeo do bolo de cenoura, da aula <a href="video.html">Vídeo</a>, não tem som: são 6 segundos de imagens. A Ana quer que, enquanto ele passa, apareça embaixo um texto explicando cada passo, como nos vídeos de receita das redes sociais. E uma prima que mora no Canadá quer mostrar o vídeo para o marido, que não fala português. Nos próximos vídeos, com a voz da Ana, uma cliente surda vai precisar ler o que é falado. A resposta para todos esses pedidos é a mesma: <strong>legendas</strong>. No HTML, elas ficam num arquivo de texto à parte, no formato <strong>WebVTT</strong>, e entram no vídeo pelo elemento <code>&lt;track&gt;</code>. Nesta aula você vai escrever um arquivo de legendas de verdade, ligá-lo ao vídeo e ver o que acontece quando um detalhe do arquivo está errado.</p>
 
 <div class="note">
 <strong>Você vai aprender</strong>
@@ -37,7 +37,7 @@
 <hr>
 
 <h2>A ideia: o roteiro com o relógio do lado</h2>
-<p>Pense em quem faz a legenda de um filme. Ela não escreve o texto <em>dentro</em> do filme: escreve uma lista à parte, com o horário de cada frase. "De 0 a 3 segundos, aparece <em>Olá!</em>; de 3 a 6, aparece <em>Primeiro, bata as cenouras</em>." O tocador lê a lista e mostra cada frase na hora certa, por cima da imagem.</p>
+<p>Pense em quem faz a legenda de um filme. Ela não escreve o texto <em>dentro</em> do filme: escreve uma lista à parte, com o horário de cada frase. "De 0 a 2 segundos, aparece <em>Primeiro, a Ana mistura a cenoura</em>; de 2 a 4, aparece <em>Depois, o bolo assa no forno</em>." O tocador lê a lista e mostra cada frase na hora certa, por cima da imagem.</p>
 
 <p>Isso tem uma vantagem enorme: como o texto está fora do vídeo, dá para ter várias listas (português, inglês, espanhol) para o mesmo vídeo, ligar e desligar a legenda, e corrigir um erro de digitação sem mexer no vídeo. No HTML:</p>
 
@@ -54,23 +54,28 @@
 <hr>
 
 <h2>1. O arquivo WebVTT</h2>
-<p>Um arquivo <code>.vtt</code> é texto puro: você o escreve no mesmo editor em que escreve o HTML (aula <a href="editores.html">Editores</a>). Este é o <code>bolo-pt.vtt</code>, com as falas do começo do vídeo:</p>
+<p>Um arquivo <code>.vtt</code> é texto puro: você o escreve no mesmo editor em que escreve o HTML (aula <a href="editores.html">Editores</a>). Este é o <code>bolo-pt.vtt</code>, com os três passos do vídeo do bolo:</p>
 
 <pre class="file" data-file="bolo-pt.vtt">WEBVTT
 
-00:00.000 --&gt; 00:03.000
-Olá! Hoje é dia de bolo de cenoura.
+00:00.000 --&gt; 00:02.000
+Primeiro, a Ana mistura a cenoura,
+os ovos e o açúcar.
 
-00:03.000 --&gt; 00:06.500
-Primeiro, bata as cenouras
-com os ovos e o óleo.
+00:02.000 --&gt; 00:04.000
+Depois, o bolo assa no forno
+por 40 minutos.
+
+00:04.000 --&gt; 00:06.000
+Por fim, ela cobre o bolo
+com chocolate. Pronto!
 </pre>
 
 <dl class="anatomy">
   <dt>WEBVTT</dt><dd>O <strong>cabeçalho</strong>: a primeira linha do arquivo tem de ser exatamente <code>WEBVTT</code>, em maiúsculas. É o "documento de identidade" do arquivo: sem ele, o navegador recusa o arquivo inteiro.</dd>
   <dt>(linha em branco)</dt><dd>Separa o cabeçalho da primeira legenda. As linhas em branco são a "pontuação" do WebVTT: cada bloco fica entre linhas em branco.</dd>
-  <dt>00:00.000 --&gt; 00:03.000</dt><dd>O <strong>tempo</strong> da legenda: aparece em 0 segundos e some em 3. A seta é feita de <strong>dois</strong> hifens e um sinal de maior: <code>--&gt;</code>, com um espaço de cada lado.</dd>
-  <dt>Olá! Hoje é dia de bolo de cenoura.</dt><dd>O <strong>texto</strong> que aparece na tela. Pode ter mais de uma linha, como na segunda legenda: ela aparece em duas linhas.</dd>
+  <dt>00:00.000 --&gt; 00:02.000</dt><dd>O <strong>tempo</strong> da legenda: aparece em 0 segundos e some em 2. A seta é feita de <strong>dois</strong> hifens e um sinal de maior: <code>--&gt;</code>, com um espaço de cada lado.</dd>
+  <dt>Primeiro, a Ana mistura a cenoura,</dt><dd>O <strong>texto</strong> que aparece na tela. Pode ter mais de uma linha: tudo o que vem depois do tempo, até a próxima linha em branco, aparece junto, uma linha embaixo da outra.</dd>
 </dl>
 
 <p>Cada bloco "tempo + texto" se chama <strong>deixa</strong> (em inglês, <em>cue</em>). O arquivo é uma lista de deixas, separadas por uma linha em branco.</p>
@@ -101,7 +106,7 @@ com os ovos e o óleo.
 <h2>2. O elemento <code>&lt;track&gt;</code></h2>
 <p>Com o arquivo pronto, falta dizer ao vídeo que ele existe. O <code>&lt;track&gt;</code> ("trilha") vai <strong>dentro</strong> do <code>&lt;video&gt;</code>:</p>
 
-<pre class="file" data-file="index.html">&lt;video src="bolo.mp4" controls width="640" height="360"&gt;
+<pre class="file" data-file="index.html">&lt;video src="video-bolo.mp4" controls width="640" height="360"&gt;
   &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
 &lt;/video&gt;
 </pre>
@@ -115,41 +120,58 @@ com os ovos e o óleo.
   <dt>default</dt><dd>"Padrão": a legenda já começa <strong>ligada</strong>. Sem ele, ela existe, mas a pessoa precisa ligá-la no menu do tocador (o botão "CC" ou o menu de três pontinhos, conforme o navegador).</dd>
 </dl>
 
+<p>O guia tem esse mesmo vídeo com um arquivo de legendas pronto, o <code>assets/midia/video-bolo.vtt</code>. Ele usa o tempo com as horas (<code>00:00:02.000</code>), que também vale. Dê play no Resultado:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="assets/midia/video-bolo.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
+&lt;/video&gt;
+</pre>
+
 <p>Agora veja funcionando. Este editor tem <strong>duas abas</strong>: a página e o arquivo de legendas. Dê play no resultado:</p>
 
 <div class="tryhtml">
 <p class="try-task"><strong>Experimente:</strong> dê play e veja as legendas aparecerem. Depois, na aba <code>bolo-pt.vtt</code>, mude o texto de uma legenda ou o tempo dela e dê play de novo.</p>
-<pre class="script" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+<pre class="script" data-file="index.html">&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"&gt;
   &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
 &lt;/video&gt;
 </pre>
 <pre class="script" data-file="bolo-pt.vtt">WEBVTT
 
-00:00.000 --&gt; 00:03.000
-Olá! Hoje é dia de bolo de cenoura.
+00:00.000 --&gt; 00:02.000
+Primeiro, a Ana mistura a cenoura,
+os ovos e o açúcar.
 
-00:03.000 --&gt; 00:06.500
-Primeiro, bata as cenouras
-com os ovos e o óleo.
+00:02.000 --&gt; 00:04.000
+Depois, o bolo assa no forno
+por 40 minutos.
+
+00:04.000 --&gt; 00:06.000
+Por fim, ela cobre o bolo
+com chocolate. Pronto!
 </pre>
 </div>
 
-<div class="tryhtml" data-goal="attr:track[src]=bolo-pt.vtt,attr:track[kind]=subtitles,attr:track[srclang]=pt-BR,attr:track[label]=Português,sel:track[default]">
-<p class="try-task"><strong>Missão:</strong> o vídeo tem o arquivo de legendas, mas o <code>&lt;track&gt;</code> está incompleto. Complete-o: o arquivo <code>bolo-pt.vtt</code>, o tipo <code>subtitles</code>, a língua <code>pt-BR</code>, o nome <code>Português</code> no menu, e faça a legenda começar ligada.</p>
-<pre class="script" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
-  &lt;track&gt;
+<div class="tryhtml" data-goal="sel:track[default]">
+<p class="try-task"><strong>Missão:</strong> este <code>&lt;track&gt;</code> está quase completo. Dê play: nenhuma legenda aparece! Ela existe, mas está desligada (procure-a no menu do tocador). Acrescente o atributo que faz a legenda começar <strong>ligada</strong>.</p>
+<pre class="script" data-file="index.html">&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português"&gt;
 &lt;/video&gt;
 </pre>
 <pre class="script" data-file="bolo-pt.vtt">WEBVTT
 
-00:00.000 --&gt; 00:03.000
-Olá! Hoje é dia de bolo de cenoura.
+00:00.000 --&gt; 00:02.000
+Primeiro, a Ana mistura a cenoura,
+os ovos e o açúcar.
 
-00:03.000 --&gt; 00:06.500
-Primeiro, bata as cenouras
-com os ovos e o óleo.
+00:02.000 --&gt; 00:04.000
+Depois, o bolo assa no forno
+por 40 minutos.
+
+00:04.000 --&gt; 00:06.000
+Por fim, ela cobre o bolo
+com chocolate. Pronto!
 </pre>
-<pre class="solucao" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+<pre class="solucao" data-file="index.html">&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"&gt;
   &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
 &lt;/video&gt;
 </pre>
@@ -160,9 +182,9 @@ com os ovos e o óleo.
 
 <pre class="file" data-file="index.html">&lt;video controls width="640" height="360"&gt;
   &lt;source src="bolo.webm" type="video/webm"&gt;
-  &lt;source src="bolo.mp4" type="video/mp4"&gt;
+  &lt;source src="video-bolo.mp4" type="video/mp4"&gt;
   &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
-  &lt;p&gt;Seu navegador não mostra vídeos. &lt;a href="bolo.mp4"&gt;Baixe o vídeo&lt;/a&gt;.&lt;/p&gt;
+  &lt;p&gt;Seu navegador não mostra vídeos. &lt;a href="video-bolo.mp4"&gt;Baixe o vídeo&lt;/a&gt;.&lt;/p&gt;
 &lt;/video&gt;
 </pre>
 
@@ -181,7 +203,7 @@ com os ovos e o óleo.
 </table>
 </div>
 
-<p>Para a cliente surda da Ana, o certo é <code>captions</code>, com os sons descritos. No Brasil, essa legenda costuma ser chamada de <strong>LSE</strong> ("legenda para surdos e ensurdecidos") ou <em>closed caption</em>, o "CC" dos botões. Um arquivo de <code>captions</code> pode usar marcações do próprio WebVTT:</p>
+<p>Quando a Ana gravar um vídeo com a voz dela, a cliente surda vai precisar de <code>captions</code>, com as falas e os sons descritos. No Brasil, esse tipo de legenda é chamado de <strong>LSE</strong> ("legendagem para surdos e ensurdecidos") ou <em>closed caption</em>, o "CC" dos botões. Um arquivo de <code>captions</code> pode usar marcações do próprio WebVTT:</p>
 
 <pre class="file" data-file="bolo-cc.vtt">WEBVTT
 
@@ -216,29 +238,39 @@ com os ovos e o óleo.
 
 <div class="tryhtml" data-goal="nsel:video track=2,attr:track:last-of-type[src]=bolo-en.vtt,attr:track:last-of-type[srclang]=en,attr:track:last-of-type[label]=English,nsel:track[default]=1">
 <p class="try-task"><strong>Missão:</strong> o arquivo <code>bolo-en.vtt</code> já existe (veja a aba), mas ainda não está no vídeo. Acrescente um segundo <code>&lt;track&gt;</code>, depois do português, com <code>src="bolo-en.vtt"</code>, <code>kind="subtitles"</code>, <code>srclang="en"</code> e <code>label="English"</code>. O português continua sendo o único com <code>default</code>. Depois, no resultado, troque a legenda pelo menu do tocador.</p>
-<pre class="script" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+<pre class="script" data-file="index.html">&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"&gt;
   &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
 &lt;/video&gt;
 </pre>
 <pre class="script" data-file="bolo-pt.vtt">WEBVTT
 
-00:00.000 --&gt; 00:03.000
-Olá! Hoje é dia de bolo de cenoura.
+00:00.000 --&gt; 00:02.000
+Primeiro, a Ana mistura a cenoura,
+os ovos e o açúcar.
 
-00:03.000 --&gt; 00:06.500
-Primeiro, bata as cenouras
-com os ovos e o óleo.
+00:02.000 --&gt; 00:04.000
+Depois, o bolo assa no forno
+por 40 minutos.
+
+00:04.000 --&gt; 00:06.000
+Por fim, ela cobre o bolo
+com chocolate. Pronto!
 </pre>
 <pre class="script" data-file="bolo-en.vtt">WEBVTT
 
-00:00.000 --&gt; 00:03.000
-Hi! Today is carrot cake day.
+00:00.000 --&gt; 00:02.000
+First, Ana mixes the carrots,
+the eggs and the sugar.
 
-00:03.000 --&gt; 00:06.500
-First, blend the carrots
-with the eggs and the oil.
+00:02.000 --&gt; 00:04.000
+Then the cake bakes in the oven
+for 40 minutes.
+
+00:04.000 --&gt; 00:06.000
+Finally, she covers the cake
+with chocolate. Done!
 </pre>
-<pre class="solucao" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+<pre class="solucao" data-file="index.html">&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"&gt;
   &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
   &lt;track src="bolo-en.vtt" kind="subtitles" srclang="en" label="English"&gt;
 &lt;/video&gt;
@@ -248,7 +280,7 @@ with the eggs and the oil.
 <hr>
 
 <h2>5. A legenda não aparece no arquivo aberto do disco</h2>
-<p>A Ana salvou o <code>index.html</code>, o <code>bolo.mp4</code> e o <code>bolo-pt.vtt</code> na mesma pasta e abriu a página com dois cliques. O vídeo toca… e a legenda não aparece. O HTML está certo. O problema é o endereço: aberta do disco, a página começa com <code>file://</code>, e, por segurança, o Chrome não deixa uma página <code>file://</code> carregar arquivos de legenda, mesmo da mesma pasta. (No editor desta página funciona, porque o guia é servido como um site de verdade.)</p>
+<p>A Ana salvou o <code>index.html</code>, o <code>video-bolo.mp4</code> e o <code>bolo-pt.vtt</code> na mesma pasta e abriu a página com dois cliques. O vídeo toca… e a legenda não aparece. O HTML está certo. O problema é o endereço: aberta do disco, a página começa com <code>file://</code>, e, por segurança, o Chrome não deixa uma página <code>file://</code> carregar arquivos de legenda, mesmo da mesma pasta. (No editor desta página funciona, porque o guia é servido como um site de verdade.)</p>
 
 <p>A solução é abrir a página por um <strong>servidor local</strong>, um programinha que faz o seu computador se comportar como um site (aula <a href="servidor-local.html">Servidor Local</a>). Com o Python, que já vem no Linux e no macOS:</p>
 
@@ -256,13 +288,13 @@ with the eggs and the oil.
 [1] 4
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 $ curl -sI http://localhost:8000/bolo-pt.vtt
-127.0.0.1 - - [17/Oct/2026 15:51:16] "HEAD /bolo-pt.vtt HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 15:57:51] "HEAD /bolo-pt.vtt HTTP/1.1" 200 -
 HTTP/1.0 200 OK
 Server: SimpleHTTP/0.6 Python/3.14.4
-Date: Sat, 17 Oct 2026 18:51:16 GMT
+Date: Sat, 17 Oct 2026 18:57:51 GMT
 Content-type: text/vtt         « o servidor avisa: "isto é WebVTT"
-Content-Length: 145
-Last-Modified: Sat, 17 Oct 2026 18:50:52 GMT
+Content-Length: 233
+Last-Modified: Sat, 17 Oct 2026 18:57:46 GMT
 
 $ kill %1
 [1]+  Terminado                  python3 -m http.server</pre>
@@ -313,29 +345,41 @@ $ kill %1
 
 <div class="tryhtml" data-goal="src:^WEBVTT,nsrc:\d\d\,\d\d\d">
 <p class="try-task"><strong>Missão:</strong> a Ana baixou uma legenda SRT e só trocou a extensão para <code>.vtt</code>. Dê play: nenhuma legenda aparece. Conserte a aba <code>bolo-pt.vtt</code>: acrescente o cabeçalho e troque as vírgulas dos tempos por ponto. Dê play de novo.</p>
-<pre class="script" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
+<pre class="script" data-file="index.html">&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"&gt;
   &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
 &lt;/video&gt;
 </pre>
 <pre class="script" data-file="bolo-pt.vtt">1
-00:00:00,000 --&gt; 00:00:03,000
-Olá! Hoje é dia de bolo de cenoura.
+00:00:00,000 --&gt; 00:00:02,000
+Primeiro, a Ana mistura a cenoura,
+os ovos e o açúcar.
 
 2
-00:00:03,000 --&gt; 00:00:06,500
-Primeiro, bata as cenouras
-com os ovos e o óleo.
+00:00:02,000 --&gt; 00:00:04,000
+Depois, o bolo assa no forno
+por 40 minutos.
+
+3
+00:00:04,000 --&gt; 00:00:06,000
+Por fim, ela cobre o bolo
+com chocolate. Pronto!
 </pre>
 <pre class="solucao" data-file="bolo-pt.vtt">WEBVTT
 
 1
-00:00:00.000 --&gt; 00:00:03.000
-Olá! Hoje é dia de bolo de cenoura.
+00:00:00.000 --&gt; 00:00:02.000
+Primeiro, a Ana mistura a cenoura,
+os ovos e o açúcar.
 
 2
-00:00:03.000 --&gt; 00:00:06.500
-Primeiro, bata as cenouras
-com os ovos e o óleo.
+00:00:02.000 --&gt; 00:00:04.000
+Depois, o bolo assa no forno
+por 40 minutos.
+
+3
+00:00:04.000 --&gt; 00:00:06.000
+Por fim, ela cobre o bolo
+com chocolate. Pronto!
 </pre>
 </div>
 
@@ -350,14 +394,14 @@ com os ovos e o óleo.
 
 <div class="cenario">
 <strong><code>default</code> em duas trilhas</strong>
-<pre class="file" data-file="t-default.html">&lt;video src="bolo.mp4" controls&gt;
+<pre class="file" data-file="t-default.html">&lt;video src="video-bolo.mp4" controls&gt;
   &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
   &lt;track src="bolo-en.vtt" kind="subtitles" srclang="en" label="English" default&gt;
 &lt;/video&gt;
 </pre>
 <pre class="term" data-cwd="~/site">$ vnu t-default.html
 "file:/home/ana/site/t-default.html":10.3-10.81: error: The “default” attribute must not occur on more than one “track” element within the same “audio” or “video” element.
-"file:/home/ana/site/t-default.html":8.1-8.31: info warning: “audio” or “video” element has more than one “track” child element with a “default” attribute.</pre>
+"file:/home/ana/site/t-default.html":8.1-8.37: info warning: “audio” or “video” element has more than one “track” child element with a “default” attribute.</pre>
 <p>"O atributo <code>default</code> não pode aparecer em mais de um <code>track</code> do mesmo <code>audio</code> ou <code>video</code>". A segunda linha é um <code>info warning</code>, um aviso informativo, que repete o problema apontando o <code>&lt;video&gt;</code> (linha 8). Só uma legenda pode estar ligada por vez; o navegador liga a primeira. <strong>Como consertar:</strong> deixe o <code>default</code> só na língua principal.</p>
 </div>
 
@@ -379,7 +423,7 @@ $ vnu t-semsrc.html
 <div class="cenario">
 <strong><code>&lt;track&gt;</code> antes do <code>&lt;source&gt;</code></strong>
 <pre class="term" data-cwd="~/site">$ vnu t-ordem.html
-"file:/home/ana/site/t-ordem.html":10.3-10.42: error: Element “source” not allowed as child of element “video” in this context. (Suppressing further errors from this subtree.) Note: The “video” element has a transparent content model; its allowed content is inherited from its parent element.</pre>
+"file:/home/ana/site/t-ordem.html":10.3-10.48: error: Element “source” not allowed as child of element “video” in this context. (Suppressing further errors from this subtree.) Note: The “video” element has a transparent content model; its allowed content is inherited from its parent element.</pre>
 <p>O erro aponta o <code>&lt;source&gt;</code> da linha 10, que veio depois do <code>&lt;track&gt;</code> da linha 9. <strong>Como consertar:</strong> a ordem é sempre <code>&lt;source&gt;</code>, depois <code>&lt;track&gt;</code>, depois o texto reserva.</p>
 </div>
 
@@ -467,38 +511,41 @@ $ vnu t-semsrc.html
 <label><input type="radio" name="q6"> No máximo um</label>
 </div>
 
-<h3>Missão final: legenda para surdos</h3>
+<h3>Missão final: as legendas do vídeo inteiro</h3>
 
-<div class="tryhtml" data-goal="attr:track[kind]=captions,attr:track[srclang]=pt-BR,sel:track[label],sel:track[default],src:^WEBVTT,src:-->[^\n]*\n[^\n]*\[liquidificador ligado\]">
-<p class="try-task"><strong>Missão:</strong> transforme a legenda numa legenda para surdos. No <code>&lt;track&gt;</code>, troque o tipo para <code>captions</code>, mantenha a língua, o nome e o <code>default</code>. No arquivo <code>bolo-cc.vtt</code>, falta a terceira deixa: de <code>00:06.500</code> a <code>00:09.000</code>, com o texto <code>[liquidificador ligado]</code>. Lembre da linha em branco antes dela. Dê play e confira.</p>
-<pre class="script" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
-  &lt;track src="bolo-cc.vtt" kind="subtitles" srclang="pt-BR" label="Português (CC)" default&gt;
+<div class="tryhtml" data-goal="attr:track[src]=bolo-pt.vtt,attr:track[kind]=subtitles,attr:track[srclang]=pt-BR,attr:track[label]=Português,sel:track[default],src:^WEBVTT,src:^00:04\.000 --> 00:06\.000[^\n]*\n[^\n]*\S">
+<p class="try-task"><strong>Missão:</strong> duas coisas faltam. Na aba <code>index.html</code>, complete o <code>&lt;track&gt;</code> (arquivo <code>bolo-pt.vtt</code>, tipo <code>subtitles</code>, língua <code>pt-BR</code>, nome <code>Português</code>, ligado desde o começo). Na aba <code>bolo-pt.vtt</code>, falta a terceira deixa: de <code>00:04.000</code> a <code>00:06.000</code>, com o texto "Por fim, ela cobre o bolo com chocolate. Pronto!". Lembre da linha em branco antes dela. Dê play e confira os três passos.</p>
+<pre class="script" data-file="index.html">&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-pt.vtt"&gt;
 &lt;/video&gt;
 </pre>
-<pre class="script" data-file="bolo-cc.vtt">WEBVTT
+<pre class="script" data-file="bolo-pt.vtt">WEBVTT
 
-00:00.000 --&gt; 00:03.000
-&lt;v Ana&gt;Olá! Hoje é dia de bolo de cenoura.
+00:00.000 --&gt; 00:02.000
+Primeiro, a Ana mistura a cenoura,
+os ovos e o açúcar.
 
-00:03.000 --&gt; 00:06.500
-&lt;v Ana&gt;Primeiro, bata as cenouras
-com os ovos e o óleo.
+00:02.000 --&gt; 00:04.000
+Depois, o bolo assa no forno
+por 40 minutos.
 </pre>
-<pre class="solucao" data-file="index.html">&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;
-  &lt;track src="bolo-cc.vtt" kind="captions" srclang="pt-BR" label="Português (CC)" default&gt;
+<pre class="solucao" data-file="index.html">&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"&gt;
+  &lt;track src="bolo-pt.vtt" kind="subtitles" srclang="pt-BR" label="Português" default&gt;
 &lt;/video&gt;
 </pre>
-<pre class="solucao" data-file="bolo-cc.vtt">WEBVTT
+<pre class="solucao" data-file="bolo-pt.vtt">WEBVTT
 
-00:00.000 --&gt; 00:03.000
-&lt;v Ana&gt;Olá! Hoje é dia de bolo de cenoura.
+00:00.000 --&gt; 00:02.000
+Primeiro, a Ana mistura a cenoura,
+os ovos e o açúcar.
 
-00:03.000 --&gt; 00:06.500
-&lt;v Ana&gt;Primeiro, bata as cenouras
-com os ovos e o óleo.
+00:02.000 --&gt; 00:04.000
+Depois, o bolo assa no forno
+por 40 minutos.
 
-00:06.500 --&gt; 00:09.000
-[liquidificador ligado]
+00:04.000 --&gt; 00:06.000
+Por fim, ela cobre o bolo
+com chocolate. Pronto!
 </pre>
 </div>
 

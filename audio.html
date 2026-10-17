@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HTML Áudio — o elemento audio, controls e source | Guia HTML</title>
-<meta name="description" content="O elemento audio para quem nunca fez um site: tocar um MP3 com controls, oferecer vários formatos com source e type, os atributos preload, loop, muted e autoplay (e por que o navegador bloqueia o som automático), o texto reserva, a transcrição para acessibilidade, o que o navegador faz com &lt;audio /&gt; e controls=&quot;false&quot; e as mensagens reais do validador W3C.">
+<meta name="description" content="O elemento audio para quem nunca fez um site: tocar um MP3 com controls, oferecer vários formatos com source e type, os atributos preload, loop, muted e autoplay (e por que o navegador bloqueia o som automático), o texto reserva, o texto para quem não ouve, o que o navegador faz com &lt;audio /&gt; e controls=&quot;false&quot; e as mensagens reais do validador W3C.">
 <link rel="stylesheet" href="assets/style.css">
 <script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
@@ -18,7 +18,7 @@
 
 <h1>HTML <span class="hl">Áudio</span></h1>
 
-<p class="intro">A Ana começou a gravar um podcast: o <strong>Receitas da Ana</strong>, em que ela conta, em voz alta, como fazer cada doce da lojinha. Para o episódio tocar direto no site, sem mandar ninguém para outro aplicativo, o HTML tem o elemento <code>&lt;audio&gt;</code>. Com uma linha, o navegador desenha um tocador completo: botão de tocar, barra de tempo e volume. Nesta aula você vai colocar um áudio na página, oferecer mais de um formato, escolher como ele carrega e entender por que o navegador não deixa o som começar sozinho.</p>
+<p class="intro">Quem entra na lojinha da Ana ouve um "dim-dom": a campainha da porta. A Ana gravou esse som e quer que ele toque na página "Conheça a lojinha" (e, quem sabe, um dia, um podcast com as receitas). Para um som tocar direto no site, sem mandar ninguém para outro aplicativo, o HTML tem o elemento <code>&lt;audio&gt;</code>. Com uma linha, o navegador desenha um tocador completo: botão de tocar, barra de tempo e volume. Nesta aula você vai colocar um áudio na página, oferecer mais de um formato, escolher como ele carrega e entender por que o navegador não deixa o som começar sozinho.</p>
 
 <div class="note">
 <strong>Você vai aprender</strong>
@@ -27,7 +27,7 @@
   <li>Por que, sem <code>controls</code>, o áudio fica <strong>invisível</strong>.</li>
   <li>Oferecer vários formatos com <code>&lt;source&gt;</code> e <code>type</code>, e quais formatos usar.</li>
   <li>Os atributos <code>preload</code>, <code>loop</code>, <code>muted</code> e <code>autoplay</code> (e por que o som automático é bloqueado).</li>
-  <li>O texto reserva, o link para baixar e a <strong>transcrição</strong>, para quem não pode ouvir.</li>
+  <li>O texto reserva, o link para baixar e o <strong>texto</strong> (descrição ou transcrição) para quem não pode ouvir.</li>
   <li>Os erros comuns (<code>&lt;audio /&gt;</code>, <code>controls="false"</code>, <code>type="mp3"</code>) e as mensagens reais do validador.</li>
 </ul>
 </div>
@@ -42,7 +42,7 @@
 <div class="table-wrap">
 <table class="ref">
 <tr><th>No rádio</th><th>No HTML</th></tr>
-<tr><td>A fita ou o CD que vai tocar</td><td>O arquivo de som: <code>src="episodio1.mp3"</code></td></tr>
+<tr><td>A fita ou o CD que vai tocar</td><td>O arquivo de som: <code>src="campainha.mp3"</code></td></tr>
 <tr><td>Os botões de tocar, pausar e volume</td><td>O atributo <code>controls</code></td></tr>
 <tr><td>Ter a mesma música em fita <em>e</em> em CD, para servir em qualquer aparelho</td><td>Vários <code>&lt;source&gt;</code>, um por formato</td></tr>
 <tr><td>Um bilhete "este aparelho não toca CD"</td><td>O texto reserva, dentro do <code>&lt;audio&gt;</code></td></tr>
@@ -53,15 +53,15 @@
 
 <h2>1. O primeiro áudio</h2>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Episódio 1: o bolo de cenoura&lt;/h2&gt;
-&lt;audio src="assets/midia/episodio1.mp3" controls&gt;&lt;/audio&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;A campainha da lojinha&lt;/h2&gt;
+&lt;audio src="assets/midia/campainha.mp3" controls&gt;&lt;/audio&gt;
 </pre>
 
 <p>Clique no botão de tocar, no Resultado. O tocador muda um pouco de um navegador para outro (o do Chrome é diferente do Firefox e do Safari), mas sempre tem o essencial: tocar e pausar, o tempo, a barra para pular e o volume.</p>
 
 <dl class="anatomy">
   <dt>&lt;audio</dt><dd>Abre o elemento de áudio.</dd>
-  <dt>src="…/episodio1.mp3"</dt><dd>O <strong>endereço</strong> do arquivo de som (<em>source</em> = "fonte"), como o <code>src</code> de uma imagem. Os caminhos funcionam igual aos dos links (aula <a href="caminhos.html">Caminhos Relativos e Absolutos</a>).</dd>
+  <dt>src="…/campainha.mp3"</dt><dd>O <strong>endereço</strong> do arquivo de som (<em>source</em> = "fonte"), como o <code>src</code> de uma imagem. Os caminhos funcionam igual aos dos links (aula <a href="caminhos.html">Caminhos Relativos e Absolutos</a>).</dd>
   <dt>controls</dt><dd>"Controles": pede ao navegador que desenhe os botões. É um <strong>atributo booleano</strong>: basta escrevê-lo, sem <code>=</code>. Escrito, está ligado; ausente, está desligado.</dd>
   <dt>&gt;&lt;/audio&gt;</dt><dd>O <code>&lt;audio&gt;</code> <strong>sempre</strong> tem tag de fechamento, mesmo vazio. Ele não é como o <code>&lt;img&gt;</code>.</dd>
 </dl>
@@ -70,21 +70,21 @@
 <p>Uma imagem sem atributos ainda aparece. Um áudio sem <code>controls</code>, não: o navegador não desenha <strong>nada</strong>. O elemento está lá, o arquivo pode até ser baixado, mas não há botão nenhum para a pessoa tocar.</p>
 
 <pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Antes do áudio.&lt;/p&gt;
-&lt;audio src="assets/midia/episodio1.mp3"&gt;&lt;/audio&gt;
+&lt;audio src="assets/midia/campainha.mp3"&gt;&lt;/audio&gt;
 &lt;p&gt;Depois do áudio. Entre os dois parágrafos não apareceu nada.&lt;/p&gt;
 </pre>
 
 <p>Áudio sem <code>controls</code> só faz sentido quando um script vai tocá-lo, como o "plim" de um jogo. Para um podcast ou uma música, <strong>sempre</strong> use <code>controls</code>.</p>
 
 <div class="tryhtml" data-goal="sel:audio[controls]">
-<p class="try-task"><strong>Missão:</strong> o episódio está na página, mas ninguém consegue tocá-lo. Faça o tocador aparecer.</p>
-<pre class="script" data-file="index.html">&lt;h2&gt;Episódio 1: o bolo de cenoura&lt;/h2&gt;
-&lt;audio src="assets/midia/episodio1.mp3"&gt;&lt;/audio&gt;
-&lt;p&gt;Duração: uns poucos segundos de teste.&lt;/p&gt;
+<p class="try-task"><strong>Missão:</strong> o som da campainha está na página, mas ninguém consegue tocá-lo. Faça o tocador aparecer.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;A campainha da lojinha&lt;/h2&gt;
+&lt;audio src="assets/midia/campainha.mp3"&gt;&lt;/audio&gt;
+&lt;p&gt;É o dim-dom que toca quando alguém entra na lojinha.&lt;/p&gt;
 </pre>
-<pre class="solucao" data-file="index.html">&lt;h2&gt;Episódio 1: o bolo de cenoura&lt;/h2&gt;
-&lt;audio src="assets/midia/episodio1.mp3" controls&gt;&lt;/audio&gt;
-&lt;p&gt;Duração: uns poucos segundos de teste.&lt;/p&gt;
+<pre class="solucao" data-file="index.html">&lt;h2&gt;A campainha da lojinha&lt;/h2&gt;
+&lt;audio src="assets/midia/campainha.mp3" controls&gt;&lt;/audio&gt;
+&lt;p&gt;É o dim-dom que toca quando alguém entra na lojinha.&lt;/p&gt;
 </pre>
 </div>
 
@@ -94,9 +94,9 @@
 <p>Arquivos de som vêm em vários <strong>formatos</strong>, como as fotos vêm em JPG e PNG. Hoje todos os navegadores tocam MP3, mas existem formatos menores e mais novos que nem todo aparelho conhece. A solução do HTML: em vez de um <code>src</code> no <code>&lt;audio&gt;</code>, você coloca dentro dele uma lista de <code>&lt;source&gt;</code>, um para cada formato. O navegador lê a lista <strong>de cima para baixo</strong> e toca o <strong>primeiro</strong> que ele entende.</p>
 
 <pre class="file" data-file="index.html" data-resultado>&lt;audio controls&gt;
-  &lt;source src="assets/midia/episodio1.ogg" type="audio/ogg"&gt;
-  &lt;source src="assets/midia/episodio1.mp3" type="audio/mpeg"&gt;
-  &lt;p&gt;Seu navegador não toca áudio. &lt;a href="assets/midia/episodio1.mp3"&gt;Baixe o episódio em MP3&lt;/a&gt;.&lt;/p&gt;
+  &lt;source src="assets/midia/campainha.ogg" type="audio/ogg"&gt;
+  &lt;source src="assets/midia/campainha.mp3" type="audio/mpeg"&gt;
+  &lt;p&gt;Seu navegador não toca áudio. &lt;a href="assets/midia/campainha.mp3"&gt;Baixe o som em MP3&lt;/a&gt;.&lt;/p&gt;
 &lt;/audio&gt;
 </pre>
 
@@ -123,14 +123,14 @@
 <p>Por que o formato importa? Tamanho é tempo de espera e plano de dados de quem visita. Um minuto de fala em WAV ocupa uns 10 MB; o mesmo minuto em MP3, uns 1 MB; em Opus, menos ainda.</p>
 
 <div class="tryhtml" data-goal="nsel:audio source=2,attr:audio source[type]=audio/ogg,attr:audio source:last-of-type[type]=audio/mpeg,nsel:audio[src]=0">
-<p class="try-task"><strong>Missão:</strong> o episódio só tem o MP3, no <code>src</code> do <code>&lt;audio&gt;</code>. Tire o <code>src</code> do <code>&lt;audio&gt;</code> e coloque dentro dele <strong>dois</strong> <code>&lt;source&gt;</code>: primeiro o <code>assets/midia/episodio1.ogg</code> (tipo <code>audio/ogg</code>), depois o <code>assets/midia/episodio1.mp3</code> (tipo <code>audio/mpeg</code>).</p>
-<pre class="script" data-file="index.html">&lt;audio src="assets/midia/episodio1.mp3" controls&gt;
+<p class="try-task"><strong>Missão:</strong> a campainha só tem o MP3, no <code>src</code> do <code>&lt;audio&gt;</code>. Tire o <code>src</code> do <code>&lt;audio&gt;</code> e coloque dentro dele <strong>dois</strong> <code>&lt;source&gt;</code>: primeiro o <code>assets/midia/campainha.ogg</code> (tipo <code>audio/ogg</code>), depois o <code>assets/midia/campainha.mp3</code> (tipo <code>audio/mpeg</code>).</p>
+<pre class="script" data-file="index.html">&lt;audio src="assets/midia/campainha.mp3" controls&gt;
   &lt;p&gt;Seu navegador não toca áudio.&lt;/p&gt;
 &lt;/audio&gt;
 </pre>
 <pre class="solucao" data-file="index.html">&lt;audio controls&gt;
-  &lt;source src="assets/midia/episodio1.ogg" type="audio/ogg"&gt;
-  &lt;source src="assets/midia/episodio1.mp3" type="audio/mpeg"&gt;
+  &lt;source src="assets/midia/campainha.ogg" type="audio/ogg"&gt;
+  &lt;source src="assets/midia/campainha.mp3" type="audio/mpeg"&gt;
   &lt;p&gt;Seu navegador não toca áudio.&lt;/p&gt;
 &lt;/audio&gt;
 </pre>
@@ -146,7 +146,7 @@
 <div class="table-wrap">
 <table class="ref">
 <tr><th>Valor</th><th>Significa</th><th>Use quando</th></tr>
-<tr><td><code>preload="none"</code></td><td>Não baixe nada até a pessoa clicar.</td><td>A página tem vários episódios, e a maioria das pessoas não vai ouvir todos.</td></tr>
+<tr><td><code>preload="none"</code></td><td>Não baixe nada até a pessoa clicar.</td><td>A página tem muitos áudios, e a maioria das pessoas não vai ouvir todos.</td></tr>
 <tr><td><code>preload="metadata"</code></td><td>Baixe só as informações do arquivo (a duração, por exemplo).</td><td>Você quer mostrar a duração sem gastar internet. É o padrão do Chrome quando você não escreve nada.</td></tr>
 <tr><td><code>preload="auto"</code></td><td>Pode baixar tudo, se achar bom.</td><td>Quase todo mundo vai ouvir, e é bom tocar sem esperar.</td></tr>
 </table>
@@ -154,11 +154,9 @@
 
 <p>É só uma dica: o navegador pode ignorá-la, por exemplo num celular com economia de dados ligada.</p>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Episódios&lt;/h2&gt;
-&lt;p&gt;Episódio 1: o bolo de cenoura&lt;/p&gt;
-&lt;audio src="assets/midia/episodio1.mp3" controls preload="none"&gt;&lt;/audio&gt;
-&lt;p&gt;Episódio 2: o brigadeiro&lt;/p&gt;
-&lt;audio src="assets/midia/episodio1.mp3" controls preload="none"&gt;&lt;/audio&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Sons da lojinha&lt;/h2&gt;
+&lt;p&gt;A campainha da porta:&lt;/p&gt;
+&lt;audio src="assets/midia/campainha.mp3" controls preload="none"&gt;&lt;/audio&gt;
 </pre>
 
 <p>Com <code>preload="none"</code>, o tocador às vezes aparece sem a duração (com <code>0:00</code>) até alguém clicar: o navegador ainda não sabe quanto tempo o áudio tem.</p>
@@ -180,21 +178,26 @@
 
 <hr>
 
-<h2>4. Quem não pode ouvir: a transcrição</h2>
-<p>Uma pessoa surda não ouve o podcast. Alguém num lugar barulhento, ou sem fone, também não. E os buscadores, como o Google, não "escutam" o áudio: só entendem texto. A resposta para os três é a <strong>transcrição</strong>: o texto do que é falado, na própria página ou num link logo ao lado.</p>
+<h2>4. Quem não pode ouvir: o texto do áudio</h2>
+<p>Uma pessoa surda não ouve a campainha. Alguém num lugar barulhento, ou sem fone, também não. E os buscadores, como o Google, não "escutam" o áudio: só entendem texto. A resposta para os três é <strong>escrever</strong> o que o áudio tem, na própria página, perto do tocador:</p>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Episódio 1: o bolo de cenoura&lt;/h2&gt;
+<ul>
+  <li>Para um <strong>som</strong>, como a campainha, uma frase que o descreve basta.</li>
+  <li>Para uma <strong>fala</strong>, como um podcast ou uma entrevista, o certo é a <strong>transcrição</strong>: o texto de tudo o que é falado, com o nome de quem fala ("<strong>Ana:</strong> Olá! Hoje eu vou ensinar…"), na página ou num link logo ao lado.</li>
+</ul>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;A campainha da lojinha&lt;/h2&gt;
 &lt;audio controls preload="metadata"&gt;
-  &lt;source src="assets/midia/episodio1.ogg" type="audio/ogg"&gt;
-  &lt;source src="assets/midia/episodio1.mp3" type="audio/mpeg"&gt;
-  &lt;p&gt;Seu navegador não toca áudio. &lt;a href="assets/midia/episodio1.mp3"&gt;Baixe o episódio em MP3&lt;/a&gt;.&lt;/p&gt;
+  &lt;source src="assets/midia/campainha.ogg" type="audio/ogg"&gt;
+  &lt;source src="assets/midia/campainha.mp3" type="audio/mpeg"&gt;
+  &lt;p&gt;Seu navegador não toca áudio. &lt;a href="assets/midia/campainha.mp3"&gt;Baixe o som em MP3&lt;/a&gt;.&lt;/p&gt;
 &lt;/audio&gt;
-&lt;h3&gt;Transcrição&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;Ana:&lt;/strong&gt; Olá! Hoje eu vou ensinar o bolo de cenoura da lojinha.
-Você vai precisar de três cenouras, quatro ovos e uma xícara de óleo.&lt;/p&gt;
+&lt;h3&gt;Descrição do som&lt;/h3&gt;
+&lt;p&gt;Um "dim-dom" curto, de uns 2 segundos: a campainha que toca
+quando alguém abre a porta da lojinha.&lt;/p&gt;
 </pre>
 
-<p>O <code>&lt;audio&gt;</code> não tem <code>alt</code>, como a imagem. O texto alternativo de um áudio é a transcrição. Para vídeos, existe ainda a legenda sincronizada, que aparece na hora certa (aula <a href="legendas.html">Legendas</a>).</p>
+<p>O <code>&lt;audio&gt;</code> não tem <code>alt</code>, como a imagem. O texto alternativo de um áudio é esse texto na página. Para vídeos, existe ainda a legenda sincronizada, que aparece na hora certa (aula <a href="legendas.html">Legendas</a>).</p>
 
 <hr>
 
@@ -204,7 +207,7 @@ Você vai precisar de três cenouras, quatro ovos e uma xícara de óleo.&lt;/p&
 <tr><th>Forma</th><th>Quando usar</th></tr>
 <tr><td><code>&lt;audio src="x.mp3" controls&gt;&lt;/audio&gt;</code></td><td>Um arquivo só, em MP3. A forma mais simples, e funciona em todo navegador atual.</td></tr>
 <tr><td><code>&lt;audio controls&gt;</code> + vários <code>&lt;source type&gt;</code></td><td>Você tem o mesmo áudio em mais de um formato (um pequeno e moderno e o MP3 de reserva).</td></tr>
-<tr><td>Um link: <code>&lt;a href="x.mp3"&gt;Ouça o episódio&lt;/a&gt;</code></td><td>Você só quer que a pessoa baixe ou abra o arquivo (o navegador abre um tocador próprio). Veja <a href="download.html">Baixar Arquivos</a>.</td></tr>
+<tr><td>Um link: <code>&lt;a href="x.mp3"&gt;Ouça a campainha&lt;/a&gt;</code></td><td>Você só quer que a pessoa baixe ou abra o arquivo (o navegador abre um tocador próprio). Veja <a href="download.html">Baixar Arquivos</a>.</td></tr>
 <tr><td>Um tocador de outro site (Spotify, SoundCloud)</td><td>O podcast já está numa plataforma. Ela dá um código de incorporar com <code>&lt;iframe&gt;</code> (aula <a href="incorporar.html">Incorporar Vídeos e Mapas</a>).</td></tr>
 </table>
 </div>
@@ -221,19 +224,19 @@ Você vai precisar de três cenouras, quatro ovos e uma xícara de óleo.&lt;/p&
 &lt;html lang="pt-BR"&gt;
 &lt;head&gt;
 &lt;meta charset="utf-8"&gt;
-&lt;title&gt;Podcast da Ana&lt;/title&gt;
+&lt;title&gt;Lojinha da Ana&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
-&lt;audio src="episodio1.mp3" controls /&gt;
-&lt;p&gt;Neste episódio, a Ana ensina o bolo de cenoura.&lt;/p&gt;
+&lt;audio src="campainha.mp3" controls /&gt;
+&lt;p&gt;É este o som que toca quando você entra na lojinha.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </pre>
 <p>O tocador aparece, mas o parágrafo de baixo <strong>sumiu</strong>. O navegador ignora a barra: para ele, <code>&lt;audio … /&gt;</code> é só a tag de <strong>abertura</strong>. Como o <code>&lt;/audio&gt;</code> nunca chega, tudo o que vem depois vira conteúdo do áudio, ou seja, texto reserva escondido. Veja no editor:</p>
 <div class="tryhtml">
 <p class="try-task"><strong>Experimente:</strong> o parágrafo não aparece no resultado. Troque o <code>/&gt;</code> por <code>&gt;&lt;/audio&gt;</code> e ele volta.</p>
-<pre class="script" data-file="index.html">&lt;audio src="assets/midia/episodio1.mp3" controls /&gt;
-&lt;p&gt;Neste episódio, a Ana ensina o bolo de cenoura.&lt;/p&gt;
+<pre class="script" data-file="index.html">&lt;audio src="assets/midia/campainha.mp3" controls /&gt;
+&lt;p&gt;É este o som que toca quando você entra na lojinha.&lt;/p&gt;
 </pre>
 </div>
 <pre class="term" data-cwd="~/site">$ vnu a-fecha.html
@@ -246,7 +249,7 @@ Você vai precisar de três cenouras, quatro ovos e uma xícara de óleo.&lt;/p&
   <dt>End tag for “body” seen, but there were unclosed elements</dt><dd>"Vi o fim do <code>body</code>, mas havia elementos não fechados" (a mensagem real tem dois espaços antes de “body”).</dd>
   <dt>Unclosed element “audio”</dt><dd>"Elemento <code>audio</code> não fechado", apontando a linha 8, onde está o culpado.</dd>
 </dl>
-<p><strong>Como consertar:</strong> <code>&lt;audio src="episodio1.mp3" controls&gt;&lt;/audio&gt;</code>.</p>
+<p><strong>Como consertar:</strong> <code>&lt;audio src="campainha.mp3" controls&gt;&lt;/audio&gt;</code>.</p>
 </div>
 
 <div class="cenario">
@@ -266,8 +269,8 @@ Você vai precisar de três cenouras, quatro ovos e uma xícara de óleo.&lt;/p&
 
 <div class="cenario">
 <strong><code>src</code> no <code>&lt;audio&gt;</code> e <code>&lt;source&gt;</code> dentro dele</strong>
-<pre class="file" data-file="a-srcsource.html">&lt;audio src="episodio1.mp3" controls&gt;
-  &lt;source src="episodio1.ogg" type="audio/ogg"&gt;
+<pre class="file" data-file="a-srcsource.html">&lt;audio src="campainha.mp3" controls&gt;
+  &lt;source src="campainha.ogg" type="audio/ogg"&gt;
 &lt;/audio&gt;
 </pre>
 <pre class="term" data-cwd="~/site">$ vnu a-srcsource.html
@@ -286,7 +289,13 @@ $ vnu a-preload.html
 
 <div class="cenario">
 <strong>O arquivo não existe (ou o caminho está errado)</strong>
-<p>O validador não abre o arquivo de som: para ele, <code>src="episodo1.mp3"</code> (faltou um "i") está perfeito. O navegador desenha o tocador, mas ele fica sem duração e o play não faz nada (em alguns navegadores, os botões ficam acinzentados). No <a href="ferramentas-dev.html">F12</a>, a aba de rede mostra o arquivo em vermelho, com o código 404 ("não encontrado"). <strong>Como consertar:</strong> confira o nome e a pasta do arquivo, com maiúsculas e minúsculas (<code>Episodio1.MP3</code> e <code>episodio1.mp3</code> são arquivos diferentes no servidor).</p>
+<p>O validador não abre o arquivo de som: para ele, <code>src="campanha.mp3"</code> (faltou um "i") está perfeito. O navegador desenha o tocador, mas ele fica sem duração e o play não faz nada (em alguns navegadores, os botões ficam acinzentados). No <a href="ferramentas-dev.html">F12</a>, a aba de rede mostra o arquivo em vermelho, com o código 404 ("não encontrado"). O editor do guia avisa no console, embaixo do resultado:</p>
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> veja o aviso no console e o tocador que não toca. Depois conserte o nome do arquivo para <code>campainha.mp3</code>.</p>
+<pre class="script" data-file="index.html">&lt;audio src="assets/midia/campanha.mp3" controls&gt;&lt;/audio&gt;
+</pre>
+</div>
+<p><strong>Como consertar:</strong> confira o nome e a pasta do arquivo, com maiúsculas e minúsculas (<code>Campainha.MP3</code> e <code>campainha.mp3</code> são arquivos diferentes no servidor).</p>
 </div>
 
 <hr>
@@ -315,23 +324,23 @@ $ vnu a-preload.html
 <div class="exercise">
 <h3>1. Mostrar os botões</h3>
 <p>Complete o atributo que faz o tocador aparecer:</p>
-<div class="ex-code">&lt;audio src="episodio1.mp3" <input data-answer="controls" aria-label="atributo">&gt;&lt;/audio&gt;</div>
+<div class="ex-code">&lt;audio src="campainha.mp3" <input data-answer="controls" aria-label="atributo">&gt;&lt;/audio&gt;</div>
 </div>
 
 <div class="exercise">
 <h3>2. O tipo do MP3</h3>
 <p>Complete o tipo MIME oficial do MP3:</p>
-<div class="ex-code">&lt;source src="episodio1.mp3" type="<input data-answer="audio/mpeg" aria-label="tipo">"&gt;</div>
+<div class="ex-code">&lt;source src="campainha.mp3" type="<input data-answer="audio/mpeg" aria-label="tipo">"&gt;</div>
 </div>
 
 <div class="exercise">
 <h3>3. Não baixar antes</h3>
 <p>Complete para o navegador não baixar nada até a pessoa clicar:</p>
-<div class="ex-code">&lt;audio src="episodio1.mp3" controls preload="<input data-answer="none" aria-label="valor">"&gt;&lt;/audio&gt;</div>
+<div class="ex-code">&lt;audio src="campainha.mp3" controls preload="<input data-answer="none" aria-label="valor">"&gt;&lt;/audio&gt;</div>
 </div>
 
 <div class="mc" data-answer="2">
-<p class="mc-q">4. O que aparece na página com <code>&lt;audio src="episodio1.mp3"&gt;&lt;/audio&gt;</code>?</p>
+<p class="mc-q">4. O que aparece na página com <code>&lt;audio src="campainha.mp3"&gt;&lt;/audio&gt;</code>?</p>
 <label><input type="radio" name="q4"> Um tocador completo</label>
 <label><input type="radio" name="q4"> Nada: sem <code>controls</code>, o áudio não é desenhado</label>
 <label><input type="radio" name="q4"> Só um botão de play</label>
@@ -347,29 +356,29 @@ $ vnu a-preload.html
 </div>
 
 <div class="mc" data-answer="1">
-<p class="mc-q">6. A Ana escreveu <code>&lt;audio src="ep.mp3" controls="false"&gt;&lt;/audio&gt;</code>. O que acontece?</p>
+<p class="mc-q">6. A Ana escreveu <code>&lt;audio src="campainha.mp3" controls="false"&gt;&lt;/audio&gt;</code>. O que acontece?</p>
 <label><input type="radio" name="q6"> Os controles aparecem: num atributo booleano, basta estar escrito</label>
 <label><input type="radio" name="q6"> Os controles somem</label>
 <label><input type="radio" name="q6"> O áudio toca sozinho</label>
 <label><input type="radio" name="q6"> A página não abre</label>
 </div>
 
-<h3>Missão final: a página do episódio</h3>
+<h3>Missão final: a página da campainha</h3>
 
-<div class="tryhtml" data-goal="sel:audio[controls],attr:audio[preload]=none,nsel:audio source=2,attr:audio source[type]=audio/ogg,attr:audio source:last-of-type[type]=audio/mpeg,sel:audio a[href],texto:h3=Transcrição,nsel:audio[autoplay]=0">
-<p class="try-task"><strong>Missão:</strong> monte a página do episódio 1. O áudio deve ter <code>controls</code>, <code>preload="none"</code> e <strong>não</strong> pode ter <code>autoplay</code>. Dentro dele, os dois <code>&lt;source&gt;</code> (Ogg primeiro, MP3 depois, cada um com o seu <code>type</code>) e, por último, um texto reserva com um link para baixar o MP3. Embaixo do áudio, um <code>&lt;h3&gt;</code> "Transcrição" com o texto do episódio.</p>
-<pre class="script" data-file="index.html">&lt;h2&gt;Episódio 1: o bolo de cenoura&lt;/h2&gt;
-&lt;audio src="assets/midia/episodio1.mp3" autoplay&gt;&lt;/audio&gt;
-&lt;p&gt;Olá! Hoje eu vou ensinar o bolo de cenoura da lojinha.&lt;/p&gt;
+<div class="tryhtml" data-goal="sel:audio[controls],attr:audio[preload]=none,nsel:audio source=2,attr:audio source[type]=audio/ogg,attr:audio source:last-of-type[type]=audio/mpeg,sel:audio a[href],texto:h3=Descrição do som,nsel:audio[autoplay]=0">
+<p class="try-task"><strong>Missão:</strong> monte a página com o som da campainha. O áudio deve ter <code>controls</code>, <code>preload="none"</code> e <strong>não</strong> pode ter <code>autoplay</code>. Dentro dele, os dois <code>&lt;source&gt;</code> (Ogg primeiro, MP3 depois, cada um com o seu <code>type</code>) e, por último, um texto reserva com um link para baixar o MP3. Embaixo do áudio, um <code>&lt;h3&gt;</code> "Descrição do som" com uma frase que descreve o som.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;A campainha da lojinha&lt;/h2&gt;
+&lt;audio src="assets/midia/campainha.mp3" autoplay&gt;&lt;/audio&gt;
+&lt;p&gt;Um "dim-dom" curto: a campainha da porta da lojinha.&lt;/p&gt;
 </pre>
-<pre class="solucao" data-file="index.html">&lt;h2&gt;Episódio 1: o bolo de cenoura&lt;/h2&gt;
+<pre class="solucao" data-file="index.html">&lt;h2&gt;A campainha da lojinha&lt;/h2&gt;
 &lt;audio controls preload="none"&gt;
-  &lt;source src="assets/midia/episodio1.ogg" type="audio/ogg"&gt;
-  &lt;source src="assets/midia/episodio1.mp3" type="audio/mpeg"&gt;
-  &lt;p&gt;Seu navegador não toca áudio. &lt;a href="assets/midia/episodio1.mp3"&gt;Baixe o episódio em MP3&lt;/a&gt;.&lt;/p&gt;
+  &lt;source src="assets/midia/campainha.ogg" type="audio/ogg"&gt;
+  &lt;source src="assets/midia/campainha.mp3" type="audio/mpeg"&gt;
+  &lt;p&gt;Seu navegador não toca áudio. &lt;a href="assets/midia/campainha.mp3"&gt;Baixe o som em MP3&lt;/a&gt;.&lt;/p&gt;
 &lt;/audio&gt;
-&lt;h3&gt;Transcrição&lt;/h3&gt;
-&lt;p&gt;Olá! Hoje eu vou ensinar o bolo de cenoura da lojinha.&lt;/p&gt;
+&lt;h3&gt;Descrição do som&lt;/h3&gt;
+&lt;p&gt;Um "dim-dom" curto: a campainha da porta da lojinha.&lt;/p&gt;
 </pre>
 </div>
 
@@ -382,7 +391,7 @@ $ vnu a-preload.html
   <li>Para vários formatos, tire o <code>src</code> do <code>&lt;audio&gt;</code> e use <code>&lt;source src type&gt;</code>: o navegador toca o primeiro que entende. MP3 (<code>audio/mpeg</code>) toca em todo lugar.</li>
   <li><code>preload</code> (<code>none</code>, <code>metadata</code>, <code>auto</code>) é uma dica de quanto baixar antes do play.</li>
   <li>O navegador bloqueia som automático: não use <code>autoplay</code> em áudio.</li>
-  <li>O texto reserva (com link para baixar) vem depois dos <code>&lt;source&gt;</code>. Para quem não ouve, ofereça a <strong>transcrição</strong>.</li>
+  <li>O texto reserva (com link para baixar) vem depois dos <code>&lt;source&gt;</code>. Para quem não ouve, escreva o áudio em texto: a descrição de um som ou a <strong>transcrição</strong> de uma fala.</li>
 </ul>
 
 <div class="pager"></div>

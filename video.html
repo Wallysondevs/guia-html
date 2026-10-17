@@ -18,7 +18,7 @@
 
 <h1>HTML <span class="hl">Vídeo</span></h1>
 
-<p class="intro">Depois do podcast, a Ana quis mostrar as mãos na massa: gravou um vídeo curto do bolo de cenoura saindo do forno. Para ele tocar no site, existe o <code>&lt;video&gt;</code>, o irmão do <code>&lt;audio&gt;</code> que você viu na aula anterior. Quase tudo é igual (<code>src</code>, <code>controls</code>, <code>&lt;source&gt;</code>), mas o vídeo ocupa espaço na tela, e isso traz novidades: o tamanho, a imagem de capa e o vídeo que toca sozinho no fundo da página.</p>
+<p class="intro">Depois da campainha, a Ana quis mostrar as mãos na massa: gravou um vídeo curtinho, de 6 segundos e sem som, do bolo de cenoura sendo feito: a massa, o forno e a cobertura de chocolate. Para ele tocar no site, existe o <code>&lt;video&gt;</code>, o irmão do <code>&lt;audio&gt;</code> que você viu na aula anterior. Quase tudo é igual (<code>src</code>, <code>controls</code>, <code>&lt;source&gt;</code>), mas o vídeo ocupa espaço na tela, e isso traz novidades: o tamanho, a imagem de capa e o vídeo que toca sozinho no fundo da página.</p>
 
 <div class="note">
 <strong>Você vai aprender</strong>
@@ -43,13 +43,13 @@
 
 <h2>1. O primeiro vídeo</h2>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Bolo de cenoura saindo do forno&lt;/h2&gt;
-&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;&lt;/video&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Bolo de cenoura, do começo ao fim&lt;/h2&gt;
+&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"&gt;&lt;/video&gt;
 </pre>
 
 <dl class="anatomy">
   <dt>&lt;video</dt><dd>Abre o elemento de vídeo. Como o <code>&lt;audio&gt;</code>, ele <strong>sempre</strong> tem tag de fechamento.</dd>
-  <dt>src="…/bolo.mp4"</dt><dd>O endereço do arquivo de vídeo.</dd>
+  <dt>src="…/video-bolo.mp4"</dt><dd>O endereço do arquivo de vídeo.</dd>
   <dt>controls</dt><dd>Desenha os botões: tocar, tempo, volume e tela cheia. Atributo booleano: basta escrever.</dd>
   <dt>width="640"</dt><dd>A <strong>largura</strong>, em pixels (os pontinhos da tela). Só o número, sem <code>px</code>.</dd>
   <dt>height="360"</dt><dd>A <strong>altura</strong>, também em pixels. 640 × 360 é a proporção 16:9, a das TVs e do celular deitado.</dd>
@@ -59,7 +59,7 @@
 <h3>Uma diferença do áudio: o vídeo aparece mesmo sem <code>controls</code></h3>
 <p>Um <code>&lt;audio&gt;</code> sem <code>controls</code> some. Um <code>&lt;video&gt;</code> sem <code>controls</code> continua ocupando o seu retângulo e mostra a primeira imagem do vídeo, mas sem nenhum botão. A pessoa vê o bolo parado e não tem como dar play:</p>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/bolo.mp4" width="320" height="180"&gt;&lt;/video&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/video-bolo.mp4" width="320" height="180"&gt;&lt;/video&gt;
 &lt;p&gt;O vídeo acima não tem controls: tente tocá-lo.&lt;/p&gt;
 </pre>
 
@@ -86,7 +86,7 @@
 <p>Uma tela de celular tem uns 360 a 430 pixels de largura. Para o vídeo encolher em telas pequenas, mantendo a proporção, o jeito é um pouco de CSS: <code>style="max-width: 100%; height: auto;"</code> ("no máximo a largura disponível; altura automática"). Mantenha o <code>width</code> e o <code>height</code> no HTML: com eles, o navegador sabe a proporção antes de o vídeo carregar. O CSS em si é assunto do futuro Guia CSS; o atributo <code>style</code> é explicado em <a href="atributo-style.html">O Atributo style</a>.</p>
 </div>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"
+<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"
        style="max-width: 100%; height: auto;"&gt;&lt;/video&gt;
 &lt;p&gt;Diminua a janela: o vídeo encolhe junto.&lt;/p&gt;
 </pre>
@@ -96,12 +96,12 @@
 <h2>3. A capa: <code>poster</code></h2>
 <p>Antes do play, o vídeo mostra a primeira imagem do arquivo, que muitas vezes é uma tela preta ou um quadro sem graça. O <code>poster</code> ("cartaz") troca isso por uma imagem escolhida por você, como a capa de um filme:</p>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"
-       poster="assets/midia/bolo-capa.jpg"&gt;&lt;/video&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"
+       poster="assets/midia/video-bolo-poster.jpg"&gt;&lt;/video&gt;
 </pre>
 
 <dl class="anatomy">
-  <dt>poster="…/bolo-capa.jpg"</dt><dd>O endereço de uma <strong>imagem</strong> (JPG, PNG, WebP…). Ela aparece até a pessoa dar play e some quando o vídeo começa.</dd>
+  <dt>poster="…/video-bolo-poster.jpg"</dt><dd>O endereço de uma <strong>imagem</strong> (JPG, PNG, WebP…). Ela aparece até a pessoa dar play e some quando o vídeo começa.</dd>
 </dl>
 
 <ul>
@@ -111,12 +111,12 @@
 </ul>
 
 <div class="tryhtml" data-goal="sel:video[controls],attr:video[width]=640,attr:video[height]=360,sel:video[poster]">
-<p class="try-task"><strong>Missão:</strong> o vídeo não tem botões, nem tamanho, nem capa. Acrescente <code>controls</code>, o tamanho <code>640</code> × <code>360</code> e a capa <code>assets/midia/bolo-capa.jpg</code> no <code>poster</code>.</p>
-<pre class="script" data-file="index.html">&lt;h2&gt;Bolo de cenoura saindo do forno&lt;/h2&gt;
-&lt;video src="assets/midia/bolo.mp4"&gt;&lt;/video&gt;
+<p class="try-task"><strong>Missão:</strong> o vídeo não tem botões, nem tamanho, nem capa. Acrescente <code>controls</code>, o tamanho <code>640</code> × <code>360</code> e a capa <code>assets/midia/video-bolo-poster.jpg</code> no <code>poster</code>.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Bolo de cenoura, do começo ao fim&lt;/h2&gt;
+&lt;video src="assets/midia/video-bolo.mp4"&gt;&lt;/video&gt;
 </pre>
-<pre class="solucao" data-file="index.html">&lt;h2&gt;Bolo de cenoura saindo do forno&lt;/h2&gt;
-&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360" poster="assets/midia/bolo-capa.jpg"&gt;&lt;/video&gt;
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Bolo de cenoura, do começo ao fim&lt;/h2&gt;
+&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360" poster="assets/midia/video-bolo-poster.jpg"&gt;&lt;/video&gt;
 </pre>
 </div>
 
@@ -125,10 +125,10 @@
 <h2>4. Vários formatos com <code>&lt;source&gt;</code></h2>
 <p>Funciona exatamente como no áudio: tire o <code>src</code> do <code>&lt;video&gt;</code>, coloque dentro dele um <code>&lt;source&gt;</code> por formato, e o navegador usa o <strong>primeiro</strong> que entende. Depois dos <code>&lt;source&gt;</code>, o texto reserva:</p>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;video controls width="640" height="360" poster="assets/midia/bolo-capa.jpg"&gt;
-  &lt;source src="assets/midia/bolo.webm" type="video/webm"&gt;
-  &lt;source src="assets/midia/bolo.mp4" type="video/mp4"&gt;
-  &lt;p&gt;Seu navegador não mostra vídeos. &lt;a href="assets/midia/bolo.mp4"&gt;Baixe o vídeo em MP4&lt;/a&gt;.&lt;/p&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;video controls width="640" height="360" poster="assets/midia/video-bolo-poster.jpg"&gt;
+  &lt;source src="assets/midia/video-bolo.webm" type="video/webm"&gt;
+  &lt;source src="assets/midia/video-bolo.mp4" type="video/mp4"&gt;
+  &lt;p&gt;Seu navegador não mostra vídeos. &lt;a href="assets/midia/video-bolo.mp4"&gt;Baixe o vídeo em MP4&lt;/a&gt;.&lt;/p&gt;
 &lt;/video&gt;
 </pre>
 
@@ -146,9 +146,9 @@
 <hr>
 
 <h2>5. O vídeo que toca sozinho: <code>autoplay</code> com <code>muted</code></h2>
-<p>Muitos sites têm, no topo, um vídeo curto rodando sem parar, sem som, como uma foto que se mexe. A Ana quer isso na página inicial: o bolo saindo do forno, em repetição. Quatro atributos booleanos fazem o serviço:</p>
+<p>Muitos sites têm, no topo, um vídeo curto rodando sem parar, sem som, como uma foto que se mexe. A Ana quer isso na página inicial: o vídeo do bolo, em repetição. Quatro atributos booleanos fazem o serviço:</p>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/bolo.mp4" width="640" height="360"
+<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/video-bolo.mp4" width="640" height="360"
        autoplay muted loop playsinline&gt;&lt;/video&gt;
 </pre>
 
@@ -165,11 +165,11 @@
 <div class="tryhtml" data-goal="sel:video[autoplay][muted],sel:video[loop],sel:video[playsinline]">
 <p class="try-task"><strong>Missão:</strong> o vídeo de fundo da página inicial tem <code>autoplay</code>, mas não toca: falta a chave. Acrescente o que o faz tocar sozinho, o que o faz repetir e o que o deixa tocar dentro da página no iPhone.</p>
 <pre class="script" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
-&lt;video src="assets/midia/bolo.mp4" width="640" height="360" autoplay&gt;&lt;/video&gt;
+&lt;video src="assets/midia/video-bolo.mp4" width="640" height="360" autoplay&gt;&lt;/video&gt;
 &lt;p&gt;Bolos, brigadeiros e tortas feitos todo dia.&lt;/p&gt;
 </pre>
 <pre class="solucao" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
-&lt;video src="assets/midia/bolo.mp4" width="640" height="360" autoplay muted loop playsinline&gt;&lt;/video&gt;
+&lt;video src="assets/midia/video-bolo.mp4" width="640" height="360" autoplay muted loop playsinline&gt;&lt;/video&gt;
 &lt;p&gt;Bolos, brigadeiros e tortas feitos todo dia.&lt;/p&gt;
 </pre>
 </div>
@@ -184,7 +184,7 @@
 <h2>6. Acessibilidade do vídeo</h2>
 <ul>
   <li><strong>Legendas:</strong> quem não ouve precisa do texto do que é falado, na hora certa. O HTML tem o elemento <code>&lt;track&gt;</code> para isso, assunto da próxima aula: <a href="legendas.html">Legendas</a>.</li>
-  <li><strong>Transcrição ou descrição:</strong> quem não enxerga precisa saber o que <strong>aparece</strong> no vídeo. Um texto ao lado ("A Ana tira o bolo do forno e mostra a casquinha dourada") resolve, e ajuda os buscadores.</li>
+  <li><strong>Transcrição ou descrição:</strong> quem não enxerga precisa saber o que <strong>aparece</strong> no vídeo. Um texto ao lado ("A Ana mistura a massa, o bolo assa no forno e ganha uma cobertura de chocolate") resolve, e ajuda os buscadores.</li>
   <li><strong>Sem <code>autoplay</code> com som</strong> (o navegador já bloqueia) e com um jeito de pausar o que se mexe sozinho.</li>
   <li><strong><code>controls</code></strong>: os controles do navegador funcionam com o teclado (Tab e espaço), o que nem sempre acontece com tocadores feitos à mão.</li>
 </ul>
@@ -215,7 +215,7 @@
 &lt;title&gt;Vídeos da Ana&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
-&lt;video src="bolo.mp4" controls width="640px" height="360px"&gt;&lt;/video&gt;
+&lt;video src="video-bolo.mp4" controls width="640px" height="360px"&gt;&lt;/video&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </pre>
@@ -224,8 +224,8 @@
 <strong><code>width="640px"</code>: unidade no atributo</strong>
 <p>No CSS se escreve <code>640px</code>; no atributo, só o número. O navegador é tolerante: lê o <code>640</code> e ignora o resto, então a página parece certa. Mas o validador reclama, uma vez para cada atributo:</p>
 <pre class="term" data-cwd="~/site">$ vnu v-px.html
-"file:/home/ana/site/v-px.html":8.1-8.60: error: Bad value “640px” for attribute “width” on element “video”: Expected a digit but saw “p” instead.
-"file:/home/ana/site/v-px.html":8.1-8.60: error: Bad value “360px” for attribute “height” on element “video”: Expected a digit but saw “p” instead.</pre>
+"file:/home/ana/site/v-px.html":8.1-8.66: error: Bad value “640px” for attribute “width” on element “video”: Expected a digit but saw “p” instead.
+"file:/home/ana/site/v-px.html":8.1-8.66: error: Bad value “360px” for attribute “height” on element “video”: Expected a digit but saw “p” instead.</pre>
 <p>"Valor ruim <code>640px</code> para o atributo <code>width</code>: esperava um algarismo, mas viu um <code>p</code>". E <code>width="100%"</code> dá <code>Expected a digit but saw “%” instead</code>; o Chrome até aceita a porcentagem, por compatibilidade com sites antigos, mas o HTML de hoje não. <strong>Como consertar:</strong> <code>width="640" height="360"</code>; para tamanhos flexíveis, use CSS (<code>max-width: 100%</code>).</p>
 </div>
 
@@ -233,7 +233,7 @@
 <strong><code>alt</code> no vídeo</strong>
 <p>Quem aprendeu que toda imagem tem <code>alt</code> tenta fazer o mesmo no vídeo:</p>
 <pre class="term" data-cwd="~/site">$ vnu v-alt.html
-"file:/home/ana/site/v-alt.html":8.1-8.67: error: Attribute “alt” not allowed on element “video” at this point.</pre>
+"file:/home/ana/site/v-alt.html":8.1-8.73: error: Attribute “alt” not allowed on element “video” at this point.</pre>
 <p>"O atributo <code>alt</code> não é permitido no elemento <code>video</code>". O navegador simplesmente ignora o texto: ninguém o vê nem o ouve. <strong>Como consertar:</strong> a alternativa de um vídeo é uma <strong>legenda</strong> (<a href="legendas.html">Legendas</a>) e uma <strong>descrição em texto</strong> perto dele, na página.</p>
 </div>
 
@@ -241,27 +241,27 @@
 <strong><code>muted="false"</code> deixa o vídeo mudo</strong>
 <p>Como todo atributo booleano, o <code>muted</code> vale por estar escrito. <code>muted="false"</code> <strong>liga</strong> o mudo:</p>
 <pre class="term" data-cwd="~/site">$ vnu v-muted.html
-"file:/home/ana/site/v-muted.html":8.1-8.50: error: Bad value “false” for attribute “muted” on element “video”.</pre>
+"file:/home/ana/site/v-muted.html":8.1-8.56: error: Bad value “false” for attribute “muted” on element “video”.</pre>
 <p><strong>Como consertar:</strong> para ter som, <strong>apague</strong> o <code>muted</code> (e lembre que, aí, o <code>autoplay</code> vai ser bloqueado).</p>
 </div>
 
 <div class="cenario">
 <strong><code>poster=""</code> vazio e <code>type="mp4"</code></strong>
 <pre class="term" data-cwd="~/site">$ vnu v-poster.html
-"file:/home/ana/site/v-poster.html":8.1-8.41: error: Bad value “” for attribute “poster” on element “video”: Must be non-empty.
+"file:/home/ana/site/v-poster.html":8.1-8.47: error: Bad value “” for attribute “poster” on element “video”: Must be non-empty.
 $ vnu v-tipo.html
-"file:/home/ana/site/v-tipo.html":9.3-9.36: error: Bad value “mp4” for attribute “type” on element “source”: Subtype missing.</pre>
+"file:/home/ana/site/v-tipo.html":9.3-9.42: error: Bad value “mp4” for attribute “type” on element “source”: Subtype missing.</pre>
 <p>O <code>poster</code>, se existir, precisa de um endereço ("não pode ser vazio"); sem capa, apague o atributo. O <code>type</code> é um tipo MIME com duas partes: <code>video/mp4</code>. Com <code>type="mp4"</code>, o navegador não reconhece o tipo e <strong>pula</strong> essa fonte.</p>
 </div>
 
 <div class="cenario">
 <strong>Uma imagem como texto reserva, sem <code>alt</code></strong>
-<pre class="file" data-file="v-img.html">&lt;video src="bolo.mp4" controls&gt;
-  &lt;img src="bolo-capa.jpg"&gt;
+<pre class="file" data-file="v-img.html">&lt;video src="video-bolo.mp4" controls&gt;
+  &lt;img src="video-bolo-poster.jpg"&gt;
 &lt;/video&gt;
 </pre>
 <pre class="term" data-cwd="~/site">$ vnu v-img.html
-"file:/home/ana/site/v-img.html":9.3-9.27: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
+"file:/home/ana/site/v-img.html":9.3-9.35: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
 <p>Colocar um <code>&lt;img&gt;</code> dentro do vídeo é permitido (ele é texto reserva), mas, como qualquer imagem, ele precisa de <code>alt</code> (aula <a href="imagens-alt.html">Texto Alternativo</a>). E repare: nos navegadores de hoje, essa imagem <strong>nunca</strong> aparece. Para mostrar uma capa, o certo é o <code>poster</code>.</p>
 </div>
 
@@ -297,19 +297,19 @@ $ vnu v-tipo.html
 <div class="exercise">
 <h3>1. A capa</h3>
 <p>Complete o atributo da imagem de capa:</p>
-<div class="ex-code">&lt;video src="bolo.mp4" controls <input data-answer="poster" aria-label="atributo">="bolo-capa.jpg"&gt;&lt;/video&gt;</div>
+<div class="ex-code">&lt;video src="video-bolo.mp4" controls <input data-answer="poster" aria-label="atributo">="video-bolo-poster.jpg"&gt;&lt;/video&gt;</div>
 </div>
 
 <div class="exercise">
 <h3>2. O tamanho</h3>
 <p>Complete a largura de 640 pixels do jeito que o validador aceita:</p>
-<div class="ex-code">&lt;video src="bolo.mp4" controls width="<input data-answer="640" aria-label="largura">" height="360"&gt;&lt;/video&gt;</div>
+<div class="ex-code">&lt;video src="video-bolo.mp4" controls width="<input data-answer="640" aria-label="largura">" height="360"&gt;&lt;/video&gt;</div>
 </div>
 
 <div class="exercise">
 <h3>3. A chave do autoplay</h3>
 <p>Complete o atributo sem o qual o vídeo não toca sozinho:</p>
-<div class="ex-code">&lt;video src="bolo.mp4" autoplay <input data-answer="muted" aria-label="atributo"> loop playsinline&gt;&lt;/video&gt;</div>
+<div class="ex-code">&lt;video src="video-bolo.mp4" autoplay <input data-answer="muted" aria-label="atributo"> loop playsinline&gt;&lt;/video&gt;</div>
 </div>
 
 <div class="mc" data-answer="3">
@@ -339,18 +339,18 @@ $ vnu v-tipo.html
 <h3>Missão final: o vídeo da receita</h3>
 
 <div class="tryhtml" data-goal="sel:video[controls],attr:video[width]=640,attr:video[height]=360,sel:video[poster],attr:video[preload]=none,nsel:video source=2,attr:video source[type]=video/webm,attr:video source:last-of-type[type]=video/mp4,sel:video a[href],nsel:video[src]=0,nsel:video[autoplay]=0">
-<p class="try-task"><strong>Missão:</strong> monte o vídeo da página da receita. Ele deve ter <code>controls</code>, tamanho <code>640</code> × <code>360</code>, a capa <code>assets/midia/bolo-capa.jpg</code> e <code>preload="none"</code>, sem <code>autoplay</code>. Tire o <code>src</code> do <code>&lt;video&gt;</code> e use dois <code>&lt;source&gt;</code>: primeiro <code>assets/midia/bolo.webm</code> (<code>video/webm</code>), depois <code>assets/midia/bolo.mp4</code> (<code>video/mp4</code>). Por último, um texto reserva com um link para baixar o MP4.</p>
+<p class="try-task"><strong>Missão:</strong> monte o vídeo da página da receita. Ele deve ter <code>controls</code>, tamanho <code>640</code> × <code>360</code>, a capa <code>assets/midia/video-bolo-poster.jpg</code> e <code>preload="none"</code>, sem <code>autoplay</code>. Tire o <code>src</code> do <code>&lt;video&gt;</code> e use dois <code>&lt;source&gt;</code>: primeiro <code>assets/midia/video-bolo.webm</code> (<code>video/webm</code>), depois <code>assets/midia/video-bolo.mp4</code> (<code>video/mp4</code>). Por último, um texto reserva com um link para baixar o MP4.</p>
 <pre class="script" data-file="index.html">&lt;h2&gt;Bolo de cenoura: o vídeo&lt;/h2&gt;
-&lt;video src="assets/midia/bolo.mp4" autoplay&gt;&lt;/video&gt;
-&lt;p&gt;A Ana tira o bolo do forno e mostra a casquinha dourada.&lt;/p&gt;
+&lt;video src="assets/midia/video-bolo.mp4" autoplay&gt;&lt;/video&gt;
+&lt;p&gt;A Ana mistura a massa, o bolo assa no forno e ganha uma cobertura de chocolate.&lt;/p&gt;
 </pre>
 <pre class="solucao" data-file="index.html">&lt;h2&gt;Bolo de cenoura: o vídeo&lt;/h2&gt;
-&lt;video controls width="640" height="360" poster="assets/midia/bolo-capa.jpg" preload="none"&gt;
-  &lt;source src="assets/midia/bolo.webm" type="video/webm"&gt;
-  &lt;source src="assets/midia/bolo.mp4" type="video/mp4"&gt;
-  &lt;p&gt;Seu navegador não mostra vídeos. &lt;a href="assets/midia/bolo.mp4"&gt;Baixe o vídeo em MP4&lt;/a&gt;.&lt;/p&gt;
+&lt;video controls width="640" height="360" poster="assets/midia/video-bolo-poster.jpg" preload="none"&gt;
+  &lt;source src="assets/midia/video-bolo.webm" type="video/webm"&gt;
+  &lt;source src="assets/midia/video-bolo.mp4" type="video/mp4"&gt;
+  &lt;p&gt;Seu navegador não mostra vídeos. &lt;a href="assets/midia/video-bolo.mp4"&gt;Baixe o vídeo em MP4&lt;/a&gt;.&lt;/p&gt;
 &lt;/video&gt;
-&lt;p&gt;A Ana tira o bolo do forno e mostra a casquinha dourada.&lt;/p&gt;
+&lt;p&gt;A Ana mistura a massa, o bolo assa no forno e ganha uma cobertura de chocolate.&lt;/p&gt;
 </pre>
 </div>
 
