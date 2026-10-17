@@ -310,7 +310,7 @@ async function main() {
             } catch (e) { falha(r.rot + "\n      " + e.message); }
           }
         }
-        errosPag.forEach((e) => aviso("erro de JavaScript na página: " + e));
+        errosPag.forEach((e) => aviso("erro de JavaScript (na página ou num quadro): " + e));
       } catch (e) { falha("não consegui testar a página no navegador: " + e.message); }
       await pg.close();
     }
@@ -332,7 +332,8 @@ async function main() {
         docs.forEach((d) => {
           const ms = msgs[d.id] || [];
           const erros = ms.filter((m) => m.type === "error" || m.type === "non-document-error");
-          const mostrar = ms.filter((m) => m.type !== "info" || m.subType === "warning");
+          // num fragmento, "nenhum h1" é culpa do esqueleto, e não do exemplo
+          const mostrar = ms.filter((m) => (m.type !== "info" || m.subType === "warning") && !(d.fragmento && /computed heading level of 1/.test(m.message)));
           const cab = d.alvo.rot + " — W3C (" + d.nome + (d.fragmento ? ", fragmento dentro do esqueleto mínimo" : "") + ")";
           const corpo = mostrar.map((m) => "      " + linhaVnu(d.nome, m, d.v)).join("\n");
           if (d.tipo === "solução" && erros.length) { nVnu++; falha(cab + ": a solução não é HTML válido\n" + corpo); }
