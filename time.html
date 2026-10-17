@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML time e data — datas e valores que a máquina entende | Guia HTML</title>
+<meta name="description" content="Os elementos time e data do HTML para quem nunca fez um site: o atributo datetime, os formatos de data, hora, fuso e duração, o time sem datetime, o data com value, e os erros reais do validador W3C, com o resultado ao vivo e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">time</span> e <span class="hl">data</span></h1>
+
+<p class="intro">Quando a Ana escreve "sábado que vem, às 3 da tarde" no blog, qualquer pessoa entende. Um programa não entende: ele não sabe que dia é "sábado que vem" nem se "3 da tarde" é 15h no Brasil ou em Lisboa. O elemento <code>&lt;time&gt;</code> resolve isso: a pessoa continua lendo o texto bonito, e o computador recebe a data num formato exato, escondido num atributo. O primo dele, o <code>&lt;data&gt;</code>, faz o mesmo para outros valores, como o código de um produto.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como marcar uma data com <code>&lt;time datetime="2026-10-17"&gt;</code>.</li>
+  <li>Os formatos do <code>datetime</code>: data, mês, hora, data e hora, fuso, duração e semana.</li>
+  <li>Quando o <code>&lt;time&gt;</code> pode ficar <strong>sem</strong> o <code>datetime</code>.</li>
+  <li>Como usar o <code>&lt;data value="…"&gt;</code> para valores que não são datas.</li>
+  <li>Os erros reais do validador W3C: data no formato brasileiro, dia que não existe, <code>time</code> com texto livre, <code>data</code> sem <code>value</code>.</li>
+  <li>Um engano que o validador <strong>não</strong> pega: o <code>14h</code> que vira "14 horas de duração".</li>
+</ul>
+</div>
+
+<p>Os exemplos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do site validator.w3.org) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), como na aula <a href="validar.html">Validar o HTML</a>. Os quadros "Resultado" são desenhados pelo seu próprio navegador.</p>
+
+<hr>
+
+<h2>A ideia: a etiqueta de preço com código de barras</h2>
+<p>Pegue um pacote de café no mercado. A etiqueta tem duas informações sobre o mesmo produto:</p>
+<ul>
+  <li>o nome e o preço em letras grandes, para <strong>você</strong> ler;</li>
+  <li>o código de barras, para a <strong>máquina</strong> do caixa ler.</li>
+</ul>
+<p>O <code>&lt;time&gt;</code> é essa etiqueta. O texto entre as tags é para a pessoa ("17 de outubro"); o atributo <code>datetime</code> é o código de barras ("2026-10-17"), num formato que todo programa entende do mesmo jeito.</p>
+
+<p>Quem lê esse "código de barras"?</p>
+<ul>
+  <li><strong>Buscadores</strong>, como o Google, que mostram a data de um artigo nos resultados.</li>
+  <li><strong>Programas e extensões</strong> que oferecem "adicionar à agenda".</li>
+  <li><strong>JavaScript</strong> do próprio site, por exemplo para escrever "há 3 dias" (aula <a href="script.html">O Elemento script</a>).</li>
+  <li>Leitores de feed e outras ferramentas que juntam posts de vários blogs.</li>
+</ul>
+<p>O <code>&lt;time&gt;</code> faz parte do <a href="semantica.html">HTML semântico</a>: ele diz <strong>o que</strong> o texto é, e não como ele aparece.</p>
+
+<hr>
+
+<h2>1. A primeira data</h2>
+<p>A Ana publicou um post no blog. Ela marca a data assim:</p>
+
+<pre class="file" data-file="post.html" data-resultado>&lt;h1&gt;Bolo de cenoura fofinho&lt;/h1&gt;
+&lt;p&gt;Publicado em &lt;time datetime="2026-10-17"&gt;17 de outubro de 2026&lt;/time&gt;.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;time&gt;</dt><dd>"Tempo", em inglês. Marca um trecho de texto que é uma data, uma hora ou uma duração. É um elemento <strong>em linha</strong> (aula <a href="bloco-inline.html">Bloco × Em Linha</a>): fica no meio da frase, sem pular linha.</dd>
+  <dt>datetime="2026-10-17"</dt><dd>De <em>date</em> + <em>time</em>, "data e hora". É a versão para a máquina, sempre no formato <strong>ano-mês-dia</strong>, com hífens.</dd>
+  <dt>17 de outubro de 2026</dt><dd>O conteúdo: o texto que a pessoa lê. Pode ser escrito do jeito que você quiser: "17/10", "sábado passado", "17 de outubro".</dd>
+  <dt>&lt;/time&gt;</dt><dd>A tag de fechamento é obrigatória.</dd>
+</dl>
+
+<p>Repare no resultado: a data aparece como um texto comum. O <code>&lt;time&gt;</code> <strong>não muda nada na aparência</strong>. O navegador não põe cor, não sublinha, não mostra calendário. A diferença está toda no código, para quem sabe ler.</p>
+
+<div class="tip">
+<strong>Por que ano-mês-dia?</strong>
+<p>Porque <code>03/04/2026</code> é 3 de abril no Brasil e 4 de março nos Estados Unidos. O formato <code>2026-04-03</code> (da norma internacional ISO 8601) não tem essa confusão em nenhum país. E, de quebra, datas nesse formato ficam em ordem certa quando o computador as ordena como texto.</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:time[datetime]=2026-10-24">
+<p class="try-task"><strong>Missão:</strong> a Ana escreveu outro post, em <strong>24 de outubro de 2026</strong>, e esqueceu o código para a máquina. Acrescente o atributo <code>datetime</code> na tag <code>&lt;time&gt;</code>, no formato ano-mês-dia. O texto que aparece na tela não muda.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Pão de queijo de frigideira&lt;/h1&gt;
+&lt;p&gt;Publicado em &lt;time&gt;24 de outubro de 2026&lt;/time&gt;.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Pão de queijo de frigideira&lt;/h1&gt;
+&lt;p&gt;Publicado em &lt;time datetime="2026-10-24"&gt;24 de outubro de 2026&lt;/time&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Os formatos do <code>datetime</code></h2>
+<p>O <code>datetime</code> não aceita só o dia. Ele aceita vários formatos, todos com números e na ordem do maior para o menor (ano, mês, dia, hora, minuto):</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O que é</th><th>Formato</th><th>Exemplo</th><th>Leia como</th></tr>
+<tr><td>Data</td><td><code>AAAA-MM-DD</code></td><td><code>2026-10-17</code></td><td>17 de outubro de 2026</td></tr>
+<tr><td>Mês</td><td><code>AAAA-MM</code></td><td><code>2026-10</code></td><td>outubro de 2026</td></tr>
+<tr><td>Ano</td><td><code>AAAA</code></td><td><code>2026</code></td><td>o ano de 2026</td></tr>
+<tr><td>Dia sem ano</td><td><code>MM-DD</code></td><td><code>10-17</code></td><td>todo 17 de outubro (um aniversário)</td></tr>
+<tr><td>Hora</td><td><code>HH:MM</code> ou <code>HH:MM:SS</code></td><td><code>19:30</code></td><td>às 19h30</td></tr>
+<tr><td>Data e hora</td><td><code>AAAA-MM-DDTHH:MM</code></td><td><code>2026-10-17T19:30</code></td><td>17 de outubro, às 19h30</td></tr>
+<tr><td>Data, hora e fuso</td><td>… + <code>-03:00</code> ou <code>Z</code></td><td><code>2026-10-17T19:30-03:00</code></td><td>19h30 no horário de Brasília</td></tr>
+<tr><td>Semana</td><td><code>AAAA-WNN</code></td><td><code>2026-W42</code></td><td>a 42ª semana de 2026</td></tr>
+<tr><td>Duração</td><td><code>PT…H…M</code> ou <code>…h …m</code></td><td><code>PT1H30M</code> ou <code>1h 30m</code></td><td>uma hora e meia</td></tr>
+</table>
+</div>
+
+<p>Os detalhes que mais confundem:</p>
+<ul>
+  <li><strong>Sempre dois dígitos</strong> no mês, no dia, na hora e no minuto: <code>2026-01-05</code>, e nunca <code>2026-1-5</code>. A hora é de 0 a 23: 3 da tarde é <code>15:00</code>.</li>
+  <li><strong>O <code>T</code></strong> (de <em>time</em>) separa a data da hora. Um espaço também vale: <code>2026-10-17 19:30</code>.</li>
+  <li><strong>O fuso horário</strong> diz de onde é aquela hora. <code>-03:00</code> quer dizer "3 horas atrás do horário universal", que é o horário de Brasília. A letra <code>Z</code> no fim quer dizer o próprio horário universal (UTC): <code>2026-10-17T22:30Z</code> é o mesmo instante que <code>2026-10-17T19:30-03:00</code>.</li>
+  <li><strong>A duração</strong> começa com <code>P</code> (de <em>period</em>, "período") e, para horas e minutos, um <code>T</code>: <code>PT40M</code> = 40 minutos, <code>PT2H</code> = 2 horas. A outra forma, <code>40m</code> ou <code>2h 30m</code>, é mais fácil de ler e também vale.</li>
+</ul>
+
+<p>Veja vários formatos juntos, na página de uma receita e de uma aula de culinária:</p>
+
+<pre class="file" data-file="receita.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Preparo: &lt;time datetime="PT20M"&gt;20 minutos&lt;/time&gt;.
+Forno: &lt;time datetime="PT40M"&gt;40 minutos&lt;/time&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Aula ao vivo&lt;/h2&gt;
+&lt;p&gt;Sábado, &lt;time datetime="2026-11-07T15:00-03:00"&gt;7 de novembro, às 3 da tarde&lt;/time&gt;
+(horário de Brasília). A loja abre às &lt;time datetime="08:00"&gt;8h&lt;/time&gt;.&lt;/p&gt;
+
+&lt;p&gt;Receitas de &lt;time datetime="2026-10"&gt;outubro&lt;/time&gt; já estão no ar.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>datetime="PT20M"</dt><dd>Uma <strong>duração</strong> de 20 minutos (P = período, T = parte de horas, 20M = 20 minutos). Não é "às 0h20": é "dura 20 minutos".</dd>
+  <dt>datetime="2026-11-07T15:00-03:00"</dt><dd>Um <strong>instante exato</strong>: 7 de novembro de 2026, 15h00, no fuso de Brasília. O texto para a pessoa pode dizer "3 da tarde"; a máquina recebe <code>15:00</code>.</dd>
+  <dt>datetime="08:00"</dt><dd>Só uma <strong>hora</strong>, sem dia: a loja abre às 8h todos os dias.</dd>
+  <dt>datetime="2026-10"</dt><dd>Um <strong>mês</strong> inteiro.</dd>
+</dl>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> mude os textos entre as tags (por exemplo, "17/10" ou "sábado passado") e veja que o resultado muda, mas o <code>datetime</code> continua igual. Depois acrescente uma terceira linha com o horário de fechamento da loja, <code>&lt;time datetime="18:00"&gt;6 da tarde&lt;/time&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Publicado em &lt;time datetime="2026-10-17"&gt;17 de outubro de 2026&lt;/time&gt;.&lt;/p&gt;
+&lt;p&gt;A loja abre às &lt;time datetime="08:00"&gt;8 da manhã&lt;/time&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. <code>time</code> sem <code>datetime</code></h2>
+<p>O <code>datetime</code> pode ficar de fora, mas só quando o <strong>próprio texto</strong> já está num dos formatos da tabela. Aí a máquina lê o texto:</p>
+
+<pre class="file" data-file="agenda.html" data-resultado>&lt;p&gt;Entrega marcada para &lt;time&gt;2026-10-20&lt;/time&gt;, às &lt;time&gt;14:00&lt;/time&gt;.&lt;/p&gt;
+</pre>
+
+<p>Isso é válido, mas fica com cara de sistema, e não de texto escrito para gente. Na prática, quase sempre você vai usar o <code>datetime</code> e escrever o texto do jeito mais natural para o leitor.</p>
+
+<p>Se o texto <strong>não</strong> está num formato da tabela (como "ontem", "17 de outubro" ou "sábado"), o <code>datetime</code> é obrigatório. O validador reclama sem ele, como mostra a seção <a href="#errado">Quando dá errado</a>.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Código</th><th>Válido?</th><th>Por quê</th></tr>
+<tr><td><code>&lt;time&gt;2026-10-17&lt;/time&gt;</code></td><td>Sim</td><td>O texto já é uma data no formato certo.</td></tr>
+<tr><td><code>&lt;time&gt;19:30&lt;/time&gt;</code></td><td>Sim</td><td>O texto já é uma hora no formato certo.</td></tr>
+<tr><td><code>&lt;time datetime="2026-10-16"&gt;ontem&lt;/time&gt;</code></td><td>Sim</td><td>O <code>datetime</code> traz a data; o texto é livre.</td></tr>
+<tr><td><code>&lt;time&gt;ontem&lt;/time&gt;</code></td><td><strong>Não</strong></td><td>Sem <code>datetime</code>, o texto teria de estar num formato da tabela.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>4. O primo: <code>&lt;data&gt;</code></h2>
+<p>E quando o valor não é uma data? Na lojinha da Ana, cada produto tem um código interno, e cada preço tem um valor que um programa precisa ler sem a vírgula e o "R$". Para isso existe o <code>&lt;data&gt;</code> ("dado", em inglês):</p>
+
+<pre class="file" data-file="loja.html" data-resultado>&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;data value="CAD-001"&gt;Caderno de receitas&lt;/data&gt;: R$ 12,50&lt;/li&gt;
+  &lt;li&gt;&lt;data value="AVE-002"&gt;Avental xadrez&lt;/data&gt;: R$ 35,00&lt;/li&gt;
+  &lt;li&gt;&lt;data value="FOR-003"&gt;Forma de bolo&lt;/data&gt;: R$ 28,90&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Nota média: &lt;data value="4.8"&gt;quatro vírgula oito&lt;/data&gt; estrelas.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;data&gt;</dt><dd>Marca um texto que tem um valor "para a máquina". Como o <code>&lt;time&gt;</code>, ele não muda nada na aparência.</dd>
+  <dt>value="CAD-001"</dt><dd>O valor para a máquina. Aqui, o código do produto no estoque da Ana. Diferente do <code>datetime</code>, o <code>value</code> é <strong>obrigatório</strong> e aceita qualquer texto.</dd>
+  <dt>value="4.8"</dt><dd>Para números, use o formato que os programas entendem: ponto no lugar da vírgula, sem "R$" e sem espaços.</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O valor é…</th><th>Use</th><th>Exemplo</th></tr>
+<tr><td>uma data, uma hora ou uma duração</td><td><code>&lt;time datetime="…"&gt;</code></td><td><code>&lt;time datetime="2026-10-17"&gt;hoje&lt;/time&gt;</code></td></tr>
+<tr><td>qualquer outro valor (código, número, identificador)</td><td><code>&lt;data value="…"&gt;</code></td><td><code>&lt;data value="CAD-001"&gt;Caderno&lt;/data&gt;</code></td></tr>
+<tr><td>nada que uma máquina precise ler</td><td>texto comum</td><td><code>&lt;p&gt;Bolo fofinho!&lt;/p&gt;</code></td></tr>
+</table>
+</div>
+
+<div class="note">
+<strong>Não confunda com <code>data-*</code></strong>
+<p>O <strong>elemento</strong> <code>&lt;data&gt;</code> não tem nada a ver com os <strong>atributos</strong> <code>data-alguma-coisa</code> (como <code>data-preco="12.50"</code>), que você pode inventar em qualquer elemento. Esses têm aula própria no Nível 3: <a href="data-atributos.html">Atributos data-*</a>.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Em todos os casos abaixo, o navegador mostra a página <strong>normalmente</strong>: o texto aparece, sem nenhum aviso. Como o <code>datetime</code> e o <code>value</code> não aparecem na tela, um erro neles passa despercebido. Quem sofre é o buscador ou o programa que tenta ler a data. Por isso, o único jeito de achar esses erros é o validador. Todas as páginas abaixo têm o mesmo esqueleto, e só a linha 8 muda:</p>
+
+<pre class="file" data-file="post.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Blog da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Publicado em &lt;time datetime="17/10/2026"&gt;17/10/2026&lt;/time&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="cenario">
+<strong>A data no formato brasileiro: <code>datetime="17/10/2026"</code></strong>
+<pre class="term" data-cwd="~/blog">$ vnu post.html
+"file:/home/ana/blog/post.html":8.17-8.44: error: Bad value “17/10/2026” for attribute “datetime” on element “time”: The literal did not satisfy the time-datetime format.</pre>
+<p><strong>O que significa:</strong> "Valor ruim <code>17/10/2026</code> para o atributo <code>datetime</code> do elemento <code>time</code>: o texto não segue o formato de data e hora". O <code>8.17-8.44</code> é a linha 8, da coluna 17 à 44: o trecho <code>&lt;time datetime="17/10/2026"&gt;</code>.</p>
+<p><strong>Como consertar:</strong> no <code>datetime</code>, sempre ano-mês-dia com hífens: <code>datetime="2026-10-17"</code>. O texto entre as tags pode continuar "17/10/2026".</p>
+</div>
+
+<div class="cenario">
+<strong>Faltou o zero: <code>datetime="2026-11-7"</code></strong>
+<pre class="term" data-cwd="~/blog">$ vnu evento.html
+"file:/home/ana/blog/evento.html":8.18-8.44: error: Bad value “2026-11-7” for attribute “datetime” on element “time”: The literal did not satisfy the time-datetime format.</pre>
+<p><strong>O que significa:</strong> a mesma mensagem: o dia precisa de dois dígitos.</p>
+<p><strong>Como consertar:</strong> <code>2026-11-07</code>. O mesmo vale para mês, hora e minuto: <code>09:05</code>, e não <code>9:5</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Texto livre sem <code>datetime</code>: <code>&lt;time&gt;ontem&lt;/time&gt;</code></strong>
+<pre class="term" data-cwd="~/blog">$ vnu ontem.html
+"file:/home/ana/blog/ontem.html":8.26-8.32: error: The text content of element “time” was not in the required format: The literal did not satisfy the time-datetime format.</pre>
+<p><strong>O que significa:</strong> "O texto do elemento <code>time</code> não está no formato exigido". Sem <code>datetime</code>, o validador tenta ler a data no próprio texto, e "ontem" não é uma data. Repare que a posição (<code>8.26-8.32</code>) aponta a tag de fechamento <code>&lt;/time&gt;</code>: é ali que o validador termina de ler o texto e percebe o problema.</p>
+<p><strong>Como consertar:</strong> acrescente o <code>datetime</code> com a data de verdade: <code>&lt;time datetime="2026-10-16"&gt;ontem&lt;/time&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um dia que não existe: <code>datetime="2027-02-30"</code></strong>
+<pre class="term" data-cwd="~/blog">$ vnu fevereiro.html
+"file:/home/ana/blog/fevereiro.html":8.17-8.44: error: Bad value “2027-02-30” for attribute “datetime” on element “time”: Day out of range.</pre>
+<p><strong>O que significa:</strong> o formato está certo, mas fevereiro não tem dia 30. <em>Day out of range</em> = "dia fora do intervalo". O validador confere o calendário de verdade, inclusive os anos bissextos.</p>
+<p><strong>Como consertar:</strong> use uma data que existe (<code>2027-02-28</code>).</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;data&gt;</code> sem <code>value</code></strong>
+<pre class="term" data-cwd="~/blog">$ vnu loja.html
+"file:/home/ana/blog/loja.html":8.4-8.9: error: Element “data” is missing required attribute “value”.</pre>
+<p><strong>O que significa:</strong> "O elemento <code>data</code> está sem o atributo obrigatório <code>value</code>". Um <code>&lt;data&gt;</code> sem valor não tem motivo para existir.</p>
+<p><strong>Como consertar:</strong> dê o valor (<code>&lt;data value="CAD-001"&gt;</code>) ou, se não há valor para a máquina, tire a tag e deixe só o texto.</p>
+</div>
+
+<div class="cenario">
+<strong>O engano que o validador não pega: <code>datetime="14h"</code></strong>
+<p>No <code>evento.html</code>, a Ana consertou o zero do dia. A hora, ela quis dizer "às 14h" e escreveu <code>datetime="14h"</code>. O validador <strong>aceitou</strong>, sem nenhum erro:</p>
+<pre class="term" data-cwd="~/blog">$ sed -n 8p evento.html          « mostra só a linha 8
+&lt;p&gt;Aula de bolo: &lt;time datetime="2026-11-07"&gt;7 de novembro&lt;/time&gt;, às &lt;time datetime="14h"&gt;14h&lt;/time&gt;.&lt;/p&gt;
+$ vnu --verbose evento.html
+evento.html</pre>
+<p><strong>O que aconteceu:</strong> <code>14h</code> é um formato válido, mas de <strong>duração</strong> (lembra do <code>2h 30m</code>?). Para a máquina, ela escreveu "dura 14 horas", e não "às 14 horas". O validador só confere se o formato existe; ele não sabe o que você quis dizer. (O <code>--verbose</code> faz o <code>vnu</code> mostrar o nome do arquivo quando está tudo certo, para você ver que ele rodou.)</p>
+<p><strong>Como consertar:</strong> hora do dia é <code>HH:MM</code>: <code>datetime="14:00"</code>. Já <code>19h30</code> nem passa no validador (<code>Bad value “19h30”</code>), porque o <code>30</code> ficou sem unidade.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;time datetime="2026-10-17"&gt;…&lt;/time&gt;</code></td><td>Uma data</td></tr>
+<tr><td><code>&lt;time datetime="19:30"&gt;…&lt;/time&gt;</code></td><td>Uma hora do dia (0 a 23)</td></tr>
+<tr><td><code>&lt;time datetime="2026-10-17T19:30"&gt;…&lt;/time&gt;</code></td><td>Data e hora (<code>T</code> ou espaço no meio)</td></tr>
+<tr><td><code>&lt;time datetime="2026-10-17T19:30-03:00"&gt;…&lt;/time&gt;</code></td><td>Data e hora com fuso (<code>Z</code> = horário universal)</td></tr>
+<tr><td><code>&lt;time datetime="2026-10"&gt;</code>, <code>"2026"</code>, <code>"10-17"</code>, <code>"2026-W42"</code></td><td>Mês, ano, dia sem ano, semana</td></tr>
+<tr><td><code>&lt;time datetime="PT1H30M"&gt;</code> ou <code>"1h 30m"</code></td><td>Uma duração</td></tr>
+<tr><td><code>&lt;time&gt;2026-10-17&lt;/time&gt;</code></td><td>Sem <code>datetime</code>: só se o texto já estiver no formato</td></tr>
+<tr><td><code>&lt;data value="CAD-001"&gt;…&lt;/data&gt;</code></td><td>Um valor que não é data (o <code>value</code> é obrigatório)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O atributo</h3>
+<p>Complete com o nome do atributo que guarda a data para a máquina:</p>
+<div class="ex-code">&lt;time <input data-answer="datetime" aria-label="atributo">="2026-12-25"&gt;Natal&lt;/time&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O formato</h3>
+<p>Escreva o valor do <code>datetime</code> para <strong>5 de março de 2027</strong>:</p>
+<div class="ex-code">&lt;time datetime="<input data-answer="2027-03-05" aria-label="data">"&gt;5 de março&lt;/time&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. A hora</h3>
+<p>Escreva o valor do <code>datetime</code> para "às 3 e meia da tarde":</p>
+<div class="ex-code">&lt;time datetime="<input data-answer="15:30|15:30:00" aria-label="hora">"&gt;3 e meia da tarde&lt;/time&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. O que muda na tela quando você troca <code>&lt;span&gt;17 de outubro&lt;/span&gt;</code> por <code>&lt;time datetime="2026-10-17"&gt;17 de outubro&lt;/time&gt;</code>?</p>
+<label><input type="radio" name="q4"> O texto fica sublinhado</label>
+<label><input type="radio" name="q4"> Aparece um calendário ao clicar</label>
+<label><input type="radio" name="q4"> Nada: a diferença é só para as máquinas que leem o código</label>
+<label><input type="radio" name="q4"> O navegador troca o texto pela data <code>2026-10-17</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Qual destes é <strong>inválido</strong> para o validador?</p>
+<label><input type="radio" name="q5"> <code>&lt;time&gt;2026-10-17&lt;/time&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;time&gt;sábado&lt;/time&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;time datetime="2026-10-17"&gt;sábado&lt;/time&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;time datetime="PT40M"&gt;40 minutos&lt;/time&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. A Ana escreveu <code>&lt;time datetime="14h"&gt;</code> querendo dizer "às 14h". O que acontece?</p>
+<label><input type="radio" name="q6"> O validador dá erro de formato</label>
+<label><input type="radio" name="q6"> O navegador mostra um aviso</label>
+<label><input type="radio" name="q6"> Funciona: <code>14h</code> é o jeito certo de escrever uma hora</label>
+<label><input type="radio" name="q6"> O validador aceita, mas a máquina entende "duração de 14 horas"</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">7. Para marcar o código <code>AVE-002</code> de um avental, qual elemento serve?</p>
+<label><input type="radio" name="q7"> <code>&lt;data value="AVE-002"&gt;Avental&lt;/data&gt;</code></label>
+<label><input type="radio" name="q7"> <code>&lt;time datetime="AVE-002"&gt;Avental&lt;/time&gt;</code></label>
+<label><input type="radio" name="q7"> <code>&lt;data&gt;AVE-002&lt;/data&gt;</code></label>
+<label><input type="radio" name="q7"> <code>&lt;value&gt;AVE-002&lt;/value&gt;</code></label>
+</div>
+
+<h3>Missão final: a aula de culinária</h3>
+
+<div class="tryhtml" data-goal="sel:time[datetime='2026-11-07T15:00']\, time[datetime='2026-11-07 15:00'],sel:time[datetime='PT3H']\, time[datetime='3h'],sel:data[value='AULA-07'],nsel:time=2">
+<p class="try-task"><strong>Missão:</strong> a Ana vai dar uma aula de bolos. Sem mudar o texto que aparece, marque: (1) "7 de novembro, às 15h" com um <code>&lt;time&gt;</code> de data e hora (<code>2026-11-07T15:00</code>); (2) "3 horas" com um <code>&lt;time&gt;</code> de duração; (3) o "Aula de bolos" do parágrafo com um <code>&lt;data&gt;</code> de valor <code>AULA-07</code> (o código da aula no sistema de inscrições).</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Aula de bolos&lt;/h1&gt;
+&lt;p&gt;Aula de bolos: 7 de novembro, às 15h.&lt;/p&gt;
+&lt;p&gt;Duração: 3 horas.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Aula de bolos&lt;/h1&gt;
+&lt;p&gt;&lt;data value="AULA-07"&gt;Aula de bolos&lt;/data&gt;: &lt;time datetime="2026-11-07T15:00"&gt;7 de novembro, às 15h&lt;/time&gt;.&lt;/p&gt;
+&lt;p&gt;Duração: &lt;time datetime="PT3H"&gt;3 horas&lt;/time&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Se o resultado ficou idêntico ao do começo, você acertou: tudo o que você acrescentou é para as máquinas. Confira o código no validador on-line (validator.w3.org/nu, aba "Validate by Direct Input") para ter certeza de que os formatos estão certos.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;time datetime="…"&gt;texto&lt;/time&gt;</code>: o texto é para a pessoa, o <code>datetime</code> é para a máquina. Nada muda na aparência.</li>
+  <li>Formatos: <code>2026-10-17</code> (data), <code>19:30</code> (hora), <code>2026-10-17T19:30</code> (data e hora), <code>-03:00</code> ou <code>Z</code> (fuso), <code>2026-10</code> (mês), <code>PT40M</code> ou <code>40m</code> (duração). Sempre do maior para o menor, com dois dígitos.</li>
+  <li>Sem <code>datetime</code>, o texto entre as tags tem de estar num desses formatos; "ontem" ou "sábado" exigem o <code>datetime</code>.</li>
+  <li><code>&lt;data value="…"&gt;</code> faz o mesmo para valores que não são datas; o <code>value</code> é obrigatório.</li>
+  <li>O navegador nunca reclama de um <code>datetime</code> errado. Quem encontra o erro é o validador (<code>Bad value … for attribute “datetime”</code>, <code>Day out of range</code>), e nem ele percebe um <code>14h</code> que vira duração.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
