@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Formatação — mark, small, del, ins, sub, sup, s e u | Guia HTML</title>
+<meta name="description" content="Formatação de texto em HTML para quem nunca fez um site: mark (marca-texto), small (letras miúdas), del e ins (o que saiu e o que entrou, com datetime), s (não vale mais), sub e sup (H₂O, m²), u (anotação), qual usar em cada caso, as tags obsoletas font, big, strike, tt e center e as mensagens reais do validador W3C, com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Formatação</span></h1>
+
+<p class="intro">Além de negrito e itálico (aula <a href="negrito-italico.html">Negrito e Itálico</a>), o HTML tem um pequeno estojo de tags para situações bem específicas do texto: o marca-texto amarelo, as letras miúdas do rodapé, o preço riscado da promoção, a correção de uma receita, o "2" pequenininho de H<sub>2</sub>O e de m<sup>2</sup>. São oito tags, e cada uma tem um <strong>sentido</strong>, não só uma aparência. Nesta aula você vai ver cada uma no site e na lojinha da Ana, e as tags antigas que o validador recusa.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li><code>&lt;mark&gt;</code>: o marca-texto, para o trecho que interessa <strong>agora</strong>.</li>
+  <li><code>&lt;small&gt;</code>: as letras miúdas (avisos legais, direitos autorais).</li>
+  <li><code>&lt;s&gt;</code>: o que não vale mais, como o preço antigo.</li>
+  <li><code>&lt;del&gt;</code> e <code>&lt;ins&gt;</code>: o que foi apagado e o que foi inserido numa correção, com data (<code>datetime</code>).</li>
+  <li><code>&lt;sub&gt;</code> e <code>&lt;sup&gt;</code>: texto abaixo e acima da linha (H<sub>2</sub>O, m<sup>2</sup>, notas de rodapé).</li>
+  <li><code>&lt;u&gt;</code>: o sublinhado de anotação, e por que ele quase nunca é a escolha certa.</li>
+  <li>As tags obsoletas <code>&lt;font&gt;</code>, <code>&lt;big&gt;</code>, <code>&lt;strike&gt;</code>, <code>&lt;tt&gt;</code> e <code>&lt;center&gt;</code>, e o erro de uma data mal escrita.</li>
+</ul>
+</div>
+
+<p>Os exemplos são desenhados <strong>pelo seu navegador</strong>, no quadro "Resultado". As mensagens do validador saíram do <code>vnu</code> (o validador do W3C) na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: o estojo da revisora</h2>
+<p>Pense numa revisora de texto com o estojo aberto na mesa. Ela tem um <strong>marca-texto</strong> para destacar o que vai discutir, uma <strong>caneta vermelha</strong> para riscar o que sai e escrever o que entra, e sabe que as <strong>letras miúdas</strong> no pé da página são outro tipo de texto. Cada ferramenta tem um uso; ninguém usa o marca-texto para riscar.</p>
+
+<p>As tags desta aula são esse estojo. Todas são elementos <strong>em linha</strong>: ficam no meio do texto, dentro de um parágrafo, um título, um item de lista.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tag</th><th>Vem de</th><th>Quer dizer</th><th>Aparência padrão</th></tr>
+<tr><td><code>&lt;mark&gt;</code></td><td><em>mark</em>, "marcar"</td><td>Destacado por ser relevante aqui</td><td><mark>Fundo amarelo</mark></td></tr>
+<tr><td><code>&lt;small&gt;</code></td><td><em>small</em>, "pequeno"</td><td>Letras miúdas, comentário à parte</td><td><small>Letra menor</small></td></tr>
+<tr><td><code>&lt;s&gt;</code></td><td><em>strikethrough</em>, "riscado"</td><td>Não está mais certo ou não vale mais</td><td><s>Riscado</s></td></tr>
+<tr><td><code>&lt;del&gt;</code></td><td><em>deleted</em>, "apagado"</td><td>Removido do texto numa correção</td><td><del>Riscado</del></td></tr>
+<tr><td><code>&lt;ins&gt;</code></td><td><em>inserted</em>, "inserido"</td><td>Acrescentado ao texto numa correção</td><td><ins>Sublinhado</ins></td></tr>
+<tr><td><code>&lt;sub&gt;</code></td><td><em>subscript</em>, "subscrito"</td><td>Abaixo da linha (fórmulas)</td><td>H<sub>2</sub>O</td></tr>
+<tr><td><code>&lt;sup&gt;</code></td><td><em>superscript</em>, "sobrescrito"</td><td>Acima da linha (expoentes, notas)</td><td>m<sup>2</sup></td></tr>
+<tr><td><code>&lt;u&gt;</code></td><td><em>underline</em>, "sublinhado"</td><td>Anotação (erro de ortografia, por exemplo)</td><td><u>Sublinhado</u></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. <code>&lt;mark&gt;</code>: o marca-texto</h2>
+<p>O <code>&lt;mark&gt;</code> destaca um trecho porque ele é <strong>relevante para o que a pessoa está fazendo agora</strong>. O exemplo clássico é a busca: a pessoa procurou "cenoura", e cada "cenoura" aparece marcada nos resultados.</p>
+
+<pre class="file" data-file="busca.html" data-resultado>&lt;p&gt;Resultados da busca por "cenoura":&lt;/p&gt;
+&lt;p&gt;Bolo de &lt;mark&gt;cenoura&lt;/mark&gt; com cobertura de chocolate.&lt;/p&gt;
+&lt;p&gt;Suco de laranja com &lt;mark&gt;cenoura&lt;/mark&gt;.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;mark&gt;</dt><dd>Abre o trecho marcado. O navegador pinta o fundo de amarelo e deixa a letra preta, como um marca-texto.</dd>
+  <dt>cenoura</dt><dd>O que interessa <strong>neste contexto</strong>. Em outra busca, outras palavras seriam marcadas.</dd>
+  <dt>&lt;/mark&gt;</dt><dd>Fecha a marcação.</dd>
+</dl>
+
+<p>Outro uso: numa citação, marcar o trecho que você vai comentar ("repare nesta parte"). A diferença para o <code>&lt;strong&gt;</code>: o <code>strong</code> diz que o trecho é importante <strong>sempre</strong>; o <code>mark</code> diz que ele interessa <strong>aqui</strong>, por causa do que o leitor está procurando ou do que você vai discutir. Na dúvida, se o destaque continuaria valendo em qualquer situação, é <code>strong</code>.</p>
+
+<div class="tryhtml" data-goal="nsel:mark=3,texto:mark=chocolate">
+<p class="try-task"><strong>Experimente:</strong> a pessoa buscou "chocolate". Marque com <code>&lt;mark&gt;</code> cada vez que a palavra aparece nos resultados (são três).</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Resultados da busca por "chocolate":&lt;/p&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;p&gt;Brigadeiro de chocolate meio amargo.&lt;/p&gt;
+&lt;p&gt;Mousse de chocolate com maracujá.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Resultados da busca por "chocolate":&lt;/p&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de &lt;mark&gt;chocolate&lt;/mark&gt;.&lt;/p&gt;
+&lt;p&gt;Brigadeiro de &lt;mark&gt;chocolate&lt;/mark&gt; meio amargo.&lt;/p&gt;
+&lt;p&gt;Mousse de &lt;mark&gt;chocolate&lt;/mark&gt; com maracujá.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. <code>&lt;small&gt;</code>: as letras miúdas</h2>
+<p>O <code>&lt;small&gt;</code> não quer dizer "letra pequena porque eu gosto": quer dizer <strong>comentário à parte</strong>, as letras miúdas que todo contrato tem. Avisos legais, condições de uma promoção, direitos autorais.</p>
+
+<pre class="file" data-file="small.html" data-resultado>&lt;p&gt;Bolo de pote por R$ 12. &lt;small&gt;Válido até domingo ou enquanto durar o estoque.&lt;/small&gt;&lt;/p&gt;
+&lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana. Fotos tiradas em casa.&lt;/small&gt;&lt;/p&gt;
+</pre>
+
+<p>O <code>&lt;small&gt;</code> é em linha. Ele pode ficar no meio de uma frase (como no primeiro parágrafo) ou ocupar um parágrafo inteiro (como no segundo), mas sempre <strong>dentro</strong> do <code>&lt;p&gt;</code>, nunca em volta dele (veja em <a href="#errado">Quando dá errado</a>). E ele não diminui a importância do texto: se as condições da promoção forem importantes, elas continuam lá para quem quiser ler.</p>
+
+<div class="tip">
+<strong>E se eu só quiser a letra menor?</strong>
+<p>Se o texto não é um comentário à parte (um subtítulo, uma legenda bonita), use CSS para mudar o tamanho (<code>font-size</code>; quer aprender mais? futuro Guia CSS). O <code>&lt;small&gt;</code> é para o sentido "letras miúdas".</p>
+</div>
+
+<hr>
+
+<h2>3. <code>&lt;s&gt;</code>: não vale mais</h2>
+<p>Na lojinha da Ana, o pano de prato entrou em promoção. O preço antigo continua aparecendo, riscado, para o cliente ver o desconto:</p>
+
+<pre class="file" data-file="s.html" data-resultado>&lt;p&gt;Pano de prato Girassol: de &lt;s&gt;R$ 20&lt;/s&gt; por R$ 15.&lt;/p&gt;
+&lt;p&gt;Bolo de fubá: &lt;s&gt;disponível&lt;/s&gt; esgotado hoje.&lt;/p&gt;
+</pre>
+
+<p>O <code>&lt;s&gt;</code> marca algo que <strong>já não está certo</strong> ou já não vale: o preço de antes, o "disponível" de ontem. A informação não foi um erro; ela só ficou velha. Note que um leitor de tela, na configuração padrão, costuma ler o texto riscado como texto normal, então o "de" e o "por" da frase são importantes: eles explicam com palavras o que o risco mostra.</p>
+
+<hr>
+
+<h2>4. <code>&lt;del&gt;</code> e <code>&lt;ins&gt;</code>: a correção</h2>
+<p>A Ana publicou a receita do bolo com 2 xícaras de açúcar. Os leitores reclamaram que estava doce demais, e ela corrigiu para 1 e meia. Ela quer que quem já fez o bolo veja <strong>o que mudou</strong>:</p>
+
+<pre class="file" data-file="correcao.html" data-resultado>&lt;p&gt;Use &lt;del&gt;2 xícaras&lt;/del&gt; &lt;ins&gt;1 xícara e meia&lt;/ins&gt; de açúcar.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;del&gt;2 xícaras&lt;/del&gt;</dt><dd>O que foi <strong>apagado</strong> do texto. O navegador risca.</dd>
+  <dt>&lt;ins&gt;1 xícara e meia&lt;/ins&gt;</dt><dd>O que foi <strong>inserido</strong> no lugar. O navegador sublinha.</dd>
+</dl>
+
+<h3>Quando foi a mudança: <code>datetime</code></h3>
+<p>Os dois aceitam o atributo <code>datetime</code> ("data e hora"), com a data da mudança num formato que o computador entende: <strong>ano-mês-dia</strong>, com números. Ele não aparece na tela, mas fica registrado para programas que leem a página (o formato completo tem aula própria: <a href="time.html">time e data</a>).</p>
+
+<pre class="file" data-file="datetime.html" data-resultado>&lt;p&gt;Use &lt;del datetime="2026-10-12"&gt;2 xícaras&lt;/del&gt;
+&lt;ins datetime="2026-10-12"&gt;1 xícara e meia&lt;/ins&gt; de açúcar.&lt;/p&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Valor de <code>datetime</code></th><th>Quer dizer</th></tr>
+<tr><td><code>2026-10-12</code></td><td>12 de outubro de 2026 (ano com 4 dígitos, mês e dia com 2)</td></tr>
+<tr><td><code>2026-10-12T14:30-03:00</code></td><td>12/10/2026, às 14h30, no fuso de 3 horas atrás de Greenwich (o fuso de Brasília)</td></tr>
+</table>
+</div>
+
+<p>Há também o atributo <code>cite</code>, com o endereço de uma página que explica a mudança (<code>&lt;del cite="https://exemplo.com/por-que-mudou"&gt;</code>). Ele também não aparece na tela.</p>
+
+<h3><code>&lt;s&gt;</code> ou <code>&lt;del&gt;</code>?</h3>
+<p>Os dois saem riscados, e por isso são confundidos. A pergunta é: <strong>o texto foi corrigido</strong>, ou só ficou velho?</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>A receita estava errada e foi corrigida (histórico de edição)</td><td><code>&lt;del&gt;</code> + <code>&lt;ins&gt;</code></td></tr>
+<tr><td>O preço mudou por causa da promoção; o antigo continua ali para comparar</td><td><code>&lt;s&gt;</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>5. <code>&lt;sub&gt;</code> e <code>&lt;sup&gt;</code>: abaixo e acima da linha</h2>
+
+<pre class="file" data-file="subsup.html" data-resultado>&lt;p&gt;A água é H&lt;sub&gt;2&lt;/sub&gt;O; o gás do refrigerante é CO&lt;sub&gt;2&lt;/sub&gt;.&lt;/p&gt;
+&lt;p&gt;A cozinha da Ana tem 12 m&lt;sup&gt;2&lt;/sup&gt;, e 2&lt;sup&gt;10&lt;/sup&gt; = 1024.&lt;/p&gt;
+&lt;p&gt;O bolo leva cenoura crua&lt;sup&gt;1&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;small&gt;&lt;sup&gt;1&lt;/sup&gt; Descascada e picada.&lt;/small&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;sub&gt;</dt><dd><strong>Subscrito</strong>: o texto desce e fica menor. Usado em fórmulas químicas (H<sub>2</sub>O) e índices de matemática (x<sub>1</sub>).</dd>
+  <dt>&lt;sup&gt;</dt><dd><strong>Sobrescrito</strong>: o texto sobe e fica menor. Usado em expoentes (m<sup>2</sup>, 2<sup>10</sup>) e em chamadas de nota de rodapé (o <sup>1</sup> depois de "crua").</dd>
+</dl>
+
+<p>Aqui o tamanho e a posição <strong>são</strong> o sentido: H2O e H<sub>2</sub>O não são a mesma coisa para um químico, e 210 não é 2<sup>10</sup>. Por isso essas tags são HTML, e não CSS. Mas não use <code>&lt;sup&gt;</code> só para "subir" um texto por enfeite.</p>
+
+<div class="tip">
+<strong>1º, 2ª e m²</strong>
+<p>Os ordinais do português têm caracteres próprios: <strong>º</strong> e <strong>ª</strong> (1º lugar, 2ª edição). Use-os, e não <code>1&lt;sup&gt;o&lt;/sup&gt;</code>. Para quadrado e cubo também existem os caracteres <strong>²</strong> e <strong>³</strong> (m², m³), que funcionam bem; o <code>&lt;sup&gt;</code> serve para qualquer expoente, como o 10 de 2<sup>10</sup>. Como digitar esses caracteres está em <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>.</p>
+</div>
+
+<div class="tryhtml" data-goal="texto:sub=2,texto:sup=2,nsel:sub=1,nsel:sup=1">
+<p class="try-task"><strong>Experimente:</strong> conserte a ficha da lojinha: o "2" de CO2 deve descer (<code>&lt;sub&gt;</code>) e o "2" de m2 deve subir (<code>&lt;sup&gt;</code>).</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Garrafa de água com gás: CO2 natural.&lt;/p&gt;
+&lt;p&gt;Toalha de mesa com 2 m2.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Garrafa de água com gás: CO&lt;sub&gt;2&lt;/sub&gt; natural.&lt;/p&gt;
+&lt;p&gt;Toalha de mesa com 2 m&lt;sup&gt;2&lt;/sup&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>6. <code>&lt;u&gt;</code>: anotação (use com cuidado)</h2>
+<p>O <code>&lt;u&gt;</code> marca um trecho com uma <strong>anotação</strong> que não é dita em voz alta. O padrão do HTML dá como exemplo uma palavra com erro de ortografia, como o sublinhado ondulado vermelho do editor de texto:</p>
+
+<pre class="file" data-file="u.html" data-resultado>&lt;p&gt;No caderno antigo, a Ana tinha escrito "&lt;u&gt;bolu&lt;/u&gt; de cenoura".&lt;/p&gt;
+</pre>
+
+<div class="warning">
+<strong>Sublinhado parece link</strong>
+<p>Na web, texto sublinhado quer dizer "pode clicar". Um <code>&lt;u&gt;</code> no meio do texto faz o visitante tentar clicar numa coisa que não é link. Por isso, o <code>&lt;u&gt;</code> quase nunca é a escolha certa:</p>
+<ul>
+  <li>para destacar, use <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code> ou <code>&lt;mark&gt;</code>;</li>
+  <li>para o título de um livro, use <code>&lt;cite&gt;</code> (aula <a href="citacoes.html">Citações</a>);</li>
+  <li>para o que foi inserido numa correção, use <code>&lt;ins&gt;</code>;</li>
+  <li>se usar <code>&lt;u&gt;</code>, mude a aparência com CSS (um sublinhado ondulado, por exemplo) para ele não parecer link.</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>7. Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th><th>Não use</th></tr>
+<tr><td>Destacar o que a pessoa buscou</td><td><code>&lt;mark&gt;</code></td><td><code>&lt;strong&gt;</code> (não é importante sempre)</td></tr>
+<tr><td>Um aviso importante</td><td><code>&lt;strong&gt;</code></td><td><code>&lt;mark&gt;</code></td></tr>
+<tr><td>As condições da promoção, o © do rodapé</td><td><code>&lt;small&gt;</code></td><td><code>&lt;h6&gt;</code> (não é título)</td></tr>
+<tr><td>O preço antigo, riscado</td><td><code>&lt;s&gt;</code></td><td><code>&lt;del&gt;</code> (não foi correção)</td></tr>
+<tr><td>Mostrar o que mudou numa correção</td><td><code>&lt;del&gt;</code> + <code>&lt;ins&gt;</code></td><td><code>&lt;s&gt;</code> + <code>&lt;u&gt;</code></td></tr>
+<tr><td>H<sub>2</sub>O, m<sup>2</sup>, nota de rodapé</td><td><code>&lt;sub&gt;</code>, <code>&lt;sup&gt;</code></td><td>CSS (a posição é o sentido)</td></tr>
+<tr><td>Letra maior, menor, colorida, centralizada</td><td>CSS</td><td><code>&lt;font&gt;</code>, <code>&lt;big&gt;</code>, <code>&lt;center&gt;</code> (obsoletos)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O navegador não mostra mensagem de erro. Em cada caso, veja o que ele fez de verdade e o que o validador diz.</p>
+
+<div class="cenario">
+<strong>Tags obsoletas: <code>font</code>, <code>big</code>, <code>strike</code>, <code>tt</code>, <code>center</code></strong>
+<p>Sites antigos (e tutoriais antigos) formatam o texto com tags que o HTML aboliu:</p>
+<pre class="file" data-file="antigos.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;&lt;font color="red"&gt;Promoção!&lt;/font&gt;&lt;/p&gt;
+&lt;p&gt;&lt;big&gt;Bolo&lt;/big&gt; de &lt;strike&gt;pote&lt;/strike&gt; &lt;tt&gt;v2&lt;/tt&gt;&lt;/p&gt;
+&lt;center&gt;Lojinha da Ana&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> obedece a todas, para não quebrar os sites antigos: "Promoção!" sai vermelho, "Bolo" sai maior, "pote" riscado, "v2" em letra de máquina de escrever, e o nome da loja centralizado.</p>
+<pre class="term" data-cwd="~/site">$ vnu antigos.html
+"file:/home/ana/site/antigos.html":8.4-8.21: error: The “font” element is obsolete. Use CSS instead.
+"file:/home/ana/site/antigos.html":9.4-9.8: error: The “big” element is obsolete. Use CSS instead.
+"file:/home/ana/site/antigos.html":9.23-9.30: error: The “strike” element is obsolete. Use “del” or “s” element instead.
+"file:/home/ana/site/antigos.html":9.45-9.48: error: The “tt” element is obsolete. Use CSS instead.
+"file:/home/ana/site/antigos.html":10.1-10.8: error: The “center” element is obsolete. Use CSS instead.</pre>
+<p>Cada uma dá um <strong>erro</strong> (não um simples aviso): "o elemento … é obsoleto. Use CSS no lugar". Para o <code>strike</code>, o validador sugere outra tag: "use o elemento <code>del</code> ou <code>s</code>", que você viu nesta aula.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Obsoleta</th><th>O que fazia</th><th>Use hoje</th></tr>
+<tr><td><code>&lt;font&gt;</code></td><td>Cor, tamanho e fonte da letra</td><td>CSS (<code>color</code>, <code>font-size</code>, <code>font-family</code>)</td></tr>
+<tr><td><code>&lt;big&gt;</code></td><td>Letra maior</td><td>CSS; se é importante, <code>&lt;strong&gt;</code></td></tr>
+<tr><td><code>&lt;strike&gt;</code></td><td>Riscado</td><td><code>&lt;s&gt;</code> ou <code>&lt;del&gt;</code>, conforme o sentido</td></tr>
+<tr><td><code>&lt;tt&gt;</code></td><td>Letra de máquina de escrever</td><td><code>&lt;code&gt;</code>, <code>&lt;kbd&gt;</code> ou <code>&lt;samp&gt;</code> (aula <a href="codigo.html">Código</a>), ou CSS</td></tr>
+<tr><td><code>&lt;center&gt;</code></td><td>Centralizar</td><td>CSS (<code>text-align: center</code>)</td></tr>
+</table>
+</div>
+</div>
+
+<div class="cenario">
+<strong>Data em português no <code>datetime</code></strong>
+<pre class="file" data-file="data.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Leve &lt;del datetime="ontem"&gt;2&lt;/del&gt; &lt;ins datetime="2026-10-12"&gt;3&lt;/ins&gt; xícaras de farinha.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> nada de diferente. O <code>datetime</code> não aparece na tela, então "ontem" passa despercebido. Mas um programa que leia a data recebe uma palavra que não entende.</p>
+<pre class="term" data-cwd="~/site">$ vnu data.html
+"file:/home/ana/site/data.html":8.9-8.30: error: Bad value “ontem” for attribute “datetime” on element “del”: The literal did not satisfy the datetime with timezone format. The literal did not satisfy the date format.</pre>
+<dl class="anatomy">
+  <dt>Bad value “ontem” for attribute “datetime” on element “del”</dt><dd>"Valor ruim, <code>ontem</code>, para o atributo <code>datetime</code> no elemento <code>del</code>."</dd>
+  <dt>The literal did not satisfy the datetime with timezone format.</dt><dd>"O texto não segue o formato de data e hora com fuso" (o <code>2026-10-12T14:30-03:00</code>).</dd>
+  <dt>The literal did not satisfy the date format.</dt><dd>"O texto não segue o formato de data" (o <code>2026-10-12</code>). O validador tentou os dois formatos aceitos, e "ontem" não serviu em nenhum.</dd>
+</dl>
+<p>O <code>ins</code> da mesma linha, com <code>2026-10-12</code>, passou sem erro. Datas como <code>12/10/2026</code> também dão esse erro: o formato é sempre <strong>ano-mês-dia</strong>.</p>
+<p><strong>Como consertar:</strong> <code>datetime="2026-10-12"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Parágrafo dentro de <code>&lt;small&gt;</code></strong>
+<pre class="file" data-file="pequeno.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;small&gt;&lt;p&gt;Preços válidos até domingo.&lt;/p&gt;&lt;/small&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> monta o que está escrito, e a letra sai pequena. Funciona na tela, mas o <code>&lt;small&gt;</code> é em linha e não pode embrulhar um bloco.</p>
+<pre class="term" data-cwd="~/site">$ vnu pequeno.html
+"file:/home/ana/site/pequeno.html":8.8-8.10: error: Element “p” not allowed as child of element “small” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>"O elemento <code>p</code> não é permitido como filho do elemento <code>small</code> neste contexto." O mesmo vale para <code>mark</code>, <code>s</code>, <code>sub</code>, <code>sup</code> e <code>u</code>.</p>
+<p><strong>Como consertar:</strong> o parágrafo por fora: <code>&lt;p&gt;&lt;small&gt;Preços válidos até domingo.&lt;/small&gt;&lt;/p&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;del&gt;</code> e <code>&lt;ins&gt;</code> em volta de parágrafos: pode, com cuidado</strong>
+<p>O <code>del</code> e o <code>ins</code> são uma exceção: eles podem embrulhar um parágrafo inteiro, quando a correção acrescentou ou tirou um parágrafo todo. Este código é válido:</p>
+<pre class="file" data-file="insbloco.html" data-resultado>&lt;ins datetime="2026-10-12"&gt;&lt;p&gt;Novo: agora com cobertura de brigadeiro.&lt;/p&gt;&lt;/ins&gt;
+</pre>
+<p>Mas o contrário não: um parágrafo dentro de um <code>del</code> que já está dentro de outro parágrafo (<code>&lt;p&gt;Bolo &lt;del&gt;&lt;p&gt;velho&lt;/p&gt;&lt;/del&gt;&lt;/p&gt;</code>) desmonta tudo. O segundo <code>&lt;p&gt;</code> fecha o primeiro, o <code>del</code> fica vazio, e o validador dá quatro erros, começando por <code>End tag “p” implied, but there were open elements.</code> ("o fechamento do <code>p</code> ficou subentendido, mas havia elementos abertos") e <code>Unclosed element “del”.</code> A regra é a mesma do resto da aula: parágrafo nunca dentro de parágrafo.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Sentido</th></tr>
+<tr><td><code>&lt;mark&gt;…&lt;/mark&gt;</code></td><td>Marca-texto: relevante neste contexto (busca, trecho comentado)</td></tr>
+<tr><td><code>&lt;small&gt;…&lt;/small&gt;</code></td><td>Letras miúdas: aviso legal, condições, ©</td></tr>
+<tr><td><code>&lt;s&gt;…&lt;/s&gt;</code></td><td>Não está mais certo ou não vale mais (preço antigo)</td></tr>
+<tr><td><code>&lt;del datetime="AAAA-MM-DD"&gt;…&lt;/del&gt;</code></td><td>Apagado numa correção</td></tr>
+<tr><td><code>&lt;ins datetime="AAAA-MM-DD"&gt;…&lt;/ins&gt;</code></td><td>Inserido numa correção</td></tr>
+<tr><td><code>&lt;sub&gt;…&lt;/sub&gt;</code></td><td>Subscrito: H<sub>2</sub>O</td></tr>
+<tr><td><code>&lt;sup&gt;…&lt;/sup&gt;</code></td><td>Sobrescrito: m<sup>2</sup>, 2<sup>10</sup>, nota<sup>1</sup></td></tr>
+<tr><td><code>&lt;u&gt;…&lt;/u&gt;</code></td><td>Anotação (erro de ortografia); evite, parece link</td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem do validador</th><th>Quer dizer</th></tr>
+<tr><td><code>The “font” element is obsolete. Use CSS instead.</code></td><td>Tag obsoleta; o mesmo para <code>big</code>, <code>tt</code>, <code>center</code> (error)</td></tr>
+<tr><td><code>The “strike” element is obsolete. Use “del” or “s” element instead.</code></td><td>Troque por <code>del</code> ou <code>s</code> (error)</td></tr>
+<tr><td><code>Bad value “ontem” for attribute “datetime” on element “del”: …</code></td><td>A data não está no formato ano-mês-dia (error)</td></tr>
+<tr><td><code>Element “p” not allowed as child of element “small” in this context.</code></td><td>Bloco dentro de um elemento em linha (error)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A fórmula</h3>
+<p>Complete para o "2" ficar abaixo da linha:</p>
+<div class="ex-code">&lt;p&gt;O oxigênio que respiramos é O&lt;<input data-answer="sub" aria-label="tag de abertura">&gt;2&lt;/<input data-answer="sub" aria-label="tag de fechamento">&gt;.&lt;/p&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A data da correção</h3>
+<p>A Ana corrigiu a receita no dia 5 de março de 2026. Complete o valor do <code>datetime</code>:</p>
+<div class="ex-code">&lt;ins datetime="<input data-answer="2026-03-05" aria-label="data">"&gt;3 ovos&lt;/ins&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Na promoção, o preço antigo aparece riscado ao lado do novo. Qual tag combina?</p>
+<label><input type="radio" name="q3"> <code>&lt;del&gt;</code>, porque foi apagado</label>
+<label><input type="radio" name="q3"> <code>&lt;strike&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;s&gt;</code>, porque o preço não vale mais, sem ter sido um erro</label>
+<label><input type="radio" name="q3"> <code>&lt;u&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">4. A pessoa buscou "fubá" no site da Ana. Qual tag destaca a palavra nos resultados?</p>
+<label><input type="radio" name="q4"> <code>&lt;mark&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;strong&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;b&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;font color="yellow"&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O que o validador diz de <code>&lt;center&gt;Lojinha da Ana&lt;/center&gt;</code>?</p>
+<label><input type="radio" name="q5"> Nada: é válido</label>
+<label><input type="radio" name="q5"> Um <code>info warning</code>, porque é só aparência</label>
+<label><input type="radio" name="q5"> Que falta o atributo <code>align</code></label>
+<label><input type="radio" name="q5"> <code>error: The “center” element is obsolete. Use CSS instead.</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">6. Por que o guia recomenda evitar o <code>&lt;u&gt;</code>?</p>
+<label><input type="radio" name="q6"> Porque ele é obsoleto e dá erro</label>
+<label><input type="radio" name="q6"> Porque texto sublinhado parece link, e o visitante tenta clicar</label>
+<label><input type="radio" name="q6"> Porque ele não aparece em celulares</label>
+<label><input type="radio" name="q6"> Porque ele só funciona dentro de <code>&lt;p&gt;</code></label>
+</div>
+
+<h3>Missão final: a receita corrigida</h3>
+
+<div class="tryhtml" data-goal="texto:del=2 xícaras,texto:ins=1 xícara e meia,attr:ins[datetime]=2026-10-12,sel:del + ins,texto:small=Receita revisada,nsel:p small=1">
+<p class="try-task"><strong>Missão:</strong> a Ana mudou a quantidade de açúcar em 12 de outubro de 2026. Marque "2 xícaras" como <strong>apagado</strong> e "1 xícara e meia" como <strong>inserido</strong>, com <code>datetime="2026-10-12"</code> no <code>&lt;ins&gt;</code>. Depois, transforme a frase do último parágrafo ("Receita revisada…") em letras miúdas, com <code>&lt;small&gt;</code> dentro do parágrafo.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;p&gt;Bata 3 cenouras, 3 ovos e 1 xícara de óleo.&lt;/p&gt;
+&lt;p&gt;Junte 2 xícaras 1 xícara e meia de açúcar e 2 xícaras de farinha.&lt;/p&gt;
+&lt;p&gt;Receita revisada depois dos comentários dos leitores.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;p&gt;Bata 3 cenouras, 3 ovos e 1 xícara de óleo.&lt;/p&gt;
+&lt;p&gt;Junte &lt;del&gt;2 xícaras&lt;/del&gt; &lt;ins datetime="2026-10-12"&gt;1 xícara e meia&lt;/ins&gt; de açúcar e 2 xícaras de farinha.&lt;/p&gt;
+&lt;p&gt;&lt;small&gt;Receita revisada depois dos comentários dos leitores.&lt;/small&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<p>Repare que só o primeiro "2 xícaras" (o do açúcar) foi apagado; o da farinha continua valendo e fica sem marcação.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;mark&gt;</code> = marca-texto, relevante neste contexto. <code>&lt;small&gt;</code> = letras miúdas.</li>
+  <li><code>&lt;s&gt;</code> = não vale mais (preço antigo). <code>&lt;del&gt;</code> e <code>&lt;ins&gt;</code> = o que saiu e o que entrou numa correção, com <code>datetime="AAAA-MM-DD"</code>.</li>
+  <li><code>&lt;sub&gt;</code> e <code>&lt;sup&gt;</code> = abaixo e acima da linha, quando a posição faz parte do sentido (H<sub>2</sub>O, m<sup>2</sup>, notas). Para ordinais, use º e ª.</li>
+  <li><code>&lt;u&gt;</code> = anotação; evite, porque sublinhado parece link.</li>
+  <li>Todas são em linha: vão dentro do parágrafo (só <code>del</code> e <code>ins</code> podem embrulhar parágrafos inteiros).</li>
+  <li><code>&lt;font&gt;</code>, <code>&lt;big&gt;</code>, <code>&lt;strike&gt;</code>, <code>&lt;tt&gt;</code> e <code>&lt;center&gt;</code> são obsoletas e dão <strong>erro</strong> no validador. Aparência é CSS.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
