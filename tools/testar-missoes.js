@@ -184,7 +184,8 @@ async function main() {
 
   let nav = null, srv = null, base = "";
   async function navegador() {
-    if (nav) return nav;
+    if (nav && nav.connected) return nav;
+    if (nav) { try { await nav.close(); } catch (e) { /* já caiu */ } nav = null; }
     srv = await servidor();
     base = "http://127.0.0.1:" + srv.address().port + "/";
     nav = await puppeteer().launch({ executablePath: CHROMIUM, headless: true, args: ["--no-sandbox", "--disable-gpu", "--mute-audio", "--autoplay-policy=no-user-gesture-required"] });
@@ -255,7 +256,8 @@ async function main() {
     });
     if (faltam.length || faltamR.length) {
       await navegador();
-      const pg = await nav.newPage();
+      let pg;
+      try { pg = await nav.newPage(); } catch (e) { nav.connected = false; nav = null; await navegador(); pg = await nav.newPage(); } // o Chromium caiu: abre de novo
       const errosPag = [];
       pg.on("pageerror", (e) => errosPag.push(e.message));
       pg.on("dialog", (d) => d.dismiss().catch(() => {}));

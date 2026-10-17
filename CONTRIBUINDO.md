@@ -178,9 +178,13 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
     - Com `sandbox="allow-scripts allow-same-origin"`, o Chrome mostraria no F12 da página do guia um aviso por quadro: `An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.`
     - O editor mesmo impede que um link (`target="_top"`) ou um formulário troque a página do guia.
   - O CSS e o JS do leitor ficam no documento do quadro. Mesmo assim, um script **pode** alcançar a página do guia (`parent`, `top.location`) e o `localStorage` dela (o tema escolhido). Não ensine `localStorage.clear()` nem `top.location` no editor.
-- **Modo simples:** sem service worker (arquivo aberto do disco, janela anônima do Firefox), o quadro usa `srcdoc`. O guia publicado (HTTPS) sempre usa o modo completo. Para ver o modo simples, abra com `?htmlsim=simples` no endereço. Neste modo, conferido no Chromium:
+- **Quando o editor usa cada modo (`HtmlSim.modo()` diz qual):**
+  - **service worker** (o modo completo, descrito acima): quando o navegador tem `navigator.serviceWorker` e `caches`, a página está num contexto seguro (`https://`, ou `http://localhost`/`127.0.0.1`) e o `assets/htmlsim-sw.js` fica ativo em até 6 segundos. É o caso do guia publicado no GitHub Pages e do testador.
+  - **`srcdoc`** (modo simples): em qualquer outro caso (arquivo aberto do disco com `file://`, `http://` sem ser localhost, janela anônima do Firefox, service worker bloqueado) ou com `?htmlsim=simples` no endereço (para conferir). O console do F12 mostra `htmlsim: sem service worker (…); usando o modo simples` quando a tentativa falha.
+- **Modo simples**, conferido no Chromium:
   - o CSS e o JS das abas entram embutidos: o `href` do `<link>` muda, e as metas `attr:` em `link`/`script` podem falhar;
-  - os links entre as abas, as âncoras e os formulários continuam funcionando;
+  - os links entre as abas e os formulários continuam funcionando;
+  - um `href="#x"` navega de verdade para o fragmento do próprio quadro, como no modo completo: rola, liga o `:target` e move o ponto de partida do foco (o próximo <kbd>Tab</kbd> parte dali);
   - um link para uma página que não existe só dá um aviso no console;
   - um GET para outra aba não leva os dados no `location.search`;
   - o documento **nunca** fica em modo quirks (é a regra do `srcdoc`);

@@ -562,7 +562,13 @@
     if (this.modoAtual !== "sw") {
       // srcdoc: os endereços relativos apontam para a página do guia; refaz com as abas
       var rel = new URL(location.href);
-      if (url.href.split("#")[0] === rel.href.split("#")[0] && url.hash) { e.preventDefault(); var d = win.document, t = d.getElementById(decodeURIComponent(url.hash.slice(1))) || d.getElementsByName(decodeURIComponent(url.hash.slice(1)))[0]; if (t) t.scrollIntoView(); this.endereco = (this.atual || "") + url.hash; if (this.opts.aoEndereco) this.opts.aoEndereco(this.endereco); return; }
+      if (url.href.split("#")[0] === rel.href.split("#")[0] && url.hash) {
+        // o href="#x" resolve contra a página do guia; navega de verdade para o fragmento do próprio
+        // quadro (rola, muda o :target e o ponto de partida do foco, como num site)
+        e.preventDefault();
+        try { win.location.hash = url.hash; } catch (x) { var d = win.document, t = d.getElementById(decodeURIComponent(url.hash.slice(1))); if (t) t.scrollIntoView(); }
+        this.endereco = (this.atual || "") + url.hash; if (this.opts.aoEndereco) this.opts.aoEndereco(this.endereco); return;
+      }
       var nomeRel = url.origin === location.origin ? decodeURIComponent(url.pathname.slice(new URL("./", location.href).pathname.length)) : null;
       if (nomeRel && this.arquivo(nomeRel) && ehHtml(nomeRel)) { e.preventDefault(); this.antes = this.atual; this.mostrar(nomeRel, { busca: url.search, hash: url.hash }); return; }
       if (url.origin === location.origin && !/\.html?$|\/$/i.test(url.pathname)) return; // arquivo do site (assets/midia/…)
