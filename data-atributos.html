@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Atributos data-* — guardar dados seus nos elementos | Guia HTML</title>
+<meta name="description" content="Atributos data-* para quem nunca fez um site: guardar dados próprios num elemento (data-preco, data-categoria), as regras do nome, ler e mudar com o dataset do JavaScript no console, o hífen que vira camelCase, o texto que não é número, o uso no CSS e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Atributos data-*</span></h1>
+
+<p class="intro">O HTML tem uma lista fechada de atributos: você não pode inventar um <code>preco="35"</code>, porque o validador recusa. Mas às vezes o seu site precisa guardar uma informação num elemento: o preço de um produto, a categoria de uma receita, quantas fatias tem um bolo. Para isso existem os atributos <strong><code>data-*</code></strong>: qualquer nome que comece com <code>data-</code> é válido. Nesta aula você vai criar os seus, lê-los com o JavaScript (o <code>dataset</code>) vendo tudo no console, e usá-los no CSS.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Para que servem os <code>data-*</code> e por que não inventar atributos sem o <code>data-</code>.</li>
+  <li>As regras do nome: <code>data-preco</code>, <code>data-preco-kg</code>.</li>
+  <li>Como ler os valores no JavaScript com <code>dataset</code>, e o hífen que vira maiúscula (<code>precoKg</code>).</li>
+  <li>Por que <code>"35" + 1</code> dá <code>351</code>: o valor é sempre texto.</li>
+  <li>Como mudar e apagar um <code>data-*</code> pelo JavaScript.</li>
+  <li>Como o CSS escolhe elementos pelo valor de um <code>data-*</code>.</li>
+  <li>Quando <strong>não</strong> usar <code>data-*</code>.</li>
+</ul>
+</div>
+
+<p>As mensagens do validador desta aula saíram do <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. O que aparece no console foi conferido num navegador de verdade, e você pode repetir tudo nos editores da página.</p>
+
+<hr>
+
+<h2>A ideia: a etiqueta do estoque</h2>
+<p>Na lojinha da Ana, cada pote de doce tem um rótulo bonito, para o cliente: "Brigadeiro de colher". Embaixo do pote, tem uma <strong>etiquetinha</strong> que só a Ana olha: o preço, o código do fornecedor, quantos ainda tem no estoque. O cliente nem vê, mas é ela que faz o caixa funcionar.</p>
+<p>Os <code>data-*</code> são essa etiqueta de baixo do pote: dados que não aparecem na página, guardados no próprio elemento, para o <strong>seu</strong> JavaScript e o <strong>seu</strong> CSS usarem.</p>
+
+<hr>
+
+<h2>1. Escrever um data-*</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ul&gt;
+  &lt;li data-preco="35" data-categoria="bolo"&gt;Bolo de cenoura&lt;/li&gt;
+  &lt;li data-preco="2" data-categoria="doce"&gt;Brigadeiro&lt;/li&gt;
+  &lt;li data-preco="40" data-categoria="bolo" data-preco-kg="80"&gt;Bolo de morango&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<p>O resultado é uma lista comum: os preços <strong>não aparecem</strong>. Eles estão guardados nos elementos, esperando quem os use.</p>
+
+<dl class="anatomy">
+  <dt>data-</dt><dd>O começo obrigatório. É ele que diz ao navegador e ao validador: "este atributo é um dado do autor da página". <em>Data</em> = "dados".</dd>
+  <dt>preco</dt><dd>O nome que <strong>você</strong> escolhe. Escreva em minúsculas, sem espaço; para juntar palavras, use hífen.</dd>
+  <dt>="35"</dt><dd>O valor: sempre um texto, entre aspas. Pode ser um número, uma palavra, uma frase.</dd>
+  <dt>data-categoria="bolo"</dt><dd>Um elemento pode ter quantos <code>data-*</code> quiser.</dd>
+  <dt>data-preco-kg="80"</dt><dd>Nome com hífen: <code>preco-kg</code>. Guarde este, ele vai mudar de cara no JavaScript.</dd>
+</dl>
+
+<h3>As regras do nome</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Nome</th><th>Válido?</th><th>Por quê</th></tr>
+<tr><td><code>data-preco</code></td><td>sim</td><td>o jeito recomendado</td></tr>
+<tr><td><code>data-preco-kg</code></td><td>sim</td><td>palavras ligadas por hífen</td></tr>
+<tr><td><code>preco</code></td><td><strong>não</strong></td><td>falta o <code>data-</code>: atributo inventado</td></tr>
+<tr><td><code>data-</code></td><td><strong>não</strong></td><td>falta o nome depois do hífen</td></tr>
+<tr><td><code>data-Preco</code></td><td>passa no validador, mas evite</td><td>o navegador transforma em <code>data-preco</code> (veja em <a href="#errado">Quando dá errado</a>)</td></tr>
+</table>
+</div>
+
+<p>Veja o que o validador diz dos dois casos inválidos:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;ul&gt;
+  &lt;li data-preco="35"&gt;Bolo de cenoura&lt;/li&gt;
+  &lt;li data-="2"&gt;Brigadeiro&lt;/li&gt;
+  &lt;li preco="5"&gt;Café&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":10.3-10.16: error: Attribute “data-” not allowed on element “li” at this point.
+"file:/home/ana/site/index.html":11.3-11.16: error: Attribute “preco” not allowed on element “li” at this point.</pre>
+
+<p>O <code>10.3-10.16</code> quer dizer "linha 10, da coluna 3 à 16": a tag <code>&lt;li data-="2"&gt;</code> inteira (as colunas 1 e 2 são os espaços do começo).</p>
+
+<p>"O atributo <code>preco</code> não é permitido no elemento <code>li</code> neste ponto." O navegador até guarda o <code>preco="5"</code>, mas a página fica inválida, e um atributo inventado hoje pode virar um atributo de verdade, com outro significado, numa versão futura do HTML. O <code>data-</code> é o espaço reservado para você: o HTML promete nunca criar um atributo oficial com esse começo.</p>
+
+<hr>
+
+<h2>2. Ler no JavaScript: o dataset</h2>
+<p>Cada elemento tem uma propriedade <code>dataset</code> ("conjunto de dados"): uma caixa com todos os <code>data-*</code> dele, <strong>sem</strong> o <code>data-</code> na frente. Rode e veja o console, embaixo do resultado:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;ul&gt;
+  &lt;li id="bolo" data-preco="35" data-categoria="bolo" data-preco-kg="80"&gt;Bolo de cenoura&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const bolo = document.getElementById("bolo");
+
+console.log(bolo.dataset.preco);
+console.log(bolo.dataset.categoria);
+console.log(bolo.dataset.precoKg);
+console.log(JSON.stringify(bolo.dataset));
+</pre>
+</div>
+
+<p>No console aparecem quatro linhas:</p>
+<pre class="out">35
+bolo
+80
+{"preco":"35","categoria":"bolo","precoKg":"80"}</pre>
+
+<dl class="anatomy">
+  <dt>bolo.dataset.preco</dt><dd>O valor de <code>data-preco</code>: o texto <code>35</code>.</dd>
+  <dt>bolo.dataset.categoria</dt><dd>O valor de <code>data-categoria</code>.</dd>
+  <dt>bolo.dataset.precoKg</dt><dd>O valor de <code>data-preco-kg</code>. No JavaScript, um hífen no meio de um nome seria lido como "menos". Por isso o navegador <strong>tira o hífen e põe a letra seguinte em maiúscula</strong>: <code>preco-kg</code> vira <code>precoKg</code>. Esse estilo de escrever se chama <em>camelCase</em> ("caixa de camelo"), por causa das "corcovas" das maiúsculas.</dd>
+  <dt>JSON.stringify(bolo.dataset)</dt><dd>Mostra a caixa inteira de uma vez, como texto: cada nome (já em camelCase) e o seu valor, entre aspas. Repare que até o <code>35</code> está entre aspas: é texto.</dd>
+</dl>
+
+<div class="note">
+<strong>No F12 do navegador</strong>
+<p>Nas <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>, no console, <code>console.log(bolo.dataset)</code> mostra a caixa como um objeto que você pode abrir com um clique, algo como <code>DOMStringMap {preco: '35', …}</code>. <em>DOMStringMap</em> é o nome técnico da caixa: um "mapa de textos". Outros consoles mostram só <code>[object DOMStringMap]</code>, sem os valores; por isso esta aula usa o <code>JSON.stringify</code>, que mostra os valores em qualquer lugar.</p>
+</div>
+
+<h3>Outro jeito: getAttribute</h3>
+<p>O <code>getAttribute</code> ("pegar atributo") lê qualquer atributo pelo nome <strong>completo</strong>, como está no HTML:</p>
+<pre class="file" data-file="script.js">console.log(bolo.getAttribute("data-preco-kg"));   // 80
+</pre>
+<p>Os dois funcionam. O <code>dataset</code> é mais curto; o <code>getAttribute</code> evita a troca para camelCase.</p>
+
+<h3>O valor é sempre texto</h3>
+<p>Isto pega todo mundo uma vez. Rode:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;p id="bolo" data-preco="35"&gt;Bolo de cenoura&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const bolo = document.getElementById("bolo");
+
+console.log(bolo.dataset.preco + 1);
+console.log(Number(bolo.dataset.preco) + 1);
+</pre>
+</div>
+
+<p>A primeira linha do console mostra <code>351</code>, e não <code>36</code>. Com textos, o <code>+</code> do JavaScript <strong>cola</strong> um no outro: <code>"35"</code> com <code>1</code> dá <code>"351"</code>. Para fazer conta, transforme o texto em número com <code>Number(…)</code>: a segunda linha mostra <code>36</code>.</p>
+
+<div class="tryhtml" data-goal="attr:#bolo[data-fatias]=12,console:Fatias: 12,src:dataset\.fatias">
+<p class="try-task"><strong>Missão:</strong> o bolo tem 12 fatias. Guarde isso no elemento com um atributo <code>data-fatias</code> e troque o <code>???</code> do <code>script.js</code> para que o console mostre <code>Fatias: 12</code>, lendo o valor pelo <code>dataset</code>.</p>
+<pre class="script" data-file="index.html">&lt;p id="bolo" data-preco="35"&gt;Bolo de cenoura&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const bolo = document.getElementById("bolo");
+
+console.log("Preço: " + bolo.dataset.preco);
+console.log("Fatias: " + ???);
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p id="bolo" data-preco="35" data-fatias="12"&gt;Bolo de cenoura&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="solucao" data-file="script.js">const bolo = document.getElementById("bolo");
+
+console.log("Preço: " + bolo.dataset.preco);
+console.log("Fatias: " + bolo.dataset.fatias);
+</pre>
+</div>
+
+<p>Do jeito que começa, o <code>???</code> não é JavaScript válido, e o console mostra um erro de sintaxe (<code>SyntaxError</code>) em vez das duas linhas. Isso é normal: o erro some quando você troca o <code>???</code>.</p>
+
+<hr>
+
+<h2>3. Mudar e apagar pelo JavaScript</h2>
+<p>O <code>dataset</code> também <strong>escreve</strong>. Guardar um valor novo cria (ou troca) o atributo no elemento; o <code>delete</code> apaga:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;p id="bolo" data-preco="35" data-categoria="bolo"&gt;Bolo de cenoura&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const bolo = document.getElementById("bolo");
+
+bolo.dataset.estoque = "0";
+bolo.dataset.precoPromo = "30";
+console.log(bolo.outerHTML);
+
+delete bolo.dataset.categoria;
+console.log(bolo.outerHTML);
+</pre>
+</div>
+
+<p>O <code>outerHTML</code> ("HTML de fora") mostra a tag do elemento como ela está <strong>agora</strong>. O console mostra:</p>
+<pre class="out">&lt;p id="bolo" data-preco="35" data-categoria="bolo" data-estoque="0" data-preco-promo="30"&gt;Bolo de cenoura&lt;/p&gt;
+&lt;p id="bolo" data-preco="35" data-estoque="0" data-preco-promo="30"&gt;Bolo de cenoura&lt;/p&gt;</pre>
+
+<ul>
+  <li><code>dataset.estoque = "0"</code> criou o atributo <code>data-estoque="0"</code>.</li>
+  <li><code>dataset.precoPromo</code> virou <code>data-preco-promo</code>: o caminho de volta do camelCase. A maiúscula vira hífen + minúscula.</li>
+  <li><code>delete bolo.dataset.categoria</code> apagou o <code>data-categoria</code>.</li>
+</ul>
+<p>Essas mudanças acontecem na página <strong>aberta</strong>, não no seu arquivo. No F12, na aba dos elementos, você vê os atributos novos no elemento; o <code>index.html</code> no disco continua igual.</p>
+
+<hr>
+
+<h2>4. Usar no CSS</h2>
+<p>O CSS escolhe elementos pelo valor de um atributo com colchetes: <code>[data-estoque="0"]</code> quer dizer "todo elemento cujo <code>data-estoque</code> vale <code>0</code>". Assim, a Ana risca o que acabou sem escrever nenhum JavaScript:</p>
+
+<div class="tryhtml" data-goal="attr:#brigadeiro[data-estoque]=0,css:#brigadeiro{text-decoration-line}=line-through,attr:#bolo[data-estoque]=5">
+<p class="try-task"><strong>Missão:</strong> o brigadeiro acabou. Mude o <code>data-estoque</code> dele para <code>0</code> e veja a regra do <code>estilo.css</code> riscar o item sozinha. O bolo continua com 5.</p>
+<pre class="script" data-file="index.html">&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;ul&gt;
+  &lt;li id="bolo" data-estoque="5"&gt;Bolo de cenoura&lt;/li&gt;
+  &lt;li id="brigadeiro" data-estoque="12"&gt;Brigadeiro&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="script" data-file="estilo.css">[data-estoque="0"] {
+  text-decoration: line-through;
+  color: gray;
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;ul&gt;
+  &lt;li id="bolo" data-estoque="5"&gt;Bolo de cenoura&lt;/li&gt;
+  &lt;li id="brigadeiro" data-estoque="0"&gt;Brigadeiro&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<dl class="anatomy">
+  <dt>[data-estoque="0"]</dt><dd>O <strong>seletor</strong>: quais elementos a regra pega. Aqui, os que têm <code>data-estoque</code> igual a <code>0</code>.</dd>
+  <dt>text-decoration: line-through</dt><dd>"Decoração do texto: uma linha atravessada": o risco.</dd>
+  <dt>color: gray</dt><dd>Cor do texto: cinza.</dd>
+</dl>
+
+<p>O CSS tem guia próprio (o futuro Guia CSS). O que importa aqui: o <code>data-*</code> é uma etiqueta que o CSS também sabe ler. Juntando as duas coisas, o JavaScript só precisa trocar o valor (<code>dataset.estoque = "0"</code>) e o CSS cuida da aparência. Mas lembre: um risco visual não chega ao leitor de tela; escreva também "esgotado" no texto quando a informação for importante.</p>
+
+<hr>
+
+<h2>5. Quando usar e quando não usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Use <code>data-*</code> para…</th><th>Não use <code>data-*</code> para…</th></tr>
+<tr><td>dados que o <strong>seu</strong> script ou CSS usa: preço, categoria, código, estado ("aberto", "esgotado")</td><td>informação que o visitante precisa ler: ela tem de estar no <strong>texto</strong> da página</td></tr>
+<tr><td>ligar um botão ao que ele controla, quando não existe atributo oficial para isso</td><td>substituir um atributo que já existe: <code>data-link</code> no lugar de <code>href</code>, <code>data-descricao</code> no lugar de <code>alt</code>, <code>data-escondido</code> no lugar de <code>hidden</code></td></tr>
+<tr><td>poucos dados, curtos</td><td>guardar dados grandes ou secretos: qualquer um vê o código da página (<kbd>Ctrl</kbd> + <kbd>U</kbd>)</td></tr>
+</table>
+</div>
+
+<p>Leitores de tela, buscadores e tradutores <strong>ignoram</strong> os <code>data-*</code>: eles são só para o seu código. Para um valor que as máquinas de fora devem entender (como o preço de um produto para o Google), existem os <a href="dados-estruturados.html">Dados Estruturados</a> e o elemento <code>&lt;data value="…"&gt;</code> (aula <a href="time.html">time e data</a>).</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>Attribute “preco” not allowed on element “li” at this point.</code></strong>
+<p><strong>O que significa:</strong> um atributo inventado, sem o <code>data-</code>. O navegador guarda o atributo, mas o <code>dataset</code> não o enxerga (<code>dataset.preco</code> dá <code>undefined</code>, "indefinido").</p>
+<p><strong>Como consertar:</strong> <code>data-preco="5"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Attribute “data-” not allowed on element “li” at this point.</code></strong>
+<p><strong>O que significa:</strong> o <code>data-</code> sozinho, sem nome depois. <strong>Como consertar:</strong> dê um nome: <code>data-preco</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>dataset.Fatias</code> dá <code>undefined</code> (o nome tinha maiúscula)</strong>
+<p><strong>O que o navegador faz:</strong> no HTML, os nomes de atributos não diferenciam maiúsculas de minúsculas, e o navegador guarda tudo em minúsculas. O <code>data-Fatias="12"</code> vira <code>data-fatias="12"</code>, e o validador não reclama. Aí, no JavaScript, <code>dataset.Fatias</code> não existe (dá <code>undefined</code>), e o certo é <code>dataset.fatias</code>.</p>
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;p id="bolo" data-Fatias="12"&gt;Bolo de cenoura&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const bolo = document.getElementById("bolo");
+console.log(bolo.dataset.Fatias);
+console.log(bolo.dataset.fatias);
+</pre>
+</div>
+<p>O console mostra <code>undefined</code> e depois <code>12</code>. <strong>Como consertar:</strong> escreva o nome do atributo todo em minúsculas, com hífen entre as palavras. A maiúscula aparece só no JavaScript, e só no lugar do hífen.</p>
+</div>
+
+<div class="cenario">
+<strong>No console: <code>ReferenceError: kg is not defined</code></strong>
+<p><strong>O que significa:</strong> você escreveu <code>bolo.dataset.preco-kg</code>, com hífen, no JavaScript. Ele leu "<code>bolo.dataset.preco</code> <strong>menos</strong> <code>kg</code>", e não existe nada chamado <code>kg</code>. (<em>ReferenceError: kg is not defined</em> = "erro de referência: <code>kg</code> não está definido".)</p>
+<p><strong>Como consertar:</strong> <code>bolo.dataset.precoKg</code>, ou <code>bolo.getAttribute("data-preco-kg")</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>A conta deu <code>351</code> em vez de <code>36</code></strong>
+<p><strong>O que significa:</strong> o valor de um <code>data-*</code> é sempre texto, e <code>+</code> com texto cola em vez de somar. O validador não tem como ver isso: o HTML está certo.</p>
+<p><strong>Como consertar:</strong> <code>Number(bolo.dataset.preco) + 1</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;li data-preco="35"&gt;</code></td><td>Guarda um dado seu no elemento</td></tr>
+<tr><td><code>el.dataset.preco</code></td><td>Lê <code>data-preco</code> (sempre um texto)</td></tr>
+<tr><td><code>el.dataset.precoKg</code></td><td>Lê <code>data-preco-kg</code> (hífen + letra vira maiúscula)</td></tr>
+<tr><td><code>el.getAttribute("data-preco-kg")</code></td><td>Lê pelo nome completo</td></tr>
+<tr><td><code>el.dataset.estoque = "0"</code></td><td>Cria ou troca <code>data-estoque</code></td></tr>
+<tr><td><code>delete el.dataset.estoque</code></td><td>Apaga <code>data-estoque</code></td></tr>
+<tr><td><code>Number(el.dataset.preco)</code></td><td>Transforma o texto em número, para fazer conta</td></tr>
+<tr><td><code>JSON.stringify(el.dataset)</code></td><td>Mostra todos os <code>data-*</code> de uma vez, como texto</td></tr>
+<tr><td>CSS: <code>[data-estoque="0"] { … }</code></td><td>Estilo para os elementos com esse valor</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O começo do nome</h3>
+<p>Complete para guardar a categoria de um jeito válido:</p>
+<div class="ex-code">&lt;li <input data-answer="data-categoria" aria-label="nome do atributo">="bolo"&gt;Bolo de cenoura&lt;/li&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Do HTML para o JavaScript</h3>
+<p>O elemento tem <code>data-tempo-forno="40"</code>. Complete o nome no <code>dataset</code>:</p>
+<div class="ex-code">console.log(bolo.dataset.<input data-answer="tempoForno" aria-label="nome no dataset">);</div>
+</div>
+
+<div class="exercise">
+<h3>3. Fazer conta</h3>
+<p>Complete para somar 5 ao preço guardado em <code>data-preco</code>:</p>
+<div class="ex-code"><input data-answer="Number" aria-label="função"> (bolo.dataset.preco) + 5</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Com <code>data-preco="35"</code>, o que <code>bolo.dataset.preco + 1</code> mostra no console?</p>
+<label><input type="radio" name="q4"> <code>36</code></label>
+<label><input type="radio" name="q4"> <code>undefined</code></label>
+<label><input type="radio" name="q4"> <code>351</code></label>
+<label><input type="radio" name="q4"> Um erro</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Qual destes atributos o validador W3C <strong>recusa</strong>?</p>
+<label><input type="radio" name="q5"> <code>data-preco-kg="80"</code></label>
+<label><input type="radio" name="q5"> <code>preco="80"</code></label>
+<label><input type="radio" name="q5"> <code>data-categoria="bolo"</code></label>
+<label><input type="radio" name="q5"> <code>data-x="1"</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Onde deve ficar o aviso "esgotado", que o cliente precisa saber?</p>
+<label><input type="radio" name="q6"> Só num <code>data-estoque="0"</code></label>
+<label><input type="radio" name="q6"> Num <code>data-aviso="esgotado"</code></label>
+<label><input type="radio" name="q6"> Num comentário do HTML</label>
+<label><input type="radio" name="q6"> No texto da página (o <code>data-*</code> pode estar junto, para o CSS e o script)</label>
+</div>
+
+<h3>Missão final: o caixa da lojinha</h3>
+
+<div class="tryhtml" data-goal="nsel:li[data-preco]=3,attr:#bolo[data-preco]=35,attr:#brigadeiro[data-preco]=2,attr:#cafe[data-preco]=2,console:Total: R$ 39,src:Number\(">
+<p class="try-task"><strong>Missão:</strong> o <code>script.js</code> soma os preços de todos os itens da lista, mas os itens ainda não têm preço, e a conta tem um defeito.</p>
+<ol>
+  <li>No <code>index.html</code>, guarde o preço de cada item com <code>data-preco</code>: bolo <code>35</code>, brigadeiro <code>2</code>, café <code>2</code>.</li>
+  <li>Rode e veja o total errado no console. Conserte a linha da soma com <code>Number(…)</code> para o console mostrar <code>Total: R$ 39</code>.</li>
+</ol>
+<pre class="script" data-file="index.html">&lt;ul&gt;
+  &lt;li id="bolo"&gt;Bolo de cenoura&lt;/li&gt;
+  &lt;li id="brigadeiro"&gt;Brigadeiro&lt;/li&gt;
+  &lt;li id="cafe"&gt;Café&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">let total = 0;
+
+for (const item of document.querySelectorAll("li")) {
+  console.log(item.textContent + ": " + item.dataset.preco);
+  total = total + item.dataset.preco;
+}
+
+console.log("Total: R$ " + total);
+</pre>
+<pre class="solucao" data-file="index.html">&lt;ul&gt;
+  &lt;li id="bolo" data-preco="35"&gt;Bolo de cenoura&lt;/li&gt;
+  &lt;li id="brigadeiro" data-preco="2"&gt;Brigadeiro&lt;/li&gt;
+  &lt;li id="cafe" data-preco="2"&gt;Café&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="solucao" data-file="script.js">let total = 0;
+
+for (const item of document.querySelectorAll("li")) {
+  console.log(item.textContent + ": " + item.dataset.preco);
+  total = total + Number(item.dataset.preco);
+}
+
+console.log("Total: R$ " + total);
+</pre>
+</div>
+
+<p>Antes do conserto, depois de pôr os preços, o console mostra <code>Total: R$ 03522</code>: o <code>0</code> do começo colado com <code>"35"</code>, <code>"2"</code> e <code>"2"</code>. Sem nenhum <code>data-preco</code>, cada item mostra <code>undefined</code> e o total sai <code>Total: R$ NaN</code> (<em>Not a Number</em>, "não é um número": a soma de <code>0</code> com "nada"). (O <code>let</code> cria uma caixa que pode mudar de valor, e o <code>for … of</code> repete o bloco para cada item; são assuntos do JavaScript.)</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>data-*</code> guarda dados <strong>seus</strong> num elemento: qualquer nome que comece com <code>data-</code>. Inventar um atributo sem o <code>data-</code> é erro no validador.</li>
+  <li>Escreva os nomes em minúsculas, com hífen: <code>data-preco-kg</code>. O navegador põe tudo em minúsculas de qualquer jeito.</li>
+  <li>No JavaScript, <code>el.dataset.preco</code> lê e escreve; o hífen + letra vira maiúscula (<code>precoKg</code>); <code>delete</code> apaga. <code>getAttribute("data-…")</code> lê pelo nome completo.</li>
+  <li>O valor é <strong>sempre texto</strong>: use <code>Number(…)</code> para fazer conta.</li>
+  <li>No CSS, <code>[data-estoque="0"]</code> escolhe os elementos com esse valor.</li>
+  <li>Leitores de tela e buscadores ignoram os <code>data-*</code>: o que o visitante precisa saber vai no texto.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
