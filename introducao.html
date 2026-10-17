@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Introdução — o que é HTML, tags e elementos | Guia HTML</title>
+<meta name="description" content="O que é HTML para quem nunca fez um site: uma página é um arquivo de texto com marcações (tags), o que quer dizer HyperText Markup Language, por que HTML não é linguagem de programação, o trio HTML, CSS e JavaScript, e os primeiros erros, com o resultado real no seu navegador e as mensagens do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Introdução</span></h1>
+
+<p class="intro">A Ana cozinha muito bem e quer colocar as receitas dela na internet. Para isso, ela precisa escrever as páginas numa língua que o navegador entende: o <strong>HTML</strong>. Nesta aula você vai descobrir o que é uma página da Web "por dentro", o que quer dizer cada letra da sigla HTML, o que são as <strong>tags</strong> e por que o HTML não é uma linguagem de programação, e sim de <strong>marcação</strong>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Que uma página da Web é só um <strong>arquivo de texto</strong>, com a extensão <code>.html</code>.</li>
+  <li>O que quer dizer <em>HyperText Markup Language</em>, palavra por palavra.</li>
+  <li>O que é uma <strong>tag</strong> (<code>&lt;h1&gt;</code>, <code>&lt;/h1&gt;</code>) e o que é um <strong>elemento</strong>.</li>
+  <li>Por que o navegador junta tudo numa linha só quando o texto não tem marcação.</li>
+  <li>A diferença entre <strong>marcar</strong> e <strong>programar</strong>, e o trio HTML, CSS e JavaScript.</li>
+  <li>O que acontece com uma tag escrita errada ou inventada, com a mensagem real do validador.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula estão na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>, e foram conferidos com o validador oficial do W3C (<code>vnu</code>). Os quadros <strong>Resultado</strong> são desenhados pelo seu navegador, na hora, a partir do código que está logo acima deles.</p>
+
+<hr>
+
+<h2>A ideia: as anotações na receita</h2>
+<p>Imagine que a Ana escreveu uma receita à mão e entregou para uma gráfica imprimir num livro. O texto é só texto: o gráfico não sabe o que é o nome da receita, o que é a lista de ingredientes e o que é o modo de fazer. Então a Ana faz <strong>anotações</strong> na margem, com caneta vermelha: "isto é o título", "isto é uma lista", "isto aqui é importante". O gráfico lê as anotações e decide como imprimir: o título grande, a lista com marcadores, o importante em negrito.</p>
+
+<p>O HTML é exatamente isso. Você escreve o texto e coloca <strong>marcações</strong> em volta de cada pedaço, dizendo o que ele é. Quem lê as marcações é o <strong>navegador</strong> (o Chrome, o Firefox, o Edge, o Safari), e ele decide como desenhar cada coisa na tela.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na gráfica</th><th>Na Web</th><th>Nesta aula</th></tr>
+<tr><td>O texto da receita</td><td>O <strong>conteúdo</strong> da página</td><td><code>Bolo de cenoura</code></td></tr>
+<tr><td>A anotação "isto é o título"</td><td>Uma <strong>tag</strong> HTML</td><td><code>&lt;h1&gt;</code> … <code>&lt;/h1&gt;</code></td></tr>
+<tr><td>O gráfico, que lê as anotações</td><td>O <strong>navegador</strong></td><td>o seu Chrome, Firefox, Edge ou Safari</td></tr>
+<tr><td>A página impressa</td><td>A página desenhada na tela</td><td>o quadro <strong>Resultado</strong></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. Uma página é um arquivo de texto</h2>
+<p>Pode parecer estranho, mas toda página da Web, por mais bonita que seja, começa como um <strong>arquivo de texto</strong>, igual a um bilhete do Bloco de Notas. Esta é a página de receitas da Ana, vista no terminal com o comando <code>cat</code> (que mostra o conteúdo de um arquivo):</p>
+
+<pre class="term" data-cwd="~/site">$ cat receita.html
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+$ file receita.html                  « o comando file diz que tipo de arquivo é
+receita.html: HTML document, ASCII text</pre>
+
+<p>O <code>file</code> respondeu "documento HTML, texto ASCII" (ASCII é o jeito mais simples de guardar letras sem acento). Não tem nada de especial ali dentro: só letras, números e alguns sinais como <code>&lt;</code>, <code>&gt;</code> e <code>/</code>. Qualquer editor de texto abre e muda esse arquivo, e qualquer navegador sabe desenhá-lo. Veja o que o navegador faz com ele:</p>
+
+<pre class="file" data-file="receita.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Das onze linhas do arquivo, só duas aparecem na tela: o título e o parágrafo. O resto é a moldura da página (o tipo de documento, o idioma, o título da aba), que a aula <a href="estrutura.html">Estrutura de uma Página</a> explica linha por linha. Por enquanto, olhe só para as duas linhas do meio.</p>
+
+<div class="note">
+<strong>A extensão <code>.html</code></strong>
+<p>O nome do arquivo termina em <code>.html</code>. Essa <strong>extensão</strong> avisa ao sistema e ao navegador: "este texto é uma página da Web". Você também vai ver <code>.htm</code>, com três letras, um costume antigo do tempo em que o Windows só aceitava extensões de três letras. As duas funcionam igual; o guia usa sempre <code>.html</code>. Criar e abrir o arquivo no seu computador é a aula <a href="primeiro-arquivo.html">Criar e Abrir um Arquivo .html</a>.</p>
+</div>
+
+<hr>
+
+<h2>2. Texto sem marcação: tudo numa linha</h2>
+<p>Para entender por que as marcações existem, veja o que acontece quando a Ana escreve a receita sem nenhuma, uma coisa em cada linha, como num caderno:</p>
+
+<pre class="file" data-file="trecho" data-resultado>Bolo de cenoura
+Ingredientes
+2 xícaras de farinha
+3 ovos
+1 xícara de açúcar
+</pre>
+
+<p>Tudo grudou numa linha só (ou em poucas, se a tela for estreita), sem título, sem lista, sem nada. Não é um defeito do navegador: ele recebeu só texto, e <strong>quebra de linha no código não é quebra de linha na página</strong>. Para o navegador, apertar <kbd>Enter</kbd> no meio do texto é o mesmo que dar um espaço. Ele não tem como adivinhar que "Bolo de cenoura" é um título e que as três últimas linhas são uma lista. Alguém precisa dizer. (Os espaços e as quebras têm aula própria: <a href="espacos.html">Espaços e Quebras de Linha</a>.)</p>
+
+<p>O validador, aliás, não reclama de nada nesse texto: texto solto é permitido numa página. Ele está certo; só não está organizado.</p>
+
+<p>Agora a mesma receita, com marcações:</p>
+
+<pre class="file" data-file="trecho" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;2 xícaras de farinha&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+  &lt;li&gt;1 xícara de açúcar&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<p>O texto é o mesmo. A diferença são as marcações, e o navegador obedeceu a cada uma:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Marcação</th><th>O que ela diz</th><th>Como o navegador mostrou</th></tr>
+<tr><td><code>&lt;h1&gt;</code> … <code>&lt;/h1&gt;</code></td><td>"Isto é o título principal" (<em>heading 1</em>, "título de nível 1")</td><td>Letras grandes, em negrito, numa linha própria</td></tr>
+<tr><td><code>&lt;h2&gt;</code> … <code>&lt;/h2&gt;</code></td><td>"Isto é um subtítulo" (título de nível 2)</td><td>Um pouco menor que o <code>h1</code></td></tr>
+<tr><td><code>&lt;ul&gt;</code> … <code>&lt;/ul&gt;</code></td><td>"Aqui começa e termina uma lista" (<em>unordered list</em>, "lista não ordenada")</td><td>Recuo à esquerda</td></tr>
+<tr><td><code>&lt;li&gt;</code> … <code>&lt;/li&gt;</code></td><td>"Isto é um item da lista" (<em>list item</em>)</td><td>Uma linha com uma bolinha na frente</td></tr>
+</table>
+</div>
+
+<p>Repare que nenhuma marcação diz "use letra grande" ou "ponha uma bolinha". Elas dizem <strong>o que o texto é</strong>. A aparência é decisão do navegador, e pode ser mudada depois com CSS. Essa ideia tem nome, <strong>semântica</strong> (o significado das coisas), e é tão importante que tem uma seção inteira no Nível 2 (<a href="semantica.html">HTML Semântico</a>).</p>
+
+<div class="tryhtml" data-goal="texto:h1=Bolo de cenoura">
+<p class="try-task"><strong>Experimente:</strong> o nome da receita está solto, sem marcação. Coloque <code>&lt;h1&gt;</code> antes de <code>Bolo de cenoura</code> e <code>&lt;/h1&gt;</code> depois, na mesma linha, e veja o título crescer no resultado. Depois, se quiser, faça o mesmo com <code>Modo de fazer</code>, usando <code>&lt;h2&gt;</code> e <code>&lt;/h2&gt;</code>.</p>
+<pre class="script" data-file="index.html">Bolo de cenoura
+&lt;p&gt;Rende 8 fatias.&lt;/p&gt;
+Modo de fazer
+&lt;p&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Rende 8 fatias.&lt;/p&gt;
+&lt;h2&gt;Modo de fazer&lt;/h2&gt;
+&lt;p&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. HTML, palavra por palavra</h2>
+<p>A sigla vem do inglês: <strong>H</strong>yper<strong>T</strong>ext <strong>M</strong>arkup <strong>L</strong>anguage, "linguagem de marcação de hipertexto". Cada palavra conta um pedaço da história:</p>
+
+<dl class="anatomy">
+  <dt>HyperText</dt><dd><strong>Hipertexto</strong>: um texto com <strong>links</strong>, que levam a outros textos. Num livro, você lê de uma página para a seguinte. Num hipertexto, você clica numa palavra e pula para outro documento, que pode estar em outro computador, do outro lado do mundo. Essa foi a grande ideia da Web.</dd>
+  <dt>Markup</dt><dd><strong>Marcação</strong>: as anotações em volta do texto, como a caneta vermelha da Ana. Em HTML, as marcações são as <strong>tags</strong>.</dd>
+  <dt>Language</dt><dd><strong>Linguagem</strong>: um conjunto de regras combinadas. Existe uma lista fixa de tags, cada uma com um significado, e regras de onde cada uma pode aparecer. Todos os navegadores seguem as mesmas regras, por isso a mesma página funciona em qualquer um.</dd>
+</dl>
+
+<p>O "hiper" do hipertexto é o link. Ele é feito com a tag <code>&lt;a&gt;</code> (de <em>anchor</em>, "âncora") e tem aula própria, <a href="links.html">Links</a>. Só para você ver um:</p>
+
+<pre class="file" data-file="trecho" data-resultado>&lt;p&gt;A receita da cobertura está na &lt;a href="https://pt.wikipedia.org/wiki/Ganache"&gt;Wikipédia&lt;/a&gt;.&lt;/p&gt;
+</pre>
+
+<p>A palavra "Wikipédia" virou um link (normalmente azul e sublinhado). O endereço para onde ele leva fica escondido dentro da tag, no <code>href</code> (<em>hypertext reference</em>, "referência de hipertexto"). Isso é um <strong>atributo</strong>, uma informação extra dentro da tag de abertura (aula <a href="atributos.html">Atributos</a>).</p>
+
+<hr>
+
+<h2>4. Tags e elementos</h2>
+<p>Duas palavras aparecem o tempo todo em livros, sites e mensagens do validador. Vale a pena separá-las desde já:</p>
+
+<pre class="file" data-file="trecho" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;h1&gt;</dt><dd>A <strong>tag de abertura</strong>: o nome da tag (<code>h1</code>) entre os sinais de menor <code>&lt;</code> e maior <code>&gt;</code>. Ela diz "aqui começa".</dd>
+  <dt>Receitas da Ana</dt><dd>O <strong>conteúdo</strong>: o que aparece na tela.</dd>
+  <dt>&lt;/h1&gt;</dt><dd>A <strong>tag de fechamento</strong>: o mesmo nome, com uma barra <code>/</code> logo depois do <code>&lt;</code>. Ela diz "aqui termina".</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Palavra</th><th>O que é</th><th>Exemplo</th></tr>
+<tr><td><strong>tag</strong></td><td>A marcação em si, com os sinais <code>&lt; &gt;</code></td><td><code>&lt;h1&gt;</code> e <code>&lt;/h1&gt;</code> são duas tags</td></tr>
+<tr><td><strong>elemento</strong></td><td>A coisa inteira: tag de abertura, conteúdo e tag de fechamento</td><td><code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code> é um elemento <code>h1</code></td></tr>
+</table>
+</div>
+
+<p>No dia a dia, muita gente diz "a tag <code>h1</code>" querendo dizer "o elemento <code>h1</code>", e todo mundo entende. O validador, porém, usa as duas palavras com cuidado: <em>end tag</em> (tag de fechamento) e <em>element</em> (elemento) aparecem em mensagens diferentes. A aula <a href="elementos.html">Elementos e Tags</a> mostra os detalhes, inclusive os elementos que não têm tag de fechamento, como o <code>&lt;br&gt;</code>.</p>
+
+<hr>
+
+<h2>5. Marcar não é programar</h2>
+<p>O HTML é uma linguagem de <strong>marcação</strong>, e não de <strong>programação</strong>. A diferença é importante:</p>
+<ul>
+  <li>Uma linguagem de <strong>programação</strong> (como C, Python ou JavaScript) dá <strong>ordens</strong> ao computador: faça esta conta, repita isto dez vezes, se o usuário clicar aqui, faça aquilo.</li>
+  <li>Uma linguagem de <strong>marcação</strong> só <strong>descreve</strong> um documento: isto é um título, isto é uma lista, isto é um link. Ela não faz conta, não toma decisão, não repete nada.</li>
+</ul>
+
+<p>Veja o que o HTML faz com uma conta:</p>
+
+<pre class="file" data-file="trecho" data-resultado>&lt;p&gt;2 + 2&lt;/p&gt;
+</pre>
+
+<p>Apareceu <code>2 + 2</code>, e não <code>4</code>. Para o HTML, "2 + 2" é só um texto, como "Bolo de cenoura". Quem faz contas numa página é o <strong>JavaScript</strong>.</p>
+
+<p>Isso quer dizer que o HTML é "menos" que uma linguagem de programação? Não: é outra ferramenta, para outro trabalho. E é a base de tudo na Web. Escrever HTML bem feito (organizado, com o significado certo em cada tag, acessível para todo mundo) é uma habilidade profissional de verdade.</p>
+
+<h3>O trio: HTML, CSS e JavaScript</h3>
+<p>Quase todo site usa três linguagens juntas, cada uma com um trabalho. Pense numa casa:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Linguagem</th><th>Na casa</th><th>Na página</th><th>Arquivo</th></tr>
+<tr><td><strong>HTML</strong></td><td>As paredes, as portas, os cômodos: a <strong>estrutura</strong></td><td>O conteúdo e o que cada parte é: título, parágrafo, lista, imagem, formulário</td><td><code>index.html</code></td></tr>
+<tr><td><strong>CSS</strong></td><td>A pintura, os móveis, a decoração: a <strong>aparência</strong></td><td>Cores, fontes, tamanhos, espaçamentos, a posição de cada coisa</td><td><code>estilo.css</code></td></tr>
+<tr><td><strong>JavaScript</strong></td><td>A eletricidade: o que <strong>funciona</strong> quando você aperta um botão</td><td>O comportamento: contas, respostas a cliques, conteúdo que muda sem recarregar</td><td><code>script.js</code></td></tr>
+</table>
+</div>
+
+<p>Dá para morar numa casa sem pintura e sem luz, mas não numa casa sem paredes. Do mesmo jeito, uma página só com HTML funciona (fica simples, mas funciona), enquanto CSS e JavaScript sozinhos não mostram nada: eles sempre trabalham em cima de um HTML. Por isso o HTML é a primeira coisa a aprender.</p>
+
+<p>A caixa abaixo tem os três, cada um na sua aba. Clique nas abas para ver cada arquivo. O CSS pinta o título de vermelho-tijolo; o JavaScript faz a conta que o HTML não sabe fazer e escreve o resultado no console, embaixo do quadro. Você não precisa entender o CSS nem o JavaScript agora (eles têm guias próprios); repare só em quem faz o quê.</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Rende 2 + 2 + 4 fatias.&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="estilo.css">h1 {
+  color: #b5462f;
+}
+</pre>
+<pre class="script" data-file="script.js">console.log("2 + 2 + 4 =", 2 + 2 + 4);
+</pre>
+</div>
+
+<p>O parágrafo continua mostrando <code>2 + 2 + 4</code>: o HTML não faz a conta, o JavaScript faz (o console mostra o <code>8</code>). Experimente trocar a cor no <code>estilo.css</code> (<code>blue</code>, <code>green</code>) ou apagar a linha do <code>&lt;link&gt;</code> no <code>index.html</code>: sem ela, o CSS não é carregado e o título volta à cor normal. As tags que ligam o CSS e o JavaScript ao HTML têm aulas próprias no Nível 2: <a href="ligar-css.html">Ligar CSS</a> e <a href="script.html">O Elemento script</a>.</p>
+
+<hr>
+
+<h2>6. Onde o HTML está</h2>
+<p>Em todo lugar onde existe uma página da Web, e em alguns lugares que você nem imagina:</p>
+<ul>
+  <li><strong>Todo site</strong>, do mais simples ao mais complicado. Mesmo os sites feitos com ferramentas prontas (WordPress, Wix, lojas virtuais) entregam HTML ao navegador no fim. Você pode ver o HTML de qualquer página com o atalho <kbd>Ctrl</kbd> + <kbd>U</kbd> na maioria dos navegadores de computador (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>).</li>
+  <li><strong>E-mails</strong> com cores, imagens e botões são escritos em HTML.</li>
+  <li><strong>Livros digitais</strong> no formato EPUB guardam cada capítulo como um arquivo do tipo HTML.</li>
+  <li><strong>Programas de computador</strong>: vários aplicativos de desktop são, por dentro, páginas HTML num navegador embutido. O editor VS Code, que você vai conhecer em <a href="editores.html">Editores</a>, é um deles.</li>
+</ul>
+
+<h3>Um pouco de história</h3>
+<p>O HTML nasceu junto com a Web, no CERN (um laboratório de física na Suíça), criado por Tim Berners-Lee entre 1989 e 1991. Ele queria que os cientistas compartilhassem documentos com links entre eles. A primeira lista de tags tinha pouco mais de uma dúzia de marcações; hoje são mais de cem elementos, para vídeo, formulários, gráficos e muito mais. A linguagem mudou muito, mas uma página escrita nos anos 1990 ainda abre num navegador de hoje. As versões, do HTML 2.0 ao Living Standard, estão em <a href="versoes.html">Versões do HTML</a>.</p>
+
+<hr>
+
+<h2>7. Onde escrever HTML</h2>
+<p>Como o HTML é texto, existem vários jeitos de escrevê-lo:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Jeito</th><th>Como é</th><th>Quando usar</th></tr>
+<tr><td>Um <strong>editor de código</strong> no seu computador (VS Code e outros)</td><td>Você cria os arquivos <code>.html</code> numa pasta e abre no navegador</td><td>Sempre que for fazer um site de verdade. É o jeito deste guia.</td></tr>
+<tr><td>As caixas <strong>Experimente</strong> do guia</td><td>Você edita aqui na página e vê o resultado embaixo</td><td>Para aprender e testar uma ideia rápida, sem instalar nada</td></tr>
+<tr><td>Editores <strong>on-line</strong> (CodePen, JSFiddle e parecidos)</td><td>Sites que funcionam como as caixas Experimente, com conta para salvar</td><td>Para mostrar um exemplo a alguém pela internet</td></tr>
+<tr><td><strong>Construtores de sites</strong> (WordPress, Wix…)</td><td>Você arrasta blocos, e a ferramenta escreve o HTML por você</td><td>Para quem não quer mexer em código. Saber HTML ajuda a consertar o que a ferramenta faz errado.</td></tr>
+<tr><td>Processadores de texto (Word, LibreOffice Writer)</td><td>Guardam o texto num formato próprio, com tudo misturado</td><td><strong>Nunca</strong>, para escrever HTML. Veja o porquê em "Quando dá errado".</td></tr>
+</table>
+</div>
+
+<p><strong>Qual usar?</strong> Para aprender, as caixas Experimente. Para o seu site, um editor de código (a aula <a href="editores.html">Editores</a> ajuda a escolher).</p>
+
+<hr>
+
+<h2>Quando dá errado</h2>
+<p>O navegador quase nunca mostra uma mensagem de erro. Ele sempre desenha <em>alguma coisa</em>, e é por isso que o validador é tão útil: ele diz o que está errado mesmo quando a página "parece" funcionar.</p>
+
+<div class="cenario">
+<strong>A tag aparece escrita na página</strong>
+<pre class="file" data-file="receita.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Rende 8 fatias.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que aconteceu:</strong> faltou o <code>&lt;</code> no começo da tag. Sem ele, <code>h1&gt;</code> é texto comum, e o navegador mostra o texto. O título não cresceu, e o <code>&lt;/h1&gt;</code>, que fecha uma coisa que nunca foi aberta, foi simplesmente ignorado. O validador aponta justamente esse fechamento sem par:</p>
+<pre class="term" data-cwd="~/site">$ vnu receita.html
+"file:/home/ana/site/receita.html":8.19-8.23: error: Stray end tag “h1”.</pre>
+<p><em>Stray end tag</em> = "tag de fechamento perdida", sem uma abertura correspondente. A posição <code>8.19-8.23</code> (linha 8 do arquivo, colunas 19 a 23) aponta o <code>&lt;/h1&gt;</code>; a causa está um pouco antes, no começo da mesma linha.</p>
+<p><strong>Como consertar:</strong> toda tag começa com <code>&lt;</code> e termina com <code>&gt;</code>: <code>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Uma tag inventada (ou em português)</strong>
+<pre class="file" data-file="receita.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;titulo&gt;Bolo de cenoura&lt;/titulo&gt;
+&lt;p&gt;Rende 8 fatias.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que aconteceu:</strong> não existe a tag <code>&lt;titulo&gt;</code>. As tags do HTML têm nomes fixos, em inglês (ou abreviações do inglês). O navegador não reconhece a tag e mostra o texto de dentro como texto comum, sem estilo de título. O validador é mais direto:</p>
+<pre class="term" data-cwd="~/site">$ vnu receita.html
+"file:/home/ana/site/receita.html":8.1-8.8: error: Element “titulo” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/receita.html":8.1-8.8: error: The “titulo” element is a completely-unknown element that is not allowed anywhere in any HTML content.</pre>
+<p>A primeira linha diz "o elemento <code>titulo</code> não é permitido como filho do elemento <code>body</code> neste contexto" (e avisa que vai ignorar os erros de dentro dele). A segunda é a importante: "o elemento <code>titulo</code> é completamente desconhecido e não é permitido em nenhum lugar do HTML".</p>
+<p><strong>Como consertar:</strong> use a tag certa, <code>&lt;h1&gt;</code>. Na dúvida, procure o nome na <a href="ref-elementos.html">lista de todos os elementos</a>.</p>
+</div>
+
+<div class="cenario">
+<strong>O navegador mostra o código em vez da página</strong>
+<p><strong>O que aconteceu:</strong> o arquivo foi salvo com a extensão errada, quase sempre <code>.txt</code> (por exemplo, <code>receita.txt</code> ou <code>receita.html.txt</code>). O conteúdo é HTML, e o <code>file</code> até percebe isso pelo que está escrito dentro:</p>
+<pre class="term" data-cwd="~/site">$ file receita.txt
+receita.txt: HTML document, Unicode text, UTF-8 text</pre>
+<p>Mas o navegador não olha o conteúdo para decidir: ele olha o nome. Com <code>.txt</code>, ele entende "isto é um texto simples" e mostra tudo como está, com os <code>&lt;</code> e <code>&gt;</code> à vista, numa fonte de máquina de escrever.</p>
+<p><strong>Como consertar:</strong> renomeie o arquivo para terminar em <code>.html</code>. No Windows, a extensão costuma ficar escondida, e o arquivo pode estar com um <code>.txt</code> que você não vê; a aula <a href="primeiro-arquivo.html">Criar e Abrir um Arquivo .html</a> mostra como ligar a exibição das extensões.</p>
+</div>
+
+<div class="cenario">
+<strong>A página escrita no Word não funciona</strong>
+<p><strong>O que aconteceu:</strong> processadores de texto como o Word e o LibreOffice Writer não salvam texto puro. O arquivo <code>.docx</code> é um pacote com o texto, as fontes, as margens e muito mais, num formato que o navegador não entende. E, mesmo quando você escolhe salvar "como página da Web", eles costumam trocar as aspas retas <code>"</code> por aspas curvas <code>“ ”</code> e escrevem um HTML enorme e cheio de coisas próprias.</p>
+<p><strong>Como consertar:</strong> escreva HTML num editor de texto puro ou num editor de código (aula <a href="editores.html">Editores</a>).</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Termo</th><th>O que é</th></tr>
+<tr><td><strong>HTML</strong></td><td><em>HyperText Markup Language</em>: a linguagem de marcação das páginas da Web</td></tr>
+<tr><td><strong>página</strong> (ou documento)</td><td>Um arquivo <code>.html</code>, que o navegador desenha</td></tr>
+<tr><td><strong>site</strong></td><td>Um conjunto de páginas ligadas entre si (e de imagens, CSS…), publicado num endereço</td></tr>
+<tr><td><strong>navegador</strong></td><td>O programa que lê o HTML e desenha a página: Chrome, Firefox, Edge, Safari…</td></tr>
+<tr><td><strong>tag</strong></td><td>Uma marcação: <code>&lt;h1&gt;</code> (abertura) ou <code>&lt;/h1&gt;</code> (fechamento)</td></tr>
+<tr><td><strong>elemento</strong></td><td>Tag de abertura + conteúdo + tag de fechamento: <code>&lt;p&gt;Oi&lt;/p&gt;</code></td></tr>
+<tr><td><strong>atributo</strong></td><td>Informação extra dentro da tag de abertura: <code>href="…"</code></td></tr>
+<tr><td><strong>hipertexto</strong></td><td>Texto com links para outros textos</td></tr>
+<tr><td><strong>CSS</strong></td><td>A linguagem da aparência (cores, fontes, posições)</td></tr>
+<tr><td><strong>JavaScript</strong></td><td>A linguagem de programação dos navegadores (o comportamento)</td></tr>
+<tr><td><strong>validador</strong></td><td>O programa que confere se o HTML segue as regras: <code>vnu</code>, ou o site validator.w3.org</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A sigla</h3>
+<p>Complete o nome por extenso do HTML:</p>
+<div class="ex-code">HyperText <input data-answer="Markup|markup" aria-label="palavra que falta"> Language</div>
+</div>
+
+<div class="exercise">
+<h3>2. A tag de fechamento</h3>
+<p>Complete o elemento para fechar o título:</p>
+<div class="ex-code">&lt;h1&gt;Receitas da Ana<input data-answer="&lt;/h1&gt;" aria-label="tag de fechamento"></div>
+</div>
+
+<div class="exercise">
+<h3>3. A extensão</h3>
+<p>Com que extensão (incluindo o ponto) o guia salva as páginas?</p>
+<div class="ex-code">receita<input data-answer=".html" aria-label="extensão"></div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. O que o navegador mostra para <code>&lt;p&gt;10 - 3&lt;/p&gt;</code>?</p>
+<label><input type="radio" name="q4"> <code>7</code></label>
+<label><input type="radio" name="q4"> Uma mensagem de erro</label>
+<label><input type="radio" name="q4"> <code>10 - 3</code></label>
+<label><input type="radio" name="q4"> Nada</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Na página, qual linguagem cuida das cores e das fontes?</p>
+<label><input type="radio" name="q5"> HTML</label>
+<label><input type="radio" name="q5"> CSS</label>
+<label><input type="radio" name="q5"> JavaScript</label>
+<label><input type="radio" name="q5"> Nenhuma: é o navegador que escolhe, sempre</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. A Ana escreveu três linhas de texto, sem nenhuma tag, uma embaixo da outra. Como o navegador mostra?</p>
+<label><input type="radio" name="q6"> Em três linhas, como no arquivo</label>
+<label><input type="radio" name="q6"> Como uma lista com marcadores</label>
+<label><input type="radio" name="q6"> Não mostra nada, porque falta tag</label>
+<label><input type="radio" name="q6"> Tudo junto, como uma frase só: a quebra de linha do código vira um espaço</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">7. Em <code>&lt;h1&gt;Bolo&lt;/h1&gt;</code>, o que é o "elemento"?</p>
+<label><input type="radio" name="q7"> Tudo: <code>&lt;h1&gt;Bolo&lt;/h1&gt;</code></label>
+<label><input type="radio" name="q7"> Só o <code>&lt;h1&gt;</code></label>
+<label><input type="radio" name="q7"> Só a palavra <code>Bolo</code></label>
+<label><input type="radio" name="q7"> Só o <code>&lt;/h1&gt;</code></label>
+</div>
+
+<h3>Missão final: a receita organizada</h3>
+
+<div class="tryhtml" data-goal="texto:h1=Pudim de leite,texto:h2=Ingredientes,nsel:ul li=3,texto:ul li:nth-child(1)=leite condensado,texto:ul li:nth-child(3)=ovos,nsel:h1=1">
+<p class="try-task"><strong>Missão:</strong> a receita de pudim da Ana está toda solta. Marque o nome <code>Pudim de leite</code> como título principal (<code>h1</code>), <code>Ingredientes</code> como subtítulo (<code>h2</code>) e os três ingredientes como uma lista (<code>ul</code>, com um <code>li</code> para cada item). Não mude os textos.</p>
+<pre class="script" data-file="index.html">Pudim de leite
+Ingredientes
+1 lata de leite condensado
+2 medidas da lata de leite
+3 ovos
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Pudim de leite&lt;/h1&gt;
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;1 lata de leite condensado&lt;/li&gt;
+  &lt;li&gt;2 medidas da lata de leite&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<p>Se a lista não apareceu com bolinhas, confira se todos os <code>&lt;li&gt;</code> estão <strong>entre</strong> o <code>&lt;ul&gt;</code> e o <code>&lt;/ul&gt;</code>. Se o título engoliu o resto da página, faltou um <code>&lt;/h1&gt;</code> ou um <code>&lt;/h2&gt;</code>.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Uma página da Web é um <strong>arquivo de texto</strong> com a extensão <code>.html</code>. O navegador lê esse texto e desenha a página.</li>
+  <li>HTML = <em>HyperText Markup Language</em>, "linguagem de marcação de hipertexto": texto com links, organizado por marcações.</li>
+  <li>As marcações são as <strong>tags</strong>: <code>&lt;h1&gt;</code> abre, <code>&lt;/h1&gt;</code> fecha. Abertura + conteúdo + fechamento = <strong>elemento</strong>.</li>
+  <li>Sem tags, o navegador junta tudo: quebra de linha no código vira espaço na página.</li>
+  <li>As tags dizem <strong>o que</strong> cada coisa é, não <strong>como</strong> ela parece. HTML é a estrutura; CSS, a aparência; JavaScript, o comportamento.</li>
+  <li>HTML é marcação, não programação: <code>2 + 2</code> aparece como texto.</li>
+  <li>O navegador não mostra erros: tag sem <code>&lt;</code> vira texto, tag inventada é ignorada. Quem aponta o erro é o validador.</li>
+  <li>Próximo passo: <a href="como-funciona.html">Como o Navegador Lê HTML</a>, o caminho do arquivo até a tela.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
