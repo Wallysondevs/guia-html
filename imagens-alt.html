@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML alt — o texto alternativo das imagens | Guia HTML</title>
+<meta name="description" content="O atributo alt do HTML para quem nunca fez um site: quem usa o texto alternativo, como escrever um bom alt para fotos, logotipos, imagens-link e imagens com texto, quando usar alt vazio, as exceções que o validador aceita e o que ele não consegue perceber, com mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Texto Alternativo</span></h1>
+
+<p class="intro">Na aula <a href="imagens.html">Imagens</a>, todo <code>&lt;img&gt;</code> veio com um <code>alt</code>, e o validador reclamou quando ele faltou. Agora é hora de entender <strong>para quem</strong> é esse texto e <strong>o que escrever</strong> nele. Um bom <code>alt</code> é a diferença entre "o site da Ana tem uma foto de um bolo de cenoura com cobertura de chocolate" e "o site da Ana tem... alguma coisa chamada <code>IMG_0042.jpg</code>".</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Quem usa o texto alternativo: leitores de tela, quem está com a internet lenta, buscadores.</li>
+  <li>Como escrever um bom <code>alt</code> para uma foto, e o que não escrever ("imagem de…", nome de arquivo).</li>
+  <li>Por que o mesmo bolo pode pedir <code>alt</code>s diferentes, dependendo da página.</li>
+  <li>Quando usar <code>alt=""</code> (vazio) e por que ele é bem diferente de não ter <code>alt</code>.</li>
+  <li>O <code>alt</code> de imagens que são links, de logotipos e de imagens com texto escrito.</li>
+  <li>As "certas condições" da mensagem do validador e os erros que ele <strong>não</strong> consegue pegar.</li>
+</ul>
+</div>
+
+<p>As mensagens do validador saíram do <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/alt</code>.</p>
+
+<hr>
+
+<h2>A ideia: descrever a foto pelo telefone</h2>
+<p>A tia da Ana liga e pergunta: "e aquele bolo que você postou, como ficou?". A Ana não pode mostrar a foto pelo telefone. Ela <strong>conta</strong>: "um bolo de cenoura alto, com cobertura de chocolate escorrendo pelos lados". Ela não diz "é um arquivo JPG de 800 pixels", nem descreve a toalha da mesa: conta o que importa para a conversa.</p>
+
+<p>O <code>alt</code> é isso: o que você diria da imagem para alguém que não pode vê-la. E muita gente não vê as imagens do seu site:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Quem</th><th>O que acontece com o <code>alt</code></th></tr>
+<tr><td>Uma pessoa cega ou com baixa visão, usando um <strong>leitor de tela</strong> (NVDA, VoiceOver, TalkBack)</td><td>O programa lê o <code>alt</code> em voz alta quando chega na imagem (aula <a href="leitores-tela.html">Leitores de Tela</a>).</td></tr>
+<tr><td>Quem está com a internet lenta ou no modo de economia de dados</td><td>O navegador mostra o <code>alt</code> enquanto a foto não chega, ou no lugar dela.</td></tr>
+<tr><td>Todo mundo, quando o arquivo some (imagem quebrada)</td><td>O navegador mostra o <code>alt</code> no lugar da foto.</td></tr>
+<tr><td>Buscadores, como o Google</td><td>Usam o <code>alt</code> para entender a foto e mostrá-la na busca de imagens (aula <a href="seo.html">HTML e SEO</a>).</td></tr>
+</table>
+</div>
+
+<p>Dá para "ver" a página do jeito dessas pessoas: quebre as imagens de propósito. Abaixo, os arquivos não existem, e o seu navegador mostra só o que sobra, o <code>alt</code>. Compare as duas versões:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Versão 1&lt;/h2&gt;
+&lt;img src="quebrada/IMG_0042.jpg" alt="IMG_0042.jpg"&gt;
+&lt;img src="quebrada/foto2.jpg" alt="foto"&gt;
+
+&lt;h2&gt;Versão 2&lt;/h2&gt;
+&lt;img src="quebrada/IMG_0042.jpg" alt="Bolo de cenoura alto, com cobertura de chocolate escorrendo pelos lados"&gt;
+&lt;img src="quebrada/foto2.jpg" alt="Fatia do bolo no prato, mostrando a massa laranja e fofinha"&gt;
+</pre>
+
+<p>Na versão 1, quem não vê a foto fica sem saber nada. Na versão 2, dá para imaginar o bolo e até sentir vontade de comer. As duas versões passam no validador: ele confere se o <code>alt</code> <strong>existe</strong>, não se ele é bom. Escrever bem é com você.</p>
+
+<hr>
+
+<h2>1. Como escrever o <code>alt</code> de uma foto</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate, numa travessa branca"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>alt=</dt><dd>O atributo. Vai dentro do <code>&lt;img&gt;</code>, como o <code>src</code>, em qualquer ordem.</dd>
+  <dt>"Bolo de cenoura</dt><dd>Comece pelo <strong>principal</strong>: o que é. Se a pessoa só ouvir as primeiras palavras, já entendeu.</dd>
+  <dt>com cobertura de chocolate,</dt><dd>Depois, o detalhe que <strong>importa</strong> nesta página. Num site de receitas, a cobertura importa.</dd>
+  <dt>numa travessa branca"</dt><dd>Um detalhe a mais, se ajudar. Aqui é opcional.</dd>
+</dl>
+
+<h3>As regras de bolso</h3>
+<ol class="passo">
+  <li><strong>Curto:</strong> uma frase, quase sempre menos de 150 caracteres. É uma descrição, não uma redação.</li>
+  <li><strong>Sem "imagem de" nem "foto de":</strong> o leitor de tela já avisa que é uma imagem. "Imagem de bolo" vira algo como "imagem, imagem de bolo". A exceção é quando o tipo importa: "Pintura a óleo de…", "Captura de tela do…", "Desenho infantil de…".</li>
+  <li><strong>Sem nome de arquivo:</strong> <code>alt="bolo-800.jpg"</code> não conta nada a ninguém.</li>
+  <li><strong>Sem repetir o texto ao lado:</strong> se a legenda ou o parágrafo vizinho já diz tudo, o <code>alt</code> não precisa dizer de novo (seção 4).</li>
+  <li><strong>Na língua da página:</strong> numa página em <code>lang="pt-BR"</code>, o leitor de tela lê com a voz em português.</li>
+  <li><strong>Com pontuação normal:</strong> vírgulas e ponto final ajudam o leitor de tela a fazer as pausas certas.</li>
+</ol>
+
+<div class="tryhtml" data-goal="attr:img[src]=assets/midia/bolo-800.jpg,sel:img[alt]:not([alt=&quot;&quot;]),nsrc:alt=&quot;\s*(imagem|foto|figura)\b,nsrc:alt=&quot;[^&quot;]*\.(jpe?g|png|webp)&quot;,sel:img[alt*=&quot;bolo&quot; i]">
+<p class="try-task"><strong>Missão:</strong> o <code>alt</code> desta foto foi escrito com pressa. Reescreva: diga que é um bolo e um detalhe que importa num site de receitas. Sem começar com "imagem" ou "foto" e sem nome de arquivo.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="foto bolo-800.jpg"&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate"&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O mesmo bolo, <code>alt</code>s diferentes</h2>
+<p>O <code>alt</code> depende do <strong>motivo</strong> da imagem estar ali. A mesma foto do bolo, em três páginas da Ana:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Página</th><th>Para que a foto está ali</th><th>Um bom <code>alt</code></th></tr>
+<tr><td>A receita do bolo</td><td>Mostrar como o bolo deve ficar</td><td><code>alt="Bolo de cenoura pronto: massa alta e cobertura de chocolate brilhante"</code></td></tr>
+<tr><td>A lojinha</td><td>Vender o bolo</td><td><code>alt="Bolo de cenoura com cobertura de chocolate, inteiro, para 12 fatias"</code></td></tr>
+<tr><td>O blog: "Meu primeiro bolo deu errado"</td><td>Mostrar o desastre</td><td><code>alt="Bolo de cenoura afundado no meio, com a cobertura escorrendo para fora da forma"</code></td></tr>
+</table>
+</div>
+
+<p>Não existe um <code>alt</code> "certo" para uma foto, separado da página. Pergunte-se: <strong>se esta imagem sumisse, o que a pessoa perderia?</strong> É isso que vai no <code>alt</code>.</p>
+
+<hr>
+
+<h2>3. Imagem de enfeite: <code>alt=""</code></h2>
+<p>Algumas imagens não contam nada: um arabesco entre duas seções, uma bolinha colorida antes do título, uma textura de fundo. Se elas sumirem, ninguém perde informação. Para essas, o <code>alt</code> fica <strong>vazio</strong>, de propósito:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Bolos&lt;/h2&gt;
+&lt;p&gt;Cenoura, chocolate, fubá e laranja.&lt;/p&gt;
+&lt;img src="assets/midia/enfeite.svg" alt="" width="200" height="20"&gt;
+&lt;h2&gt;Tortas&lt;/h2&gt;
+&lt;p&gt;Limão, maçã e frango.&lt;/p&gt;
+</pre>
+
+<p><code>alt=""</code> quer dizer: "esta imagem é só enfeite, pode pular". O leitor de tela não fala nada sobre ela. É bem diferente de <strong>não ter</strong> <code>alt</code>:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que o leitor de tela faz</th><th>O validador</th></tr>
+<tr><td><code>alt="Bolo de cenoura"</code></td><td>Anuncia uma imagem e lê "Bolo de cenoura"</td><td>aprova</td></tr>
+<tr><td><code>alt=""</code></td><td>Pula a imagem, em silêncio</td><td>aprova</td></tr>
+<tr><td>sem <code>alt</code></td><td>Anuncia uma imagem e, sem nada para ler, muitos leitores de tela leem o <strong>nome do arquivo</strong>: "enfeite ponto svg", "IMG underline zero zero quatro dois"</td><td><code>error: An “img” element must have an “alt” attribute…</code></td></tr>
+</table>
+</div>
+
+<p>Por isso a regra do guia é: <strong>todo <code>&lt;img&gt;</code> tem <code>alt</code></strong>. Às vezes com texto, às vezes vazio, mas sempre lá. E <code>alt</code> sozinho, sem <code>=""</code>, é o mesmo que <code>alt=""</code> (o validador aceita os dois; o guia escreve <code>alt=""</code>, que deixa claro que foi de propósito).</p>
+
+<div class="warning">
+<strong>Não exagere no vazio</strong>
+<p>Na dúvida entre "enfeite" e "informação", escolha informação. Uma foto do bolo na página da receita nunca é enfeite, mesmo que seja bonita. <code>alt=""</code> é para imagens que, se sumissem, ninguém notaria a falta.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:img[src$=&quot;enfeite.svg&quot;][alt=&quot;&quot;],sel:img[src$=&quot;bolo-800.jpg&quot;]:not([alt=&quot;&quot;])[alt]">
+<p class="try-task"><strong>Missão:</strong> esta página tem duas imagens. Uma conta algo e a outra é só enfeite. Dê a cada uma o <code>alt</code> certo: texto para a que informa, vazio para a de enfeite.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" width="400" height="267"&gt;
+&lt;img src="assets/midia/enfeite.svg" alt="Enfeite" width="200" height="20"&gt;
+&lt;p&gt;Rende 12 fatias.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="267"&gt;
+&lt;img src="assets/midia/enfeite.svg" alt="" width="200" height="20"&gt;
+&lt;p&gt;Rende 12 fatias.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Repare no <code>alt="Enfeite"</code> do código inicial: ele obrigava quem usa leitor de tela a ouvir "imagem, Enfeite" no meio da receita, sem ganhar nada com isso.</p>
+
+<hr>
+
+<h2>4. Imagens com outros papéis</h2>
+<p>Além de "foto que informa" e "enfeite", três casos aparecem em quase todo site.</p>
+
+<h3>Imagem que é um link (ou um botão)</h3>
+<p>Quando a imagem é o <strong>único conteúdo</strong> de um link, o <code>alt</code> vira o nome do link. Ele deve dizer <strong>para onde o link leva</strong> (ou o que o botão faz), e não como a imagem é:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo.svg" alt="Bolos da Ana, página inicial" width="160" height="48"&gt;&lt;/a&gt;
+</pre>
+
+<p>Um <code>alt="Logotipo com um bolo rosa"</code> descreveria o desenho, mas quem ouve "link, logotipo com um bolo rosa" não sabe que ele leva à página inicial.</p>
+
+<div class="warning">
+<strong>O erro que o validador não vê</strong>
+<p>Uma imagem-link com <code>alt=""</code> deixa o link <strong>sem nome</strong>: o leitor de tela diz só "link" (ou lê o endereço, <code>index.html</code>). E o validador aprova:</p>
+<pre class="term" data-cwd="~/alt">$ cat link-vazio.html | grep img
+&lt;a href="index.html"&gt;&lt;img src="logo.png" alt=""&gt;&lt;/a&gt;
+$ vnu --verbose link-vazio.html
+link-vazio.html                                     « nenhum erro, e mesmo assim o link ficou mudo</pre>
+<p>Para pegar esse tipo de problema, existem verificadores de acessibilidade, como o painel de acessibilidade das Ferramentas do Desenvolvedor (F12) e o Lighthouse do Chrome (aula <a href="acessibilidade.html">Acessibilidade</a>).</p>
+</div>
+
+<h3>Imagem com texto escrito</h3>
+<p>Se a imagem tem palavras (um logotipo com o nome, um cartaz "Promoção de Páscoa: 20% off"), o <code>alt</code> repete <strong>as palavras</strong>. Quem não vê a imagem precisa receber o mesmo texto:</p>
+
+<pre class="file" data-file="index.html">&lt;img src="assets/midia/cartaz-pascoa.png" alt="Promoção de Páscoa: 20% de desconto em todos os bolos até domingo"&gt;
+</pre>
+
+<p>Melhor ainda: sempre que puder, escreva o texto <strong>em HTML</strong>, e não dentro de uma imagem. Texto em HTML aumenta com o zoom sem borrar, pode ser traduzido, copiado e encontrado pelo Google.</p>
+
+<h3>Imagem complexa: gráficos e mapas</h3>
+<p>Um gráfico com as vendas do ano não cabe numa frase. Dê ao <code>alt</code> o resumo (o que o gráfico mostra e a conclusão) e coloque os números <strong>no texto da página</strong>, numa tabela ou num parágrafo ao lado:</p>
+
+<pre class="file" data-file="index.html">&lt;img src="assets/midia/vendas-2026.png" alt="Gráfico de barras: as vendas de bolo dobraram entre janeiro e outubro de 2026. Os números estão na tabela abaixo."&gt;
+&lt;table&gt;
+  …                                 (a tabela, da aula Tabelas)
+&lt;/table&gt;
+</pre>
+
+<p>Aqui o tipo importa, então o <code>alt</code> pode começar com "Gráfico de barras". O jeito de juntar imagem e explicação com uma legenda é o <code>&lt;figure&gt;</code> da aula <a href="figure.html">figure e figcaption</a>.</p>
+
+<h3>Imagem com legenda que já diz tudo</h3>
+<p>Se o texto bem ao lado (uma legenda, o parágrafo de baixo) já descreve a imagem, o <code>alt</code> não precisa repetir: senão a pessoa ouve a mesma frase duas vezes. Use um <code>alt</code> curto que complete a informação, ou, se a legenda diz tudo, veja a exceção da seção 5.</p>
+
+<hr>
+
+<h2>5. As "certas condições" do validador</h2>
+<p>A mensagem de erro fala em "exceto em certas condições". Testando no laboratório, o validador aceitou um <code>&lt;img&gt;</code> sem <code>alt</code> em três situações:</p>
+
+<pre class="term" data-cwd="~/alt">$ grep img figure.html so-title.html aria.html
+figure.html:&lt;figure&gt;&lt;img src="bolo.jpg"&gt;&lt;figcaption&gt;Bolo de cenoura com cobertura de chocolate&lt;/figcaption&gt;&lt;/figure&gt;
+so-title.html:&lt;img src="bolo.jpg" title="Bolo de cenoura"&gt;
+aria.html:&lt;img src="bolo.jpg" aria-label="Bolo de cenoura"&gt;
+$ vnu --verbose figure.html so-title.html aria.html
+figure.html
+so-title.html
+aria.html                                           « os três passaram
+$ vnu figure-sem.html
+"file:/home/ana/alt/figure-sem.html":8.9-8.28: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
+
+<dl class="anatomy">
+  <dt>&lt;figure&gt; com &lt;figcaption&gt;</dt><dd>A imagem tem uma legenda de verdade, e a legenda serve de descrição. Sem a legenda (o <code>figure-sem.html</code>), o erro volta.</dd>
+  <dt>title="…"</dt><dd>O <code>title</code> também dá um nome à imagem, então o validador aceita. Mas ele só aparece ao passar o mouse, não aparece quando a imagem quebra e nem todo leitor de tela o lê. Não troque <code>alt</code> por <code>title</code>.</dd>
+  <dt>aria-label="…"</dt><dd>Um atributo de acessibilidade da aula <a href="aria.html">ARIA</a>, que dá nome a qualquer elemento. Para imagens, o <code>alt</code> faz o mesmo e funciona também quando a imagem quebra.</dd>
+</dl>
+
+<p>Essas exceções existem para casos raros, como um site de fotos onde as pessoas enviam imagens e ninguém escreveu descrição. No seu site, a regra continua: <strong>todo <code>&lt;img&gt;</code> tem <code>alt</code></strong>.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: An “img” element must have an “alt” attribute, except under certain conditions.</code></strong>
+<p><strong>O que significa:</strong> o <code>&lt;img&gt;</code> não tem <code>alt</code>, nem nenhuma das exceções da seção 5.</p>
+<p><strong>Como consertar:</strong> pergunte "se a imagem sumisse, o que a pessoa perderia?". Escreva isso no <code>alt</code>. Se ela não perderia nada, <code>alt=""</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: An “img” element with a “role” attribute must not have an “alt” attribute whose value is the empty string.</code></strong>
+<p><strong>O que aconteceu:</strong> a Ana leu num site antigo que imagens de enfeite levam <code>role="presentation"</code> e escreveu os dois:</p>
+<pre class="term" data-cwd="~/alt">$ grep img vazio-role.html
+&lt;img src="enfeite.png" alt="" role="presentation"&gt;
+$ vnu vazio-role.html
+"file:/home/ana/alt/vazio-role.html":8.1-8.50: error: An “img” element with a “role” attribute must not have an “alt” attribute whose value is the empty string.</pre>
+<p>"Um <code>img</code> com o atributo <code>role</code> não pode ter um <code>alt</code> vazio." O <code>alt=""</code> sozinho já diz "isto é enfeite"; o <code>role</code> sobra.</p>
+<p><strong>Como consertar:</strong> apague o <code>role</code>: <code>&lt;img src="enfeite.png" alt=""&gt;</code>. E sem o <code>alt</code>, só com <code>role</code>, o erro é outro: <code>An “img” element with a “role” attribute must also have an accessible name (e.g., an “alt” attribute).</code> ("precisa também de um nome acessível, por exemplo um <code>alt</code>").</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Quote “"” in attribute name. Probable cause: Matching quote missing somewhere earlier.</code></strong>
+<p><strong>O que aconteceu:</strong> o <code>alt</code> tem aspas dentro: <code>alt="O bolo "da vó" de cenoura"</code>. A segunda aspa fecha o atributo antes da hora, e o resto vira lixo:</p>
+<pre class="term" data-cwd="~/alt">$ vnu aspas.html
+"file:/home/ana/alt/aspas.html":8.1-8.34: error: No space between attributes.
+"file:/home/ana/alt/aspas.html":8.1-8.39: error: Quote “"” in attribute name. Probable cause: Matching quote missing somewhere earlier.
+"file:/home/ana/alt/aspas.html":8.1-8.51: error: Quote “"” in attribute name. Probable cause: Matching quote missing somewhere earlier.
+"file:/home/ana/alt/aspas.html":8.1-8.52: error: Attribute “da” not allowed on element “img” at this point.
+"file:/home/ana/alt/aspas.html":8.1-8.52: error: Attribute “vó"” not allowed on element “img” at this point.
+"file:/home/ana/alt/aspas.html":8.1-8.52: error: Attribute “de” not allowed on element “img” at this point.
+"file:/home/ana/alt/aspas.html":8.1-8.52: error: Attribute “cenoura"” not allowed on element “img” at this point.</pre>
+<p>Sete erros de um engano só. "Sem espaço entre atributos", "aspa no nome de um atributo; causa provável: falta a aspa correspondente em algum lugar antes" e os pedaços do texto virando atributos inventados. O leitor de tela lê só "O bolo".</p>
+<p><strong>Como consertar:</strong> use aspas simples por fora (<code>alt='O bolo "da vó" de cenoura'</code>), as aspas curvas do português (<code>alt="O bolo “da vó” de cenoura"</code>) ou a entidade <code>&amp;quot;</code> (<code>alt="O bolo &amp;quot;da vó&amp;quot; de cenoura"</code>, aula <a href="entidades.html">Entidades</a>). As três passam no validador.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Duplicate attribute “alt”.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>&lt;img src="bolo.jpg" alt="Bolo de cenoura" alt="Foto"&gt;</code>, depois de copiar e colar. O navegador fica com o <strong>primeiro</strong> e ignora o segundo.</p>
+<p><strong>Como consertar:</strong> um <code>alt</code> por imagem.</p>
+</div>
+
+<div class="cenario">
+<strong>Passa no validador, mas está errado</strong>
+<p>O validador só confere se o <code>alt</code> existe. Todos estes passaram sem erro nenhum no laboratório, e todos atrapalham alguém:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O problema</th><th>Melhor</th></tr>
+<tr><td><code>alt="bolo-800.jpg"</code></td><td>nome de arquivo não descreve nada</td><td><code>alt="Bolo de cenoura com cobertura de chocolate"</code></td></tr>
+<tr><td><code>alt=" "</code></td><td>um espaço não é vazio de propósito nem descrição</td><td><code>alt=""</code> ou uma descrição</td></tr>
+<tr><td><code>alt="imagem"</code>, <code>alt="foto"</code></td><td>o leitor de tela já disse que é imagem</td><td>o que a foto mostra</td></tr>
+<tr><td><code>&lt;a href="…"&gt;&lt;img … alt=""&gt;&lt;/a&gt;</code></td><td>link sem nome</td><td><code>alt</code> com o destino do link</td></tr>
+<tr><td>Foto da receita com <code>alt=""</code></td><td>esconde informação</td><td>descreva o bolo</td></tr>
+<tr><td><code>alt="bolo bolo de cenoura receita bolo fácil"</code></td><td>palavras repetidas para "agradar o Google": irrita quem ouve e o Google não gosta</td><td>uma frase natural</td></tr>
+</table>
+</div>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tipo de imagem</th><th>O que vai no <code>alt</code></th><th>Exemplo</th></tr>
+<tr><td>Foto ou desenho que informa</td><td>O que ela mostra que importa nesta página</td><td><code>alt="Bolo de cenoura com cobertura de chocolate"</code></td></tr>
+<tr><td>Enfeite</td><td>Nada: <code>alt=""</code></td><td><code>alt=""</code></td></tr>
+<tr><td>Imagem que é link ou botão</td><td>Para onde leva / o que faz</td><td><code>alt="Bolos da Ana, página inicial"</code></td></tr>
+<tr><td>Imagem com texto (logotipo, cartaz)</td><td>As palavras da imagem</td><td><code>alt="Promoção de Páscoa: 20% de desconto"</code></td></tr>
+<tr><td>Gráfico, mapa</td><td>O resumo; os dados vão no texto da página</td><td><code>alt="Gráfico de barras: as vendas dobraram em 2026"</code></td></tr>
+<tr><td>Obra de arte, captura de tela</td><td>O tipo também importa</td><td><code>alt="Captura de tela do editor com o erro em vermelho"</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Enfeite</h3>
+<p>Complete para o leitor de tela pular este arabesco:</p>
+<div class="ex-code">&lt;img src="arabesco.svg" alt=<input data-answer="&quot;&quot;|''" aria-label="valor do alt">&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">2. Qual é o melhor <code>alt</code> para a foto principal da receita de pudim?</p>
+<label><input type="radio" name="q2"> <code>alt="imagem"</code></label>
+<label><input type="radio" name="q2"> <code>alt="pudim.jpg"</code></label>
+<label><input type="radio" name="q2"> <code>alt="Pudim de leite com calda de caramelo escorrendo pelos lados"</code></label>
+<label><input type="radio" name="q2"> <code>alt=""</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. O logotipo da lojinha é um link para a página inicial. Qual <code>alt</code> usar?</p>
+<label><input type="radio" name="q3"> <code>alt="Logotipo rosa com um desenho de bolo"</code></label>
+<label><input type="radio" name="q3"> <code>alt="Bolos da Ana, página inicial"</code></label>
+<label><input type="radio" name="q3"> <code>alt=""</code>, porque logotipo é enfeite</label>
+<label><input type="radio" name="q3"> <code>alt="link"</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. O validador aprovou <code>&lt;img src="bolo.jpg" alt="bolo.jpg"&gt;</code>. Isso quer dizer que…</p>
+<label><input type="radio" name="q4"> o <code>alt</code> está ótimo</label>
+<label><input type="radio" name="q4"> o validador lê o nome e entende a foto</label>
+<label><input type="radio" name="q4"> o leitor de tela troca o nome do arquivo por uma descrição</label>
+<label><input type="radio" name="q4"> o HTML está correto, mas o <code>alt</code> não descreve nada: o validador só confere se ele existe</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Qual é a diferença entre <code>alt=""</code> e não ter <code>alt</code>?</p>
+<label><input type="radio" name="q5"> Com <code>alt=""</code>, o leitor de tela pula a imagem; sem <code>alt</code>, ele anuncia a imagem e muitas vezes lê o nome do arquivo (e o validador dá erro)</label>
+<label><input type="radio" name="q5"> Nenhuma: os dois são vazios</label>
+<label><input type="radio" name="q5"> Com <code>alt=""</code>, a imagem não aparece na tela</label>
+<label><input type="radio" name="q5"> Sem <code>alt</code>, a imagem não carrega</label>
+</div>
+
+<h3>Missão final: o topo da lojinha</h3>
+
+<div class="tryhtml" data-goal="sel:a[href=&quot;index.html&quot;] img[src$=&quot;logo.svg&quot;][alt],nsel:img[alt]=3,sel:img[src$=&quot;enfeite.svg&quot;][alt=&quot;&quot;],sel:img[src$=&quot;logo.svg&quot;][alt*=&quot;inicial&quot; i]\, img[src$=&quot;logo.svg&quot;][alt*=&quot;início&quot; i],sel:img[src$=&quot;bolo-800.jpg&quot;][alt*=&quot;bolo&quot; i]">
+<p class="try-task"><strong>Missão:</strong> o topo da lojinha tem três imagens, todas sem <code>alt</code>. Dê a cada uma o <code>alt</code> do papel dela: (1) o logotipo é um link para a página inicial: o <code>alt</code> deve dizer isso (use a palavra "inicial" ou "início"); (2) o enfeite não conta nada; (3) a foto mostra o bolo da semana: descreva o bolo.</p>
+<pre class="script" data-file="index.html">&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo.svg" width="160" height="48"&gt;&lt;/a&gt;
+&lt;img src="assets/midia/enfeite.svg" width="200" height="20"&gt;
+&lt;h1&gt;Bolo da semana&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" width="400" height="267"&gt;
+&lt;p&gt;Encomendas até quinta-feira.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo.svg" alt="Bolos da Ana, página inicial" width="160" height="48"&gt;&lt;/a&gt;
+&lt;img src="assets/midia/enfeite.svg" alt="" width="200" height="20"&gt;
+&lt;h1&gt;Bolo da semana&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="267"&gt;
+&lt;p&gt;Encomendas até quinta-feira.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Para conferir do jeito de quem não vê as imagens, troque, na sua solução, cada <code>assets/midia/</code> por <code>quebrada/</code>: sobram o nome da loja, o título e a descrição do bolo. O enfeite some sem deixar rastro, que é exatamente o que ele devia fazer.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <code>alt</code> é o que você diria da imagem para quem não pode vê-la: quem usa leitor de tela, quem está com a internet lenta, quem vê a imagem quebrada e os buscadores.</li>
+  <li>Comece pelo principal, seja curto, não escreva "imagem de" nem nome de arquivo. O mesmo bolo pede <code>alt</code>s diferentes em páginas diferentes: pense no que a pessoa perderia se a imagem sumisse.</li>
+  <li>Enfeite leva <code>alt=""</code>: o leitor de tela pula. Sem <code>alt</code>, ele costuma ler o nome do arquivo, e o validador dá erro.</li>
+  <li>Imagem-link: o <code>alt</code> diz o destino. Imagem com texto: o <code>alt</code> repete o texto. Gráfico: o <code>alt</code> resume e os dados vão na página.</li>
+  <li>O validador aceita a falta de <code>alt</code> em poucos casos (<code>figure</code> com <code>figcaption</code>, <code>title</code>, <code>aria-label</code>), mas o guia sempre escreve o <code>alt</code>.</li>
+  <li>O validador confere se o <code>alt</code> existe, não se ele é bom. <code>alt="bolo.jpg"</code> e imagem-link com <code>alt=""</code> passam sem erro.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
