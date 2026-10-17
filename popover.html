@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML popover — janelinhas que abrem e fecham sem JavaScript | Guia HTML</title>
+<meta name="description" content="O atributo popover para quem nunca fez um site: abrir e fechar uma janelinha com popovertarget e popovertargetaction, sem JavaScript; popover auto, manual e hint; fechar clicando fora ou com Esc; popover × dialog × details; e os erros reais do validador W3C, inclusive os que ele não pega.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">popover</span></h1>
+
+<p class="intro">Um balãozinho de ajuda, um menu que se abre, um aviso que aparece por cima da página: durante anos, tudo isso exigia JavaScript. Hoje basta o atributo <strong><code>popover</code></strong> num elemento e o atributo <strong><code>popovertarget</code></strong> num botão. O navegador cuida de abrir, fechar, pôr por cima de tudo e até de fechar quando você clica fora. Nesta aula, nenhuma linha de JavaScript.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como criar um popover: <code>popover</code> no conteúdo e <code>popovertarget</code> no botão.</li>
+  <li>O que o navegador faz sozinho: abrir por cima, fechar com <kbd>Esc</kbd> ou com um clique fora.</li>
+  <li>Botões de abrir, de fechar e de alternar: <code>popovertargetaction</code>.</li>
+  <li>A diferença entre <code>popover</code> (<code>auto</code>), <code>popover="manual"</code> e <code>popover="hint"</code>.</li>
+  <li>Quando usar <code>popover</code>, <code>&lt;dialog&gt;</code>, <code>&lt;details&gt;</code> ou <code>title</code>.</li>
+  <li>Os erros reais, inclusive três que o validador <strong>não</strong> pega.</li>
+</ul>
+</div>
+
+<p>As mensagens do validador desta aula saíram do <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. Os comportamentos foram conferidos no Chromium. Os resultados são de verdade: clique nos botões.</p>
+
+<hr>
+
+<h2>A ideia: o post-it por cima da página</h2>
+<p>Imagine o caderno de receitas da Ana com post-its colados na capa interna. Ela puxa um post-it, gruda <strong>por cima</strong> da receita para ler a dica e, quando termina, guarda de novo. O post-it não empurra o texto da receita para baixo: ele fica por cima de tudo, e a página continua igual por baixo.</p>
+<p>Um popover é isso: um conteúdo escondido que, ao toque de um botão, aparece <strong>por cima</strong> da página, sem mudar o lugar de mais nada.</p>
+
+<hr>
+
+<h2>1. O primeiro popover</h2>
+<p>São duas peças: o <strong>conteúdo</strong>, com o atributo <code>popover</code>, e o <strong>botão</strong>, que aponta para a <code>id</code> dele:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Bata as cenouras com os ovos e o óleo.
+  &lt;button popovertarget="dica"&gt;Dica da vovó&lt;/button&gt;
+&lt;/p&gt;
+
+&lt;div id="dica" popover&gt;
+  Use cenouras bem maduras: o bolo fica mais laranja e mais doce.
+&lt;/div&gt;
+</pre>
+
+<p>Clique em "Dica da vovó" no resultado. Depois, feche de três jeitos: clicando no botão de novo, clicando em qualquer lugar fora da dica ou apertando <kbd>Esc</kbd>.</p>
+
+<dl class="anatomy">
+  <dt>popovertarget="dica"</dt><dd><em>Popover target</em> = "alvo do popover": a <code>id</code> do popover que este botão controla. Cada clique <strong>alterna</strong>: abre se está fechado, fecha se está aberto.</dd>
+  <dt>&lt;button&gt;</dt><dd>Só botões podem ter <code>popovertarget</code>: o <code>&lt;button&gt;</code> e o <code>&lt;input type="button"&gt;</code> (e os outros tipos de botão do <code>input</code>). Um link <code>&lt;a&gt;</code> não pode (veja em <a href="#errado">Quando dá errado</a>).</dd>
+  <dt>id="dica"</dt><dd>O nome que liga o botão ao popover (aula <a href="class-id.html">class e id</a>).</dd>
+  <dt>popover</dt><dd>"Janela que salta por cima". Esconde o elemento até alguém abrir. Sem valor, é o mesmo que <code>popover="auto"</code>.</dd>
+</dl>
+
+<h3>O que o navegador fez sozinho</h3>
+<ul>
+  <li><strong>Escondeu</strong> o <code>&lt;div&gt;</code> ao carregar a página, como um <code>hidden</code>.</li>
+  <li>Ao abrir, pôs o popover na <strong>camada do topo</strong> (<em>top layer</em>): por cima de tudo, até de menus fixos e de outros elementos com CSS. Ele não empurra o resto da página.</li>
+  <li>Desenhou o popover no <strong>centro</strong> da janela, com uma borda e um espaço interno. Esse é só o estilo padrão; com CSS você muda tudo (assunto do futuro Guia CSS).</li>
+  <li>Ativou o <strong>fechamento leve</strong> (<em>light dismiss</em>): clique fora ou <kbd>Esc</kbd> fecham.</li>
+  <li>Avisou o <strong>leitor de tela</strong> de que o botão controla algo que está aberto ou fechado, sem você escrever nenhum atributo ARIA.</li>
+</ul>
+
+<div class="tip">
+<strong>Desde quando?</strong>
+<p>O <code>popover</code> funciona em todos os navegadores atuais desde 2024: o Chrome e o Edge aceitaram em 2023, o Safari também em 2023, e o Firefox em abril de 2024. O validador W3C atual aceita <code>popover</code>, <code>popovertarget</code> e <code>popovertargetaction</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:button[popovertarget]=tempo,attr:#tempo[popover],css:#tempo{display}=none">
+<p class="try-task"><strong>Missão:</strong> o parágrafo do tempo de forno está sempre à mostra. Transforme-o num popover (com o atributo <code>popover</code>) e faça o botão abri-lo (com <code>popovertarget</code>). No resultado, o parágrafo deve sumir e só aparecer quando você clicar no botão.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Asse em forno médio. &lt;button&gt;Quanto tempo?&lt;/button&gt;&lt;/p&gt;
+
+&lt;p id="tempo"&gt;De 35 a 40 minutos, até o palito sair limpo.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;Asse em forno médio. &lt;button popovertarget="tempo"&gt;Quanto tempo?&lt;/button&gt;&lt;/p&gt;
+
+&lt;p id="tempo" popover&gt;De 35 a 40 minutos, até o palito sair limpo.&lt;/p&gt;
+</pre>
+</div>
+
+<p>A meta confere três coisas: o botão aponta para <code>tempo</code>, o parágrafo tem <code>popover</code> e ele está escondido (<code>display: none</code>) enquanto ninguém clica. Qualquer elemento pode ser um popover: um <code>&lt;div&gt;</code>, um <code>&lt;p&gt;</code>, um <code>&lt;nav&gt;</code> com um menu inteiro.</p>
+
+<hr>
+
+<h2>2. Abrir, fechar ou alternar: popovertargetaction</h2>
+<p>Às vezes você quer um botão que só <strong>fecha</strong>, como o "×" de um aviso. O atributo <code>popovertargetaction</code> ("ação no alvo do popover") escolhe o que o botão faz:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;button popovertarget="aviso" popovertargetaction="show"&gt;Ver horário&lt;/button&gt;
+
+&lt;div id="aviso" popover&gt;
+  &lt;p&gt;Aberto de terça a sábado, das 9h às 18h.&lt;/p&gt;
+  &lt;button popovertarget="aviso" popovertargetaction="hide"&gt;Fechar&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Valor</th><th>O que o botão faz</th></tr>
+<tr><td><code>toggle</code> (o padrão, se você não escrever o atributo)</td><td>Alterna: abre se está fechado, fecha se está aberto</td></tr>
+<tr><td><code>show</code></td><td>Só abre (se já está aberto, nada muda)</td></tr>
+<tr><td><code>hide</code></td><td>Só fecha</td></tr>
+</table>
+</div>
+
+<p>Repare que o botão "Fechar" fica <strong>dentro</strong> do popover e aponta para ele mesmo. Os três valores são em inglês: <em>toggle</em> = "alternar", <em>show</em> = "mostrar", <em>hide</em> = "esconder".</p>
+
+<hr>
+
+<h2>3. auto, manual e hint</h2>
+<p>O valor do atributo <code>popover</code> muda o jeito como ele se comporta:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Fecha com clique fora e <kbd>Esc</kbd>?</th><th>Fecha os outros ao abrir?</th><th>Para quê</th></tr>
+<tr><td><code>popover</code> ou <code>popover="auto"</code></td><td>sim</td><td>sim: só um <code>auto</code> aberto por vez (a não ser que um esteja dentro do outro, como um submenu)</td><td>menus, dicas, listas de opções</td></tr>
+<tr><td><code>popover="manual"</code></td><td><strong>não</strong>: só fecha pelo botão</td><td>não: vários podem ficar abertos</td><td>avisos que o visitante tem de fechar de propósito, notificações</td></tr>
+<tr><td><code>popover="hint"</code></td><td>sim</td><td>fecha só outros <code>hint</code>, e não os <code>auto</code></td><td>dicas rápidas por cima de um menu que já está aberto</td></tr>
+</table>
+</div>
+
+<p>Abra os dois no resultado e compare: clique fora, aperte <kbd>Esc</kbd>, abra um com o outro aberto.</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;h1&gt;Avisos da lojinha&lt;/h1&gt;
+&lt;p&gt;
+  &lt;button popovertarget="promo"&gt;Promoção (auto)&lt;/button&gt;
+  &lt;button popovertarget="entrega"&gt;Entrega (manual)&lt;/button&gt;
+&lt;/p&gt;
+
+&lt;div id="promo" popover&gt;
+  Brigadeiro: leve 10, pague 8. Clique fora para fechar.
+&lt;/div&gt;
+
+&lt;div id="entrega" popover="manual"&gt;
+  &lt;p&gt;Entregamos só no bairro, de terça a sábado.&lt;/p&gt;
+  &lt;button popovertarget="entrega" popovertargetaction="hide"&gt;Entendi&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+</div>
+
+<p>O de entrega só fecha pelo botão "Entendi" (ou pelo botão que o abriu, que alterna). Clicar fora não adianta. Os dois aparecem no centro, um por cima do outro: é o estilo padrão. Num site de verdade, o CSS escolhe onde cada um aparece.</p>
+
+<div class="note">
+<strong>O <code>hint</code> é o mais novo</strong>
+<p>O <code>popover="hint"</code> chegou depois dos outros, primeiro no Chrome e no Edge, em 2025. O validador W3C atual já o aceita. Um navegador que ainda não conhece o <code>hint</code> trata o valor como <code>manual</code> (é a regra para qualquer valor que ele não entende): o popover abre, mas não fecha com clique fora. Para dicas importantes, prefira o <code>auto</code>.</p>
+</div>
+
+<hr>
+
+<h2>4. Qual usar: popover, dialog, details ou title?</h2>
+<p>Quatro coisas do HTML mostram e escondem conteúdo. Cada uma tem o seu lugar:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Recurso</th><th>Como aparece</th><th>Use para</th></tr>
+<tr><td><code>popover</code></td><td>por cima da página; o resto continua clicável</td><td>menus, dicas, avisos que não travam a página</td></tr>
+<tr><td><code>&lt;dialog&gt;</code> com <code>showModal()</code></td><td>por cima, e <strong>trava</strong> o resto da página até fechar</td><td>perguntas que exigem resposta ("Apagar a receita?")</td></tr>
+<tr><td><code>&lt;details&gt;</code> e <code>&lt;summary&gt;</code></td><td><strong>dentro</strong> da página, empurrando o que vem depois</td><td>perguntas frequentes, "ver mais"</td></tr>
+<tr><td><code>title</code></td><td>uma dica do navegador, só com o mouse</td><td>um extra pequeno, que ninguém precisa ler</td></tr>
+</table>
+</div>
+
+<p>O <code>&lt;dialog&gt;</code> e o <code>&lt;details&gt;</code> têm aulas próprias (<a href="dialog.html">dialog</a> e <a href="details.html">details e summary</a>), e o <code>title</code> está em <a href="atributos-globais.html">Atributos Globais</a>. Um <code>&lt;dialog popover&gt;</code> também vale: é um diálogo que abre como popover, sem travar a página.</p>
+
+<div class="note">
+<strong>Ainda mais novo: <code>commandfor</code> e <code>command</code></strong>
+<p>Existe um segundo jeito de ligar um botão a um popover, que também serve para o <code>&lt;dialog&gt;</code>: <code>&lt;button commandfor="dica" command="toggle-popover"&gt;</code>. Os valores para popover são <code>toggle-popover</code>, <code>show-popover</code> e <code>hide-popover</code>. O validador W3C atual aceita, e os navegadores principais começaram a aceitar a partir de 2025. Para popovers, o <code>popovertarget</code> desta aula funciona há mais tempo e em mais lugares.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>Bad value “sim” for attribute “popover”</code> (e ele não fecha com clique fora)</strong>
+<p><strong>O que o navegador faz:</strong> o elemento <strong>continua</strong> sendo um popover, mas do tipo <code>manual</code>: é a regra para um valor que o navegador não entende. Ele abre, mas o clique fora e o <kbd>Esc</kbd> não fecham. O Chrome avisa no console do F12: <code>Found a 'popover' attribute with an invalid value.</code> ("encontrei um atributo <code>popover</code> com valor inválido").</p>
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;button popovertarget="ajuda"&gt;Ajuda&lt;/button&gt;
+&lt;div id="ajuda" popover="sim"&gt;Texto&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":9.1-9.30: error: Bad value “sim” for attribute “popover” on element “div”.</pre>
+<p><strong>Como consertar:</strong> só <code>popover</code> (sem valor), <code>auto</code>, <code>manual</code> ou <code>hint</code>. Com <code>popovertargetaction="fechar"</code>, o validador diz o mesmo (<code>Bad value “fechar” for attribute “popovertargetaction” on element “button”.</code>), e o navegador usa o padrão, <code>toggle</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Attribute “popovertarget” not allowed on element “a”</code></strong>
+<p><strong>O que o navegador faz:</strong> ignora o <code>popovertarget</code>: o link continua sendo só um link, e o popover nunca abre. Com <code>&lt;a href="#ajuda" popovertarget="ajuda"&gt;Ajuda&lt;/a&gt;</code> na linha 8:</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.39: error: Attribute “popovertarget” not allowed on element “a” at this point.</pre>
+<p><strong>Como consertar:</strong> use um <code>&lt;button&gt;</code>. Link é para <strong>ir</strong> a algum lugar; botão é para <strong>fazer</strong> alguma coisa na página. O mesmo erro aparece num <code>&lt;input type="text"&gt;</code>: só os tipos de botão aceitam.</p>
+</div>
+
+<div class="cenario">
+<strong>O validador aceita, mas nada abre: a id não existe</strong>
+<p><strong>O que acontece:</strong> com <code>popovertarget="ajuda"</code> e nenhum elemento com <code>id="ajuda"</code> (ou com <code>id="Ajuda"</code>, com maiúscula), o clique não faz nada, e o console fica quieto. O validador W3C <strong>não</strong> confere se a id existe: a página passa sem nenhum erro.</p>
+<p><strong>Como consertar:</strong> copie a id do popover e cole no <code>popovertarget</code>. Se nada acontece, confira também se o alvo tem o atributo <code>popover</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O validador aceita, mas o botão envia o formulário</strong>
+<p><strong>O que acontece:</strong> um <code>&lt;button&gt;</code> dentro de um <code>&lt;form&gt;</code> é, por padrão, um botão de <strong>enviar</strong> (<code>type="submit"</code>). Nesse caso, o navegador ignora o <code>popovertarget</code> e envia o formulário. Clique em "Ajuda" e veja o editor mostrar o envio:</p>
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;form action="obrigado.html"&gt;
+  &lt;label&gt;Nome do bolo: &lt;input name="bolo"&gt;&lt;/label&gt;
+  &lt;button popovertarget="ajuda"&gt;Ajuda&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;div id="ajuda" popover&gt;Escreva o sabor, por exemplo: cenoura.&lt;/div&gt;
+</pre>
+</div>
+<p>A página passa no validador sem erros. <strong>Como consertar:</strong> diga que é um botão comum, com <code>&lt;button type="button" popovertarget="ajuda"&gt;</code> (aula <a href="botoes.html">Botões</a>).</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>popover</code> ou <code>popover="auto"</code></td><td>O elemento vira um popover: escondido, abre por cima, fecha com clique fora e <kbd>Esc</kbd></td></tr>
+<tr><td><code>popover="manual"</code></td><td>Só fecha pelo botão; vários podem ficar abertos</td></tr>
+<tr><td><code>popover="hint"</code></td><td>Dica que não fecha os popovers <code>auto</code> abertos (o mais novo)</td></tr>
+<tr><td><code>&lt;button popovertarget="id"&gt;</code></td><td>O botão alterna o popover com essa id</td></tr>
+<tr><td><code>popovertargetaction="show"</code> / <code>"hide"</code> / <code>"toggle"</code></td><td>O botão só abre, só fecha ou alterna (padrão)</td></tr>
+<tr><td><code>type="button"</code></td><td>Obrigatório para um botão de popover dentro de um <code>&lt;form&gt;</code></td></tr>
+<tr><td><code>commandfor="id" command="toggle-popover"</code></td><td>O jeito mais novo de ligar um botão a um popover</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O botão</h3>
+<p>Complete para o botão abrir o popover <code>id="menu"</code>:</p>
+<div class="ex-code">&lt;button <input data-answer="popovertarget" aria-label="atributo">="menu"&gt;Menu&lt;/button&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Só fechar</h3>
+<p>Complete para este botão só <strong>fechar</strong> o popover:</p>
+<div class="ex-code">&lt;button popovertarget="menu" popovertargetaction="<input data-answer="hide" aria-label="valor">"&gt;Fechar&lt;/button&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Não fechar com clique fora</h3>
+<p>Complete para o aviso só fechar pelo botão:</p>
+<div class="ex-code">&lt;div id="aviso" popover="<input data-answer="manual" aria-label="valor">"&gt;…&lt;/div&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que acontece quando você clica fora de um <code>popover</code> (sem valor) aberto?</p>
+<label><input type="radio" name="q4"> Nada: só o botão fecha</label>
+<label><input type="radio" name="q4"> Ele fecha</label>
+<label><input type="radio" name="q4"> Ele vai para o canto da tela</label>
+<label><input type="radio" name="q4"> A página recarrega</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O botão <code>&lt;button popovertarget="ajuda"&gt;</code> está dentro de um <code>&lt;form&gt;</code> e, ao clicar, envia o formulário em vez de abrir a ajuda. O que falta?</p>
+<label><input type="radio" name="q5"> <code>popover="auto"</code> no botão</label>
+<label><input type="radio" name="q5"> Um <code>&lt;script&gt;</code></label>
+<label><input type="radio" name="q5"> Trocar o botão por um link</label>
+<label><input type="radio" name="q5"> <code>type="button"</code> no botão</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Para perguntar "Apagar a receita?" e <strong>travar</strong> a página até a resposta, o melhor é…</p>
+<label><input type="radio" name="q6"> um <code>&lt;dialog&gt;</code> aberto com <code>showModal()</code></label>
+<label><input type="radio" name="q6"> um <code>popover</code></label>
+<label><input type="radio" name="q6"> um <code>title</code></label>
+<label><input type="radio" name="q6"> um <code>&lt;details&gt;</code></label>
+</div>
+
+<h3>Missão final: o carrinho da lojinha</h3>
+
+<div class="tryhtml" data-goal="attr:#abrir-carrinho[popovertarget]=carrinho,attr:#carrinho[popover]=manual,css:#carrinho{display}=none,attr:#carrinho button[popovertarget]=carrinho,attr:#carrinho button[popovertargetaction]=hide,nsrc:&lt;script">
+<p class="try-task"><strong>Missão:</strong> o carrinho deve abrir por cima da página e só fechar pelo botão de dentro dele. Sem JavaScript:</p>
+<ol>
+  <li>transforme o <code>&lt;div id="carrinho"&gt;</code> num popover <strong>manual</strong>;</li>
+  <li>faça o botão <code>#abrir-carrinho</code> abrir o carrinho;</li>
+  <li>faça o botão "Continuar comprando", dentro do carrinho, só <strong>fechar</strong> o carrinho.</li>
+</ol>
+<pre class="script" data-file="index.html">&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;button id="abrir-carrinho"&gt;Ver carrinho (2 itens)&lt;/button&gt;&lt;/p&gt;
+
+&lt;div id="carrinho"&gt;
+  &lt;h2&gt;Seu carrinho&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Bolo de cenoura: R$ 35&lt;/li&gt;
+    &lt;li&gt;Brigadeiro: R$ 2&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;button&gt;Continuar comprando&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;button id="abrir-carrinho" popovertarget="carrinho"&gt;Ver carrinho (2 itens)&lt;/button&gt;&lt;/p&gt;
+
+&lt;div id="carrinho" popover="manual"&gt;
+  &lt;h2&gt;Seu carrinho&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Bolo de cenoura: R$ 35&lt;/li&gt;
+    &lt;li&gt;Brigadeiro: R$ 2&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;button popovertarget="carrinho" popovertargetaction="hide"&gt;Continuar comprando&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+</div>
+
+<p>Teste no resultado: o carrinho abre, o clique fora não fecha (é <code>manual</code>), e "Continuar comprando" fecha. Troque <code>manual</code> por <code>auto</code> e veja a diferença.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>popover</code> num elemento o esconde e o transforma numa janelinha que abre <strong>por cima</strong> da página, na camada do topo.</li>
+  <li><code>&lt;button popovertarget="id"&gt;</code> abre e fecha, sem JavaScript. <code>popovertargetaction</code> escolhe <code>toggle</code> (padrão), <code>show</code> ou <code>hide</code>.</li>
+  <li><code>auto</code> (o padrão) fecha com clique fora e <kbd>Esc</kbd>, e só um fica aberto; <code>manual</code> só fecha pelo botão; <code>hint</code> é o mais novo, para dicas.</li>
+  <li>Só botões podem ter <code>popovertarget</code>. Dentro de um <code>&lt;form&gt;</code>, ponha <code>type="button"</code>, senão o botão envia o formulário.</li>
+  <li>O validador acusa valores errados (<code>popover="sim"</code>), mas não confere se a id existe nem pega o botão de enviar: teste sempre clicando.</li>
+  <li>Para travar a página até uma resposta, use <code>&lt;dialog&gt;</code>; para abrir dentro da página, <code>&lt;details&gt;</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
