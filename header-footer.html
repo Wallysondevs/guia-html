@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML header e footer — o topo e o rodapé | Guia HTML</title>
+<meta name="description" content="header e footer em HTML para quem nunca fez um site: o cabeçalho e o rodapé da página, o header e o footer de cada receita, o que pode ir dentro, a diferença entre header, head e h1, e os erros reais do validador W3C (header dentro de footer, footer dentro de header, header dentro do head), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">header e footer</span></h1>
+
+<p class="intro">Quase todo site tem um <strong>topo</strong>, com o nome e o menu, e um <strong>rodapé</strong>, com os direitos autorais e o contato. Em HTML, eles têm elementos próprios: o <code>header</code> e o <code>footer</code>. Nesta aula você vai montar o topo e o rodapé do site de receitas da Ana, descobrir que cada receita pode ter o seu próprio topo e rodapé, e aprender a nunca mais confundir <code>header</code>, <code>head</code> e <code>h1</code>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <code>header</code> e o que costuma ir nele: o nome do site, uma frase, o menu.</li>
+  <li>O que é o <code>footer</code> e o que costuma ir nele: direitos autorais, contato, links finais.</li>
+  <li>Que um <code>article</code> também pode ter o seu <code>header</code> e o seu <code>footer</code>, e que a página pode ter vários.</li>
+  <li>Por que só o <code>header</code> e o <code>footer</code> "da página" são regiões para o leitor de tela.</li>
+  <li>A diferença entre <code>header</code>, <code>head</code> e <code>h1</code>.</li>
+  <li>Os erros reais: <code>header</code> dentro de <code>footer</code>, <code>footer</code> dentro de <code>header</code> e <code>header</code> dentro do <code>head</code>.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/receitas</code>. Se você ainda não leu a aula <a href="semantica.html">HTML Semântico</a>, comece por ela: lá está o porquê destes elementos.</p>
+
+<hr>
+
+<h2>A ideia: o cabeçalho e o rodapé de um jornal</h2>
+<p>Pegue um jornal impresso. No alto da primeira página fica o <strong>cabeçalho</strong>: o nome do jornal, a data, às vezes um índice. No pé de cada página fica o <strong>rodapé</strong>: o número da página, o endereço da redação. E cada notícia, lá dentro, também tem um "topo" (o título e o nome de quem escreveu) e às vezes um "pé" (uma nota sobre o autor).</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No jornal</th><th>Em HTML</th><th>No site da Ana</th></tr>
+<tr><td>O cabeçalho do jornal</td><td><code>header</code> da página</td><td>"Receitas da Ana", uma frase e o menu</td></tr>
+<tr><td>O rodapé da página</td><td><code>footer</code> da página</td><td>"© 2026 Ana" e o e-mail de contato</td></tr>
+<tr><td>O topo de uma notícia</td><td><code>header</code> de um <code>article</code></td><td>o nome da receita e a data</td></tr>
+<tr><td>O pé de uma notícia</td><td><code>footer</code> de um <code>article</code></td><td>a autora e a categoria da receita</td></tr>
+</table>
+</div>
+
+<p><em>Header</em> quer dizer "cabeçalho" em inglês (de <em>head</em>, "cabeça"), e <em>footer</em> quer dizer "rodapé" (de <em>foot</em>, "pé").</p>
+
+<hr>
+
+<h2>1. O <code>header</code> da página</h2>
+<p>O <code>header</code> guarda a <strong>introdução</strong> de alguma coisa. O mais comum é o topo do site, que aparece igual em todas as páginas:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Receitas simples, testadas na minha cozinha.&lt;/p&gt;
+  &lt;nav&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+    &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+    &lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;p&gt;Bem-vindo! Escolha uma categoria no menu.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;header&gt;</dt><dd>Começa o cabeçalho. Ele é um bloco, como o <code>div</code>: sozinho, não muda nada na tela.</dd>
+  <dt>&lt;h1&gt;</dt><dd>O título da página, com o nome do site. Um <code>header</code> não é obrigado a ter um título, mas quase sempre tem.</dd>
+  <dt>&lt;p&gt;</dt><dd>Uma frase de apresentação (o "slogan"). Repare: é um parágrafo, e não um <code>h2</code>, porque não é o título de uma parte da página.</dd>
+  <dt>&lt;nav&gt;</dt><dd>O menu do site. Ele pode ficar dentro do <code>header</code> ou fora dele; os dois jeitos estão certos. Aula <a href="nav.html">nav</a>.</dd>
+  <dt>&lt;/header&gt;</dt><dd>Termina o cabeçalho. O parágrafo de boas-vindas já está fora dele, no conteúdo da página.</dd>
+</dl>
+
+<p>Outras coisas que costumam ir num <code>header</code>: o logotipo (uma imagem com <code>alt</code>, aula <a href="imagens.html">Imagens</a>), uma caixa de busca e um link para entrar na conta.</p>
+
+<hr>
+
+<h2>2. O <code>footer</code> da página</h2>
+<p>O <code>footer</code> guarda as informações <strong>sobre</strong> a página ou o site: quem fez, direitos autorais, contato, links para páginas como "Sobre" e "Privacidade".</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Bem-vindo! Escolha uma categoria no menu.&lt;/p&gt;
+&lt;footer&gt;
+  &lt;p&gt;&lt;small&gt;© 2026 Ana. Todas as receitas foram testadas.&lt;/small&gt;&lt;/p&gt;
+  &lt;p&gt;Contato: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;footer&gt;</dt><dd>Começa o rodapé. Também é um bloco invisível.</dd>
+  <dt>&lt;small&gt;</dt><dd>"Pequeno": o elemento para letras miúdas, como avisos legais e direitos autorais (aula <a href="formatacao.html">Formatação</a>). O <code>©</code> é o símbolo de <em>copyright</em>, "direito autoral" (aula <a href="entidades.html">Entidades</a>).</dd>
+  <dt>href="mailto:…"</dt><dd>Um link que abre o programa de e-mail (aula <a href="links-email-tel.html">Links de E-mail e Telefone</a>). O <code>example.com</code> é um endereço reservado para exemplos, que não pertence a ninguém.</dd>
+</dl>
+
+<p>Apesar do nome, o <code>footer</code> não é "o que fica embaixo" na tela: quem decide a posição é a ordem no código e o CSS. O <code>footer</code> é sobre o <strong>conteúdo</strong>: informações de autoria e de contato. Na prática, ele quase sempre é a última coisa da página.</p>
+
+<div class="tryhtml" data-goal="texto:header h1=Receitas da Ana,sel:header p,texto:footer p=© 2026 Ana,nsel:header=1,nsel:footer=1">
+<p class="try-task"><strong>Missão:</strong> a página da Ana não tem topo nem rodapé. Ponha o <code>h1</code> e a frase de apresentação dentro de um <code>&lt;header&gt;</code>, e o parágrafo do <code>©</code> dentro de um <code>&lt;footer&gt;</code>. A receita do meio fica fora dos dois.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Receitas simples, testadas na minha cozinha.&lt;/p&gt;
+
+&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;© 2026 Ana&lt;/small&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Receitas simples, testadas na minha cozinha.&lt;/p&gt;
+&lt;/header&gt;
+
+&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+
+&lt;footer&gt;
+  &lt;p&gt;&lt;small&gt;© 2026 Ana&lt;/small&gt;&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. O <code>header</code> e o <code>footer</code> de uma receita</h2>
+<p>O <code>header</code> e o <code>footer</code> não são só da página. Eles podem ficar dentro de um <code>article</code> (aula <a href="section-article.html">section e article</a>), e então são o topo e o pé <strong>daquele</strong> artigo. Na página da Ana, cada receita tem o nome e a data em cima, e a autora e a categoria embaixo:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;header&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Publicado em &lt;time datetime="2026-10-17"&gt;17 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+  &lt;/header&gt;
+  &lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+  &lt;footer&gt;
+    &lt;p&gt;Por Ana · Categoria: Doces&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/article&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;article&gt;</dt><dd>A receita inteira, um conteúdo completo.</dd>
+  <dt>&lt;header&gt; (dentro do article)</dt><dd>O topo da receita: o título <code>h2</code> e a data. O <code>time</code> marca a data num formato que o computador entende (aula <a href="time.html">time e data</a>).</dd>
+  <dt>&lt;p&gt; (o do meio)</dt><dd>O corpo da receita. Ele não está nem no <code>header</code> nem no <code>footer</code>.</dd>
+  <dt>&lt;footer&gt; (dentro do article)</dt><dd>O pé da receita: quem escreveu e em que categoria está.</dd>
+</dl>
+
+<p>Isso quer dizer que uma página pode ter <strong>vários</strong> <code>header</code> e <code>footer</code>: um da página e um de cada receita. Está tudo certo; o validador aceita sem nenhuma mensagem.</p>
+
+<h3>Só o da página é uma região</h3>
+<p>Na aula <a href="semantica.html">HTML Semântico</a>, você viu que o leitor de tela usa o <code>header</code> e o <code>footer</code> como <strong>regiões</strong> da página, para pular direto até elas. Isso vale só para os que pertencem à <strong>página</strong>. Um <code>header</code> dentro de um <code>article</code> (ou de um <code>section</code>, <code>aside</code>, <code>nav</code> ou <code>main</code>) é só o topo daquele pedaço:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Onde está</th><th>Papel (<em>role</em>)</th><th>Para o leitor de tela</th></tr>
+<tr><td><code>header</code> direto no <code>body</code></td><td><code>banner</code></td><td>a região "topo do site"</td></tr>
+<tr><td><code>footer</code> direto no <code>body</code></td><td><code>contentinfo</code></td><td>a região "informações da página"</td></tr>
+<tr><td><code>header</code> ou <code>footer</code> dentro de <code>article</code>, <code>aside</code>, <code>main</code>, <code>nav</code> ou <code>section</code></td><td>genérico</td><td>não é uma região; é só o começo ou o fim daquele conteúdo</td></tr>
+</table>
+</div>
+
+<p>Assim, mesmo com dez receitas na página, cada uma com o seu <code>header</code>, o leitor de tela continua mostrando <strong>um</strong> topo de site e <strong>um</strong> rodapé.</p>
+
+<div class="tryhtml" data-goal="sel:article > header > h2,sel:article > footer p,texto:article > footer=Por Ana,nsel:header=1,nsel:footer=1">
+<p class="try-task"><strong>Missão:</strong> dê um topo e um pé à receita do pão de queijo. Dentro do <code>article</code>, ponha o <code>h2</code> e a data num <code>&lt;header&gt;</code>, e o parágrafo "Por Ana…" num <code>&lt;footer&gt;</code>. O parágrafo do meio fica fora dos dois.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Publicado em &lt;time datetime="2026-10-10"&gt;10 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+  &lt;p&gt;Crocante por fora, macio por dentro.&lt;/p&gt;
+  &lt;p&gt;Por Ana · Categoria: Salgados&lt;/p&gt;
+&lt;/article&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;header&gt;
+    &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+    &lt;p&gt;Publicado em &lt;time datetime="2026-10-10"&gt;10 de outubro de 2026&lt;/time&gt;&lt;/p&gt;
+  &lt;/header&gt;
+  &lt;p&gt;Crocante por fora, macio por dentro.&lt;/p&gt;
+  &lt;footer&gt;
+    &lt;p&gt;Por Ana · Categoria: Salgados&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/article&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. O que pode ir dentro (e o que não pode)</h2>
+<p>O <code>header</code> e o <code>footer</code> aceitam <strong>conteúdo de fluxo</strong> (aula <a href="bloco-inline.html">Bloco × Em Linha</a>): títulos, parágrafos, listas, imagens, links, <code>nav</code>, <code>div</code>. Há só três proibições, e todas fazem sentido:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Dentro de…</th><th>Não pode ter…</th><th>Por quê</th></tr>
+<tr><td><code>header</code></td><td>outro <code>header</code> nem um <code>footer</code></td><td>um cabeçalho não tem cabeçalho nem rodapé próprio</td></tr>
+<tr><td><code>footer</code></td><td>outro <code>footer</code> nem um <code>header</code></td><td>o mesmo, ao contrário</td></tr>
+<tr><td><code>header</code> e <code>footer</code></td><td><code>main</code></td><td>o conteúdo principal não fica dentro do topo nem do rodapé (aula <a href="main.html">main</a>)</td></tr>
+</table>
+</div>
+
+<p>A regra vale para qualquer profundidade: um <code>header</code> dentro de um <code>div</code> dentro de um <code>footer</code> continua proibido. Já um <code>article</code> com <code>header</code>, dentro do <code>main</code>, está certo, porque o <code>header</code> pertence ao <code>article</code>.</p>
+
+<hr>
+
+<h2>5. <code>header</code>, <code>head</code> e <code>h1</code>: três "cabeças" diferentes</h2>
+<p>Os três nomes vêm da mesma palavra, <em>head</em> ("cabeça"), e confundir os três é um dos erros mais comuns de quem está começando:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>O que é</th><th>Onde fica</th><th>Aparece na tela?</th></tr>
+<tr><td><code>&lt;head&gt;</code></td><td>A "cabeça" do <strong>documento</strong>: informações para o navegador (<code>title</code>, <code>meta</code>, <code>link</code>)</td><td>Entre <code>&lt;html&gt;</code> e <code>&lt;body&gt;</code>, um só por página</td><td>Não (só o <code>title</code>, na aba)</td></tr>
+<tr><td><code>&lt;header&gt;</code></td><td>O <strong>cabeçalho</strong> visível da página ou de um artigo</td><td>Dentro do <code>&lt;body&gt;</code>, quantos precisar</td><td>Sim, o que estiver dentro dele</td></tr>
+<tr><td><code>&lt;h1&gt;</code></td><td>Um <strong>título</strong> de nível 1 (de <em>heading</em>, "título")</td><td>Dentro do <code>&lt;body&gt;</code>, muitas vezes dentro do <code>header</code></td><td>Sim, em letra grande</td></tr>
+</table>
+</div>
+
+<p>O <code>head</code> tem aula própria (<a href="head.html">O head</a>), e os títulos também (<a href="titulos.html">Títulos</a>). O que você precisa guardar: o <code>head</code> é para o navegador; o <code>header</code> é para quem lê a página.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: The element “header” must not appear as a descendant of the “footer” element.</code></strong>
+<p>A Ana quis um título "Fale com a Ana" no rodapé e o colocou num <code>header</code>:</p>
+<pre class="file" data-file="header-no-footer.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura, pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;footer&gt;
+  &lt;header&gt;
+    &lt;h2&gt;Fale com a Ana&lt;/h2&gt;
+  &lt;/header&gt;
+  &lt;p&gt;Escreva para ana@example.com.&lt;/p&gt;
+&lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu header-no-footer.html
+"file:/home/ana/receitas/header-no-footer.html":11.3-11.10: error: The element “header” must not appear as a descendant of the “footer” element.</pre>
+<p>"O elemento <code>header</code> não pode aparecer como <strong>descendente</strong> do elemento <code>footer</code>". Descendente quer dizer "em qualquer lugar dentro", seja filho direto, seja neto. O navegador desenha a página normalmente; só o validador avisa.</p>
+<p><strong>Como consertar:</strong> o título não precisa de <code>header</code>. Basta o <code>&lt;h2&gt;Fale com a Ana&lt;/h2&gt;</code> direto no <code>footer</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: The element “footer” must not appear as a descendant of the “header” element.</code></strong>
+<p>O contrário: o <code>©</code> foi parar dentro do topo.</p>
+<pre class="file" data-file="footer-no-header.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;footer&gt;
+    &lt;p&gt;© 2026 Ana&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/header&gt;
+&lt;p&gt;Bolo de cenoura, pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu footer-no-header.html
+"file:/home/ana/receitas/footer-no-header.html":10.3-10.10: error: The element “footer” must not appear as a descendant of the “header” element.</pre>
+<p><strong>Como consertar:</strong> o rodapé da página vai <strong>depois</strong> do conteúdo, fora do <code>header</code>. Você vai fazer isso na missão final. Se a mesma mensagem aparecer com <code>header</code> dentro de <code>header</code> (<code>The element “header” must not appear as a descendant of the “header” element.</code>), apague o de dentro.</p>
+</div>
+
+<div class="cenario">
+<strong><code>header</code> dentro do <code>head</code>: quatro erros</strong>
+<p>Por causa do nome parecido, a Ana pôs o cabeçalho dentro do <code>head</code>, antes do <code>title</code>:</p>
+<pre class="file" data-file="header-no-head.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Bolo de cenoura, pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu header-no-head.html
+"file:/home/ana/receitas/header-no-head.html":5.1-5.8: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/receitas/header-no-head.html":8.1-8.7: error: Element “title” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/receitas/header-no-head.html":9.1-9.7: error: Stray end tag “head”.
+"file:/home/ana/receitas/header-no-head.html":10.1-10.6: error: Start tag “body” seen but an element of the same type was already open.</pre>
+<p>Um erro virou quatro. O que aconteceu, mensagem por mensagem:</p>
+<ol class="passo">
+  <li><strong>Linha 5:</strong> o <code>head</code> só aceita elementos de informação. Ao ver o <code>&lt;header&gt;</code>, o leitor de HTML fechou o <code>head</code> ali mesmo e abriu o <code>body</code> sozinho. Só que o <code>head</code> fechou <strong>sem</strong> <code>title</code>: <em>Element “head” is missing a required instance of child element “title”</em> ("falta ao <code>head</code> o filho obrigatório <code>title</code>").</li>
+  <li><strong>Linha 8:</strong> o <code>title</code> ficou dentro do <code>body</code>, onde não pode: <em>Element “title” not allowed as child of element “body”</em>.</li>
+  <li><strong>Linha 9:</strong> o <code>&lt;/head&gt;</code> já não tem quem fechar: <em>Stray end tag “head”</em> ("tag de fechamento perdida").</li>
+  <li><strong>Linha 10:</strong> o <code>&lt;body&gt;</code> que você escreveu chegou quando o navegador já tinha aberto um: <em>Start tag “body” seen but an element of the same type was already open</em>.</li>
+</ol>
+<p>Esta é a página que o Chromium montou:</p>
+<pre class="file" data-file="o que o navegador montou">&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;/head&gt;&lt;body&gt;&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+
+&lt;p&gt;Bolo de cenoura, pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;/body&gt;
+</pre>
+<p>Na tela, a página parece perfeita: o título grande aparece no topo, e até o nome na aba continua certo, porque o navegador usa o primeiro <code>title</code> que achar, mesmo fora do lugar. É por isso que o erro passa despercebido. Só o validador mostra.</p>
+<p><strong>Como consertar:</strong> o <code>head</code> fica só com <code>meta</code>, <code>title</code> e companhia. O <code>header</code>, como tudo o que aparece na tela, vai dentro do <code>body</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;header&gt;…&lt;/header&gt;</code></td><td>Cabeçalho: a introdução da página ou de um artigo (título, frase, menu, logotipo)</td></tr>
+<tr><td><code>&lt;footer&gt;…&lt;/footer&gt;</code></td><td>Rodapé: informações sobre a página ou o artigo (autoria, direitos, contato)</td></tr>
+<tr><td><code>header</code>/<code>footer</code> direto no <code>body</code></td><td>Regiões da página: <code>banner</code> e <code>contentinfo</code></td></tr>
+<tr><td><code>&lt;article&gt;&lt;header&gt;…&lt;/header&gt; … &lt;footer&gt;…&lt;/footer&gt;&lt;/article&gt;</code></td><td>Topo e pé de um artigo (não são regiões)</td></tr>
+<tr><td><code>&lt;p&gt;&lt;small&gt;© 2026 Ana&lt;/small&gt;&lt;/p&gt;</code></td><td>Direitos autorais em letra miúda</td></tr>
+<tr><td>Proibido</td><td><code>header</code> ou <code>footer</code> dentro de <code>header</code> ou <code>footer</code>; <code>main</code> dentro deles</td></tr>
+<tr><td><code>head</code> × <code>header</code> × <code>h1</code></td><td>Informações do documento × cabeçalho visível × título</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O topo</h3>
+<p>Complete o cabeçalho da página:</p>
+<div class="ex-code">&lt;<input data-answer="header" aria-label="abertura">&gt;&lt;h1&gt;Receitas da Ana&lt;/h1&gt;&lt;/<input data-answer="header" aria-label="fechamento">&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Para o navegador</h3>
+<p>Qual elemento guarda o <code>title</code> e os <code>meta</code>, e não aparece na tela?</p>
+<div class="ex-code">&lt;<input data-answer="head" aria-label="elemento">&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. A página da Ana tem um <code>header</code> no topo e cinco receitas em <code>article</code>, cada uma com o seu <code>header</code>. O que o validador diz?</p>
+<label><input type="radio" name="q3"> Erro: só pode haver um <code>header</code> por página</label>
+<label><input type="radio" name="q3"> Aviso: <code>header</code> repetido</label>
+<label><input type="radio" name="q3"> Nada: cada <code>article</code> pode ter o seu <code>header</code></label>
+<label><input type="radio" name="q3"> Erro: <code>header</code> não pode ficar dentro de <code>article</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que costuma ir num <code>footer</code> da página?</p>
+<label><input type="radio" name="q4"> O <code>title</code> e o <code>meta charset</code></label>
+<label><input type="radio" name="q4"> Os direitos autorais e o contato</label>
+<label><input type="radio" name="q4"> O conteúdo principal, num <code>main</code></label>
+<label><input type="radio" name="q4"> O <code>header</code> do site</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Para o leitor de tela, qual destes é a região "topo do site" (<code>banner</code>)?</p>
+<label><input type="radio" name="q5"> O <code>header</code> que fica direto no <code>body</code></label>
+<label><input type="radio" name="q5"> Todo <code>header</code> da página</label>
+<label><input type="radio" name="q5"> O <code>header</code> de dentro do primeiro <code>article</code></label>
+<label><input type="radio" name="q5"> O <code>head</code></label>
+</div>
+
+<h3>Missão final: o rodapé fora do topo</h3>
+
+<div class="tryhtml" data-goal="nsel:header footer=0,sel:header h1,sel:body > footer p,texto:footer=© 2026 Ana,sel:body > header + p">
+<p class="try-task"><strong>Missão:</strong> esta é a página do segundo cenário de erro: o <code>footer</code> está dentro do <code>header</code>. Tire o <code>footer</code> de lá e coloque-o no <strong>fim</strong> da página, depois do parágrafo das receitas. O parágrafo deve vir logo depois do <code>header</code>.</p>
+<pre class="script" data-file="index.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;footer&gt;
+    &lt;p&gt;© 2026 Ana&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/header&gt;
+&lt;p&gt;Bolo de cenoura, pão de queijo e brigadeiro.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;p&gt;Bolo de cenoura, pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>header</code> é o cabeçalho: a introdução da página (nome do site, frase, menu) ou de um artigo (título, data).</li>
+  <li><code>footer</code> é o rodapé: informações sobre a página ou o artigo (autoria, direitos autorais, contato).</li>
+  <li>Uma página pode ter vários: um da página e um em cada <code>article</code>. Só os que ficam direto no <code>body</code> são regiões para o leitor de tela (<code>banner</code> e <code>contentinfo</code>).</li>
+  <li>Proibido: <code>header</code> ou <code>footer</code> dentro de outro <code>header</code> ou <code>footer</code>, e <code>main</code> dentro deles. O validador diz <code>must not appear as a descendant of</code>.</li>
+  <li><code>head</code> (informações para o navegador) ≠ <code>header</code> (cabeçalho visível) ≠ <code>h1</code> (título). Um <code>header</code> no <code>head</code> gera quatro erros e uma página que parece certa.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
