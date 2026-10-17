@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Links — o elemento a e o atributo href | Guia HTML</title>
+<meta name="description" content="Links em HTML para quem nunca fez um site: o elemento a e o atributo href, link para outro site e para outra página do seu, o texto do link e a acessibilidade, imagens e blocos dentro de um link, o teclado, e os erros reais do validador W3C (espaço e barra invertida no href, a dentro de a, button dentro de a, link sem fechar).">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Links</span></h1>
+
+<p class="intro">O que transforma um monte de páginas soltas num <strong>site</strong>, e um monte de sites na <strong>web</strong>, são os links: um clique e você está em outro lugar. O "HT" de HTML vem daí: <em>HyperText</em>, "hipertexto", o texto que leva a outros textos. Nesta aula você vai criar os primeiros links do site da Ana, para outro site e para outra página dela, escolher um bom texto para cada link e reconhecer os erros que fazem um link levar para lugar nenhum.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O elemento <code>&lt;a&gt;</code> e o atributo <code>href</code>: o que cada parte faz.</li>
+  <li>A diferença entre um link para <strong>outro site</strong> (<code>https://…</code>) e para <strong>outra página do seu</strong> (<code>sobre.html</code>).</li>
+  <li>Como escrever o texto do link para todo mundo entender, inclusive quem usa leitor de tela.</li>
+  <li>O que pode ir dentro de um link: texto, imagem, até um título com parágrafo.</li>
+  <li>Como os links funcionam no teclado.</li>
+  <li>Os erros reais do validador: espaço e barra invertida no <code>href</code>, link dentro de link, botão dentro de link e o link sem <code>&lt;/a&gt;</code>.</li>
+</ul>
+</div>
+
+<p>Os resultados desta aula são desenhados pelo <strong>seu</strong> navegador, logo abaixo de cada código: clique nos links para ver aonde eles levam. As mensagens de erro são do validador W3C (<code>vnu</code>, a mesma ferramenta do <a href="validar.html">validator.w3.org</a>), rodado na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: a placa e o endereço</h2>
+<p>Pense numa placa de rua: "Centro →". A placa tem duas partes. O <strong>texto</strong> diz aonde ela leva, para você decidir se quer ir. O <strong>endereço</strong> é o lugar de verdade, para onde você vai se seguir a placa.</p>
+<p>Um link é uma placa na página. O texto aparece na tela, sublinhado; o endereço fica escondido no código, e o navegador o usa quando o leitor clica.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na placa</th><th>No link</th></tr>
+<tr><td>"Centro →", o que você lê</td><td>O <strong>texto do link</strong>, entre <code>&lt;a&gt;</code> e <code>&lt;/a&gt;</code></td></tr>
+<tr><td>O lugar aonde ela leva</td><td>O <strong>endereço</strong>, no atributo <code>href</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O primeiro link</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Aprendi a receita no &lt;a href="https://example.com"&gt;site de exemplo&lt;/a&gt;.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;a</dt><dd>O elemento de link. O <code>a</code> vem de <em>anchor</em>, "âncora": o ponto da página que fica "preso" a outro lugar.</dd>
+  <dt>href="…"</dt><dd>O atributo com o <strong>endereço</strong>. O nome vem de <em>hypertext reference</em>, "referência de hipertexto". Sem ele, o <code>&lt;a&gt;</code> não leva a lugar nenhum.</dd>
+  <dt>https://example.com</dt><dd>Um endereço completo de outro site, com o <code>https://</code> na frente. O <code>example.com</code> é um domínio reservado para exemplos, que existe de verdade e mostra uma página simples.</dd>
+  <dt>site de exemplo</dt><dd>O <strong>texto do link</strong>: a única parte que aparece na tela. É onde o leitor clica.</dd>
+  <dt>&lt;/a&gt;</dt><dd>Fecha o link. Tudo entre <code>&lt;a …&gt;</code> e <code>&lt;/a&gt;</code> é clicável.</dd>
+</dl>
+
+<p>Repare no resultado:</p>
+<ul>
+  <li>O texto do link aparece <strong>azul e sublinhado</strong>. Depois de visitado, muitos navegadores o pintam de <strong>roxo</strong>. São os estilos padrão do navegador; o CSS muda isso (futuro Guia CSS).</li>
+  <li>O link fica <strong>no meio da frase</strong>, sem quebrar a linha: o <code>&lt;a&gt;</code> é um elemento em linha (aula <a href="bloco-inline.html">Bloco × Em Linha</a>).</li>
+  <li>Ao passar o mouse, a seta vira uma <strong>mãozinha</strong>, e muitos navegadores mostram o endereço num cantinho de baixo da janela.</li>
+</ul>
+
+<div class="note">
+<strong>No editor do guia</strong>
+<p>Os quadros de resultado não saem desta página. Ao clicar num link para <strong>outro site</strong>, o editor escreve um aviso no console do quadro e abre o site numa <strong>aba nova</strong> do navegador. Links para os arquivos da própria caixa (as abas) abrem dentro do quadro.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:a[href^='https://example.com'],texto:a=Receitas do mundo,nsel:a=1">
+<p class="try-task"><strong>Missão:</strong> transforme as palavras "Receitas do mundo" num link para <code>https://example.com</code>. Clique no link para testar.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Links da Ana&lt;/h1&gt;
+&lt;p&gt;Meu site favorito: Receitas do mundo.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Links da Ana&lt;/h1&gt;
+&lt;p&gt;Meu site favorito: &lt;a href="https://example.com"&gt;Receitas do mundo&lt;/a&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Link para outra página do seu site</h2>
+<p>Para ir de uma página sua para outra, que está <strong>na mesma pasta</strong>, basta o <strong>nome do arquivo</strong> no <code>href</code>, sem <code>https://</code>. O site da Ana tem dois arquivos lado a lado, <code>index.html</code> e <code>sobre.html</code>:</p>
+
+<pre class="term" data-cwd="~/site">$ ls
+index.html  sobre.html</pre>
+
+<pre class="file" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="sobre.html"&gt;Quem é a Ana&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<pre class="file" data-file="sobre.html">&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;Cozinheira de fim de semana, de Belo Horizonte.&lt;/p&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>href="sobre.html"</dt><dd>Um endereço <strong>relativo</strong>: "o arquivo <code>sobre.html</code>, na mesma pasta desta página". O navegador completa o resto sozinho, seja no seu computador, seja no site publicado.</dd>
+  <dt>href="index.html"</dt><dd>O caminho de volta. Toda página do site deve ter um jeito de voltar ao início; o leitor nem sempre chega pela porta da frente.</dd>
+</dl>
+
+<p>Endereços relativos e absolutos, e arquivos em outras pastas (<code>receitas/bolo.html</code>, <code>../index.html</code>), são o assunto da próxima aula, <a href="caminhos.html">Caminhos Relativos e Absolutos</a>. O nome no <code>href</code> tem de ser <strong>idêntico</strong> ao do arquivo: <code>Sobre.html</code>, com maiúscula, é outro arquivo num servidor de verdade.</p>
+
+<div class="tryhtml" data-goal="attr:a[href]=receitas.html,texto:a=Receitas,src:href=[&quot;']?index\.html">
+<p class="try-task"><strong>Missão:</strong> esta caixa tem duas abas, como dois arquivos na mesma pasta. Na aba <code>index.html</code>, transforme "Receitas" num link para <code>receitas.html</code>. Na aba <code>receitas.html</code>, transforme "Voltar ao início" num link para <code>index.html</code>. Clique nos dois links no resultado e veja o quadro trocar de página.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Receitas&lt;/p&gt;
+</pre>
+<pre class="script" data-file="receitas.html">&lt;h1&gt;Todas as receitas&lt;/h1&gt;
+&lt;p&gt;Bolo de fubá, pão de queijo, brigadeiro.&lt;/p&gt;
+&lt;p&gt;Voltar ao início&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="receitas.html"&gt;Receitas&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="receitas.html">&lt;h1&gt;Todas as receitas&lt;/h1&gt;
+&lt;p&gt;Bolo de fubá, pão de queijo, brigadeiro.&lt;/p&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<p>Se você digitar um nome que não existe, como <code>receita.html</code> sem o <code>s</code>, o editor mostra uma página "404: página não encontrada", como um servidor de verdade faria.</p>
+
+<hr>
+
+<h2>3. O texto do link</h2>
+<p>O texto do link é a placa. Ele precisa dizer <strong>aonde o link leva</strong>, mesmo lido fora da frase. Compare:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;A receita do bolo de fubá está pronta. &lt;a href="bolo.html"&gt;Clique aqui&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Está pronta a &lt;a href="bolo.html"&gt;receita do bolo de fubá&lt;/a&gt;.&lt;/p&gt;
+</pre>
+
+<p>Os dois links levam ao mesmo lugar, mas o segundo é muito melhor. Por quê:</p>
+<ul>
+  <li><strong>Quem usa leitor de tela</strong> (o programa que lê a página em voz alta para quem não enxerga) costuma pedir a <strong>lista de links</strong> da página, para pular direto. Uma lista com "Clique aqui, clique aqui, clique aqui" não diz nada. "Receita do bolo de fubá" diz tudo.</li>
+  <li><strong>Quem passa os olhos</strong> pela página lê primeiro o que está destacado: os links.</li>
+  <li><strong>Buscadores</strong> usam o texto do link para entender do que trata a página de destino (aula <a href="seo.html">HTML e SEO</a>).</li>
+  <li>"Clique" nem combina com celular, onde ninguém clica: toca.</li>
+</ul>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Evite</th><th>Prefira</th></tr>
+<tr><td><code>Clique aqui</code>, <code>Saiba mais</code>, <code>Leia mais</code> sozinhos</td><td>O nome do destino: <code>Receita do bolo de fubá</code></td></tr>
+<tr><td>O endereço como texto: <code>https://example.com/receitas/bolo-de-fuba.html</code></td><td>Um texto curto; o endereço completo só quando o leitor precisa copiá-lo</td></tr>
+<tr><td>A frase inteira como link</td><td>Só as palavras que dizem o destino</td></tr>
+<tr><td>Dois links com o mesmo texto para destinos diferentes</td><td>Textos diferentes para destinos diferentes</td></tr>
+</table>
+</div>
+
+<h3>O atributo <code>title</code></h3>
+<p>O atributo <code>title</code> mostra uma dica quando o mouse para em cima do link:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="bolo.html" title="Rende 12 fatias"&gt;Receita do bolo de fubá&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<p>Passe o mouse e espere um pouco. A dica é só um extra: no celular e no teclado ela não aparece, e muitos leitores de tela não a leem. Nada importante pode ficar <strong>só</strong> no <code>title</code>; o texto do link precisa se bastar.</p>
+
+<hr>
+
+<h2>4. O que pode ir dentro de um link</h2>
+
+<h3>Uma imagem</h3>
+<p>Uma imagem dentro do <code>&lt;a&gt;</code> vira clicável (imagens têm aula própria, <a href="imagens.html">Imagens</a>). Como a imagem é o único conteúdo, o texto alternativo, o <code>alt</code>, passa a ser o texto do link: ele deve dizer <strong>aonde o link leva</strong>, e não só o que a foto mostra (aula <a href="imagens-alt.html">Texto Alternativo</a>).</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;a href="bolo.html"&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Receita do bolo de fubá" width="200" height="150"&gt;
+&lt;/a&gt;
+</pre>
+
+<h3>Um bloco inteiro: o "cartão"</h3>
+<p>Desde o HTML5, o link pode envolver blocos, como um título e um parágrafo. Isso cria um "cartão" todo clicável, comum em listas de receitas e notícias:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;a href="bolo.html"&gt;
+  &lt;h2&gt;Bolo de fubá&lt;/h2&gt;
+  &lt;p&gt;Fofinho, com erva-doce. 50 minutos.&lt;/p&gt;
+&lt;/a&gt;
+</pre>
+
+<p>O título e o parágrafo ficaram sublinhados e clicáveis. O leitor de tela lê o cartão inteiro como o texto do link, então mantenha-o curto.</p>
+
+<h3>O que não pode</h3>
+<p>Um link não pode ter dentro dele <strong>outra coisa clicável</strong>: outro <code>&lt;a&gt;</code>, um botão (<code>&lt;button&gt;</code>), um campo de formulário. Se pudesse, um clique ali seria ambíguo: vale o link de fora ou o de dentro? O validador avisa (veja <a href="#errado">Quando dá errado</a>).</p>
+
+<hr>
+
+<h2>5. Links e o teclado</h2>
+<p>Nem todo mundo usa mouse. Muita gente navega só com o teclado, por escolha ou por necessidade. Os links já vêm prontos para isso:</p>
+<ul>
+  <li>A tecla <kbd>Tab</kbd> pula de link em link, na ordem do código; <kbd>Shift</kbd>+<kbd>Tab</kbd> volta.</li>
+  <li>O link escolhido ganha um <strong>contorno</strong> (o "foco") para você ver onde está.</li>
+  <li><kbd>Enter</kbd> abre o link.</li>
+</ul>
+<p>Isso só funciona com <code>&lt;a href="…"&gt;</code> de verdade. Um <code>&lt;a&gt;</code> <strong>sem</strong> <code>href</code> é válido (ele serve de "lugar reservado" para um link que ainda não existe), mas não é clicável e o <kbd>Tab</kbd> o pula. Mais sobre o teclado em <a href="teclado.html">Teclado e Foco</a>.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> clique dentro do resultado e aperte <kbd>Tab</kbd> algumas vezes. Quais itens recebem o contorno? O "Pão de queijo" não tem <code>href</code>: ponha um (<code>href="pao.html"</code>) e teste de novo.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;a href="bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a&gt;Pão de queijo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<div class="tip">
+<strong>Link ou botão?</strong>
+<p>Use <code>&lt;a href&gt;</code> quando o clique <strong>leva a outro lugar</strong> (outra página, outro site, outro ponto da página). Use <code>&lt;button&gt;</code> quando o clique <strong>faz alguma coisa</strong> ali mesmo (enviar um formulário, abrir um menu). Um link com <code>href="#"</code> fingindo de botão confunde o teclado e o leitor de tela (aula <a href="botoes.html">Botões</a>).</p>
+</div>
+
+<hr>
+
+<h2>6. Os tipos de endereço</h2>
+<p>O <code>href</code> aceita vários tipos de endereço. Cada um tem a sua aula:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Endereço</th><th>Leva para</th><th>Aula</th></tr>
+<tr><td><code>https://example.com</code></td><td>Outro site (endereço absoluto)</td><td>esta e <a href="caminhos.html">Caminhos</a></td></tr>
+<tr><td><code>sobre.html</code>, <code>receitas/bolo.html</code></td><td>Outra página do seu site (endereço relativo)</td><td><a href="caminhos.html">Caminhos Relativos e Absolutos</a></td></tr>
+<tr><td><code>#ingredientes</code></td><td>Outro ponto da mesma página</td><td><a href="ancoras.html">Âncoras na Mesma Página</a></td></tr>
+<tr><td><code>mailto:ana@example.com</code>, <code>tel:+55…</code></td><td>Programa de e-mail, discador</td><td><a href="links-email-tel.html">Links de E-mail e Telefone</a></td></tr>
+<tr><td><code>receita.pdf</code> com <code>download</code></td><td>Baixar um arquivo</td><td><a href="download.html">Baixar Arquivos</a></td></tr>
+</table>
+</div>
+<p>E para abrir o link numa aba nova existe o atributo <code>target</code>, com cuidados próprios: aula <a href="links-target.html">Nova Aba (target e rel)</a>.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Esqueceu o <code>https://</code>: o link vai para dentro do seu site</strong>
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="www.example.com"&gt;Site de exemplo&lt;/a&gt;&lt;/p&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> sem o <code>https://</code>, o endereço é lido como o <strong>nome de um arquivo</strong> na pasta atual, um arquivo chamado <code>www.example.com</code>. Num site publicado, o link vai para algo como <code>https://site-da-ana.example/www.example.com</code> e dá erro 404. Clique no resultado: o editor mostra a página "404: página não encontrada".</p>
+<p><strong>O que o validador diz:</strong> nada. Para ele, <code>www.example.com</code> é um nome de arquivo tão válido quanto <code>sobre.html</code>. Só testando o link você descobre.</p>
+<p><strong>Como consertar:</strong> endereço de outro site sempre começa com <code>https://</code> (ou <code>http://</code>, nos sites antigos).</p>
+</div>
+
+<div class="cenario">
+<strong>Espaço no endereço: <code>Illegal character in path segment</code></strong>
+<pre class="term" data-cwd="~/site">$ vnu espaco.html
+"file:/home/ana/site/espaco.html":8.4-8.32: error: Bad value “minha receita.html” for attribute “href” on element “a”: Illegal character in path segment. Space is not allowed.</pre>
+<p><strong>O que significa:</strong> "valor inválido <code>minha receita.html</code> para o atributo <code>href</code> do elemento <code>a</code>: caractere ilegal num pedaço do caminho. Espaço não é permitido." O navegador até tenta (troca o espaço por <code>%20</code>), mas o endereço fica frágil.</p>
+<p><strong>Como consertar:</strong> renomeie o arquivo sem espaços: <code>minha-receita.html</code>. A regra do guia para nomes de arquivo: letras minúsculas, sem acento, palavras separadas por hífen (aula <a href="organizar-arquivos.html">Organizar os Arquivos</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>Barra invertida: <code>Backslash ("\") used as path segment delimiter</code></strong>
+<p>Quem usa Windows vê caminhos como <code>receitas\bolo.html</code> e copia para o <code>href</code>:</p>
+<pre class="term" data-cwd="~/site">$ vnu barra.html
+"file:/home/ana/site/barra.html":8.4-8.32: error: Bad value “receitas\bolo.html” for attribute “href” on element “a”: Backslash ("\") used as path segment delimiter.</pre>
+<p><strong>O que significa:</strong> "barra invertida usada para separar pedaços do caminho". Na web, a separação é sempre a barra normal, <code>/</code>.</p>
+<p><strong>Como consertar:</strong> <code>receitas/bolo.html</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Esqueceu o <code>&lt;/a&gt;</code>: o resto da página vira link</strong>
+<pre class="file" data-file="aberto.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Links&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Veja o &lt;a href="bolo.html"&gt;bolo de fubá.&lt;/p&gt;
+&lt;p&gt;Novidades toda semana.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> fecha o link junto com o parágrafo, mas como ele não foi fechado de verdade, <strong>abre outro link igual</strong> em volta de tudo o que vem depois. O "Novidades toda semana." também fica sublinhado e clicável, levando para o bolo. O que o navegador monta:</p>
+<pre class="file" data-file="o que o navegador monta">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Veja o &lt;a href="bolo.html"&gt;bolo de fubá.&lt;/a&gt;&lt;/p&gt;&lt;a href="bolo.html"&gt;
+&lt;p&gt;Novidades toda semana.&lt;/p&gt;
+&lt;/a&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu aberto.html
+"file:/home/ana/site/aberto.html":9.44-9.47: error: End tag “p” seen, but there were open elements.
+"file:/home/ana/site/aberto.html":9.11-9.30: error: Unclosed element “a”.
+"file:/home/ana/site/aberto.html":11.1-11.7: error: End tag for  “body” seen, but there were unclosed elements.</pre>
+<p><strong>O que significa:</strong> "tag de fechamento <code>p</code> vista, mas havia elementos abertos" (o <code>a</code>), "elemento <code>a</code> não fechado" (apontando a linha 9, coluna 11, onde ele começa) e, no fim, "a página terminou com elementos abertos".</p>
+<p><strong>Como consertar:</strong> <code>&lt;a href="bolo.html"&gt;bolo de fubá&lt;/a&gt;.</code> Feche o link logo depois do texto.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:p + a=0,texto:p a=bolo de fubá,nsel:a=1">
+<p class="try-task"><strong>Missão:</strong> passe o mouse sobre "Novidades toda semana.": ele virou link sem querer. Feche o link no lugar certo, logo depois de "bolo de fubá", para que só essas palavras sejam clicáveis.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Veja o &lt;a href="bolo.html"&gt;bolo de fubá.&lt;/p&gt;
+&lt;p&gt;Novidades toda semana.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Veja o &lt;a href="bolo.html"&gt;bolo de fubá&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Novidades toda semana.&lt;/p&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Link dentro de link: <code>Start tag “a” seen but an element of the same type was already open</code></strong>
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="bolo.html"&gt;Bolo de fubá, &lt;a href="cobertura.html"&gt;com cobertura&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> ao ver o segundo <code>&lt;a&gt;</code>, ele <strong>fecha o primeiro</strong>. Ficam dois links, um ao lado do outro, e o último <code>&lt;/a&gt;</code> sobra. Na linha 8 de uma página completa, o validador diz:</p>
+<pre class="term" data-cwd="~/site">$ vnu dentro.html
+"file:/home/ana/site/dentro.html":8.38-8.62: error: Start tag “a” seen but an element of the same type was already open.
+"file:/home/ana/site/dentro.html":8.80-8.83: error: Stray end tag “a”.</pre>
+<p>"Tag de abertura <code>a</code> vista, mas um elemento do mesmo tipo já estava aberto" e "tag de fechamento <code>a</code> perdida" (<em>stray</em>, "extraviada": não há link aberto para ela fechar).</p>
+<p><strong>Como consertar:</strong> dois links separados, cada um com o seu texto: <code>&lt;a href="bolo.html"&gt;Bolo de fubá&lt;/a&gt;, &lt;a href="cobertura.html"&gt;com cobertura&lt;/a&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Botão dentro de link: <code>must not appear as a descendant of the “a” element</code></strong>
+<pre class="term" data-cwd="~/site">$ grep button botao.html
+&lt;p&gt;&lt;a href="bolo.html"&gt;&lt;button&gt;Ver receita&lt;/button&gt;&lt;/a&gt;&lt;/p&gt;
+$ vnu botao.html
+"file:/home/ana/site/botao.html":8.24-8.31: error: The element “button” must not appear as a descendant of the “a” element.</pre>
+<p><strong>O que significa:</strong> "o elemento <code>button</code> não pode aparecer dentro do elemento <code>a</code>". O navegador desenha o botão, mas o que um clique faz não é garantido (o botão e o link disputam o mesmo clique), e o leitor de tela anuncia duas coisas clicáveis, uma dentro da outra.</p>
+<p><strong>Como consertar:</strong> se leva a outra página, é um link: <code>&lt;a href="bolo.html"&gt;Ver receita&lt;/a&gt;</code>. A aparência de botão vem do CSS.</p>
+</div>
+
+<div class="cenario">
+<strong>Link sem texto: o validador não reclama</strong>
+<p><strong>O que acontece:</strong> com <code>&lt;a href="bolo.html"&gt;&lt;/a&gt;</code>, ou com uma imagem sem <code>alt</code> dentro do link, não há nada para clicar na tela, e o leitor de tela anuncia só "link", ou lê o endereço letra por letra. O <code>vnu</code> não mostra nenhum erro para o link vazio.</p>
+<p><strong>Como consertar:</strong> todo link precisa de um texto, ou de uma imagem com <code>alt</code> que diga o destino.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;a href="https://example.com"&gt;texto&lt;/a&gt;</code></td><td>Link para outro site</td></tr>
+<tr><td><code>&lt;a href="sobre.html"&gt;texto&lt;/a&gt;</code></td><td>Link para outra página na mesma pasta</td></tr>
+<tr><td><code>&lt;a href="…" title="dica"&gt;</code></td><td>Mostra uma dica ao passar o mouse (só um extra)</td></tr>
+<tr><td><code>&lt;a href="…"&gt;&lt;img src="…" alt="destino"&gt;&lt;/a&gt;</code></td><td>Imagem clicável; o <code>alt</code> é o texto do link</td></tr>
+<tr><td><code>&lt;a href="…"&gt;&lt;h2&gt;…&lt;/h2&gt;&lt;p&gt;…&lt;/p&gt;&lt;/a&gt;</code></td><td>Cartão inteiro clicável</td></tr>
+<tr><td><code>&lt;a&gt;texto&lt;/a&gt;</code></td><td>Lugar reservado: sem <code>href</code>, não é link</td></tr>
+<tr><td>Não pode dentro de <code>a</code></td><td>Outro <code>a</code>, <code>button</code>, campos de formulário</td></tr>
+<tr><td>No <code>href</code>, evite</td><td>Espaços, acentos, <code>\</code>; esquecer o <code>https://</code> de outro site</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O atributo do endereço</h3>
+<p>Complete o link:</p>
+<div class="ex-code">&lt;a <input data-answer="href" aria-label="atributo">="sobre.html"&gt;Quem é a Ana&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Outro site</h3>
+<p>Complete o começo do endereço para o link ir ao site <code>example.com</code>, e não a um arquivo da pasta:</p>
+<div class="ex-code">&lt;a href="<input data-answer="https://|http://" aria-label="começo">example.com"&gt;Exemplo&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Fechar</h3>
+<p>Complete a tag que fecha o link:</p>
+<div class="ex-code">&lt;a href="bolo.html"&gt;Bolo de fubá<input data-answer="&lt;/a&gt;" aria-label="fechamento"></div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Qual é o melhor texto para um link que leva à receita de pão de queijo?</p>
+<label><input type="radio" name="q4"> Clique aqui</label>
+<label><input type="radio" name="q4"> Saiba mais</label>
+<label><input type="radio" name="q4"> Receita de pão de queijo</label>
+<label><input type="radio" name="q4"> https://example.com/receitas/pao-de-queijo.html</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. A Ana escreveu <code>&lt;a href="www.example.com"&gt;</code>. O que acontece ao clicar?</p>
+<label><input type="radio" name="q5"> Abre o site example.com normalmente</label>
+<label><input type="radio" name="q5"> O navegador procura um arquivo chamado <code>www.example.com</code> no site da Ana, e dá 404</label>
+<label><input type="radio" name="q5"> O validador recusa a página</label>
+<label><input type="radio" name="q5"> Nada: o link não é clicável</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. O que acontece com <code>&lt;a href="a.html"&gt;Um &lt;a href="b.html"&gt;dois&lt;/a&gt;&lt;/a&gt;</code>?</p>
+<label><input type="radio" name="q6"> Um link dentro do outro, como escrito</label>
+<label><input type="radio" name="q6"> O navegador ignora o segundo link</label>
+<label><input type="radio" name="q6"> A página não abre</label>
+<label><input type="radio" name="q6"> O navegador fecha o primeiro link ao ver o segundo; o validador reclama</label>
+</div>
+
+<h3>Missão final: a página inicial com links</h3>
+
+<div class="tryhtml" data-goal="sel:a[href='sobre.html'],sel:a[href='receitas.html'] img[alt],sel:a[href^='https://example.com'],nsel:a img[alt='']=0,nsrc:clique aqui,nsrc:&lt;a[^&gt;]*&gt;\s*&lt;/a&gt;">
+<p class="try-task"><strong>Missão:</strong> monte os links da página inicial da Ana. (1) Transforme "Quem é a Ana" num link para <code>sobre.html</code>. (2) Ponha a foto do bolo dentro de um link para <code>receitas.html</code>, com um <code>alt</code> que diga o destino. (3) Troque o "clique aqui" por um link com um bom texto (por exemplo, "Receitas do mundo") para <code>https://example.com</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Quem é a Ana&lt;/p&gt;
+&lt;img src="assets/midia/bolo-400.jpg" alt="" width="200" height="150"&gt;
+&lt;p&gt;Meu site favorito de receitas: clique aqui.&lt;/p&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="script" data-file="receitas.html">&lt;h1&gt;Todas as receitas&lt;/h1&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="sobre.html"&gt;Quem é a Ana&lt;/a&gt;&lt;/p&gt;
+&lt;a href="receitas.html"&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Todas as receitas" width="200" height="150"&gt;
+&lt;/a&gt;
+&lt;p&gt;Meu site favorito de receitas: &lt;a href="https://example.com"&gt;Receitas do mundo&lt;/a&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Clique nos três links do resultado: os dois primeiros trocam a página dentro do quadro (e as páginas novas têm o "Voltar ao início"); o terceiro abre o site de exemplo numa aba nova. Repare no <code>alt=""</code> do código inicial: vazio, ele diz "imagem decorativa", e dentro de um link o leitor de tela não teria o que falar.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Um link é <code>&lt;a href="endereço"&gt;texto&lt;/a&gt;</code>: o <code>a</code> (<em>anchor</em>) é o link, o <code>href</code> (<em>hypertext reference</em>) é o endereço, e o texto é o que aparece e recebe o clique.</li>
+  <li>Outro site: endereço completo, com <code>https://</code>. Outra página sua, na mesma pasta: só o nome do arquivo (<code>sobre.html</code>). Sem o <code>https://</code>, <code>www.example.com</code> vira nome de arquivo, e o validador não avisa.</li>
+  <li>O texto do link diz <strong>aonde ele leva</strong>, mesmo fora da frase. Nada de "clique aqui". O <code>title</code> é só um extra.</li>
+  <li>Dentro de um link podem ir texto, uma imagem (o <code>alt</code> vira o texto do link) e até blocos. Não podem ir outro link, botões nem campos.</li>
+  <li>Links funcionam com o teclado (<kbd>Tab</kbd> e <kbd>Enter</kbd>) se tiverem <code>href</code>. Link leva a um lugar; botão faz uma ação.</li>
+  <li>Validador: espaço (<code>Illegal character in path segment</code>) e <code>\</code> no <code>href</code>; <code>a</code> dentro de <code>a</code>; <code>button</code> dentro de <code>a</code>; <code>Unclosed element “a”</code> quando falta o <code>&lt;/a&gt;</code>, e o navegador estica o link pelo resto da página.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
