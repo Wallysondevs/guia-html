@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML favicon — o ícone da aba | Guia HTML</title>
+<meta name="description" content="O favicon, o ícone da aba, para quem nunca fez um site: link rel=icon, os formatos SVG, PNG e ICO, sizes, type, apple-touch-icon, por que o navegador pede /favicon.ico sozinho e os erros reais do validador W3C e do servidor, com o registro real do servidor local.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Ícone da Aba (favicon)</span></h1>
+
+<p class="intro">Olhe para as abas abertas no seu navegador agora: cada uma tem um iconezinho do lado do título. Esse ícone se chama <strong>favicon</strong> (de <em>favorite icon</em>, "ícone dos favoritos", porque no começo ele aparecia só nos favoritos). É ele que faz você achar a aba certa entre vinte. Nesta aula a Ana vai dar um ícone ao site de receitas: você vai ver o que o navegador faz quando não há ícone, como ligar um com <code>&lt;link rel="icon"&gt;</code>, quais formatos usar e os erros mais comuns.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Onde o favicon aparece e por que vale a pena ter um.</li>
+  <li>Que o navegador procura um <code>/favicon.ico</code> sozinho, e o que isso deixa no registro do servidor.</li>
+  <li>A linha <code>&lt;link rel="icon" href="…"&gt;</code> e os atributos <code>type</code> e <code>sizes</code>.</li>
+  <li>Os formatos (SVG, PNG, ICO) e o <code>apple-touch-icon</code> da tela inicial do celular.</li>
+  <li>Os erros reais do validador W3C e os erros que só o servidor mostra.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/fav</code>. Os pedidos de arquivos foram registrados pelo servidor local do Python (aula <a href="servidor-local.html">Servidor Local</a>) com o Chrome abrindo as páginas.</p>
+
+<hr>
+
+<h2>A ideia: o logotipo na fachada</h2>
+<p>Numa rua cheia de lojas, você reconhece a sua padaria pelo <strong>logotipo</strong> na fachada, antes mesmo de ler o nome. O favicon é o logotipo do site, em miniatura: um quadradinho de 16 ou 32 pixels, que precisa ser reconhecível mesmo pequeno.</p>
+
+<p>Ele aparece:</p>
+<ul>
+  <li>na <strong>aba</strong> do navegador, ao lado do <code>title</code>;</li>
+  <li>nos <strong>favoritos</strong> e no <strong>histórico</strong>;</li>
+  <li>em alguns <strong>resultados de busca</strong>, ao lado do nome do site;</li>
+  <li>na <strong>tela inicial do celular</strong>, quando alguém "adiciona o site à tela de início" (com o <code>apple-touch-icon</code>, seção 4).</li>
+</ul>
+
+<p>Como o <code>title</code>, o favicon fica no <code>head</code> e não aparece dentro da página. No quadro de Resultado do editor, que não tem aba, você também não vai vê-lo: os efeitos desta aula aparecem quando você abre o arquivo no navegador.</p>
+
+<hr>
+
+<h2>1. Sem ícone: o navegador procura sozinho</h2>
+<p>A página da Ana ainda não fala de ícone nenhum:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Ela abriu o site pelo servidor local e olhou o registro que ele escreve no terminal: uma linha para cada arquivo que o navegador pediu.</p>
+
+<pre class="term" data-cwd="~/fav">$ python3 -m http.server 8000
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+127.0.0.1 - - [17/Oct/2026 15:53:03] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 15:53:03] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 15:53:03] "GET /favicon.ico HTTP/1.1" 404 -</pre>
+
+<dl class="anatomy">
+  <dt>127.0.0.1</dt><dd>Quem pediu: o próprio computador da Ana (o navegador dela).</dd>
+  <dt>[17/Oct/2026 15:53:03]</dt><dd>Quando.</dd>
+  <dt>"GET /index.html HTTP/1.1" 200</dt><dd>"Me dê o <code>/index.html</code>." O <code>200</code> é o código de "deu certo": o servidor entregou a página.</dd>
+  <dt>"GET /favicon.ico HTTP/1.1" 404</dt><dd>"Me dê o <code>/favicon.ico</code>." A Ana nunca escreveu isso! Foi o navegador que pediu por conta própria. O <code>404</code> é o famoso "não encontrado" (<em>File not found</em>, "arquivo não encontrado"), dito também na linha de cima.</dd>
+</dl>
+
+<p>É um costume antigo: quando a página não diz qual é o ícone, o navegador tenta o arquivo <code>favicon.ico</code> na <strong>raiz</strong> do site (a pasta principal, a do <code>/</code>). Não achou? A aba fica com um ícone genérico do navegador. O Console do F12 mostrou o mesmo 404, com estas palavras:</p>
+
+<pre class="file" data-file="Console do Chrome">Failed to load resource: the server responded with a status of 404 (File not found)
+</pre>
+
+<p>"Falha ao carregar o recurso: o servidor respondeu com o código 404 (arquivo não encontrado)." Não é grave, a página funciona, mas é um pedido desperdiçado em cada visita, e uma aba sem identidade.</p>
+
+<div class="note">
+<strong>Abrindo o arquivo direto, sem servidor</strong>
+<p>Quando você abre o <code>index.html</code> com dois cliques (o endereço começa com <code>file://</code>), não há servidor nem registro, e a aba pode mostrar só o ícone genérico. Para testar o favicon de verdade, use o servidor local.</p>
+</div>
+
+<hr>
+
+<h2>2. Ligar um ícone: <code>&lt;link rel="icon"&gt;</code></h2>
+<p>A Ana desenhou um ícone simples, um círculo laranja com um "A", no formato <strong>SVG</strong> (um desenho escrito em texto, que fica nítido em qualquer tamanho; aula <a href="svg.html">SVG no HTML</a>). O arquivo é este:</p>
+
+<pre class="file" data-file="favicon.svg">&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"&gt;
+  &lt;circle cx="16" cy="16" r="15" fill="#e8743b"/&gt;
+  &lt;text x="16" y="22" font-size="16" text-anchor="middle" fill="white" font-family="sans-serif"&gt;A&lt;/text&gt;
+&lt;/svg&gt;
+</pre>
+
+<p>Para você ver o desenho, aqui ele está colado dentro de uma página, em dois tamanhos: o da aba (16 pixels) e um maior (64 pixels):</p>
+
+<pre class="file" data-file="ver-icone.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;O ícone da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;p&gt;Tamanho da aba:
+    &lt;svg width="16" height="16" viewBox="0 0 32 32" role="img" aria-label="Ícone das Receitas da Ana"&gt;
+      &lt;circle cx="16" cy="16" r="15" fill="#e8743b"/&gt;
+      &lt;text x="16" y="22" font-size="16" text-anchor="middle" fill="white" font-family="sans-serif"&gt;A&lt;/text&gt;
+    &lt;/svg&gt;
+  &lt;/p&gt;
+  &lt;p&gt;Ampliado:
+    &lt;svg width="64" height="64" viewBox="0 0 32 32" role="img" aria-label="Ícone das Receitas da Ana, ampliado"&gt;
+      &lt;circle cx="16" cy="16" r="15" fill="#e8743b"/&gt;
+      &lt;text x="16" y="22" font-size="16" text-anchor="middle" fill="white" font-family="sans-serif"&gt;A&lt;/text&gt;
+    &lt;/svg&gt;
+  &lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Repare como 16 pixels é pouco: um desenho com muitos detalhes vira uma mancha. Ícones bons são simples: uma letra, uma forma, duas cores.</p>
+
+<p>Agora, a linha que liga o ícone à página, no <code>head</code>:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;link rel="icon" href="favicon.svg" type="image/svg+xml"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;link</dt><dd>O elemento que liga a página a <strong>outro arquivo</strong>. Como o <code>meta</code>, é vazio: não tem <code>&lt;/link&gt;</code>. O mesmo elemento liga o CSS (aula <a href="ligar-css.html">Ligar CSS</a>).</dd>
+  <dt>rel="icon"</dt><dd><em>rel</em> = "relationship", a <strong>relação</strong> entre a página e o arquivo: "este arquivo é o meu ícone".</dd>
+  <dt>href="favicon.svg"</dt><dd><em>href</em> = "hypertext reference", o <strong>endereço</strong> do arquivo, como no link <code>&lt;a&gt;</code>. Aqui, um caminho relativo: o <code>favicon.svg</code> está na mesma pasta da página (aula <a href="caminhos.html">Caminhos</a>).</dd>
+  <dt>type="image/svg+xml"</dt><dd>O <strong>tipo</strong> do arquivo, no formato que a internet usa (o "tipo MIME"). É opcional, mas ajuda o navegador a pular, sem baixar, um formato que ele não entende.</dd>
+</dl>
+
+<p>O registro do servidor mudou:</p>
+
+<pre class="term" data-cwd="~/fav">$ python3 -m http.server 8000
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+127.0.0.1 - - [17/Oct/2026 15:53:06] "GET /icone.html HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 15:53:06] "GET /favicon.svg HTTP/1.1" 200 -</pre>
+
+<p>Agora o navegador pediu o <code>favicon.svg</code>, que a página indicou, e recebeu (<code>200</code>). E não pediu mais o <code>/favicon.ico</code>: quando a página diz qual é o ícone, o navegador não precisa adivinhar. (O arquivo se chamava <code>icone.html</code> neste teste; o conteúdo é o mesmo do <code>index.html</code> acima.)</p>
+
+<pre class="term" data-cwd="~/fav">$ vnu --verbose certo.html
+certo.html</pre>
+
+<div class="tryhtml" data-goal="sel:head link[rel=icon][href='favicon.svg']">
+<p class="try-task"><strong>Missão:</strong> ligue o ícone <code>favicon.svg</code> à página da lojinha, com um <code>&lt;link rel="icon"&gt;</code> no <code>head</code>, depois do <code>title</code>. O Resultado não muda (o quadro não tem aba): o que importa é a linha certa no lugar certo.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+  &lt;p&gt;Cadernos, canetas e marca-textos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Lojinha da Ana&lt;/title&gt;
+  &lt;link rel="icon" href="favicon.svg" type="image/svg+xml"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+  &lt;p&gt;Cadernos, canetas e marca-textos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Os formatos</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Formato</th><th><code>type</code></th><th>Vantagens</th><th>Cuidados</th></tr>
+<tr><td><strong>SVG</strong> (<code>.svg</code>)</td><td><code>image/svg+xml</code></td><td>Um arquivo só, nítido em qualquer tamanho, pequeno, editável num editor de texto.</td><td>Nem todo navegador aceita SVG como favicon, principalmente os mais antigos: tenha também um PNG.</td></tr>
+<tr><td><strong>PNG</strong> (<code>.png</code>)</td><td><code>image/png</code></td><td>Funciona em todo navegador atual. Fácil de exportar de qualquer programa de desenho.</td><td>Tem um tamanho fixo: diga qual com <code>sizes</code>.</td></tr>
+<tr><td><strong>ICO</strong> (<code>.ico</code>)</td><td><code>image/x-icon</code></td><td>O formato original, do Windows. Guarda vários tamanhos num arquivo só. É o que o navegador procura sozinho em <code>/favicon.ico</code>.</td><td>Precisa de um programa ou site conversor para ser criado.</td></tr>
+</table>
+</div>
+
+<p>Os formatos de imagem têm aula própria: <a href="formatos-imagem.html">Formatos (JPG, PNG, WebP, SVG, AVIF)</a>.</p>
+
+<h3>O atributo <code>sizes</code></h3>
+<p>Para PNG e ICO, o <code>sizes</code> diz o tamanho, em pixels, no formato <code>LARGURAxALTURA</code> (com um <code>x</code> minúsculo no meio):</p>
+
+<pre class="file" data-file="trecho">&lt;link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"&gt;
+</pre>
+
+<p>Com vários ícones, o navegador escolhe o tamanho que precisa sem baixar todos. Para SVG, que não tem tamanho fixo, existe <code>sizes="any"</code> ("qualquer um"), opcional.</p>
+
+<hr>
+
+<h2>4. O ícone da tela inicial: <code>apple-touch-icon</code></h2>
+<p>Quando alguém adiciona um site à tela inicial do iPhone, o sistema procura um ícone maior, com <code>rel="apple-touch-icon"</code>. A Apple recomenda um PNG de 180 × 180 pixels, sem transparência (o sistema arredonda os cantos sozinho). Outros celulares também aproveitam esse ícone.</p>
+
+<pre class="file" data-file="trecho">&lt;link rel="apple-touch-icon" href="apple-touch-icon.png"&gt;
+</pre>
+
+<h3>Qual usar: o conjunto recomendado</h3>
+<p>Para um site pessoal, três linhas cobrem quase tudo:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"&gt;
+  &lt;link rel="icon" href="favicon.svg" type="image/svg+xml"&gt;
+  &lt;link rel="apple-touch-icon" href="apple-touch-icon.png"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Linha</th><th>Para quem</th></tr>
+<tr><td><code>favicon-32.png</code>, <code>sizes="32x32"</code></td><td>Os navegadores que não usam SVG.</td></tr>
+<tr><td><code>favicon.svg</code></td><td>Os navegadores que usam SVG: nítido em qualquer tela.</td></tr>
+<tr><td><code>apple-touch-icon.png</code> (180 × 180)</td><td>A tela inicial do celular.</td></tr>
+<tr><td>(opcional) um <code>favicon.ico</code> na raiz do site, <strong>sem</strong> linha nenhuma</td><td>Programas antigos que só procuram o <code>/favicon.ico</code>, como você viu na seção 1. Ele também evita o 404 no registro do servidor.</td></tr>
+</table>
+</div>
+
+<pre class="term" data-cwd="~/fav">$ vnu --verbose varios.html
+varios.html</pre>
+
+<p>Válido. A organização das pastas do site, com o lugar de cada um desses arquivos, está em <a href="organizar-arquivos.html">Organizar os Arquivos de um Site</a>.</p>
+
+<div class="tip">
+<strong>"Troquei o ícone e a aba continua com o antigo"</strong>
+<p>Os navegadores guardam o favicon por um bom tempo, para não baixá-lo a cada visita (isso se chama <strong>cache</strong>). Depois de trocar o ícone, recarregue a página forçando (<kbd>Ctrl</kbd>+<kbd>F5</kbd>), abra a página numa janela anônima ou mude o nome do arquivo (<code>favicon-v2.svg</code>) e a linha do <code>link</code>.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>O ícone não aparece, e o servidor mostra <code>"GET /imagens/favicon.svg HTTP/1.1" 404</code></strong>
+<p><strong>O que significa:</strong> o caminho do <code>href</code> está errado. Aqui, a Ana escreveu <code>href="imagens/favicon.svg"</code>, mas o arquivo está na mesma pasta da página. O registro do servidor mostra exatamente o que o navegador tentou buscar:</p>
+<pre class="term" data-cwd="~/fav">$ python3 -m http.server 8000
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+127.0.0.1 - - [17/Oct/2026 15:53:21] "GET /errado.html HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 15:53:21] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 15:53:21] "GET /imagens/favicon.svg HTTP/1.1" 404 -</pre>
+<p>Repare: com um <code>link</code> errado, o navegador <strong>não</strong> tentou o <code>/favicon.ico</code> como plano B. O Console do F12 mostra <code>Failed to load resource: the server responded with a status of 404 (File not found)</code>. O validador não percebe nada: ele não confere se o arquivo existe.</p>
+<p><strong>Como consertar:</strong> compare o endereço do registro com a pasta (<code>ls</code>) e corrija o <code>href</code> (aula <a href="caminhos.html">Caminhos</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>O validador não diz nada, mas o ícone não aparece: <code>rel="favicon"</code></strong>
+<p><strong>O que significa:</strong> <code>favicon</code> não é um valor de <code>rel</code> que o navegador conheça; o certo é <code>icon</code>. O validador aceitou a linha sem erro (como o <code>name="autor"</code> da aula <a href="meta.html">title e meta</a>), e o Chrome ignorou o <code>link</code> e voltou a pedir o <code>/favicon.ico</code>: no registro, o mesmo <code>"GET /favicon.ico HTTP/1.1" 404</code> da página sem ícone.</p>
+<p><strong>Como consertar:</strong> <code>rel="icon"</code>. (O antigo <code>rel="shortcut icon"</code> ainda funciona e passa no validador, mas o <code>shortcut</code> não faz nada.)</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “imagens\favicon.svg” for attribute “href” on element “link”: Backslash ("\") used as path segment delimiter.</code></strong>
+<p><strong>O que significa:</strong> "valor ruim no <code>href</code>: barra invertida usada para separar as partes do caminho". No Windows, as pastas são separadas por <code>\</code>, mas na web o separador é sempre a barra normal <code>/</code>.</p>
+<p><strong>Como consertar:</strong> <code>href="imagens/favicon.svg"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: A “link” element must have an “href” or “imagesrcset” attribute, or both.</code></strong>
+<p><strong>O que significa:</strong> um <code>&lt;link rel="icon"&gt;</code> sem <code>href</code>: a página diz que tem um ícone, mas não diz onde ele está. ("Um elemento <code>link</code> precisa ter um atributo <code>href</code> ou <code>imagesrcset</code>, ou os dois.")</p>
+<p><strong>Como consertar:</strong> acrescente o <code>href</code> com o endereço do arquivo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “link” is missing one or more of the following attributes: “itemprop”, “property”, “rel”.</code></strong>
+<p><strong>O que significa:</strong> um <code>&lt;link href="favicon.svg"&gt;</code> sem <code>rel</code>: a página aponta para um arquivo, mas não diz o que ele é (ícone? estilo?).</p>
+<p><strong>Como consertar:</strong> <code>rel="icon"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “32” for attribute “sizes” on element “link”.</code> / <code>Bad value “svg” for attribute “type” on element “link”: Subtype missing.</code></strong>
+<p><strong>O que significa:</strong> o <code>sizes</code> precisa de largura <strong>e</strong> altura (<code>32x32</code>, não <code>32</code>). E o <code>type</code> tem duas partes separadas por barra, o tipo e o subtipo (<code>image/svg+xml</code>, não só <code>svg</code>): <em>Subtype missing</em> = "falta o subtipo".</p>
+<p><strong>Como consertar:</strong> <code>sizes="32x32"</code>; <code>type="image/svg+xml"</code>, <code>type="image/png"</code> ou <code>type="image/x-icon"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Stray end tag “link”.</code></strong>
+<p><strong>O que significa:</strong> um <code>&lt;/link&gt;</code>. O <code>link</code> é um elemento vazio, como o <code>meta</code>: não tem tag de fechamento.</p>
+<p><strong>Como consertar:</strong> apague o <code>&lt;/link&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Bad value “data:image/svg+xml,&lt;svg …” for attribute “href” on element “link”: Illegal character after “ta:”. “&lt;” is not allowed.</code></strong>
+<p><strong>O que significa:</strong> você copiou da internet um truque que põe o desenho SVG <strong>dentro</strong> do <code>href</code> (um endereço <code>data:</code>, que carrega o próprio arquivo). Os navegadores costumam aceitar, mas um endereço não pode ter <code>&lt;</code> nem espaços sem codificação, e o validador acusa.</p>
+<p><strong>Como consertar:</strong> o mais simples é gravar o desenho num arquivo <code>favicon.svg</code> e apontar para ele.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:head link[rel=icon],attr:link[rel=icon][href]=imagens/favicon.svg,nsel:link[rel=favicon]=0">
+<p class="try-task"><strong>Missão:</strong> o ícone das receitas está na pasta <code>imagens</code>, mas a linha tem dois erros: o <code>rel</code> errado (que o validador não pega) e a barra invertida (que ele pega). Conserte os dois.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;link rel="favicon" href="imagens\favicon.svg" type="image/svg+xml"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;link rel="icon" href="imagens/favicon.svg" type="image/svg+xml"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;link rel="icon" href="favicon.svg" type="image/svg+xml"&gt;</code></td><td>Ícone em SVG.</td></tr>
+<tr><td><code>&lt;link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"&gt;</code></td><td>Ícone em PNG de 32 × 32.</td></tr>
+<tr><td><code>&lt;link rel="apple-touch-icon" href="apple-touch-icon.png"&gt;</code></td><td>Ícone da tela inicial do celular (PNG 180 × 180).</td></tr>
+<tr><td><code>favicon.ico</code> na raiz, sem <code>link</code></td><td>O que o navegador procura sozinho quando a página não diz nada.</td></tr>
+<tr><td><code>rel</code></td><td>A relação: <code>icon</code>, <code>apple-touch-icon</code>.</td></tr>
+<tr><td><code>href</code></td><td>O endereço do arquivo (com <code>/</code>, nunca <code>\</code>).</td></tr>
+<tr><td><code>type</code></td><td>O tipo do arquivo: <code>image/svg+xml</code>, <code>image/png</code>, <code>image/x-icon</code>.</td></tr>
+<tr><td><code>sizes</code></td><td><code>LARGURAxALTURA</code> (<code>32x32</code>) ou <code>any</code>.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A relação</h3>
+<p>Complete o valor do <code>rel</code> de um favicon:</p>
+<div class="ex-code">&lt;link rel="<input data-answer="icon" aria-label="valor do rel">" href="favicon.svg"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O tamanho</h3>
+<p>Complete o <code>sizes</code> de um PNG de 32 por 32 pixels:</p>
+<div class="ex-code">&lt;link rel="icon" href="favicon-32.png" sizes="<input data-answer="32x32" aria-label="tamanho">" type="image/png"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. A página não tem nenhum <code>&lt;link rel="icon"&gt;</code>. O que o navegador faz?</p>
+<label><input type="radio" name="q3"> Mostra um erro na página</label>
+<label><input type="radio" name="q3"> Pede o arquivo <code>/favicon.ico</code> na raiz do site, por conta própria</label>
+<label><input type="radio" name="q3"> Usa a primeira imagem da página</label>
+<label><input type="radio" name="q3"> Nada: nunca pede ícone nenhum</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. O que o validador W3C diz de <code>&lt;link rel="favicon" href="favicon.ico"&gt;</code>?</p>
+<label><input type="radio" name="q4"> <code>Bad value “favicon” for attribute “rel”</code></label>
+<label><input type="radio" name="q4"> <code>Stray end tag “link”</code></label>
+<label><input type="radio" name="q4"> <code>A “link” element must have an “href”</code></label>
+<label><input type="radio" name="q4"> Nada, mas o navegador não reconhece esse <code>rel</code> e o ícone não aparece</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Qual formato fica nítido em qualquer tamanho, num arquivo só?</p>
+<label><input type="radio" name="q5"> SVG</label>
+<label><input type="radio" name="q5"> PNG</label>
+<label><input type="radio" name="q5"> ICO</label>
+<label><input type="radio" name="q5"> JPG</label>
+</div>
+
+<h3>Missão final: o conjunto de ícones</h3>
+
+<div class="tryhtml" data-goal="sel:head link[rel=icon][href='favicon.svg'][type='image/svg+xml'],sel:head link[rel=icon][href='favicon-32.png'][sizes='32x32'],sel:head link[rel=apple-touch-icon][href='apple-touch-icon.png']">
+<p class="try-task"><strong>Missão:</strong> monte o conjunto recomendado no <code>head</code> do site de receitas: o <code>favicon-32.png</code> com <code>sizes="32x32"</code> e <code>type="image/png"</code>, o <code>favicon.svg</code> com <code>type="image/svg+xml"</code> e o <code>apple-touch-icon.png</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;!-- os ícones vêm aqui --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"&gt;
+  &lt;link rel="icon" href="favicon.svg" type="image/svg+xml"&gt;
+  &lt;link rel="apple-touch-icon" href="apple-touch-icon.png"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O favicon é o ícone da aba, dos favoritos e da tela inicial. Fica no <code>head</code>, com <code>&lt;link rel="icon" href="…"&gt;</code>; o <code>link</code> é vazio (sem <code>&lt;/link&gt;</code>).</li>
+  <li>Sem <code>link</code>, o navegador pede <code>/favicon.ico</code> sozinho: o servidor registra <code>"GET /favicon.ico HTTP/1.1" 404</code> se ele não existir.</li>
+  <li>SVG fica nítido em qualquer tamanho; PNG funciona em todo lugar (com <code>sizes="32x32"</code>); ICO é o formato antigo. O <code>apple-touch-icon</code> (PNG 180 × 180) serve para a tela inicial.</li>
+  <li>O validador acusa <code>href</code> faltando, <code>rel</code> faltando, <code>sizes</code> e <code>type</code> mal escritos e a barra invertida, mas não percebe <code>rel="favicon"</code> nem um arquivo que não existe. Para esses, olhe o registro do servidor e o Console.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
