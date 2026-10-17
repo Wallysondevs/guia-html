@@ -213,7 +213,7 @@
 <div class="cenario">
 <strong>Errou o nome: <code>Bolo&amp;nbps;de cenoura</code></strong>
 <p><strong>O que o navegador faz:</strong> mostra o texto como está, <code>Bolo&amp;nbps;de cenoura</code>, porque não existe entidade <code>nbps</code> (o certo é <code>nbsp</code>: "non-breaking space").</p>
-<p><strong>O validador:</strong> o <code>vnu</code> 26.10 <strong>não deu nenhuma mensagem</strong> para essa linha no teste da Ana. Um nome de entidade inventado, com <code>;</code> no fim, passa sem aviso. Por isso, confira as entidades com os olhos, no resultado.</p>
+<p><strong>O validador:</strong> o <code>vnu</code> 26.10 <strong>não deu nenhuma mensagem</strong> para essa linha no teste da Ana. Um nome de entidade inventado, com <code>;</code> no fim, pode passar sem aviso. Às vezes ele avisa: no mesmo teste, <code>P&amp;D;</code> deu <code>“&amp;” did not start a character reference. (“&amp;” probably should have been escaped as “&amp;amp;”.)</code>, mas <code>&amp;nbps;</code> e <code>&amp;cia;</code> passaram calados. Por isso, confira as entidades com os olhos, no resultado.</p>
 </div>
 
 <div class="cenario">
