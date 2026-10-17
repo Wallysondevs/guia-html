@@ -540,9 +540,9 @@ var NIVEIS = [
     tries.forEach(function (t) {
       if (!t.querySelector(".try-head")) t.insertBefore(el("p", { "class": "try-head" }, t.classList.contains("tryhtml") ? "Experimente: edite o código e veja o resultado" : t.classList.contains("tryjshell") ? "Experimente no JShell" : t.classList.contains("tryscript") ? "Experimente: edite e rode o script" : "Experimente você mesmo"), t.firstChild);
     });
-    var s = el("script", { src: "assets/htmlsim.js" });
-    body.appendChild(s);
   }
+  // o editor (assets/htmlsim.js) também desenha o quadro "Resultado" de pre.file[data-resultado]
+  if (tries.length || document.querySelector("pre.file[data-resultado]")) body.appendChild(el("script", { src: "assets/htmlsim.js" }));
 
   /* ---------- Exercícios de completar ----------
      <div class="exercise"><div class="ex-code">ls <input data-answer="-a|-A"> ~</div></div> */

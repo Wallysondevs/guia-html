@@ -232,7 +232,7 @@ async function main() {
     });
     const resultados = pres.filter((p) => temClasse(p.a, "file") && p.a["data-resultado"] !== undefined).map((p, i) => {
       const nome = p.a["data-file"] || "index.html";
-      const problemas = HS.ehHtml(nome) ? [] : ["data-resultado só desenha HTML; \"" + nome + "\" não é .html (para CSS/JS junto, use um .tryhtml com abas)"];
+      const problemas = HS.naoDesenha(nome) ? ["data-resultado desenha HTML; \"" + nome + "\" não é HTML (para CSS/JS junto, use um .tryhtml com abas)"] : [];
       return { i, linha: p.linha, nome, codigo: p.codigo, problemas, chave: crypto.createHash("sha1").update(versaoMotor + JSON.stringify(["res", nome, p.codigo])).digest("hex"), rot: "linha " + p.linha + " Resultado de " + nome };
     });
     lista.forEach((c) => { if (c.problemas.length) falha(c.rot + "\n" + c.problemas.map((p) => "      " + p).join("\n")); });

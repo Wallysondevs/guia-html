@@ -248,6 +248,9 @@
   HS.tipoDe = tipoDe;
   function ehHtml(nome) { return /\.html?$/i.test(nome); }
   HS.ehHtml = ehHtml;
+  // rótulo de pre.file[data-resultado] que não é HTML (estilo.css, script.js…)
+  function naoDesenha(rotulo) { return /\.(css|m?js|json|txt|vtt|csv|md)\s*$/i.test(String(rotulo || "").trim()); }
+  HS.naoDesenha = naoDesenha;
 
   if (typeof module === "object" && module.exports) { module.exports = HS; }
   if (typeof document === "undefined") return;
@@ -944,10 +947,13 @@
   function montarResultado(pre) {
     if (pre.getAttribute("data-montado")) return;
     pre.setAttribute("data-montado", "1");
-    var nome = pre.getAttribute("data-file") || "index.html";
-    var r = { pre: pre, nome: nome, codigo: lerPre(pre), pronto: null };
+    // data-file é só o rótulo ("index.html", "trecho", "receita.html · erro de propósito"):
+    // o código é desenhado como HTML, a não ser que o rótulo seja um arquivo .css/.js
+    var rotulo = pre.getAttribute("data-file") || "";
+    var arq = /[\w.\/-]+\.html?\b/i.exec(rotulo), nome = arq ? arq[0] : "index.html";
+    var r = { pre: pre, nome: nome, rotulo: rotulo, codigo: lerPre(pre), pronto: null };
     resultados.push(r);
-    if (!ehHtml(nome)) { console.warn("htmlsim: data-resultado só desenha .html (" + nome + ")"); return r; }
+    if (naoDesenha(rotulo)) { console.warn("htmlsim: data-resultado desenha HTML, não " + rotulo); r.desenhar = function () { return Promise.resolve({ console: "", compat: "", modo: "" }); }; return r; }
     var caixa = el("div", { "class": "hs-res hs" },
       '<div class="hs-barra"><span class="sim-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="hs-rot">Resultado</span><span class="hs-end"></span></div><div class="hs-frame-host"></div>');
     pre.parentNode.insertBefore(caixa, pre.nextSibling);
