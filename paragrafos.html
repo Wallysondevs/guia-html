@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Parágrafos — o elemento p | Guia HTML</title>
+<meta name="description" content="Parágrafos em HTML para quem nunca fez um site: o elemento p, como o navegador junta os espaços e quebra as linhas sozinho, o espaço entre parágrafos, o que pode e o que não pode ir dentro de um p, o fechamento opcional, o parágrafo vazio que não dá espaço nenhum e as mensagens reais do validador W3C, com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Parágrafos</span></h1>
+
+<p class="intro">Quase todo o texto de um site mora em <strong>parágrafos</strong>: a apresentação da Ana, o modo de preparo do bolo, a descrição de um produto da lojinha. Em HTML, cada parágrafo fica num elemento <code>&lt;p&gt;</code>. Parece a tag mais simples do mundo, e é. Mas ela tem duas surpresas que pegam todo iniciante: o navegador <strong>ignora</strong> as quebras de linha que você digita, e um parágrafo <strong>não aceita</strong> qualquer coisa dentro dele.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como escrever um parágrafo com <code>&lt;p&gt;</code> e como o navegador o desenha.</li>
+  <li>Por que as quebras de linha e os espaços extras do seu código somem na tela.</li>
+  <li>Como o navegador quebra as linhas sozinho, conforme a largura da janela.</li>
+  <li>O espaço entre parágrafos, e por que um parágrafo vazio não cria espaço nenhum.</li>
+  <li>O que pode e o que não pode ir dentro de um <code>&lt;p&gt;</code>.</li>
+  <li>O fechamento <code>&lt;/p&gt;</code>: quando ele é opcional e por que o guia sempre o escreve.</li>
+  <li>O que o navegador e o validador fazem com uma lista, um <code>div</code> ou outro parágrafo dentro de um <code>&lt;p&gt;</code>.</li>
+</ul>
+</div>
+
+<p>Os exemplos são desenhados <strong>pelo seu navegador</strong>, no quadro "Resultado" embaixo de cada código. As mensagens do validador saíram do <code>vnu</code> (o validador do W3C) na máquina fictícia da Ana, na pasta <code>~/site</code>. Se você ainda não viu títulos, comece por <a href="titulos.html">Títulos (h1 a h6)</a>: os dois andam juntos.</p>
+
+<hr>
+
+<h2>A ideia: blocos de texto numa carta</h2>
+<p>Numa carta escrita à mão, você não escreve tudo num bloco só. Cada assunto ganha o seu bloco: um para dar oi, outro para contar a novidade, outro para se despedir. Entre um bloco e outro fica um respiro em branco. Esses blocos são os parágrafos.</p>
+
+<p>Em HTML, você <strong>marca</strong> cada bloco: "isto é um parágrafo". O navegador cuida do resto: escolhe onde quebrar as linhas e coloca o respiro entre um parágrafo e o seguinte. O <strong>p</strong> vem de <em>paragraph</em>, "parágrafo" em inglês.</p>
+
+<hr>
+
+<h2>1. O primeiro parágrafo</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Pratos simples, testados na cozinha de casa.&lt;/p&gt;
+&lt;p&gt;Toda receita foi feita pelo menos três vezes antes de vir para o site.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;p&gt;</dt><dd>Abre um parágrafo.</dd>
+  <dt>Pratos simples…</dt><dd>O texto do parágrafo. Pode ser uma frase ou várias.</dd>
+  <dt>&lt;/p&gt;</dt><dd>Fecha o parágrafo. (A seção 5 mostra que o navegador fecha sozinho em alguns casos; mesmo assim, escreva sempre.)</dd>
+</dl>
+
+<p>Repare no resultado:</p>
+<ul>
+  <li>Cada parágrafo começa numa <strong>linha nova</strong>. O <code>&lt;p&gt;</code> é um elemento <strong>de bloco</strong>: ocupa a largura toda, e o que vem depois desce para baixo dele (aula <a href="bloco-inline.html">Bloco × Em Linha</a>).</li>
+  <li>Entre os dois parágrafos aparece um <strong>espaço em branco</strong>. Você não pediu: é o estilo padrão do navegador, que dá a cada <code>&lt;p&gt;</code> uma margem em cima e embaixo do tamanho de uma letra (16 pixels, com a letra padrão).</li>
+  <li>A letra é a de texto normal, sem negrito: um parágrafo não destaca nada. Para destacar, existem outras tags (aula <a href="negrito-italico.html">Negrito e Itálico</a>).</li>
+</ul>
+
+<div class="tryhtml" data-goal="nsel:p=2,texto:p + p=testada">
+<p class="try-task"><strong>Experimente:</strong> embaixo do parágrafo que já existe, crie um segundo parágrafo com o texto <code>Toda receita foi testada em casa.</code> Veja o espaço que aparece sozinho entre os dois.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Pratos simples para o dia a dia.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Pratos simples para o dia a dia.&lt;/p&gt;
+&lt;p&gt;Toda receita foi testada em casa.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O navegador ignora as suas quebras de linha</h2>
+<p>Esta é a maior surpresa de quem começa. A Ana digitou o modo de preparo com linhas e espaços do jeito que queria ver na tela:</p>
+
+<pre class="file" data-file="espacos.html" data-resultado>&lt;p&gt;Bata    os ovos
+com o      açúcar.
+
+Depois junte a farinha.&lt;/p&gt;
+</pre>
+
+<p>Na tela, saiu <strong>uma linha só</strong>, com um espaço entre cada palavra. O navegador fez duas coisas:</p>
+<ol class="passo">
+  <li>Trocou cada <strong>quebra de linha</strong> do código por um espaço.</li>
+  <li>Juntou cada sequência de espaços (os quatro depois de "Bata", os seis depois de "com o" e a linha em branco) num <strong>espaço só</strong>.</li>
+</ol>
+
+<p>Isso não é defeito: é a regra do HTML. Para o navegador, a quebra de linha do código serve para <strong>você</strong> organizar o arquivo, e não para a tela. O texto continua com todos os espaços dentro da página que o navegador montou; só o desenho na tela é que junta tudo. Os detalhes dessa regra estão em <a href="espacos.html">Espaços e Quebras de Linha</a>.</p>
+
+<p>A consequência prática: <strong>para separar parágrafos, use <code>&lt;p&gt;</code></strong>. Uma linha em branco no código não separa nada.</p>
+
+<pre class="file" data-file="separados.html" data-resultado>&lt;p&gt;Bata os ovos com o açúcar.&lt;/p&gt;
+&lt;p&gt;Depois junte a farinha.&lt;/p&gt;
+</pre>
+
+<div class="tip">
+<strong>E se eu quiser só pular uma linha, sem abrir outro parágrafo?</strong>
+<p>Para isso existe o <code>&lt;br&gt;</code>, a quebra de linha, usado em poemas e endereços. Ele tem aula própria, logo a seguir: <a href="quebras.html">Quebras (br e hr)</a>. E para mostrar um texto <strong>exatamente</strong> como foi digitado, com todos os espaços, existe o <code>&lt;pre&gt;</code> (aula <a href="codigo.html">Código</a>).</p>
+</div>
+
+<hr>
+
+<h2>3. O navegador quebra as linhas sozinho</h2>
+<p>Se o navegador ignora as suas quebras, quem decide onde cada linha acaba? Ele mesmo, conforme a <strong>largura</strong> disponível. Um parágrafo comprido ocupa a largura toda e, quando a linha enche, a próxima palavra desce:</p>
+
+<pre class="file" data-file="longo.html" data-resultado>&lt;p&gt;O bolo de cenoura é a receita mais pedida do site. A massa é batida no liquidificador, vai ao forno por quarenta minutos e sai fofinha. A cobertura de chocolate é feita na panela, com leite, açúcar e chocolate em pó, e vai por cima do bolo ainda quente.&lt;/p&gt;
+</pre>
+
+<p>Se você estiver num computador, deixe a janela do navegador mais estreita e veja: as linhas do quadro "Resultado" se rearrumam, e as palavras descem para a linha de baixo. No celular, o mesmo parágrafo ocupa mais linhas. É por isso que não adianta "acertar" as linhas no código: cada tela tem uma largura, e o navegador refaz as quebras para cada uma.</p>
+
+<div class="note">
+<strong>Um assunto por parágrafo</strong>
+<p>Na tela, um bloco de texto muito grande cansa: o leitor perde a linha e desiste. Prefira parágrafos curtos, cada um com <strong>uma ideia</strong>. Se o parágrafo trata de dois assuntos, quebre-o em dois <code>&lt;p&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>4. O espaço entre parágrafos (e o parágrafo vazio)</h2>
+<p>A Ana quis um espaço maior entre dois parágrafos e colocou dois parágrafos vazios no meio. Compare com o resultado:</p>
+
+<pre class="file" data-file="vazio.html" data-resultado>&lt;p&gt;Primeiro parágrafo.&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;Segundo parágrafo, depois do "espaço".&lt;/p&gt;
+</pre>
+
+<p><strong>Nenhum espaço a mais.</strong> Um parágrafo vazio tem altura zero, e as margens dele se juntam com as dos vizinhos: o espaço entre os dois parágrafos de verdade continua o mesmo de antes. O validador também não diz nada sobre esse código, porque um <code>&lt;p&gt;&lt;/p&gt;</code> vazio é permitido. Ele só não serve para nada.</p>
+
+<p>Aí a Ana descobriu um "truque" que circula na internet: colocar um <strong>espaço inquebrável</strong> (<code>&amp;nbsp;</code>, aula <a href="entidades.html">Entidades</a>) dentro do parágrafo, para ele deixar de ser vazio:</p>
+
+<pre class="file" data-file="nbsp.html" data-resultado>&lt;p&gt;Primeiro parágrafo.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Segundo parágrafo.&lt;/p&gt;
+</pre>
+
+<p>Agora o espaço aparece, porque o parágrafo do meio tem uma "letra" invisível e ganha a altura de uma linha. O validador aceita. Mas é um parágrafo falso: um leitor de tela pode anunciar um parágrafo a mais, com nada dentro, e o tamanho do espaço muda junto com o tamanho da letra. Espaço é <strong>aparência</strong>, e aparência se ajusta com CSS (a margem do <code>&lt;p&gt;</code>; quer aprender mais? futuro Guia CSS).</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer</th><th>Use</th><th>Evite</th></tr>
+<tr><td>Separar dois assuntos</td><td>Dois <code>&lt;p&gt;</code></td><td>Uma linha em branco no código (some na tela)</td></tr>
+<tr><td>Pular uma linha dentro do mesmo assunto (poema, endereço)</td><td><code>&lt;br&gt;</code> (aula <a href="quebras.html">Quebras</a>)</td><td>Abrir um parágrafo para cada linha do poema</td></tr>
+<tr><td>Mais espaço entre os parágrafos</td><td>CSS</td><td><code>&lt;p&gt;&lt;/p&gt;</code> (não funciona) e <code>&lt;p&gt;&amp;nbsp;&lt;/p&gt;</code> (parágrafo falso)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>5. O fechamento <code>&lt;/p&gt;</code> é opcional (mas escreva)</h2>
+<p>Você vai encontrar páginas que abrem parágrafos sem nunca fechá-los:</p>
+
+<pre class="file" data-file="semfechar.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Pratos simples, testados na cozinha de casa.
+&lt;p&gt;Toda receita foi feita pelo menos três vezes.
+&lt;h2&gt;Bolos&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose semfechar.html
+semfechar.html           « nenhum erro: só o nome do arquivo</pre>
+
+<p>Funciona, e o validador aceita. A regra do HTML diz que um parágrafo aberto se fecha <strong>sozinho</strong> quando começa outro parágrafo, um título, uma lista, uma tabela ou outro bloco desse tipo, e também quando a página termina. Foi o que o navegador fez aqui: ele montou dois parágrafos certinhos e o título depois deles.</p>
+
+<p>Então por que o guia sempre fecha? Porque, sem o fechamento, fica difícil ver onde o parágrafo acaba, e o próximo erro (a seção seguinte) fica escondido. Com o <code>&lt;/p&gt;</code>, você e o validador sabem exatamente o que você quis dizer.</p>
+
+<div class="warning">
+<strong>Não confunda com o título</strong>
+<p>Esse "fecha sozinho" vale para o <code>&lt;p&gt;</code>. Com os títulos, é bem diferente: um <code>&lt;h1&gt;</code> sem fechar engole o parágrafo seguinte, que fica gigante e em negrito, e o validador dá erro (veja em <a href="titulos.html#errado">Títulos: quando dá errado</a>).</p>
+</div>
+
+<hr>
+
+<h2>6. O que pode ir dentro de um parágrafo</h2>
+<p>Um parágrafo guarda <strong>texto</strong>, e os elementos que vivem no meio do texto: uma palavra em negrito, um link, uma imagem pequena, uma quebra de linha. O HTML chama esses elementos de <strong>conteúdo de frase</strong> (<em>phrasing content</em>). O que é um bloco inteiro, como um título, uma lista ou outro parágrafo, <strong>não</strong> entra.</p>
+
+<pre class="file" data-file="dentro-ok.html" data-resultado>&lt;p&gt;O bolo de cenoura é a receita &lt;strong&gt;mais pedida&lt;/strong&gt; do site.
+Veja também o &lt;a href="#"&gt;bolo de fubá&lt;/a&gt;.&lt;/p&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Pode ir dentro de <code>&lt;p&gt;</code></th><th>Não pode (o navegador fecha o parágrafo antes)</th></tr>
+<tr><td>Texto</td><td>Outro <code>&lt;p&gt;</code></td></tr>
+<tr><td><code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;mark&gt;</code>, <code>&lt;code&gt;</code>…</td><td>Títulos <code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code></td></tr>
+<tr><td><code>&lt;a&gt;</code> (links)</td><td>Listas <code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code>, <code>&lt;dl&gt;</code></td></tr>
+<tr><td><code>&lt;img&gt;</code> (imagens)</td><td><code>&lt;div&gt;</code>, <code>&lt;table&gt;</code>, <code>&lt;blockquote&gt;</code>, <code>&lt;pre&gt;</code></td></tr>
+<tr><td><code>&lt;br&gt;</code>, <code>&lt;span&gt;</code></td><td><code>&lt;hr&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;form&gt;</code>…</td></tr>
+</table>
+</div>
+
+<p>O primeiro caso que pega todo mundo é a lista de ingredientes dentro do parágrafo. Ele está em <a href="#errado">Quando dá errado</a>, logo abaixo.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O navegador não mostra mensagem de erro: ele <strong>conserta</strong> o código do jeito dele. Em cada caso, o quadro "Resultado" mostra o que o seu navegador fez de verdade.</p>
+
+<div class="cenario">
+<strong>Uma lista dentro do parágrafo</strong>
+<pre class="file" data-file="lista.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Você vai precisar de:
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> na tela, parece tudo certo. Mas, quando chega no <code>&lt;ul&gt;</code>, o navegador <strong>fecha o parágrafo</strong>, porque uma lista não pode ficar dentro dele. A lista vira vizinha do parágrafo. Depois, o <code>&lt;/p&gt;</code> da linha 13 fica sem par, e o navegador cria um parágrafo novo e vazio só para ele. A página que o navegador montou (a que você veria no F12) ficou assim:</p>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;Você vai precisar de:
+  &lt;/p&gt;&lt;ul&gt;
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;p&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu lista.html
+"file:/home/ana/site/lista.html":13.1-13.4: error: No “p” element in scope but a “p” end tag seen.</pre>
+<dl class="anatomy">
+  <dt>13.1-13.4</dt><dd>Linha 13, colunas 1 a 4: o <code>&lt;/p&gt;</code> do fim.</dd>
+  <dt>No “p” element in scope</dt><dd>"Nenhum elemento <code>p</code> aberto aqui": o parágrafo já tinha sido fechado pelo <code>&lt;ul&gt;</code>, lá na linha 9.</dd>
+  <dt>but a “p” end tag seen</dt><dd>"mas foi vista uma tag de fechamento <code>p</code>": sobrou um <code>&lt;/p&gt;</code> sem dono.</dd>
+</dl>
+<p>Repare que o validador aponta o <code>&lt;/p&gt;</code> da linha 13, e não o <code>&lt;ul&gt;</code> da linha 9, onde o problema nasceu. Quando aparecer essa mensagem, procure <strong>acima</strong> dela um bloco (lista, título, <code>div</code>…) que entrou no parágrafo.</p>
+<p><strong>Como consertar:</strong> feche o parágrafo antes da lista: <code>&lt;p&gt;Você vai precisar de:&lt;/p&gt;</code> e, depois, a <code>&lt;ul&gt;</code> sozinha.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:p=1,nsel:p:empty=0,nsel:li=3">
+<p class="try-task"><strong>Missão:</strong> este código tem uma lista dentro do parágrafo. Na tela não se vê o defeito, mas o navegador criou um parágrafo vazio a mais. Conserte o código para a página ter <strong>um</strong> parágrafo só, seguido da lista.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Você vai precisar de:
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;1 xícara de óleo&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Você vai precisar de:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+  &lt;li&gt;1 xícara de óleo&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Um parágrafo dentro de outro</strong>
+<pre class="file" data-file="dentro.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;O bolo leva cenoura.
+  &lt;p&gt;E também ovos.&lt;/p&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> o segundo <code>&lt;p&gt;</code> fecha o primeiro (parágrafo não fica dentro de parágrafo), e os dois viram vizinhos. O <code>&lt;/p&gt;</code> da linha 10 sobra e vira um terceiro parágrafo, vazio. São três parágrafos onde a Ana pensou ter um com outro dentro.</p>
+<pre class="term" data-cwd="~/site">$ vnu dentro.html
+"file:/home/ana/site/dentro.html":10.1-10.4: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p>A mesma mensagem do caso da lista, pelo mesmo motivo: um <code>&lt;/p&gt;</code> sem par.</p>
+<p><strong>Como consertar:</strong> parágrafos ficam um depois do outro, nunca um dentro do outro: <code>&lt;p&gt;O bolo leva cenoura.&lt;/p&gt;</code> e <code>&lt;p&gt;E também ovos.&lt;/p&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>div</code> dentro do parágrafo</strong>
+<pre class="file" data-file="div.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;&lt;div&gt;Bolo de cenoura&lt;/div&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> o <code>&lt;div&gt;</code> (uma caixa genérica, aula <a href="div-span.html">div e span</a>) é um bloco, então ele fecha o parágrafo. Resultado: um parágrafo vazio, o <code>div</code> e outro parágrafo vazio, criado pelo <code>&lt;/p&gt;</code> que sobrou. É o que acontece quando alguém tenta estilizar um parágrafo "embrulhando" o texto num <code>div</code>.</p>
+<pre class="term" data-cwd="~/site">$ vnu div.html
+"file:/home/ana/site/div.html":8.30-8.33: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p><strong>Como consertar:</strong> o <code>div</code> vai por fora (<code>&lt;div&gt;&lt;p&gt;Bolo de cenoura&lt;/p&gt;&lt;/div&gt;</code>) ou, se a ideia era marcar só um pedaço do texto, use um <code>&lt;span&gt;</code>, que pode ficar dentro do parágrafo.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>&lt;/p&gt;</code> a mais</strong>
+<pre class="file" data-file="sobra.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> transforma o <code>&lt;/p&gt;</code> solto num parágrafo vazio, <code>&lt;p&gt;&lt;/p&gt;</code>. Na tela, nada muda.</p>
+<pre class="term" data-cwd="~/site">$ vnu sobra.html
+"file:/home/ana/site/sobra.html":9.1-9.4: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p><strong>Como consertar:</strong> apague o fechamento repetido. Esse erro costuma aparecer quando você copia e cola trechos de código.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;p align="center"&gt;</code></strong>
+<p>Em páginas antigas, o parágrafo é centralizado com o atributo <code>align</code>. O navegador ainda obedece, mas o validador avisa que ele é obsoleto:</p>
+<pre class="term" data-cwd="~/site">$ vnu align.html
+"file:/home/ana/site/align.html":8.1-8.18: info warning: The “align” attribute on the “p” element is obsolete. Use CSS instead.</pre>
+<p>"O atributo <code>align</code> no elemento <code>p</code> é obsoleto. Use CSS no lugar." É um aviso informativo (o código de saída continua 0).</p>
+<p><strong>Como consertar:</strong> tire o <code>align</code> e centralize com CSS (<code>text-align: center</code>, aula <a href="atributo-style.html">O Atributo style</a>).</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;p&gt;texto&lt;/p&gt;</code></td><td>Um parágrafo: bloco, com um espaço em cima e embaixo</td></tr>
+<tr><td>Quebra de linha no código</td><td>Vira um espaço na tela</td></tr>
+<tr><td>Vários espaços seguidos</td><td>Viram um espaço só</td></tr>
+<tr><td><code>&lt;p&gt;&lt;/p&gt;</code></td><td>Parágrafo vazio: altura zero, não dá espaço</td></tr>
+<tr><td><code>&lt;p&gt;</code> sem <code>&lt;/p&gt;</code></td><td>Válido: fecha sozinho no próximo bloco (mas feche sempre)</td></tr>
+<tr><td>Bloco dentro de <code>&lt;p&gt;</code> (<code>ul</code>, <code>div</code>, <code>h2</code>, <code>p</code>…)</td><td>O navegador fecha o parágrafo antes do bloco</td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem do validador</th><th>Quer dizer</th></tr>
+<tr><td><code>No “p” element in scope but a “p” end tag seen.</code></td><td>Sobrou um <code>&lt;/p&gt;</code>: o parágrafo já tinha sido fechado por um bloco que entrou nele, ou o fechamento está repetido (error)</td></tr>
+<tr><td><code>The “align” attribute on the “p” element is obsolete. Use CSS instead.</code></td><td>Atributo antigo: use CSS (info warning)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A tag do parágrafo</h3>
+<p>Complete o fechamento:</p>
+<div class="ex-code">&lt;p&gt;O bolo de fubá é o preferido do café da tarde.&lt;<input data-answer="/p" aria-label="tag de fechamento">&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Quantos espaços?</h3>
+<p>O código é <code>&lt;p&gt;Ana     cozinha&lt;/p&gt;</code>, com cinco espaços entre as palavras. Quantos espaços aparecem na tela entre "Ana" e "cozinha"? (Responda com um número.)</p>
+<div class="ex-code">Espaços na tela: <input data-answer="1|um" aria-label="número de espaços"></div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. A Ana escreveu um parágrafo em três linhas no código, sem nenhuma tag no meio. Como ele aparece na tela?</p>
+<label><input type="radio" name="q3"> Em três linhas, iguais às do código</label>
+<label><input type="radio" name="q3"> Em três parágrafos separados</label>
+<label><input type="radio" name="q3"> Num parágrafo só, com as linhas quebradas onde o navegador achar melhor, conforme a largura da tela</label>
+<label><input type="radio" name="q3"> Não aparece: o navegador dá erro</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que acontece com <code>&lt;p&gt;Ingredientes: &lt;ul&gt;&lt;li&gt;ovos&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;</code>?</p>
+<label><input type="radio" name="q4"> A lista fica dentro do parágrafo, sem problema</label>
+<label><input type="radio" name="q4"> O navegador fecha o parágrafo antes da lista, e o <code>&lt;/p&gt;</code> do fim vira um parágrafo vazio</label>
+<label><input type="radio" name="q4"> O navegador apaga a lista</label>
+<label><input type="radio" name="q4"> A página fica em branco</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Para deixar mais espaço entre dois parágrafos, o melhor é:</p>
+<label><input type="radio" name="q5"> Colocar um <code>&lt;p&gt;&lt;/p&gt;</code> vazio no meio</label>
+<label><input type="radio" name="q5"> Deixar várias linhas em branco no código</label>
+<label><input type="radio" name="q5"> Colocar um <code>&lt;p&gt;&amp;nbsp;&lt;/p&gt;</code> no meio</label>
+<label><input type="radio" name="q5"> Mudar a margem do parágrafo com CSS</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Qual destes elementos <strong>pode</strong> ficar dentro de um <code>&lt;p&gt;</code>?</p>
+<label><input type="radio" name="q6"> <code>&lt;strong&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;h2&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;div&gt;</code></label>
+<label><input type="radio" name="q6"> Outro <code>&lt;p&gt;</code></label>
+</div>
+
+<h3>Missão final: a página "Sobre"</h3>
+
+<div class="tryhtml" data-goal="nsel:p=3,nsel:p:empty=0,texto:p=Eu sou a Ana,texto:p + p=Hoje eu testo,texto:p + p + p=Quer falar comigo">
+<p class="try-task"><strong>Missão:</strong> a Ana escreveu a apresentação dela com linhas em branco no código, achando que isso separava os assuntos. Veja no resultado: saiu tudo num bloco só. Divida o texto em <strong>três parágrafos</strong>, um para cada assunto: quem ela é, como ela testa as receitas e como falar com ela. Não use parágrafos vazios.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;Oi! Eu sou a Ana e cozinho desde os 12 anos.
+Aprendi com a minha avó, numa cozinha bem pequena.
+
+Hoje eu testo cada receita pelo menos três vezes antes de publicar.
+Se der errado na minha cozinha, não vem para o site.
+
+Quer falar comigo? Mande uma mensagem pela página de contato.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;Oi! Eu sou a Ana e cozinho desde os 12 anos.
+Aprendi com a minha avó, numa cozinha bem pequena.&lt;/p&gt;
+&lt;p&gt;Hoje eu testo cada receita pelo menos três vezes antes de publicar.
+Se der errado na minha cozinha, não vem para o site.&lt;/p&gt;
+&lt;p&gt;Quer falar comigo? Mande uma mensagem pela página de contato.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Repare que, na solução, cada parágrafo ainda tem duas linhas no código, e na tela elas continuam juntas numa linha só. Está certo: as duas frases são do mesmo assunto. O que separa os assuntos são os <code>&lt;p&gt;</code>.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Cada parágrafo vai num <code>&lt;p&gt;…&lt;/p&gt;</code>. Ele é um bloco: começa numa linha nova e ganha um espaço em cima e embaixo.</li>
+  <li>O navegador transforma as quebras de linha do código em espaços e junta vários espaços num só. Para separar assuntos, use <code>&lt;p&gt;</code>; para pular uma linha, <code>&lt;br&gt;</code>.</li>
+  <li>O navegador quebra as linhas sozinho, conforme a largura da tela. Prefira parágrafos curtos, um assunto em cada.</li>
+  <li>Um <code>&lt;p&gt;&lt;/p&gt;</code> vazio não cria espaço; o <code>&lt;p&gt;&amp;nbsp;&lt;/p&gt;</code> cria um parágrafo falso. Espaço se ajusta com CSS.</li>
+  <li>O <code>&lt;/p&gt;</code> é opcional para o HTML, mas o guia sempre o escreve.</li>
+  <li>Dentro de um parágrafo vai só conteúdo de frase (texto, <code>strong</code>, <code>a</code>, <code>img</code>, <code>br</code>…). Uma lista, um título, um <code>div</code> ou outro <code>p</code> fecham o parágrafo antes, e o <code>&lt;/p&gt;</code> que sobra dá <code>No “p” element in scope but a “p” end tag seen.</code></li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
