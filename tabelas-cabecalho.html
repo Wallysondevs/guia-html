@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Cabeçalhos de Tabela — th, thead, tbody e tfoot | Guia HTML</title>
+<meta name="description" content="Cabeçalhos de tabela em HTML para quem nunca fez um site: a célula de cabeçalho th (de coluna e de linha), os grupos thead, tbody e tfoot, a ordem obrigatória entre eles, o tbody automático que não vira thead e os erros reais do validador W3C (tfoot antes do tbody, thead depois, th sem tr), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Cabeçalhos de Tabela</span></h1>
+
+<p class="intro">Na aula <a href="tabelas.html">Tabelas</a>, a tabela de preços da Ana ficou sem uma coisa importante: a linha do topo que diz o que é cada coluna, "Produto", "Preço", "Estoque". Essas células são <strong>cabeçalhos</strong>, e o HTML tem uma tag só para elas, o <code>&lt;th&gt;</code>. Nesta aula você também vai dividir a tabela em três partes, <strong>cabeçalho</strong>, <strong>corpo</strong> e <strong>rodapé</strong>, com <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code> e <code>&lt;tfoot&gt;</code>, como a Ana faz no relatório de vendas da semana.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <code>th</code> e o que o navegador faz com ele (negrito e centralizado).</li>
+  <li>Cabeçalho de <strong>coluna</strong> e cabeçalho de <strong>linha</strong>.</li>
+  <li>Como dividir a tabela em <code>thead</code>, <code>tbody</code> e <code>tfoot</code>, e em que ordem.</li>
+  <li>Por que o navegador cria o <code>tbody</code> sozinho, mas nunca o <code>thead</code>.</li>
+  <li>Por que usar <code>th</code> em vez de <code>td</code> com negrito.</li>
+  <li>Os erros reais do validador: <code>tfoot</code> antes do <code>tbody</code>, <code>thead</code> depois dele, dois <code>thead</code> e <code>th</code> sem <code>tr</code>.</li>
+</ul>
+</div>
+
+<p>Os quadros <strong>Resultado</strong> são desenhados pelo seu navegador. Os exemplos com bordas usam o mesmo <code>&lt;head&gt;</code> com duas regras de CSS da aula <a href="tabelas.html">Tabelas</a>. As mensagens do validador saíram do <code>vnu</code> 26.10.12 na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: a primeira linha da planilha</h2>
+<p>Numa planilha de verdade, a primeira linha costuma ser diferente: em vez de dados, ela tem os <strong>nomes das colunas</strong>, muitas vezes em negrito. Quem lê olha para ela para entender o resto: "este 4 é a quantidade, este R$ 100,00 é o total".</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tag</th><th>Vem do inglês</th><th>O que é</th></tr>
+<tr><td><code>&lt;th&gt;</code></td><td><em>table header</em>, "cabeçalho da tabela"</td><td>uma célula que dá nome a uma coluna ou a uma linha</td></tr>
+<tr><td><code>&lt;thead&gt;</code></td><td><em>table head</em>, "cabeça da tabela"</td><td>o grupo das linhas de cabeçalho, no topo</td></tr>
+<tr><td><code>&lt;tbody&gt;</code></td><td><em>table body</em>, "corpo da tabela"</td><td>o grupo das linhas de dados</td></tr>
+<tr><td><code>&lt;tfoot&gt;</code></td><td><em>table foot</em>, "pé da tabela"</td><td>o grupo das linhas de resumo, como os totais</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. A célula de cabeçalho: <code>th</code></h2>
+<p>O <code>th</code> é usado no lugar do <code>td</code>, dentro de um <code>tr</code>, nas células que são <strong>nomes</strong> e não dados:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Preços&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Produto&lt;/th&gt;
+    &lt;th&gt;Preço&lt;/th&gt;
+    &lt;th&gt;Estoque&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caderno&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+    &lt;td&gt;12 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caneta azul&lt;/td&gt;
+    &lt;td&gt;R$ 3,50&lt;/td&gt;
+    &lt;td&gt;40 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;th&gt;Produto&lt;/th&gt;</dt><dd>Uma célula de cabeçalho. Ela fica no mesmo lugar onde ficaria um <code>td</code>: dentro de um <code>tr</code>, e conta como uma célula da linha.</dd>
+  <dt>o primeiro &lt;tr&gt;</dt><dd>Uma linha só de <code>th</code>: os nomes das três colunas.</dd>
+  <dt>negrito e centralizado</dt><dd>O navegador desenha o <code>th</code> em <strong>negrito</strong> e com o texto <strong>centralizado</strong> na célula, enquanto o <code>td</code> fica à esquerda. Esse visual vem pronto; dá para mudar com CSS.</dd>
+</dl>
+
+<p>O visual é o de menos. O que importa é o que o <code>th</code> <strong>diz</strong>: "esta célula é o nome da coluna". Um leitor de tela usa essa informação. Quando a pessoa anda pela tabela e chega no "R$ 3,50", ele pode anunciar "Preço, R$ 3,50", em vez de um número solto. A próxima aula, <a href="tabelas-legenda.html">Legenda e Acessibilidade</a>, mostra como deixar isso ainda mais claro com o atributo <code>scope</code>.</p>
+
+<div class="tryhtml" data-goal="nsel:th=3,nsel:td=6,texto:th=Dia">
+<p class="try-task"><strong>Experimente:</strong> na tabela do horário, a primeira linha tem os nomes das colunas, mas foi escrita com <code>td</code>. Troque essas três células por <code>th</code> (na abertura e no fechamento) e veja o negrito e a centralização aparecerem.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Horário&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Dia&lt;/td&gt;
+    &lt;td&gt;Abre&lt;/td&gt;
+    &lt;td&gt;Fecha&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Segunda a sexta&lt;/td&gt;
+    &lt;td&gt;9h&lt;/td&gt;
+    &lt;td&gt;18h&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Sábado&lt;/td&gt;
+    &lt;td&gt;9h&lt;/td&gt;
+    &lt;td&gt;13h&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Horário&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Dia&lt;/th&gt;
+    &lt;th&gt;Abre&lt;/th&gt;
+    &lt;th&gt;Fecha&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Segunda a sexta&lt;/td&gt;
+    &lt;td&gt;9h&lt;/td&gt;
+    &lt;td&gt;18h&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Sábado&lt;/td&gt;
+    &lt;td&gt;9h&lt;/td&gt;
+    &lt;td&gt;13h&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Cabeçalho de linha</h2>
+<p>O nome não precisa estar só no topo. Às vezes cada <strong>linha</strong> também tem um nome, na primeira coluna. Num quadro de vendas por dia, o nome do produto identifica a linha, assim como "Segunda" identifica a coluna:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;th&gt;Segunda&lt;/th&gt;
+    &lt;th&gt;Terça&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Caderno&lt;/th&gt;
+    &lt;td&gt;3&lt;/td&gt;
+    &lt;td&gt;1&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Caneta azul&lt;/th&gt;
+    &lt;td&gt;5&lt;/td&gt;
+    &lt;td&gt;8&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;th&gt;Caderno&lt;/th&gt;</dt><dd>Um cabeçalho de <strong>linha</strong>: dá nome aos números à direita dele.</dd>
+  <dt>&lt;td&gt;&lt;/td&gt; no canto</dt><dd>A célula do canto não é nome de nada, então fica como um <code>td</code> vazio. Ela precisa existir para a primeira linha ter 3 células, como as outras.</dd>
+</dl>
+
+<p>Agora o "8" tem dois nomes: ele é a venda de <strong>Caneta azul</strong> (o nome da linha) na <strong>Terça</strong> (o nome da coluna). Esse exemplo está sem bordas, só para ficar curto; repare que mesmo assim os <code>th</code> se destacam.</p>
+
+<hr>
+
+<h2>3. Cabeça, corpo e pé: <code>thead</code>, <code>tbody</code> e <code>tfoot</code></h2>
+<p>Uma tabela pode ser dividida em <strong>grupos de linhas</strong>. No relatório de vendas, a Ana tem três partes bem diferentes: a linha dos nomes, as linhas de cada produto e a linha do total.</p>
+
+<pre class="file" data-file="vendas.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Vendas&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Vendas da semana&lt;/h1&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Produto&lt;/th&gt;
+      &lt;th&gt;Quantidade&lt;/th&gt;
+      &lt;th&gt;Total&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Caderno&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;R$ 100,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Caneta azul&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;R$ 35,00&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tfoot&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Total da semana&lt;/td&gt;
+      &lt;td&gt;14&lt;/td&gt;
+      &lt;td&gt;R$ 135,00&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose vendas.html
+vendas.html                 « só o nome: nenhum erro</pre>
+
+<dl class="anatomy">
+  <dt>&lt;thead&gt; … &lt;/thead&gt;</dt><dd>A cabeça: a linha (ou as linhas) com os nomes das colunas. No máximo <strong>um</strong> <code>thead</code> por tabela.</dd>
+  <dt>&lt;tbody&gt; … &lt;/tbody&gt;</dt><dd>O corpo: as linhas de dados, uma por produto.</dd>
+  <dt>&lt;tfoot&gt; … &lt;/tfoot&gt;</dt><dd>O pé: a linha de resumo, com os totais. No máximo um.</dd>
+  <dt>a ordem</dt><dd>Sempre <code>thead</code>, depois <code>tbody</code>, depois <code>tfoot</code>. Os <code>tr</code> ficam <strong>dentro</strong> dos grupos.</dd>
+</dl>
+
+<p>No resultado, a tabela parece igual a uma sem grupos. Os grupos não mudam o desenho padrão; eles dão <strong>significado</strong> às partes. E esse significado é usado de várias formas:</p>
+<ul>
+  <li><strong>Leitores de tela</strong> distinguem os cabeçalhos dos dados e do resumo.</li>
+  <li><strong>Na impressão</strong>, quando uma tabela comprida ocupa várias folhas, os navegadores costumam repetir o <code>thead</code> no topo de cada folha.</li>
+  <li><strong>No CSS</strong>, fica fácil pintar só o cabeçalho (<code>thead</code>) ou pôr o total em negrito (<code>tfoot</code>), sem precisar de <code>class</code> em cada linha.</li>
+</ul>
+
+<h3>Mais de um <code>tbody</code></h3>
+<p>O <code>thead</code> e o <code>tfoot</code> são únicos, mas o corpo pode ter <strong>vários</strong> <code>tbody</code>, um para cada seção dos dados. A Ana separa a papelaria dos doces:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Produto&lt;/th&gt;&lt;th&gt;Preço&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th&gt;Papelaria&lt;/th&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Caderno&lt;/td&gt;&lt;td&gt;R$ 25,00&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Caneta azul&lt;/td&gt;&lt;td&gt;R$ 3,50&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th&gt;Doces&lt;/th&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Brigadeiro&lt;/td&gt;&lt;td&gt;R$ 2,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</pre>
+
+<p>Cada linha foi escrita numa linha só do código, com as células lado a lado. É o mesmo HTML, só mais compacto: use a forma que você ler melhor. (Na aula <a href="tabelas-mesclar.html">Mesclar Células</a>, a célula "Papelaria" vai ocupar as duas colunas, sem o <code>td</code> vazio ao lado.)</p>
+
+<hr>
+
+<h2>4. O navegador cria o <code>tbody</code>, mas não o <code>thead</code></h2>
+<p>Você viu na aula <a href="tabelas.html">Tabelas</a> que, se os <code>tr</code> estão direto no <code>table</code>, o navegador cria um <code>tbody</code> em volta deles. E o primeiro exemplo desta aula, com a linha de <code>th</code> no topo? O navegador põe <strong>todas</strong> as linhas no mesmo <code>tbody</code>, inclusive a dos cabeçalhos:</p>
+
+<pre class="file" data-file="o que o navegador montou">&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Produto&lt;/th&gt; …   &lt;!-- os th continuam no tbody --&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Caderno&lt;/td&gt; …
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</pre>
+
+<p>O navegador não tenta adivinhar qual linha é cabeçalho. Ter <code>th</code> sem <code>thead</code> é válido, e o <code>th</code> continua sendo cabeçalho. Mas um seletor como <code>thead th</code>, no CSS ou nas metas do editor, só encontra os <code>th</code> que você colocou num <code>thead</code> <strong>escrito por você</strong>.</p>
+
+<hr>
+
+<h2>5. <code>th</code> ou <code>td</code> com negrito?</h2>
+<p>Um <code>&lt;td&gt;&lt;strong&gt;Produto&lt;/strong&gt;&lt;/td&gt;</code> também fica em negrito, e é válido. Por que não usar?</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>&lt;td&gt;&lt;strong&gt;…&lt;/strong&gt;&lt;/td&gt;</code></th><th><code>&lt;th&gt;…&lt;/th&gt;</code></th></tr>
+<tr><th>O que diz</th><td>"um dado importante"</td><td>"o nome desta coluna (ou linha)"</td></tr>
+<tr><th>Leitor de tela</th><td>lê como mais um dado</td><td>usa para anunciar o nome da coluna junto de cada dado</td></tr>
+<tr><th>Visual padrão</th><td>negrito, à esquerda</td><td>negrito, centralizado</td></tr>
+</table>
+</div>
+
+<p><strong>Qual usar:</strong> se a célula é um <strong>nome</strong> de coluna ou de linha, <code>th</code>. Se é um dado que você quer destacar, <code>td</code> com <code>strong</code>. Repare que esta própria tabela usa <code>th</code> nas duas direções: no topo e na primeira coluna.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Nos arquivos completos, as linhas 1 a 11 são o cabeçalho com o <code>&lt;style&gt;</code>; o código mostrado começa na linha 12. Os quadros Resultado mostram só o trecho, sem as bordas.</p>
+
+<div class="cenario">
+<strong><code>error: Element “tbody” not allowed as child of element “table” in this context.</code></strong>
+<p>A Ana escreveu o rodapé <strong>antes</strong> do corpo:</p>
+<pre class="file" data-file="tfoot-antes.html" data-resultado>&lt;table&gt;
+  &lt;tfoot&gt;
+    &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td&gt;R$ 135,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tfoot&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;Caderno&lt;/td&gt;&lt;td&gt;R$ 100,00&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Caneta azul&lt;/td&gt;&lt;td&gt;R$ 35,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu tfoot-antes.html
+"file:/home/ana/site/tfoot-antes.html":15.11-16.9: error: Element “tbody” not allowed as child of element “table” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> o erro aponta o <code>tbody</code> (linha 16), e não o <code>tfoot</code>: depois de um <code>tfoot</code>, nenhum outro grupo pode vir. "Neste contexto" quer dizer "depois do que já apareceu".</p>
+<p><strong>O que o navegador faz:</strong> desenha o total <strong>embaixo</strong>, no lugar certo, como se estivesse tudo bem. O CSS padrão do navegador sempre desenha o <code>tfoot</code> no fim da tabela, não importa onde ele esteja no código. Mas no DOM ele continua em primeiro, e um leitor de tela pode ler o total antes dos produtos.</p>
+<p><strong>Por que isso confunde:</strong> no HTML 4 (de 1997), o <code>tfoot</code> <strong>tinha</strong> de vir antes do <code>tbody</code>, e muitos tutoriais antigos ainda ensinam assim. No HTML atual, ele vem depois.</p>
+<p><strong>Como consertar:</strong> mova o <code>tfoot</code> inteiro para depois do último <code>&lt;/tbody&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “thead” not allowed as child of element “table” in this context.</code></strong>
+<p>O contrário: o cabeçalho ficou <strong>depois</strong> do corpo.</p>
+<pre class="file" data-file="thead-depois.html" data-resultado>&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;Caderno&lt;/td&gt;&lt;td&gt;R$ 100,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Produto&lt;/th&gt;&lt;th&gt;Total&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu thead-depois.html
+"file:/home/ana/site/thead-depois.html":15.11-16.9: error: Element “thead” not allowed as child of element “table” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que o navegador faz:</strong> de novo, conserta só o desenho: o <code>thead</code> aparece <strong>em cima</strong>. A ordem no código, que é a ordem lida pelo leitor de tela, continua errada.</p>
+<p><strong>Com dois <code>thead</code></strong> na mesma tabela, a mensagem é a mesma, apontando o segundo: o <code>thead</code> é único.</p>
+<p><strong>Como consertar:</strong> o <code>thead</code> vem antes de tudo (só a legenda, <code>caption</code>, pode vir antes dele).</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: “th” start tag in table body.</code></strong>
+<p>A Ana escreveu os <code>th</code> direto no <code>thead</code>, sem o <code>tr</code>:</p>
+<pre class="file" data-file="thead-sem-tr.html">&lt;table&gt;
+  &lt;thead&gt;
+    &lt;th&gt;Produto&lt;/th&gt;
+    &lt;th&gt;Total&lt;/th&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;Caderno&lt;/td&gt;&lt;td&gt;R$ 100,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu thead-sem-tr.html
+"file:/home/ana/site/thead-sem-tr.html":13.10-14.8: error: “th” start tag in table body.</pre>
+<p><strong>O que significa:</strong> "tag de abertura de <code>th</code> num grupo de linhas". O validador chama de <em>table body</em> qualquer um dos três grupos. Dentro de <code>thead</code>, <code>tbody</code> e <code>tfoot</code> só podem existir <code>tr</code>, e as células ficam dentro deles.</p>
+<p><strong>O que o navegador faz:</strong> cria o <code>tr</code> que faltou em volta dos dois <code>th</code>, e a tabela aparece certa. É o mesmo conserto do "<code>td</code> sem <code>tr</code>" da aula anterior.</p>
+<p><strong>Como consertar:</strong> <code>&lt;thead&gt;&lt;tr&gt;&lt;th&gt;…&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;th&gt;…&lt;/th&gt;</code></td><td>Célula de cabeçalho (nome de coluna ou de linha). Fica num <code>tr</code>, como o <code>td</code>. Visual padrão: negrito e centralizado.</td></tr>
+<tr><td><code>&lt;thead&gt;</code></td><td>Grupo das linhas de cabeçalho. No máximo um; vem primeiro (depois do <code>caption</code>).</td></tr>
+<tr><td><code>&lt;tbody&gt;</code></td><td>Grupo das linhas de dados. Pode haver vários. Criado sozinho pelo navegador quando falta.</td></tr>
+<tr><td><code>&lt;tfoot&gt;</code></td><td>Grupo das linhas de resumo. No máximo um; vem por último.</td></tr>
+<tr><td>Ordem</td><td><code>caption</code>, <code>thead</code>, <code>tbody</code> (um ou mais), <code>tfoot</code>.</td></tr>
+<tr><td>Dentro dos grupos</td><td>Só <code>tr</code>. As células (<code>th</code>, <code>td</code>) ficam nos <code>tr</code>.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A célula de cabeçalho</h3>
+<p>Complete:</p>
+<div class="ex-code">&lt;tr&gt; &lt;<input data-answer="th" aria-label="tag de cabeçalho">&gt;Produto&lt;/th&gt; &lt;/tr&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O pé da tabela</h3>
+<p>Qual tag agrupa a linha dos totais?</p>
+<div class="ex-code">&lt;<input data-answer="tfoot" aria-label="tag do rodapé">&gt; &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;/tr&gt; &lt;/tfoot&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Qual é a ordem certa dos grupos dentro de um <code>table</code>?</p>
+<label><input type="radio" name="q3"> <code>tbody</code>, <code>thead</code>, <code>tfoot</code></label>
+<label><input type="radio" name="q3"> <code>thead</code>, <code>tfoot</code>, <code>tbody</code></label>
+<label><input type="radio" name="q3"> <code>thead</code>, <code>tbody</code>, <code>tfoot</code></label>
+<label><input type="radio" name="q3"> Qualquer ordem: o navegador arruma</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">4. Uma tabela tem a primeira linha com <code>th</code>, mas a Ana não escreveu <code>thead</code> nem <code>tbody</code>. No DOM, onde fica essa linha?</p>
+<label><input type="radio" name="q4"> Num <code>tbody</code> criado pelo navegador, junto com as outras linhas</label>
+<label><input type="radio" name="q4"> Num <code>thead</code> criado pelo navegador</label>
+<label><input type="radio" name="q4"> Direto no <code>table</code>, sem grupo</label>
+<label><input type="radio" name="q4"> Fora da tabela</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. O <code>tfoot</code> foi escrito antes do <code>tbody</code>. O que acontece?</p>
+<label><input type="radio" name="q5"> O navegador mostra o total em cima, e o validador não reclama</label>
+<label><input type="radio" name="q5"> O navegador desenha o total embaixo mesmo assim, mas o validador acusa <em>Element “tbody” not allowed as child of element “table”</em></label>
+<label><input type="radio" name="q5"> A tabela some</label>
+<label><input type="radio" name="q5"> O navegador apaga o <code>tfoot</code></label>
+</div>
+
+<h3>Missão final: o relatório de vendas</h3>
+
+<div class="tryhtml" data-goal="nsel:table&gt;*=3,nsel:thead th=3,nsel:tbody tr=3,nsel:tfoot td=3,texto:tfoot td=Total">
+<p class="try-task"><strong>Missão:</strong> organize o relatório da Ana em três grupos. A primeira linha vira o <strong><code>thead</code></strong>, com as células trocadas por <code>th</code>. As três linhas de produtos vão num <strong><code>tbody</code></strong>. A última linha, a do total, vai num <strong><code>tfoot</code></strong>. Respeite a ordem dos grupos.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Vendas&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;Produto&lt;/td&gt;&lt;td&gt;Quantidade&lt;/td&gt;&lt;td&gt;Total&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Caderno&lt;/td&gt;&lt;td&gt;4&lt;/td&gt;&lt;td&gt;R$ 100,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Caneta azul&lt;/td&gt;&lt;td&gt;10&lt;/td&gt;&lt;td&gt;R$ 35,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Estojo&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;R$ 36,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Total da semana&lt;/td&gt;&lt;td&gt;16&lt;/td&gt;&lt;td&gt;R$ 171,00&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Vendas&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Produto&lt;/th&gt;&lt;th&gt;Quantidade&lt;/th&gt;&lt;th&gt;Total&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;Caderno&lt;/td&gt;&lt;td&gt;4&lt;/td&gt;&lt;td&gt;R$ 100,00&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Caneta azul&lt;/td&gt;&lt;td&gt;10&lt;/td&gt;&lt;td&gt;R$ 35,00&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Estojo&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;R$ 36,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tfoot&gt;
+    &lt;tr&gt;&lt;td&gt;Total da semana&lt;/td&gt;&lt;td&gt;16&lt;/td&gt;&lt;td&gt;R$ 171,00&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>A meta <code>table &gt; *</code> conta os filhos diretos do <code>table</code> no DOM: precisam ser exatamente 3, os três grupos. Curiosidade: se você deixar as linhas de produtos soltas entre o <code>thead</code> e o <code>tfoot</code>, o navegador cria o <code>tbody</code> em volta delas, e a meta também passa (a tag <code>&lt;tbody&gt;</code> pode ser omitida). Mesmo assim, escreva-a: quem ler o código depois vê na hora onde o corpo começa e termina.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>th</code> é a célula de cabeçalho: o nome de uma coluna (no topo) ou de uma linha (na primeira coluna). O navegador a desenha em negrito e centralizada.</li>
+  <li>Use <code>th</code> para nomes e <code>td</code> para dados; <code>td</code> com <code>strong</code> não avisa o leitor de tela que aquilo é um nome.</li>
+  <li><code>thead</code> (cabeça, um só), <code>tbody</code> (corpo, um ou mais) e <code>tfoot</code> (pé, um só), sempre nessa ordem, com os <code>tr</code> dentro.</li>
+  <li>O navegador cria o <code>tbody</code> quando falta, mas nunca um <code>thead</code>: <code>thead th</code> só encontra o que você escreveu.</li>
+  <li>Fora de ordem, o navegador desenha a cabeça em cima e o pé embaixo, mas o validador acusa <em>Element “tbody”/“thead” not allowed as child of element “table” in this context</em>, e a ordem lida continua errada.</li>
+  <li>Célula direto no grupo, sem <code>tr</code>: <em>“th” start tag in table body</em>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
