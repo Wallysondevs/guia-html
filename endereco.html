@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML address — o contato de quem fez a página | Guia HTML</title>
+<meta name="description" content="O elemento address em HTML para quem nunca fez um site: o bloco de contato do autor da página ou de um artigo, onde ele fica (no footer), o que pode ir dentro, quando não usar, o itálico do navegador e os erros reais do validador W3C (h2, header, nav e outro address dentro de address, address dentro de p).">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Endereço (address)</span></h1>
+
+<p class="intro">No fim de quase todo site existe um cantinho que diz <strong>quem fez a página e como falar com essa pessoa</strong>: um e-mail, um telefone, um endereço. Em HTML, esse cantinho tem um elemento próprio, o <code>&lt;address&gt;</code>. Nesta aula você vai colocar o contato da Ana no rodapé do site de receitas, descobrir o que pode (e o que não pode) ir dentro dele e por que o nome engana: o <code>address</code> não serve para qualquer endereço.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que o <code>&lt;address&gt;</code> significa: o <strong>contato</strong> do responsável pela página ou por um artigo.</li>
+  <li>Onde ele costuma ficar: dentro do <code>&lt;footer&gt;</code>, o rodapé.</li>
+  <li>O que pode ir dentro: e-mail, telefone, site, endereço, redes sociais, com links.</li>
+  <li>A diferença entre o contato <strong>da página</strong> e o contato <strong>de um artigo</strong>.</li>
+  <li>Quando <strong>não</strong> usar: endereços que não são de contato, como o da padaria onde a Ana compra pão.</li>
+  <li>Por que o texto aparece em itálico e os erros reais do validador: título, <code>header</code>, <code>nav</code> ou outro <code>address</code> dentro dele, e um <code>address</code> dentro de um parágrafo.</li>
+</ul>
+</div>
+
+<p>Os resultados desta aula são desenhados pelo <strong>seu</strong> navegador, logo abaixo de cada código. As mensagens de erro são do validador W3C (<code>vnu</code>, a mesma ferramenta do <a href="validar.html">validator.w3.org</a>), rodado na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: o remetente do envelope</h2>
+<p>Pense numa carta. No verso do envelope vai o <strong>remetente</strong>: quem mandou e como responder. Não é o assunto da carta, é a informação para você <strong>entrar em contato</strong> com quem a escreveu.</p>
+
+<p>O <code>&lt;address&gt;</code> é o remetente da página. O nome vem do inglês <em>address</em>, que quer dizer "endereço", mas o sentido em HTML é mais estreito: <strong>informações de contato de quem é responsável</strong> pelo conteúdo. Pode ser um e-mail, um telefone, um link para outra página, um endereço de rua, um perfil numa rede social, ou vários deles juntos.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No envelope</th><th>Na página</th></tr>
+<tr><td>O remetente, no verso</td><td>O <code>&lt;address&gt;</code>, geralmente no rodapé (<code>&lt;footer&gt;</code>)</td></tr>
+<tr><td>"Quem escreveu e como responder"</td><td>O contato do <strong>autor</strong> ou do <strong>dono</strong> da página</td></tr>
+<tr><td>Não é o endereço de todo mundo citado na carta</td><td>Não é qualquer endereço que aparece no texto</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O primeiro <code>address</code></h2>
+<p>O lugar mais comum do <code>address</code> é dentro do <code>&lt;footer&gt;</code>, o rodapé da página (o <code>footer</code> tem aula própria, <a href="header-footer.html">header e footer</a>; aqui ele é só a "caixa do fim da página"):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolos, pães e doces testados na cozinha de casa.&lt;/p&gt;
+
+&lt;footer&gt;
+  &lt;address&gt;
+    Site feito por Ana.
+    Escreva para &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;.
+  &lt;/address&gt;
+&lt;/footer&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;footer&gt;</dt><dd>O rodapé: a parte final da página, com informações "sobre" ela (autor, contato, direitos autorais).</dd>
+  <dt>&lt;address&gt;</dt><dd>Abre o bloco de contato. Tudo até o <code>&lt;/address&gt;</code> é "como falar com o responsável".</dd>
+  <dt>Site feito por Ana.</dt><dd>Texto comum. O contato pode ter frases inteiras, e não só o e-mail solto.</dd>
+  <dt>&lt;a href="mailto:…"&gt;</dt><dd>Um link de e-mail: clicar abre o programa de e-mail do leitor com o endereço já preenchido. Links são da aula <a href="links.html">Links</a>; o <code>mailto:</code> tem aula própria, <a href="links-email-tel.html">Links de E-mail e Telefone</a>.</dd>
+  <dt>&lt;/address&gt;</dt><dd>Fecha o bloco de contato. A tag de fechamento é obrigatória.</dd>
+</dl>
+
+<p>Repare em duas coisas no resultado:</p>
+<ul>
+  <li>O texto do <code>address</code> aparece em <strong>itálico</strong>. É o estilo que todo navegador dá a ele (a seção 5 explica).</li>
+  <li>O <code>address</code> é um elemento de <strong>bloco</strong>: começa numa linha nova e ocupa a largura toda, como um parágrafo (aula <a href="bloco-inline.html">Bloco × Em Linha</a>). Mas ele <strong>não</strong> tem a margem de cima e de baixo que o <code>&lt;p&gt;</code> tem.</li>
+</ul>
+
+<p>O <code>example.com</code> é um domínio reservado para exemplos: nenhum e-mail de verdade usa esse endereço. Use-o sempre que precisar de um e-mail de mentira.</p>
+
+<div class="tryhtml" data-goal="sel:footer address,texto:address=ana@example.com,nsel:footer p=0">
+<p class="try-task"><strong>Missão:</strong> o rodapé da Ana usa um parágrafo comum para o contato. Troque o <code>&lt;p&gt;</code> e o <code>&lt;/p&gt;</code> do rodapé por <code>&lt;address&gt;</code> e <code>&lt;/address&gt;</code>. Veja o texto ficar em itálico.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolos, pães e doces testados na cozinha de casa.&lt;/p&gt;
+
+&lt;footer&gt;
+  &lt;p&gt;Fale com a Ana: ana@example.com&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolos, pães e doces testados na cozinha de casa.&lt;/p&gt;
+
+&lt;footer&gt;
+  &lt;address&gt;Fale com a Ana: ana@example.com&lt;/address&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O que vai dentro</h2>
+<p>Dentro do <code>address</code> cabe quase tudo o que cabe numa página: texto, links, parágrafos, quebras de linha, listas. Um contato completo, com uma informação por linha:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;footer&gt;
+  &lt;address&gt;
+    Ana Souza, cozinheira e dona do site&lt;br&gt;
+    E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;br&gt;
+    Telefone: &lt;a href="tel:+5511912345678"&gt;(11) 91234-5678&lt;/a&gt;&lt;br&gt;
+    Rua das Flores, 123, Jardim Exemplo, São Paulo, SP
+  &lt;/address&gt;
+&lt;/footer&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;br&gt;</dt><dd>A quebra de linha (aula <a href="quebras.html">Quebras</a>). Num endereço, a quebra faz parte do conteúdo: cada informação vai numa linha, como num cartão de visita. É um dos poucos lugares em que o <code>&lt;br&gt;</code> é a escolha certa.</dd>
+  <dt>&lt;a href="tel:…"&gt;</dt><dd>Um link de telefone: no celular, tocar nele abre o discador. O número dentro do <code>href</code> vai sem espaços nem traços, com o código do país (<code>+55</code>); o texto do link pode ser escrito do jeito que as pessoas leem.</dd>
+  <dt>Rua das Flores, 123…</dt><dd>Um endereço de rua <strong>também</strong> é contato, quando é o lugar onde se encontra o responsável (o escritório, a loja).</dd>
+</dl>
+
+<p>O e-mail, o telefone e a rua desta aula são inventados. O número <code>(11) 91234-5678</code> é só um exemplo: nunca publique o telefone de alguém sem permissão.</p>
+
+<div class="tip">
+<strong>Por que não basta um <code>&lt;p&gt;</code>?</strong>
+<p>Na tela, um <code>&lt;p&gt;</code> e um <code>&lt;address&gt;</code> são quase iguais. A diferença é o <strong>significado</strong>: o <code>address</code> avisa a programas que leem a página (leitores de tela, buscadores, ferramentas de tradução) que "isto é o contato". É o que se chama de HTML <strong>semântico</strong> (aula <a href="semantica.html">HTML Semântico</a>): escolher a etiqueta pelo que o conteúdo <strong>é</strong>, e não pela aparência.</p>
+</div>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> troque os dados de mentira pelos de um site imaginário seu. Tire um <code>&lt;br&gt;</code> e veja duas informações grudarem na mesma linha. Depois coloque cada informação num <code>&lt;p&gt;</code> próprio, no lugar dos <code>&lt;br&gt;</code>, e compare os espaços entre as linhas.</p>
+<pre class="script" data-file="index.html">&lt;footer&gt;
+  &lt;address&gt;
+    Ana Souza&lt;br&gt;
+    &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;br&gt;
+    &lt;a href="tel:+5511912345678"&gt;(11) 91234-5678&lt;/a&gt;
+  &lt;/address&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. De quem é o contato: a página ou o artigo</h2>
+<p>A regra oficial do HTML diz que o <code>address</code> é o contato do <strong><code>&lt;article&gt;</code> mais próximo</strong> que o contém. Se não houver nenhum <code>article</code> por fora, é o contato da <strong>página inteira</strong> (do <code>&lt;body&gt;</code>). O <code>article</code> é um bloco de conteúdo que faz sentido sozinho, como uma receita ou um post (aula <a href="section-article.html">section e article</a>).</p>
+
+<p>No site da Ana, a Bia mandou uma receita. O contato da Bia vale <strong>só para a receita dela</strong>; o da Ana vale para o site todo:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+
+&lt;article&gt;
+  &lt;h2&gt;Bolo de fubá da Bia&lt;/h2&gt;
+  &lt;p&gt;Um bolo fofinho, com erva-doce.&lt;/p&gt;
+  &lt;footer&gt;
+    &lt;address&gt;
+      Receita enviada por Bia:
+      &lt;a href="mailto:bia@example.com"&gt;bia@example.com&lt;/a&gt;
+    &lt;/address&gt;
+  &lt;/footer&gt;
+&lt;/article&gt;
+
+&lt;footer&gt;
+  &lt;address&gt;
+    Site da Ana: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;
+  &lt;/address&gt;
+&lt;/footer&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Onde está o <code>address</code></th><th>De quem é o contato</th></tr>
+<tr><td>Dentro do <code>&lt;article&gt;</code> da receita (no <code>footer</code> dele)</td><td>Da autora da receita, a Bia</td></tr>
+<tr><td>No <code>&lt;footer&gt;</code> da página, fora de qualquer <code>article</code></td><td>Da dona do site, a Ana</td></tr>
+</table>
+</div>
+
+<p>Um <code>&lt;section&gt;</code>, um <code>&lt;div&gt;</code> ou um <code>&lt;main&gt;</code> por fora <strong>não</strong> mudam o dono do contato: só o <code>article</code> muda.</p>
+
+<hr>
+
+<h2>4. Quando não usar <code>address</code></h2>
+<p>Aqui está a armadilha do nome. Por causa da tradução, muita gente usa <code>address</code> para <strong>qualquer</strong> endereço. A regra do HTML é clara: ele <strong>não</strong> serve para endereços que não são o contato do responsável pela página ou pelo artigo.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Pão caseiro&lt;/h1&gt;
+&lt;p&gt;Comprei a farinha no Empório Exemplo,
+na Rua do Trigo, 45, Centro. Lá ela é bem mais barata.&lt;/p&gt;
+</pre>
+
+<p>O endereço do empório é uma <strong>informação da receita</strong>, e não o contato de quem escreveu a página. Por isso fica num <code>&lt;p&gt;</code> comum, sem <code>address</code>. O validador não reclama dos dois jeitos (ele não sabe o que o texto quer dizer), mas um leitor de tela anunciaria o empório como o contato da Ana.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use <code>address</code>?</th></tr>
+<tr><td>E-mail ou telefone do dono do site, no rodapé</td><td><strong>Sim</strong></td></tr>
+<tr><td>Contato do autor de um post ou receita, dentro do <code>article</code></td><td><strong>Sim</strong></td></tr>
+<tr><td>Endereço da loja, na página "Contato" da própria loja</td><td><strong>Sim</strong>: é o contato do responsável</td></tr>
+<tr><td>Endereço de outro lugar citado no texto (o empório, um restaurante)</td><td>Não: <code>&lt;p&gt;</code> comum</td></tr>
+<tr><td>Lista de endereços de clientes, de filiais de outra empresa</td><td>Não: parágrafos, lista ou tabela</td></tr>
+<tr><td>A data em que o post foi publicado</td><td>Não: isso é <code>&lt;time&gt;</code> (aula <a href="time.html">time e data</a>), ao lado do <code>address</code>, e não dentro dele</td></tr>
+<tr><td>O aviso de direitos autorais (© 2026 Ana)</td><td>Não: fica no <code>footer</code>, fora do <code>address</code>, em geral num <code>&lt;p&gt;</code> com <code>&lt;small&gt;</code> (aula <a href="formatacao.html">Formatação</a>)</td></tr>
+</table>
+</div>
+
+<p>Um rodapé completo, com cada coisa no seu lugar:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;footer&gt;
+  &lt;address&gt;
+    Fale com a Ana: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;
+  &lt;/address&gt;
+  &lt;p&gt;&lt;small&gt;© 2026 Receitas da Ana&lt;/small&gt;&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+
+<hr>
+
+<h2>5. O itálico (e como mudar)</h2>
+<p>Todo navegador tem uma folha de estilo própria, com a aparência padrão de cada elemento. Para o <code>address</code>, ela diz: "bloco, em itálico". É por isso que ele aparece inclinado sem que você peça nada.</p>
+
+<p>O itálico <strong>não</strong> faz parte do significado: se o seu site não quiser, você muda a aparência com CSS, e o <code>address</code> continua sendo o contato. Um exemplo com o atributo <code>style</code> (aula <a href="atributo-style.html">O Atributo style</a>; o CSS em detalhes fica para o futuro Guia CSS):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;address&gt;Em itálico, o padrão do navegador.&lt;/address&gt;
+&lt;address style="font-style: normal"&gt;Sem itálico, com CSS.&lt;/address&gt;
+</pre>
+
+<p>O contrário também vale: não use <code>address</code> só para deixar um texto em itálico. Para ênfase existe o <code>&lt;em&gt;</code> (aula <a href="negrito-italico.html">Negrito e Itálico</a>).</p>
+
+<hr>
+
+<h2>6. O que não pode ir dentro</h2>
+<p>O <code>address</code> aceita quase tudo, com quatro exceções. Dentro dele, em qualquer profundidade, <strong>não pode</strong> haver:</p>
+<ul>
+  <li><strong>títulos</strong>: <code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code> e <code>&lt;hgroup&gt;</code>;</li>
+  <li><strong>seções</strong>: <code>&lt;article&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;nav&gt;</code> e <code>&lt;section&gt;</code>;</li>
+  <li><code>&lt;header&gt;</code> e <code>&lt;footer&gt;</code>;</li>
+  <li>outro <code>&lt;address&gt;</code>.</li>
+</ul>
+<p>A razão: o <code>address</code> é um pedaço pequeno <strong>de</strong> uma seção (o contato dela), e não uma seção nova, com título e menu próprios. Se quiser um título "Contato", ponha-o <strong>antes</strong> do <code>address</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h2&gt;Contato&lt;/h2&gt;
+&lt;address&gt;
+  &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;
+&lt;/address&gt;
+</pre>
+
+<p>O navegador não reclama de nenhuma dessas proibições: ele desenha o título dentro do <code>address</code> do mesmo jeito. Quem avisa é o validador, como mostra a próxima seção.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Um título dentro do <code>address</code></strong>
+<p>A Ana quis um título "Contato" e o colocou dentro do bloco:</p>
+<pre class="file" data-file="contato.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Contato&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;address&gt;
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;
+&lt;/address&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> nada de diferente. Ele desenha o título grande, em itálico (herdou o estilo do <code>address</code>), e o e-mail embaixo. A página parece funcionar.</p>
+<p><strong>O que o validador diz:</strong></p>
+<pre class="term" data-cwd="~/site">$ vnu contato.html
+"file:/home/ana/site/contato.html":10.3-10.6: error: The element “h2” must not appear as a descendant of the “address” element.</pre>
+<p>"O elemento <code>h2</code> não pode aparecer como descendente do elemento <code>address</code>". <em>Descendente</em> é qualquer elemento que está dentro, em qualquer nível: filho, neto, bisneto. O <code>10.3-10.6</code> aponta a linha 10, colunas 3 a 6: a tag <code>&lt;h2&gt;</code>.</p>
+<p><strong>Como consertar:</strong> mova o título para antes do <code>&lt;address&gt;</code>, como na seção 6.</p>
+</div>
+
+<div class="cenario">
+<strong><code>header</code>, <code>nav</code> ou outro <code>address</code> dentro do <code>address</code></strong>
+<p>A mesma regra vale para as outras proibições, e a mensagem só troca o nome do elemento. Com um <code>&lt;nav&gt;</code> de links e um segundo <code>&lt;address&gt;</code> para a rua, dentro do primeiro:</p>
+<pre class="file" data-file="rodape.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Rodapé&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;address&gt;
+  &lt;nav&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/nav&gt;
+  Ana Souza
+  &lt;address&gt;Rua das Flores, 123&lt;/address&gt;
+&lt;/address&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu rodape.html
+"file:/home/ana/site/rodape.html":10.3-10.7: error: The element “nav” must not appear as a descendant of the “address” element.
+"file:/home/ana/site/rodape.html":12.3-12.11: error: The element “address” must not appear as a descendant of the “address” element.</pre>
+<p><strong>Como consertar:</strong> o menu (<code>nav</code>) fica fora, no <code>footer</code>, ao lado do <code>address</code>. A rua entra no mesmo <code>address</code> que o nome, separada por <code>&lt;br&gt;</code>: um contato, um <code>address</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>address</code> dentro de um <code>&lt;p&gt;</code>: o parágrafo vazio</strong>
+<p>Este é o erro mais curioso, porque o navegador <strong>muda a página</strong>:</p>
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Fale com a Ana: &lt;address&gt;ana@example.com&lt;/address&gt;&lt;/p&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> um parágrafo não pode conter blocos como o <code>address</code>. Quando o navegador lê o <code>&lt;address&gt;</code>, ele <strong>fecha o parágrafo sozinho</strong> antes. Depois, o <code>&lt;/p&gt;</code> do fim fica sem parágrafo aberto, e o navegador cria um <strong>parágrafo novo, vazio</strong>, só para ter o que fechar. A página que ele monta, de verdade, é esta:</p>
+<pre class="file" data-file="o que o navegador monta">&lt;p&gt;Fale com a Ana: &lt;/p&gt;&lt;address&gt;ana@example.com&lt;/address&gt;&lt;p&gt;&lt;/p&gt;
+</pre>
+<p>No resultado, o "Fale com a Ana:" ficou numa linha e o e-mail foi para a linha de baixo. O <code>&lt;p&gt;&lt;/p&gt;</code> vazio não aparece, mas ocupa espaço (as margens dele). Nas ferramentas do desenvolvedor (<a href="ferramentas-dev.html">F12</a>), você vê os dois parágrafos na árvore da página.</p>
+<p><strong>O que o validador diz</strong> (com a linha acima dentro de uma página completa, na linha 8):</p>
+<pre class="term" data-cwd="~/site">$ vnu fale.html
+"file:/home/ana/site/fale.html":8.54-8.57: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p>"Nenhum elemento <code>p</code> aberto, mas uma tag de fechamento <code>p</code> foi vista". O validador aponta o <code>&lt;/p&gt;</code> do fim (colunas 54 a 57), porque, quando chegou nele, o parágrafo já tinha sido fechado lá atrás. A mensagem não fala do <code>address</code>: é você quem precisa lembrar que um bloco fecha o parágrafo.</p>
+<p><strong>Como consertar:</strong> tire o <code>address</code> de dentro do <code>&lt;p&gt;</code>. Se quiser a frase junto, ponha a frase inteira dentro do <code>address</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:address,nsel:p:empty=0,texto:address=ana@example.com">
+<p class="try-task"><strong>Missão:</strong> este rodapé tem o erro do parágrafo vazio. Conserte de modo que <strong>não sobre nenhum <code>&lt;p&gt;</code> vazio</strong> na página que o navegador monta e que o e-mail continue dentro do <code>address</code>.</p>
+<pre class="script" data-file="index.html">&lt;footer&gt;
+  &lt;p&gt;Fale com a Ana: &lt;address&gt;ana@example.com&lt;/address&gt;&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;footer&gt;
+  &lt;address&gt;Fale com a Ana: ana@example.com&lt;/address&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Esquecer o <code>&lt;/address&gt;</code></strong>
+<pre class="file" data-file="aberto.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Sem fechar&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;address&gt;ana@example.com
+&lt;p&gt;Mais receitas em breve.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> tudo o que vem depois do <code>&lt;address&gt;</code> entra no bloco de contato, até o fim da página. O parágrafo "Mais receitas em breve." também fica em itálico, como se fosse parte do contato.</p>
+<p><strong>O que o validador diz:</strong></p>
+<pre class="term" data-cwd="~/site">$ vnu aberto.html
+"file:/home/ana/site/aberto.html":11.1-11.7: error: End tag for  “body” seen, but there were unclosed elements.
+"file:/home/ana/site/aberto.html":9.1-9.9: error: Unclosed element “address”.</pre>
+<p>A primeira linha aponta o <code>&lt;/body&gt;</code> (linha 11): "a página terminou, mas há elementos abertos" (o espaço duplo depois de <code>for</code> é do próprio validador). A segunda aponta onde o elemento começou (linha 9): "elemento <code>address</code> não fechado". Outras mensagens de elementos não fechados estão em <a href="erros-comuns.html">Erros Comuns</a>.</p>
+<p><strong>Como consertar:</strong> feche com <code>&lt;/address&gt;</code> logo depois da última informação de contato.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Item</th><th>Detalhe</th></tr>
+<tr><td>Elemento</td><td><code>&lt;address&gt;…&lt;/address&gt;</code> (as duas tags são obrigatórias)</td></tr>
+<tr><td>Significa</td><td>O contato do responsável pelo <code>&lt;article&gt;</code> mais próximo, ou pela página inteira</td></tr>
+<tr><td>Onde costuma ficar</td><td>Dentro do <code>&lt;footer&gt;</code> da página ou do <code>article</code></td></tr>
+<tr><td>Pode conter</td><td>Texto, links (<code>mailto:</code>, <code>tel:</code>, sites), <code>&lt;br&gt;</code>, <code>&lt;p&gt;</code>, listas</td></tr>
+<tr><td>Não pode conter</td><td><code>h1</code>–<code>h6</code>, <code>hgroup</code>, <code>article</code>, <code>aside</code>, <code>nav</code>, <code>section</code>, <code>header</code>, <code>footer</code>, <code>address</code></td></tr>
+<tr><td>Não pode ficar dentro de</td><td>Um <code>&lt;p&gt;</code> (o navegador fecha o parágrafo antes)</td></tr>
+<tr><td>Aparência padrão</td><td>Bloco, em itálico, sem margens de parágrafo</td></tr>
+<tr><td>Não use para</td><td>Endereços que não são o contato do responsável; datas (<code>time</code>); direitos autorais</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A tag</h3>
+<p>Complete o rodapé com o elemento de contato:</p>
+<div class="ex-code">&lt;footer&gt;&lt;<input data-answer="address" aria-label="elemento">&gt;ana@example.com&lt;/address&gt;&lt;/footer&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O link de e-mail</h3>
+<p>Complete o começo do <code>href</code> para que o link abra o programa de e-mail:</p>
+<div class="ex-code">&lt;a href="<input data-answer="mailto:" aria-label="esquema">ana@example.com"&gt;ana@example.com&lt;/a&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Numa receita, a Ana escreve onde comprou a farinha: "Empório Exemplo, Rua do Trigo, 45". Qual elemento usar para esse endereço?</p>
+<label><input type="radio" name="q3"> <code>&lt;address&gt;</code>, porque é um endereço</label>
+<label><input type="radio" name="q3"> <code>&lt;footer&gt;</code></label>
+<label><input type="radio" name="q3"> Um <code>&lt;p&gt;</code> comum: não é o contato de quem fez a página</label>
+<label><input type="radio" name="q3"> <code>&lt;time&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Um <code>address</code> está dentro do <code>&lt;footer&gt;</code> de um <code>&lt;article&gt;</code> com a receita da Bia. De quem é esse contato?</p>
+<label><input type="radio" name="q4"> Da dona do site, a Ana</label>
+<label><input type="radio" name="q4"> Da autora daquela receita, a Bia</label>
+<label><input type="radio" name="q4"> De todas as receitas da página</label>
+<label><input type="radio" name="q4"> De ninguém: <code>address</code> não pode ficar num <code>article</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O validador mostrou <code>No “p” element in scope but a “p” end tag seen.</code> numa linha com <code>&lt;p&gt;Contato: &lt;address&gt;…&lt;/address&gt;&lt;/p&gt;</code>. O que aconteceu?</p>
+<label><input type="radio" name="q5"> Faltou abrir o parágrafo</label>
+<label><input type="radio" name="q5"> O <code>address</code> precisa de um título</label>
+<label><input type="radio" name="q5"> O e-mail está escrito errado</label>
+<label><input type="radio" name="q5"> O navegador fechou o <code>&lt;p&gt;</code> ao ver o <code>address</code>, e o <code>&lt;/p&gt;</code> do fim ficou sobrando</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Qual destes elementos <strong>pode</strong> ficar dentro de um <code>address</code>?</p>
+<label><input type="radio" name="q6"> <code>&lt;br&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;h2&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;nav&gt;</code></label>
+<label><input type="radio" name="q6"> Outro <code>&lt;address&gt;</code></label>
+</div>
+
+<h3>Missão final: o rodapé do site de receitas</h3>
+
+<div class="tryhtml" data-goal="sel:footer address,sel:address a[href^='mailto:'],sel:address a[href^='tel:'],texto:footer small=2026,nsel:address small=0,nsel:address h1\, address h2\, address h3=0">
+<p class="try-task"><strong>Missão:</strong> monte o rodapé da página. Dentro do <code>&lt;footer&gt;</code>, crie um <code>&lt;address&gt;</code> com um link de e-mail (<code>mailto:ana@example.com</code>) e um link de telefone (<code>tel:+5511912345678</code>), um em cada linha. O título "Contato" e o aviso <code>© 2026 Receitas da Ana</code> (num <code>&lt;small&gt;</code>) ficam no rodapé, mas <strong>fora</strong> do <code>address</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolos, pães e doces testados na cozinha de casa.&lt;/p&gt;
+
+&lt;footer&gt;
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;!-- o address vem aqui --&gt;
+
+&lt;/footer&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolos, pães e doces testados na cozinha de casa.&lt;/p&gt;
+
+&lt;footer&gt;
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;address&gt;
+    E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;br&gt;
+    Telefone: &lt;a href="tel:+5511912345678"&gt;(11) 91234-5678&lt;/a&gt;
+  &lt;/address&gt;
+  &lt;p&gt;&lt;small&gt;© 2026 Receitas da Ana&lt;/small&gt;&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<p>Repare que o título <code>&lt;h2&gt;Contato&lt;/h2&gt;</code> está no <code>footer</code>, e não no <code>address</code>: o <code>footer</code> aceita títulos, o <code>address</code> não. Se você colocou o título dentro do <code>address</code>, a missão não passa, e o validador mostraria o erro da seção "Quando dá errado".</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;address&gt;</code> é o <strong>contato</strong> do responsável: e-mail, telefone, site, endereço, redes sociais. Pense no remetente do envelope.</li>
+  <li>Ele vale para o <code>&lt;article&gt;</code> mais próximo que o contém; sem <code>article</code> por fora, para a página inteira. Costuma ficar dentro do <code>&lt;footer&gt;</code>.</li>
+  <li>Não é para qualquer endereço: o endereço de um lugar citado no texto vai num <code>&lt;p&gt;</code>. Datas (<code>time</code>) e direitos autorais ficam fora dele.</li>
+  <li>Dentro pode ir texto, links (<code>mailto:</code>, <code>tel:</code>) e <code>&lt;br&gt;</code> entre as linhas. Não podem ir títulos, seções (<code>article</code>, <code>aside</code>, <code>nav</code>, <code>section</code>), <code>header</code>, <code>footer</code> nem outro <code>address</code>: o validador avisa com <code>must not appear as a descendant of the “address” element</code>.</li>
+  <li>Um <code>address</code> dentro de um <code>&lt;p&gt;</code> faz o navegador fechar o parágrafo antes e criar um <code>&lt;p&gt;&lt;/p&gt;</code> vazio no fim: <code>No “p” element in scope but a “p” end tag seen</code>.</li>
+  <li>O itálico é só a aparência padrão do navegador; dá para tirar com CSS sem perder o significado.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
