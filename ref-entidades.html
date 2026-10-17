@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Entidades — tabela de &amp;lt; &amp;amp; &amp;nbsp; &amp;copy; e outros símbolos | Guia HTML</title>
+<meta name="description" content="Referência das entidades do HTML (referências de caractere): as cinco que você precisa escapar (&lt; &gt; &amp; &quot; &apos;), espaços especiais (&amp;nbsp; &amp;shy;), pontuação, símbolos, moedas, setas, letras gregas, acentos e emoji por número, com as mensagens reais do validador W3C e o que o navegador faz quando a entidade está errada.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Entidades</span></h1>
+
+<p class="intro">Uma <strong>entidade</strong> (o nome oficial é "referência de caractere") é um código que começa com <code>&amp;</code> e termina com <code>;</code> e vira um caractere na tela: <code>&amp;lt;</code> vira <code>&lt;</code>, <code>&amp;copy;</code> vira &copy;. Elas servem para escrever caracteres que o HTML usaria como código (o <code>&lt;</code> e o <code>&amp;</code>), caracteres invisíveis (o espaço que não quebra) e símbolos que não estão no teclado. Esta página reúne as mais usadas. Para aprender com calma, veja a aula <a href="entidades.html">Entidades</a>.</p>
+
+<div class="note">
+<strong>Como ler as tabelas</strong>
+<ul>
+  <li>A coluna <strong>Na tela</strong> é desenhada pelo seu navegador, a partir da própria entidade.</li>
+  <li>As colunas <strong>Nome</strong> e <strong>Número</strong> mostram o que você escreve no código. As duas formas dão o mesmo caractere.</li>
+  <li>Com <code>&lt;meta charset="utf-8"&gt;</code> (que o guia usa em toda página), você pode digitar <strong>direto</strong> o &copy;, o &deg;, o &ccedil; e até um emoji. A entidade só é <strong>obrigatória</strong> para os caracteres da primeira tabela e para os invisíveis. Veja <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>.</li>
+</ul>
+</div>
+
+<p>Atalhos: <a href="#anatomia">Anatomia</a> · <a href="#obrigatorias">As que você precisa usar</a> · <a href="#espacos">Espaços e invisíveis</a> · <a href="#pontuacao">Pontuação e aspas</a> · <a href="#simbolos">Símbolos e matemática</a> · <a href="#moedas">Moedas</a> · <a href="#setas">Setas e figuras</a> · <a href="#gregas">Letras gregas</a> · <a href="#acentos">Acentos</a> · <a href="#emoji">Emoji e números</a> · <a href="#errado">Quando dá errado</a> · <a href="#experimente">Experimente</a></p>
+
+<hr>
+
+<h2 id="anatomia">Anatomia de uma entidade</h2>
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&amp;copy; 2026 Receitas da Ana&lt;/p&gt;
+&lt;p&gt;&amp;#169; 2026 Receitas da Ana&lt;/p&gt;
+&lt;p&gt;&amp;#xA9; 2026 Receitas da Ana&lt;/p&gt;
+</pre>
+<p>As três linhas dão o mesmo resultado. As três formas:</p>
+<dl class="anatomy">
+  <dt><code>&amp;copy;</code></dt><dd><strong>Por nome</strong>: <code>&amp;</code>, o nome (em inglês, abreviado: "copyright") e <code>;</code>. Maiúsculas importam: <code>&amp;Aacute;</code> é &Aacute; e <code>&amp;aacute;</code> é &aacute;.</dd>
+  <dt><code>&amp;#169;</code></dt><dd><strong>Por número decimal</strong>: <code>&amp;#</code>, o número do caractere no Unicode (a tabela de todos os caracteres do mundo) e <code>;</code>.</dd>
+  <dt><code>&amp;#xA9;</code></dt><dd><strong>Por número hexadecimal</strong> (base 16): <code>&amp;#x</code>, o número e <code>;</code>. É como o Unicode costuma aparecer escrito: U+00A9.</dd>
+  <dt><code>;</code></dt><dd>O ponto e vírgula fecha a entidade. <strong>Não esqueça</strong>: sem ele, às vezes funciona e às vezes não (veja <a href="#errado">Quando dá errado</a>).</dd>
+</dl>
+
+<h2 id="obrigatorias">As que você precisa usar</h2>
+<p>Estes caracteres têm significado especial no HTML. Para que apareçam como texto, escreva a entidade.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na tela</th><th>Nome</th><th>Número</th><th>Quando é obrigatória</th></tr>
+<tr><td>&lt;</td><td><code>&amp;lt;</code> ("less than", menor que)</td><td><code>&amp;#60;</code></td><td>Sempre que o <code>&lt;</code> vier antes de uma letra, de <code>/</code>, de <code>!</code> ou de <code>?</code>: senão, o navegador acha que é o começo de uma tag. Na dúvida, use sempre.</td></tr>
+<tr><td>&gt;</td><td><code>&amp;gt;</code> ("greater than", maior que)</td><td><code>&amp;#62;</code></td><td>Quase nunca é obrigatória, mas o costume é escapar junto com o <code>&lt;</code>: <code>&amp;lt;p&amp;gt;</code>.</td></tr>
+<tr><td>&amp;</td><td><code>&amp;amp;</code> ("ampersand", e comercial)</td><td><code>&amp;#38;</code></td><td>Quando o <code>&amp;</code> vier antes de letras ou de <code>#</code> e puder parecer uma entidade. Para mostrar o texto <code>&amp;copy;</code>, escreva <code>&amp;amp;copy;</code>.</td></tr>
+<tr><td>&quot;</td><td><code>&amp;quot;</code> ("quotation mark", aspas)</td><td><code>&amp;#34;</code></td><td>Dentro de um valor de atributo entre aspas duplas: <code>title="Diga &amp;quot;oi&amp;quot;"</code>.</td></tr>
+<tr><td>&apos;</td><td><code>&amp;apos;</code> ("apostrophe", apóstrofo)</td><td><code>&amp;#39;</code></td><td>Dentro de um valor de atributo entre aspas simples: <code>title='It&amp;apos;s'</code>.</td></tr>
+</table>
+</div>
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Para fazer um parágrafo, escreva &lt;code&gt;&amp;lt;p&amp;gt;Texto&amp;lt;/p&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Se 3 &amp;lt; 5 e 5 &amp;gt; 2, então Pão &amp;amp; Cia vende mais.&lt;/p&gt;
+&lt;p title="O &amp;quot;melhor&amp;quot; bolo"&gt;Passe o mouse aqui.&lt;/p&gt;
+</pre>
+<div class="tip">
+<strong>O guia faz isso o tempo todo</strong>
+<p>Todo código que você lê neste guia está dentro de um <code>&lt;pre&gt;</code>, e cada <code>&lt;</code> dele foi escrito como <code>&amp;lt;</code> no arquivo da página. Se não fosse, o seu navegador desenharia os exemplos em vez de mostrá-los. A aula <a href="codigo.html">Código</a> mostra isso.</p>
+</div>
+
+<h2 id="espacos">Espaços e caracteres invisíveis</h2>
+<p>O HTML junta vários espaços seguidos num só (aula <a href="espacos.html">Espaços e Quebras de Linha</a>). Estas entidades dão espaços que o navegador respeita e caracteres que não aparecem, mas mudam a quebra das linhas.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na tela</th><th>Nome</th><th>Número</th><th>Para que serve</th></tr>
+<tr><td>[&nbsp;]</td><td><code>&amp;nbsp;</code> ("non-breaking space")</td><td><code>&amp;#160;</code></td><td>Um espaço que <strong>não quebra</strong> a linha: <code>R$&amp;nbsp;12,90</code>, <code>10&amp;nbsp;kg</code>, <code>Sr.&amp;nbsp;Silva</code>. Não use vários seguidos para afastar coisas: isso é trabalho do CSS.</td></tr>
+<tr><td>[&ensp;]</td><td><code>&amp;ensp;</code></td><td><code>&amp;#8194;</code></td><td>Um espaço da largura de um "n".</td></tr>
+<tr><td>[&emsp;]</td><td><code>&amp;emsp;</code></td><td><code>&amp;#8195;</code></td><td>Um espaço da largura de um "m".</td></tr>
+<tr><td>[&thinsp;]</td><td><code>&amp;thinsp;</code></td><td><code>&amp;#8201;</code></td><td>Um espaço fino.</td></tr>
+<tr><td>(invisível)</td><td><code>&amp;shy;</code> ("soft hyphen")</td><td><code>&amp;#173;</code></td><td>Um hífen que só aparece se a palavra for quebrada naquele ponto: <code>para&amp;shy;lele&amp;shy;pípedo</code>.</td></tr>
+<tr><td>(invisível)</td><td>(não tem nome)</td><td><code>&amp;#8203;</code></td><td>Um espaço de largura zero: deixa quebrar ali, sem hífen. O elemento <code>&lt;wbr&gt;</code> faz o mesmo.</td></tr>
+<tr><td>(invisível)</td><td><code>&amp;NoBreak;</code></td><td><code>&amp;#8288;</code></td><td>Proíbe quebrar a linha naquele ponto.</td></tr>
+<tr><td>(invisível)</td><td><code>&amp;zwj;</code>, <code>&amp;zwnj;</code></td><td><code>&amp;#8205;</code>, <code>&amp;#8204;</code></td><td>Juntam ou separam caracteres. O <code>&amp;zwj;</code> é o que cola emojis em um só (família, profissões).</td></tr>
+<tr><td>(invisível)</td><td><code>&amp;lrm;</code>, <code>&amp;rlm;</code></td><td><code>&amp;#8206;</code>, <code>&amp;#8207;</code></td><td>Marcas de direção do texto (da esquerda para a direita ou o contrário), para misturar português com árabe ou hebraico.</td></tr>
+</table>
+</div>
+<pre class="file" data-file="index.html" data-resultado>&lt;p style="width: 9em; border: 1px solid gray"&gt;Bolo de cenoura por R$ 12,90 o pedaço.&lt;/p&gt;
+&lt;p style="width: 9em; border: 1px solid gray"&gt;Bolo de cenoura por R$&amp;nbsp;12,90 o pedaço.&lt;/p&gt;
+</pre>
+<p>As duas caixas são estreitas de propósito. Na primeira, o navegador pode separar o <code>R$</code> do <code>12,90</code> em linhas diferentes; na segunda, os dois ficam sempre juntos. (Onde exatamente a linha quebra depende da fonte do seu navegador.)</p>
+
+<h2 id="pontuacao">Pontuação e aspas</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na tela</th><th>Nome</th><th>Número</th><th>O que é</th></tr>
+<tr><td>&ndash;</td><td><code>&amp;ndash;</code></td><td><code>&amp;#8211;</code></td><td>Meia-risca (traço "n"): intervalos, <code>10&amp;ndash;12</code>.</td></tr>
+<tr><td>&mdash;</td><td><code>&amp;mdash;</code></td><td><code>&amp;#8212;</code></td><td>Travessão (traço "m"): diálogos e explicações.</td></tr>
+<tr><td>&hellip;</td><td><code>&amp;hellip;</code></td><td><code>&amp;#8230;</code></td><td>Reticências num caractere só.</td></tr>
+<tr><td>&ldquo; &rdquo;</td><td><code>&amp;ldquo;</code> <code>&amp;rdquo;</code></td><td><code>&amp;#8220;</code> <code>&amp;#8221;</code></td><td>Aspas curvas duplas, de abrir e de fechar (as do validador W3C).</td></tr>
+<tr><td>&lsquo; &rsquo;</td><td><code>&amp;lsquo;</code> <code>&amp;rsquo;</code></td><td><code>&amp;#8216;</code> <code>&amp;#8217;</code></td><td>Aspas curvas simples. A de fechar também é o apóstrofo tipográfico.</td></tr>
+<tr><td>&laquo; &raquo;</td><td><code>&amp;laquo;</code> <code>&amp;raquo;</code></td><td><code>&amp;#171;</code> <code>&amp;#187;</code></td><td>Aspas angulares (de Portugal e da França).</td></tr>
+<tr><td>&bdquo;</td><td><code>&amp;bdquo;</code></td><td><code>&amp;#8222;</code></td><td>Aspas baixas (do alemão).</td></tr>
+<tr><td>&bull;</td><td><code>&amp;bull;</code></td><td><code>&amp;#8226;</code></td><td>Marcador redondo.</td></tr>
+<tr><td>&middot;</td><td><code>&amp;middot;</code></td><td><code>&amp;#183;</code></td><td>Ponto no meio da linha, separador: <code>Início &amp;middot; Receitas</code>.</td></tr>
+<tr><td>&sect;</td><td><code>&amp;sect;</code></td><td><code>&amp;#167;</code></td><td>Parágrafo de lei (seção).</td></tr>
+<tr><td>&para;</td><td><code>&amp;para;</code></td><td><code>&amp;#182;</code></td><td>Marca de parágrafo (pé de mosca).</td></tr>
+<tr><td>&dagger; &Dagger;</td><td><code>&amp;dagger;</code> <code>&amp;Dagger;</code></td><td><code>&amp;#8224;</code> <code>&amp;#8225;</code></td><td>Cruz e cruz dupla, para notas de rodapé.</td></tr>
+<tr><td>&iexcl; &iquest;</td><td><code>&amp;iexcl;</code> <code>&amp;iquest;</code></td><td><code>&amp;#161;</code> <code>&amp;#191;</code></td><td>Exclamação e interrogação invertidas (espanhol).</td></tr>
+<tr><td>&ordm; &ordf;</td><td><code>&amp;ordm;</code> <code>&amp;ordf;</code></td><td><code>&amp;#186;</code> <code>&amp;#170;</code></td><td>Indicadores de ordinal: 1&ordm;, 2&ordf;.</td></tr>
+<tr><td>&prime; &Prime;</td><td><code>&amp;prime;</code> <code>&amp;Prime;</code></td><td><code>&amp;#8242;</code> <code>&amp;#8243;</code></td><td>Linha e linha dupla: minutos e segundos de ângulo, pés e polegadas.</td></tr>
+</table>
+</div>
+<p>Para citações curtas, o elemento <code>&lt;q&gt;</code> já põe as aspas certas para o idioma da página (aula <a href="citacoes.html">Citações</a>).</p>
+
+<h2 id="simbolos">Símbolos e matemática</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na tela</th><th>Nome</th><th>Número</th><th>O que é</th></tr>
+<tr><td>&copy;</td><td><code>&amp;copy;</code></td><td><code>&amp;#169;</code></td><td>Direitos autorais (copyright).</td></tr>
+<tr><td>&reg;</td><td><code>&amp;reg;</code></td><td><code>&amp;#174;</code></td><td>Marca registrada.</td></tr>
+<tr><td>&trade;</td><td><code>&amp;trade;</code></td><td><code>&amp;#8482;</code></td><td>Marca ("trademark").</td></tr>
+<tr><td>&deg;</td><td><code>&amp;deg;</code></td><td><code>&amp;#176;</code></td><td>Grau: 180&deg;C. Não confunda com o &ordm; do ordinal.</td></tr>
+<tr><td>&plusmn;</td><td><code>&amp;plusmn;</code></td><td><code>&amp;#177;</code></td><td>Mais ou menos.</td></tr>
+<tr><td>&times;</td><td><code>&amp;times;</code></td><td><code>&amp;#215;</code></td><td>Vezes (multiplicação), e o "x" de dimensões: 20&times;30&nbsp;cm.</td></tr>
+<tr><td>&divide;</td><td><code>&amp;divide;</code></td><td><code>&amp;#247;</code></td><td>Dividido por.</td></tr>
+<tr><td>&minus;</td><td><code>&amp;minus;</code></td><td><code>&amp;#8722;</code></td><td>Sinal de menos (mais largo que o hífen).</td></tr>
+<tr><td>&frac12; &frac14; &frac34;</td><td><code>&amp;frac12;</code> <code>&amp;frac14;</code> <code>&amp;frac34;</code></td><td><code>&amp;#189;</code> <code>&amp;#188;</code> <code>&amp;#190;</code></td><td>Frações: &frac12; xícara de açúcar.</td></tr>
+<tr><td>&sup1; &sup2; &sup3;</td><td><code>&amp;sup1;</code> <code>&amp;sup2;</code> <code>&amp;sup3;</code></td><td><code>&amp;#185;</code> <code>&amp;#178;</code> <code>&amp;#179;</code></td><td>Expoentes prontos: m&sup2;. Para outros, use <code>&lt;sup&gt;</code>.</td></tr>
+<tr><td>&micro;</td><td><code>&amp;micro;</code></td><td><code>&amp;#181;</code></td><td>Micro: &micro;m.</td></tr>
+<tr><td>&permil;</td><td><code>&amp;permil;</code></td><td><code>&amp;#8240;</code></td><td>Por mil.</td></tr>
+<tr><td>&ne; &le; &ge;</td><td><code>&amp;ne;</code> <code>&amp;le;</code> <code>&amp;ge;</code></td><td><code>&amp;#8800;</code> <code>&amp;#8804;</code> <code>&amp;#8805;</code></td><td>Diferente, menor ou igual, maior ou igual.</td></tr>
+<tr><td>&asymp; &equiv;</td><td><code>&amp;asymp;</code> <code>&amp;equiv;</code></td><td><code>&amp;#8776;</code> <code>&amp;#8801;</code></td><td>Aproximadamente igual, idêntico.</td></tr>
+<tr><td>&infin;</td><td><code>&amp;infin;</code></td><td><code>&amp;#8734;</code></td><td>Infinito.</td></tr>
+<tr><td>&radic; &sum;</td><td><code>&amp;radic;</code> <code>&amp;sum;</code></td><td><code>&amp;#8730;</code> <code>&amp;#8721;</code></td><td>Raiz quadrada, somatório.</td></tr>
+<tr><td>&not;</td><td><code>&amp;not;</code></td><td><code>&amp;#172;</code></td><td>Negação (lógica).</td></tr>
+</table>
+</div>
+
+<h2 id="moedas">Moedas</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na tela</th><th>Nome</th><th>Número</th><th>O que é</th></tr>
+<tr><td>R$</td><td>(não tem: digite <code>R$</code>)</td><td>—</td><td>Real. Use <code>R$&amp;nbsp;12,90</code> para o valor não se separar do símbolo.</td></tr>
+<tr><td>&dollar;</td><td><code>&amp;dollar;</code></td><td><code>&amp;#36;</code></td><td>Dólar (e o cifrão do real).</td></tr>
+<tr><td>&euro;</td><td><code>&amp;euro;</code></td><td><code>&amp;#8364;</code></td><td>Euro.</td></tr>
+<tr><td>&pound;</td><td><code>&amp;pound;</code></td><td><code>&amp;#163;</code></td><td>Libra.</td></tr>
+<tr><td>&yen;</td><td><code>&amp;yen;</code></td><td><code>&amp;#165;</code></td><td>Iene (e yuan).</td></tr>
+<tr><td>&cent;</td><td><code>&amp;cent;</code></td><td><code>&amp;#162;</code></td><td>Centavo.</td></tr>
+</table>
+</div>
+
+<h2 id="setas">Setas e figuras</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na tela</th><th>Nome</th><th>Número</th><th>O que é</th></tr>
+<tr><td>&larr; &rarr;</td><td><code>&amp;larr;</code> <code>&amp;rarr;</code></td><td><code>&amp;#8592;</code> <code>&amp;#8594;</code></td><td>Setas para a esquerda e a direita ("left/right arrow").</td></tr>
+<tr><td>&uarr; &darr;</td><td><code>&amp;uarr;</code> <code>&amp;darr;</code></td><td><code>&amp;#8593;</code> <code>&amp;#8595;</code></td><td>Para cima e para baixo.</td></tr>
+<tr><td>&harr;</td><td><code>&amp;harr;</code></td><td><code>&amp;#8596;</code></td><td>Para os dois lados.</td></tr>
+<tr><td>&lArr; &rArr; &hArr;</td><td><code>&amp;lArr;</code> <code>&amp;rArr;</code> <code>&amp;hArr;</code></td><td><code>&amp;#8656;</code> <code>&amp;#8658;</code> <code>&amp;#8660;</code></td><td>Setas duplas (o <code>A</code> maiúsculo muda a seta).</td></tr>
+<tr><td>&check; &cross;</td><td><code>&amp;check;</code> <code>&amp;cross;</code></td><td><code>&amp;#10003;</code> <code>&amp;#10007;</code></td><td>Certo e errado.</td></tr>
+<tr><td>&star; &starf;</td><td><code>&amp;star;</code> <code>&amp;starf;</code></td><td><code>&amp;#9734;</code> <code>&amp;#9733;</code></td><td>Estrela vazia e cheia: &starf;&starf;&starf;&starf;&star;.</td></tr>
+<tr><td>&hearts; &diams; &clubs; &spades;</td><td><code>&amp;hearts;</code> <code>&amp;diams;</code> <code>&amp;clubs;</code> <code>&amp;spades;</code></td><td><code>&amp;#9829;</code> <code>&amp;#9830;</code> <code>&amp;#9827;</code> <code>&amp;#9824;</code></td><td>Naipes do baralho: copas, ouros, paus, espadas.</td></tr>
+<tr><td>&phone;</td><td><code>&amp;phone;</code></td><td><code>&amp;#9742;</code></td><td>Telefone.</td></tr>
+<tr><td>&female; &male;</td><td><code>&amp;female;</code> <code>&amp;male;</code></td><td><code>&amp;#9792;</code> <code>&amp;#9794;</code></td><td>Feminino e masculino.</td></tr>
+<tr><td>&sung; &flat; &sharp;</td><td><code>&amp;sung;</code> <code>&amp;flat;</code> <code>&amp;sharp;</code></td><td><code>&amp;#9834;</code> <code>&amp;#9837;</code> <code>&amp;#9839;</code></td><td>Nota musical, bemol, sustenido.</td></tr>
+</table>
+</div>
+<p>Uma seta ou estrela solta não diz nada a quem usa leitor de tela, ou diz algo estranho ("estrela preta"). Quando o símbolo carrega informação, escreva também em texto, por exemplo <code>&lt;span aria-hidden="true"&gt;&amp;starf;&amp;starf;&amp;starf;&amp;starf;&amp;star;&lt;/span&gt; 4 de 5 estrelas</code> (aula <a href="aria.html">ARIA</a>).</p>
+
+<h2 id="gregas">Letras gregas</h2>
+<p>O nome é o da letra em inglês; com a primeira letra maiúscula, sai a maiúscula grega.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na tela</th><th>Nome</th><th>Número</th></tr>
+<tr><td>&alpha; &beta; &gamma; &delta;</td><td><code>&amp;alpha;</code> <code>&amp;beta;</code> <code>&amp;gamma;</code> <code>&amp;delta;</code></td><td><code>&amp;#945;</code> <code>&amp;#946;</code> <code>&amp;#947;</code> <code>&amp;#948;</code></td></tr>
+<tr><td>&theta; &lambda; &mu; &pi;</td><td><code>&amp;theta;</code> <code>&amp;lambda;</code> <code>&amp;mu;</code> <code>&amp;pi;</code></td><td><code>&amp;#952;</code> <code>&amp;#955;</code> <code>&amp;#956;</code> <code>&amp;#960;</code></td></tr>
+<tr><td>&Delta; &Sigma; &Omega;</td><td><code>&amp;Delta;</code> <code>&amp;Sigma;</code> <code>&amp;Omega;</code></td><td><code>&amp;#916;</code> <code>&amp;#931;</code> <code>&amp;#937;</code></td></tr>
+</table>
+</div>
+
+<h2 id="acentos">Acentos</h2>
+<p>Com UTF-8 você <strong>não precisa</strong> destas entidades: digite as letras acentuadas normalmente. Elas aparecem em sites antigos, e é bom reconhecê-las. O padrão do nome: a letra + o nome do acento em inglês.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Acento</th><th>Na tela</th><th>Nome</th></tr>
+<tr><td>Agudo ("acute")</td><td>&aacute; &eacute; &iacute; &oacute; &uacute; &Aacute;</td><td><code>&amp;aacute;</code> <code>&amp;eacute;</code> <code>&amp;iacute;</code> <code>&amp;oacute;</code> <code>&amp;uacute;</code> <code>&amp;Aacute;</code></td></tr>
+<tr><td>Crase ("grave")</td><td>&agrave;</td><td><code>&amp;agrave;</code></td></tr>
+<tr><td>Circunflexo ("circumflex")</td><td>&acirc; &ecirc; &ocirc;</td><td><code>&amp;acirc;</code> <code>&amp;ecirc;</code> <code>&amp;ocirc;</code></td></tr>
+<tr><td>Til ("tilde")</td><td>&atilde; &otilde; &ntilde; &Ntilde;</td><td><code>&amp;atilde;</code> <code>&amp;otilde;</code> <code>&amp;ntilde;</code> <code>&amp;Ntilde;</code></td></tr>
+<tr><td>Cedilha ("cedilla")</td><td>&ccedil; &Ccedil;</td><td><code>&amp;ccedil;</code> <code>&amp;Ccedil;</code></td></tr>
+<tr><td>Trema ("umlaut")</td><td>&uuml;</td><td><code>&amp;uuml;</code></td></tr>
+</table>
+</div>
+
+<h2 id="emoji">Emoji e qualquer caractere por número</h2>
+<p>Todo caractere do Unicode tem um número, mesmo os que não têm nome de entidade. Ache o número (U+1F382, por exemplo) e escreva <code>&amp;#x</code> + o número + <code>;</code>.</p>
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Feliz aniversário! &amp;#x1F382;&lt;/p&gt;
+&lt;p&gt;Feliz aniversário! &amp;#127874;&lt;/p&gt;
+&lt;p&gt;Feito com &amp;#x2764;&amp;#xFE0F; pela Ana&lt;/p&gt;
+</pre>
+<p>As duas primeiras linhas são o mesmo bolo (1F382 em hexadecimal = 127874 em decimal). Na terceira, o <code>&amp;#xFE0F;</code> pede a versão colorida do coração. O desenho de cada emoji depende do sistema do leitor.</p>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Esqueceu o ponto e vírgula: <code>&amp;copy 2026</code></strong>
+<p><strong>O que o navegador faz:</strong> mostra &copy; 2026 assim mesmo. Para não quebrar sites antigos, o navegador ainda entende umas cem entidades velhas sem o <code>;</code> (como <code>&amp;copy</code>, <code>&amp;lt</code>, <code>&amp;amp</code> e <code>&amp;nbsp</code>). As mais novas, como <code>&amp;hellip</code> e <code>&amp;rarr</code>, aparecem como texto, letra por letra.</p>
+<p><strong>O validador:</strong></p>
+<pre class="term" data-cwd="~/ref">$ vnu ent1.html
+"file:/home/ana/ref/ent1.html":8.4-8.9: error: Named character reference was not terminated by a semicolon. (Or “&amp;” should have been escaped as “&amp;amp;”.)</pre>
+<p>"A referência de caractere com nome não terminou com ponto e vírgula. (Ou o <code>&amp;</code> devia ter sido escrito como <code>&amp;amp;</code>.)" <strong>Conserto:</strong> <code>&amp;copy; 2026</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Errou o nome: <code>Bolo&amp;nbps;de cenoura</code></strong>
+<p><strong>O que o navegador faz:</strong> mostra o texto como está, <code>Bolo&amp;nbps;de cenoura</code>, porque não existe entidade <code>nbps</code> (o certo é <code>nbsp</code>: "non-breaking space").</p>
+<p><strong>O validador:</strong> o <code>vnu</code> 26.10 <strong>não deu nenhuma mensagem</strong> para essa linha no teste da Ana. Um nome de entidade inventado, com <code>;</code> no fim, passa sem aviso. Por isso, confira as entidades com os olhos, no resultado.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>&lt;</code> solto no texto: <code>se x&lt;y e y&gt;z</code></strong>
+<p><strong>O que o navegador faz:</strong> lê <code>&lt;y e y&gt;</code> como a tag de abertura de um elemento <code>y</code> (com os atributos <code>e</code> e <code>y</code>), que não existe. Na tela aparece só <code>se xz</code>: o pedaço do meio some.</p>
+<p><strong>O validador:</strong></p>
+<pre class="term" data-cwd="~/ref">$ vnu ent1.html
+"file:/home/ana/ref/ent1.html":12.8-12.14: error: Element “y” not allowed as child of element “p” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/ref/ent1.html":12.8-12.14: error: The “y” element is a completely-unknown element that is not allowed anywhere in any HTML content.
+"file:/home/ana/ref/ent1.html":12.16-12.19: error: End tag “p” seen, but there were open elements.
+"file:/home/ana/ref/ent1.html":12.8-12.14: error: Unclosed element “y”.</pre>
+<p><strong>Conserto:</strong> <code>se x&amp;lt;y e y&amp;gt;z</code>. (Com espaço, <code>3 &lt; 5</code>, o navegador acerta, porque o <code>&lt;</code> não vem antes de uma letra. Mas é melhor criar o hábito de escapar sempre.)</p>
+</div>
+
+<div class="cenario">
+<strong>Número fora da tabela: <code>&amp;#128;</code>, <code>&amp;#0;</code></strong>
+<p>Alguns números não são caracteres válidos. O validador dá um erro para cada:</p>
+<pre class="term" data-cwd="~/ref">$ vnu ent1.html
+"file:/home/ana/ref/ent1.html":15.4-15.9: error: A numeric character reference expanded to the C1 controls range.
+"file:/home/ana/ref/ent1.html":15.13-15.16: error: Character reference expands to zero.
+"file:/home/ana/ref/ent1.html":15.20-15.27: error: Character reference expands to a surrogate.
+"file:/home/ana/ref/ent1.html":15.31-15.40: error: Character reference outside the permissible Unicode range.</pre>
+<p>Os testes foram <code>&amp;#128;</code>, <code>&amp;#0;</code>, <code>&amp;#xD800;</code> e <code>&amp;#x110000;</code>. O caso curioso é o primeiro: <code>&amp;#128;</code> era o € numa tabela antiga do Windows, e os navegadores, por compatibilidade, ainda mostram &euro;. O número certo do euro é <code>&amp;#8364;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>&amp;</code> num endereço: <code>href="busca.html?q=bolo&amp;tipo=doce"</code></strong>
+<p>Este passou sem erro no validador e funciona no navegador, porque <code>&amp;tipo</code> não é o começo de nenhuma entidade. Mesmo assim, o jeito mais seguro é escrever <code>&amp;amp;</code> também dentro do atributo: <code>href="busca.html?q=bolo&amp;amp;tipo=doce"</code>. O navegador transforma o <code>&amp;amp;</code> em <code>&amp;</code> antes de seguir o link.</p>
+</div>
+
+<h2 id="experimente">Experimente</h2>
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> escreva entidades das tabelas e veja o seu navegador desenhá-las. Tire um ponto e vírgula, erre um nome, troque o nome pelo número.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&amp;copy; 2026 Receitas da Ana &amp;middot; Forno a 180&amp;deg;C &amp;middot; &amp;frac12; xícara de açúcar&lt;/p&gt;
+&lt;p&gt;Avaliação: &amp;starf;&amp;starf;&amp;starf;&amp;starf;&amp;star; &amp;rarr; 4 de 5&lt;/p&gt;
+&lt;p&gt;Bolo &amp;amp; Cia: de R$&amp;nbsp;12,90 por R$&amp;nbsp;9,90 &amp;#x1F382;&lt;/p&gt;
+</pre>
+</div>
+
+<div class="tryhtml" data-goal="nsel:h1=0,texto:code=&lt;h1&gt;">
+<p class="try-task"><strong>Missão:</strong> a Ana quer <strong>mostrar</strong> a tag <code>&lt;h1&gt;</code> no texto, mas o navegador entende que é um título de verdade e a página fica estranha. Use entidades para que a tag apareça como texto dentro do <code>&lt;code&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Para fazer o título principal, use &lt;code&gt;&lt;h1&gt;&lt;/code&gt;.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Para fazer o título principal, use &lt;code&gt;&amp;lt;h1&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Entidade: <code>&amp;nome;</code>, <code>&amp;#número;</code> ou <code>&amp;#xhex;</code>. Sempre com <code>;</code> no fim.</li>
+  <li>Obrigatórias: <code>&amp;lt;</code> para <code>&lt;</code> e <code>&amp;amp;</code> para <code>&amp;</code> no texto; <code>&amp;quot;</code> dentro de atributo com aspas duplas. Para mostrar uma entidade como texto: <code>&amp;amp;copy;</code>.</li>
+  <li><code>&amp;nbsp;</code> segura duas palavras na mesma linha (<code>R$&amp;nbsp;12,90</code>); não serve para dar espaço.</li>
+  <li>Com <code>&lt;meta charset="utf-8"&gt;</code>, acentos, símbolos e emoji podem ser digitados direto.</li>
+  <li>O navegador perdoa o <code>;</code> esquecido em entidades antigas; o validador não. Um nome inventado com <code>;</code> passa no validador, então confira o resultado.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
