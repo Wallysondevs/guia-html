@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Atributo style — CSS direto no elemento | Guia HTML</title>
+<meta name="description" content="O atributo style do HTML para quem nunca fez um site: escrever CSS direto num elemento, a forma propriedade: valor; com ponto e vírgula, por que ele vence o CSS do head, as aspas dentro das aspas, quando usar e quando evitar, com os erros reais do validador W3C e o que o navegador realmente aplicou.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">O Atributo style</span></h1>
+
+<p class="intro">Na aula <a href="ligar-css.html">Ligar CSS</a>, o CSS ficou num arquivo separado ou num <code>&lt;style&gt;</code> no <code>head</code>. Existe um terceiro lugar: <strong>dentro da própria tag</strong>, no atributo <code>style</code>. É o jeito mais rápido de mudar a cor de <em>uma</em> palavra, e é por isso que ele aparece em tanto código copiado da internet. Também é o jeito mais fácil de bagunçar um site. Nesta aula você vai aprender a escrever o <code>style</code>, entender por que ele vence as outras regras e saber quando ele vale a pena.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como escrever o atributo <code>style</code>: <code>style="propriedade: valor;"</code>.</li>
+  <li>Como pôr vários ajustes no mesmo <code>style</code>.</li>
+  <li>Por que o <code>style</code> vence o CSS do <code>head</code> (e a exceção <code>!important</code>).</li>
+  <li>O cuidado com as aspas dentro das aspas.</li>
+  <li>Quando usar e quando evitar.</li>
+  <li>Os erros reais do validador W3C, que confere o CSS de dentro do <code>style</code>.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/attr</code>. O que o navegador aplicou (as cores, o negrito) foi conferido no Chrome.</p>
+
+<hr>
+
+<h2>A ideia: o bilhete colado no produto</h2>
+<p>Na lojinha da Ana, as regras do uniforme estão no manual da parede (o arquivo <code>.css</code>). Mas, num dia de promoção, ela cola um <strong>bilhete</strong> direto num caderno: "este aqui com etiqueta vermelha". O bilhete vale só para aquele caderno, e ganha do manual: se o manual diz "etiqueta azul", o caderno do bilhete fica com a vermelha.</p>
+<p>O atributo <code>style</code> é esse bilhete: CSS colado num elemento só.</p>
+
+<hr>
+
+<h2>1. A forma do style</h2>
+<p>O <code>style</code> é um <strong>atributo</strong> como outro qualquer (aula <a href="atributos.html">Atributos</a>): vai na tag de abertura, com o valor entre aspas. O valor é CSS, sem seletor e sem chaves, porque o elemento já é a própria tag:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p style="color: crimson;"&gt;Promoção: bolo de cenoura pela metade do preço!&lt;/p&gt;
+  &lt;p&gt;Pão de queijo, brigadeiro e torta de limão.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;p</dt><dd>A tag de abertura do elemento que vai mudar.</dd>
+  <dt>style=</dt><dd>O atributo. <em>Style</em> = "estilo".</dd>
+  <dt>"</dt><dd>As aspas abrem o valor. Sempre use aspas no <code>style</code> (a seção 4 mostra por quê).</dd>
+  <dt>color</dt><dd>A <strong>propriedade</strong> de CSS: a cor do texto.</dd>
+  <dt>: crimson</dt><dd>Dois-pontos e o <strong>valor</strong>. <code>crimson</code> é um vermelho-escuro, um dos nomes de cor do CSS.</dd>
+  <dt>;</dt><dd>Termina o ajuste.</dd>
+  <dt>"&gt;</dt><dd>Fecha as aspas e a tag.</dd>
+</dl>
+
+<p>Só o primeiro parágrafo ficou vermelho: o <code>style</code> vale para <strong>aquele</strong> elemento (e para o que estiver dentro dele), e para mais nenhum. Compare com a regra de CSS da aula anterior:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No <code>&lt;style&gt;</code> ou no <code>.css</code></th><th>No atributo <code>style</code></th></tr>
+<tr><td><code>p { color: crimson; }</code></td><td><code>&lt;p style="color: crimson;"&gt;</code></td></tr>
+<tr><td>Tem seletor (<code>p</code>) e chaves: vale para <strong>todos</strong> os <code>p</code></td><td>Sem seletor nem chaves: vale para <strong>este</strong> <code>p</code></td></tr>
+</table>
+</div>
+
+<h3>Vários ajustes</h3>
+<p>Para mudar mais de uma coisa, separe os ajustes com <code>;</code>, tudo dentro das mesmas aspas:</p>
+
+<pre class="file" data-file="trecho" data-resultado>&lt;p style="color: crimson; font-weight: bold; text-align: center;"&gt;Promoção: bolo de cenoura pela metade do preço!&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>color: crimson;</dt><dd>Cor vermelho-escura.</dd>
+  <dt>font-weight: bold;</dt><dd><em>Font weight</em> = "peso da fonte"; <code>bold</code> = negrito.</dd>
+  <dt>text-align: center;</dt><dd><em>Text align</em> = "alinhamento do texto"; <code>center</code> = centralizado.</dd>
+</dl>
+
+<p>O <code>;</code> do último ajuste é opcional, mas deixe-o: quando você acrescentar outro ajuste depois, ele já está lá.</p>
+
+<pre class="term" data-cwd="~/attr">$ vnu --verbose certo.html
+certo.html</pre>
+
+<div class="tryhtml" data-goal="css:p{color}=rgb(220, 20, 60),css:p{font-weight}=700,sel:p[style],nsel:p[style]=1">
+<p class="try-task"><strong>Missão:</strong> deixe só o parágrafo da promoção vermelho-escuro (<code>crimson</code>) e em negrito (<code>font-weight: bold</code>), com um atributo <code>style</code>. O outro parágrafo deve continuar como está.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+  &lt;p&gt;Promoção: cadernos com 30% de desconto!&lt;/p&gt;
+  &lt;p&gt;Aberta de segunda a sábado.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+  &lt;p style="color: crimson; font-weight: bold;"&gt;Promoção: cadernos com 30% de desconto!&lt;/p&gt;
+  &lt;p&gt;Aberta de segunda a sábado.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O style vence o CSS do head</h2>
+<p>Agora a página tem uma regra no <code>head</code> dizendo que todo parágrafo é verde, e o primeiro parágrafo tem um <code>style</code> dizendo vermelho:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;style&gt;
+    p { color: green; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p style="color: crimson;"&gt;Promoção: bolo de cenoura pela metade do preço!&lt;/p&gt;
+  &lt;p&gt;Pão de queijo, brigadeiro e torta de limão.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O primeiro parágrafo ficou vermelho (o Chrome informou <code>rgb(220, 20, 60)</code>, o <code>crimson</code>), e o segundo, verde. Na aula anterior, entre o <code>link</code> e o <code>style</code>, vencia quem vinha <strong>por último</strong>. Com o atributo <code>style</code> é diferente: ele vence o CSS do <code>head</code> e dos arquivos <code>.css</code> <strong>sempre</strong>, venha antes ou depois. É como o bilhete colado no produto: ele é mais específico que o manual da parede.</p>
+
+<h3>A exceção: <code>!important</code></h3>
+<p>No CSS existe um jeito de "gritar" mais alto que o <code>style</code>: pôr <code>!important</code> ("importante") depois do valor.</p>
+
+<pre class="file" data-file="trecho">&lt;style&gt;
+  p { color: green !important; }
+&lt;/style&gt;
+</pre>
+
+<p>Com isso no <code>head</code>, o parágrafo do <code>style="color: crimson;"</code> ficou <strong>verde</strong> no Chrome (<code>rgb(0, 128, 0)</code>), e o negrito, que não estava na briga, continuou. Você vai encontrar <code>!important</code> em código de outras pessoas, quase sempre como remendo de uma briga entre regras. Evite: depois de um, vem outro para vencer o primeiro, e ninguém mais sabe quem manda. (A ordem completa de quem vence quem é a "cascata", assunto do futuro Guia CSS.)</p>
+
+<hr>
+
+<h2>3. Quando usar e quando evitar</h2>
+<p>Agora imagine a página de receitas com dez parágrafos de promoção, cada um com o seu bilhete:</p>
+
+<pre class="file" data-file="trecho">&lt;p style="color: crimson; font-weight: bold;"&gt;Bolo de cenoura pela metade do preço!&lt;/p&gt;
+&lt;p style="color: crimson; font-weight: bold;"&gt;Brigadeiro: leve 10, pague 8!&lt;/p&gt;
+&lt;p style="color: crimson; font-weight: bold;"&gt;Torta de limão com 20% de desconto!&lt;/p&gt;
+</pre>
+
+<p>No dia em que a Ana decidir que as promoções são laranja, ela tem de achar e trocar <strong>cada</strong> <code>style</code>, em cada página, e vai esquecer algum. Com uma regra no <code>.css</code> e uma <strong>classe</strong> nos parágrafos, seria uma linha só. As classes são a próxima aula: <a href="class-id.html">class e id</a>.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Use o <code>style</code> quando…</th><th>Evite o <code>style</code> quando…</th></tr>
+<tr><td>É um teste rápido, para ver como fica</td><td>O mesmo ajuste se repete em vários elementos</td></tr>
+<tr><td>É um ajuste único, que só aquele elemento tem</td><td>É a aparência geral do site (cores, fontes, espaços)</td></tr>
+<tr><td>O valor é calculado por um programa em JavaScript (por exemplo, a largura de uma barra de progresso)</td><td>O site tem uma política de segurança que bloqueia estilos na tag (aula <a href="seguranca.html">Segurança</a>)</td></tr>
+<tr><td>Você escreve um e-mail em HTML (muitos programas de e-mail só entendem o <code>style</code>)</td><td>Você quer que o HTML fique fácil de ler: tags cheias de <code>style</code> escondem o conteúdo</td></tr>
+</table>
+</div>
+
+<div class="note">
+<strong>O style não muda o significado</strong>
+<p>Um <code>&lt;p style="font-size: 2em; font-weight: bold;"&gt;</code> fica com cara de título, mas continua sendo um parágrafo: o leitor de tela e o Google não o tratam como título. Para um título, use <code>&lt;h2&gt;</code> (aula <a href="titulos.html">Títulos</a>), e mude a aparência dele com CSS. O mesmo vale para negrito: <code>font-weight: bold</code> só engrossa a letra; <code>&lt;strong&gt;</code> diz que o texto é importante (aula <a href="negrito-italico.html">Negrito e Itálico</a>).</p>
+</div>
+
+<hr>
+
+<h2>4. As aspas</h2>
+<p>O HTML aceita valores de atributo sem aspas, desde que não tenham espaço. Por isso <code>&lt;p style=color:crimson&gt;</code> passa no validador e funciona. Mas basta um espaço:</p>
+
+<pre class="file" data-file="sem-aspas-espaco.html">&lt;p style=color: crimson&gt;Promoção&lt;/p&gt;
+</pre>
+
+<p>Sem aspas, o valor termina no primeiro espaço. O navegador leu <code>style="color:"</code> (um ajuste sem valor) e um <strong>segundo atributo</strong> chamado <code>crimson</code>. No Chrome, os atributos do parágrafo ficaram <code>style</code> e <code>crimson</code>, e o texto saiu preto. O validador:</p>
+
+<pre class="term" data-cwd="~/attr">$ vnu sem-aspas-espaco.html
+"file:/home/ana/attr/sem-aspas-espaco.html":9.3-9.26: error: Attribute “crimson” not allowed on element “p” at this point.
+"file:/home/ana/attr/sem-aspas-espaco.html":9.3-9.26: error: CSS: “color”: Parse Error.</pre>
+
+<p>"O atributo <code>crimson</code> não é permitido no <code>p</code>" e "erro de leitura do CSS em <code>color</code>". Regra do guia: <strong>sempre</strong> aspas duplas no <code>style</code>.</p>
+
+<div class="tryhtml" data-goal="css:p{color}=rgb(220, 20, 60),nsel:p[crimson]=0">
+<p class="try-task"><strong>Missão:</strong> o parágrafo deveria estar vermelho-escuro, mas está preto. Conserte o atributo <code>style</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p style=color: crimson&gt;Promoção: brigadeiro, leve 10 e pague 8!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p style="color: crimson;"&gt;Promoção: brigadeiro, leve 10 e pague 8!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<h3>Aspas dentro das aspas</h3>
+<p>Alguns valores de CSS levam aspas, como o nome de uma fonte com espaço (<code>"Courier New"</code>). Dentro de um <code>style="…"</code>, aspas duplas <strong>fecham</strong> o atributo:</p>
+
+<pre class="file" data-file="aspas.html">&lt;p style="font-family: "Courier New", monospace"&gt;Promoção&lt;/p&gt;
+</pre>
+
+<p>Para o navegador, o <code>style</code> terminou em <code>font-family: </code>, e o resto virou atributos com nomes esquisitos. No Chrome, o parágrafo ficou com três atributos: <code>style</code>, <code>courier</code> e <code>new",</code>… (e mais um, <code>monospace"</code>). O validador mostra a confusão inteira:</p>
+
+<pre class="term" data-cwd="~/attr">$ vnu aspas.html
+"file:/home/ana/attr/aspas.html":9.3-9.27: error: No space between attributes.
+"file:/home/ana/attr/aspas.html":9.3-9.38: error: Quote “"” in attribute name. Probable cause: Matching quote missing somewhere earlier.
+"file:/home/ana/attr/aspas.html":9.3-9.50: error: Quote “"” in attribute name. Probable cause: Matching quote missing somewhere earlier.
+"file:/home/ana/attr/aspas.html":9.3-9.51: error: Attribute “courier” not allowed on element “p” at this point.
+"file:/home/ana/attr/aspas.html":9.3-9.51: error: Attribute “new",” not allowed on element “p” at this point.
+"file:/home/ana/attr/aspas.html":9.3-9.51: error: Attribute “monospace"” not allowed on element “p” at this point.
+"file:/home/ana/attr/aspas.html":9.3-9.51: error: CSS: “font-family”: Parse Error.</pre>
+
+<ul>
+  <li><em>No space between attributes</em>: "falta espaço entre os atributos": logo depois das aspas que fecharam o <code>style</code> veio <code>Courier</code>, grudado.</li>
+  <li><em>Quote “"” in attribute name. Probable cause: Matching quote missing somewhere earlier.</em>: "aspas no nome de um atributo; causa provável: faltou fechar aspas em algum lugar antes". É a pista certa.</li>
+  <li>Os <em>Attribute “…” not allowed</em> são os pedaços que viraram atributos.</li>
+</ul>
+
+<p>O conserto: dentro de aspas duplas, use aspas <strong>simples</strong> (ou o contrário):</p>
+
+<pre class="file" data-file="aspas-ok.html" data-resultado>&lt;p style="font-family: 'Courier New', monospace;"&gt;Promoção: cadernos com 30% de desconto!&lt;/p&gt;
+</pre>
+
+<p>Válido, e o Chrome aplicou a fonte <code>"Courier New", monospace</code> (o <code>monospace</code> é o plano B: qualquer fonte de largura fixa, se a Courier New não estiver instalada).</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O validador W3C confere o CSS de dentro do <code>style</code>, como confere o do <code>&lt;style&gt;</code>. As mensagens começam com <code>CSS:</code> e o nome da propriedade. O navegador, por sua vez, não mostra erro nenhum: ele simplesmente <strong>ignora</strong> o ajuste que não entendeu.</p>
+
+<div class="cenario">
+<strong><code>error: CSS: “color”: “vermelho” is not a “color” value.</code></strong>
+<p><strong>O que significa:</strong> "<code>vermelho</code> não é um valor de cor". Os nomes de cor do CSS são em inglês: <code>red</code>, <code>crimson</code>, <code>green</code>, <code>darkorange</code>… No Chrome, o texto ficou preto.</p>
+<p><strong>Como consertar:</strong> use um nome em inglês, ou um código de cor como <code>#dc143c</code> (assunto do futuro Guia CSS).</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: CSS: “colour”: Property “colour” doesn't exist.</code></strong>
+<p><strong>O que significa:</strong> "a propriedade <code>colour</code> não existe". É a grafia britânica; o CSS usa a americana, <code>color</code>. O mesmo erro aparece para <code>cor</code>, <code>colr</code>, <code>font-wieght</code>…</p>
+<p><strong>Como consertar:</strong> corrija o nome da propriedade.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: CSS: “color”: Missing a semicolon before the property name “font-weight”.</code></strong>
+<p><strong>O que significa:</strong> <code>style="color: crimson font-weight: bold"</code>, sem o <code>;</code> entre os ajustes. O navegador lê os dois como um só, sem sentido, e joga <strong>os dois</strong> fora: no Chrome, o texto ficou preto e sem negrito.</p>
+<p><strong>Como consertar:</strong> <code>style="color: crimson; font-weight: bold;"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: CSS: “color”: Parse Error.</code></strong>
+<p><strong>O que significa:</strong> "erro de leitura": o CSS está mal formado. Em <code>style="color crimson"</code>, faltaram os dois-pontos. Com <code>style="p { color: crimson; }"</code> (uma regra inteira, com seletor e chaves), aparece <code>CSS: “p”: Parse Error.</code>: no atributo <code>style</code> não vai seletor.</p>
+<p><strong>Como consertar:</strong> só <code>propriedade: valor;</code>, sem seletor e sem chaves.</p>
+</div>
+
+<div class="cenario">
+<strong>Nenhum erro no validador, mas o estilo não funciona: <code>style="{color: crimson}"</code></strong>
+<p><strong>O que significa:</strong> as chaves em volta. O validador não reclamou, mas o Chrome ignorou tudo e o texto ficou preto.</p>
+<p><strong>Como consertar:</strong> tire as chaves: <code>style="color: crimson;"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: CSS: “font-size”: only “0” can be a “unit”. You must put a unit after your number.</code></strong>
+<p><strong>O que significa:</strong> <code>font-size: 20</code>, sem unidade. "Só o zero pode ficar sem unidade; ponha uma unidade depois do número." 20 o quê? Pixels, <code>em</code>…? O Chrome ignorou o ajuste (a letra ficou com os 16 pixels normais), mas aplicou os outros do mesmo <code>style</code>.</p>
+<p><strong>Como consertar:</strong> <code>font-size: 20px;</code> (<code>px</code> = pixels).</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Duplicate attribute “style”.</code></strong>
+<p><strong>O que significa:</strong> dois atributos <code>style</code> na mesma tag: <code>&lt;p style="color: crimson;" style="font-weight: bold;"&gt;</code>. O navegador fica com o <strong>primeiro</strong> e joga o segundo fora: no Chrome, o texto ficou vermelho, mas sem negrito.</p>
+<p><strong>Como consertar:</strong> junte tudo num <code>style</code> só: <code>style="color: crimson; font-weight: bold;"</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;p style="color: crimson;"&gt;</code></td><td>Muda a cor do texto deste parágrafo.</td></tr>
+<tr><td><code>style="a: 1; b: 2;"</code></td><td>Vários ajustes, separados por <code>;</code>.</td></tr>
+<tr><td><code>style="font-family: 'Courier New', monospace;"</code></td><td>Aspas simples dentro das duplas.</td></tr>
+<tr><td><code>color</code>, <code>font-weight</code>, <code>font-size</code>, <code>text-align</code></td><td>Cor do texto, peso (negrito), tamanho, alinhamento.</td></tr>
+<tr><td><code>style</code> × CSS do <code>head</code></td><td>O <code>style</code> vence, a não ser que o outro tenha <code>!important</code>.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O separador</h3>
+<p>Complete com o caractere que separa os dois ajustes:</p>
+<div class="ex-code">&lt;p style="color: green<input data-answer=";" aria-label="separador"> font-weight: bold;"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. As aspas de dentro</h3>
+<p>Complete com o tipo de aspas que pode ir dentro de <code>style="…"</code>:</p>
+<div class="ex-code">&lt;p style="font-family: <input data-answer="'" aria-label="aspas">Courier New', monospace;"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. O <code>head</code> tem <code>p { color: green; }</code> e o parágrafo tem <code>style="color: crimson;"</code>. De que cor ele fica?</p>
+<label><input type="radio" name="q3"> Verde, porque o CSS do <code>head</code> vem antes</label>
+<label><input type="radio" name="q3"> Vermelho-escuro (<code>crimson</code>), porque o <code>style</code> vence</label>
+<label><input type="radio" name="q3"> Preto, porque as duas regras se anulam</label>
+<label><input type="radio" name="q3"> Uma mistura das duas cores</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. O que o navegador faz com <code>style="color: vermelho;"</code>?</p>
+<label><input type="radio" name="q4"> Pinta o texto de vermelho</label>
+<label><input type="radio" name="q4"> Mostra uma mensagem de erro na página</label>
+<label><input type="radio" name="q4"> Não mostra o parágrafo</label>
+<label><input type="radio" name="q4"> Ignora o ajuste, sem avisar (o validador acusa)</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Vinte parágrafos de promoção têm o mesmo <code>style="color: crimson; font-weight: bold;"</code>. Qual é o melhor caminho?</p>
+<label><input type="radio" name="q5"> Deixar assim: funciona</label>
+<label><input type="radio" name="q5"> Trocar por <code>&lt;h2&gt;</code></label>
+<label><input type="radio" name="q5"> Dar uma classe aos parágrafos e escrever o estilo uma vez só no CSS</label>
+<label><input type="radio" name="q5"> Usar <code>!important</code> em todos</label>
+</div>
+
+<h3>Missão final: três bilhetes com defeito</h3>
+
+<div class="tryhtml" data-goal="css:h1{color}=rgb(0, 128, 0),css:#preco{color}=rgb(220, 20, 60),css:#preco{font-weight}=700,css:#aviso{text-align}=center,css:#aviso{font-style}=italic">
+<p class="try-task"><strong>Missão:</strong> a Ana escreveu três <code>style</code>, e nenhum funciona direito. O título deveria ser verde; o preço, vermelho-escuro (<code>crimson</code>) e em negrito; o aviso, centralizado e em itálico. Encontre os erros (o validador mostraria <code>“verde” is not a “color” value</code>, <code>Missing a semicolon</code> e <code>Property “text-alin” doesn't exist</code>) e conserte. Não mexa nos <code>id</code> (eles são da próxima aula).</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Bolo de Cenoura | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1 style="color: verde;"&gt;Bolo de Cenoura&lt;/h1&gt;
+  &lt;p id="preco" style="color: crimson font-weight: bold;"&gt;R$ 25,00 o bolo inteiro&lt;/p&gt;
+  &lt;p id="aviso" style="text-alin: center; font-style: italic;"&gt;Encomendas com dois dias de antecedência.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Bolo de Cenoura | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1 style="color: green;"&gt;Bolo de Cenoura&lt;/h1&gt;
+  &lt;p id="preco" style="color: crimson; font-weight: bold;"&gt;R$ 25,00 o bolo inteiro&lt;/p&gt;
+  &lt;p id="aviso" style="text-align: center; font-style: italic;"&gt;Encomendas com dois dias de antecedência.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O atributo <code>style</code> põe CSS direto num elemento: <code>&lt;p style="color: crimson; font-weight: bold;"&gt;</code>. Sem seletor e sem chaves; ajustes separados por <code>;</code>.</li>
+  <li>Ele vale só para aquele elemento e vence o CSS do <code>head</code> e dos arquivos <code>.css</code> (exceto o <code>!important</code>, que é melhor evitar).</li>
+  <li>Sempre aspas duplas no <code>style</code>; aspas dentro dele, simples.</li>
+  <li>Use para ajustes únicos e testes. Para o que se repete, use uma classe e um arquivo <code>.css</code> (próxima aula, <a href="class-id.html">class e id</a>).</li>
+  <li>O navegador ignora em silêncio o que não entende (<code>vermelho</code>, <code>colour</code>, <code>;</code> faltando, número sem unidade); o validador acusa, com mensagens que começam com <code>CSS:</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>

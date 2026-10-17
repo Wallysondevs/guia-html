@@ -293,7 +293,7 @@ p {
 <p><strong>O que significa:</strong> o navegador não achou o arquivo de CSS. Aqui, a Ana escreveu <code>href="css/estilo.css"</code>, mas o arquivo está na mesma pasta da página. O Console do F12 mostra, ao abrir o arquivo direto do computador:</p>
 <pre class="file" data-file="Console do Chrome">Failed to load resource: net::ERR_FILE_NOT_FOUND
 </pre>
-<p>("Falha ao carregar o recurso: arquivo não encontrado.") Pelo servidor local, a mensagem é a do 404: <code>Failed to load resource: the server responded with a status of 404 (File not found)</code>. O validador não acusa nada: ele não confere se o arquivo existe.</p>
+<p>("Falha ao carregar o recurso: arquivo não encontrado.") Pelo servidor local, a mensagem é a do 404: <code>Failed to load resource: the server responded with a status of 404 (File not found)</code>. O validador não acusa nada: ele não confere se o arquivo existe. No editor do guia, o console embaixo do quadro avisa em português: <code>Não foi possível carregar "css/estilo.css" (&lt;link&gt;). Confira o nome e o caminho do arquivo.</code></p>
 <p><strong>Como consertar:</strong> confira o caminho com <code>ls</code>, a partir da pasta do HTML (aula <a href="caminhos.html">Caminhos</a>). Cuidado com maiúsculas: <code>Estilo.css</code> e <code>estilo.css</code> são arquivos diferentes no servidor.</p>
 </div>
 
