@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Atributos Globais — id, class, title, lang, dir, hidden, translate, inert | Guia HTML</title>
+<meta name="description" content="Atributos globais do HTML para quem nunca fez um site: o que quer dizer global, id, class, title, lang, dir, translate, hidden (e hidden=&quot;until-found&quot;), inert, spellcheck e os outros, com o resultado real no seu navegador e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Atributos Globais</span></h1>
+
+<p class="intro">Alguns atributos só servem para um elemento: o <code>href</code> é do link, o <code>src</code> é da imagem. Outros servem para <strong>todos</strong>: você pode pôr um <code>id</code>, um <code>title</code> ou um <code>lang</code> num parágrafo, num título, numa tabela, em qualquer elemento. Esses são os <strong>atributos globais</strong>. Nesta aula você vai conhecer os mais usados, ver o efeito de cada um no seu navegador e as armadilhas que o validador W3C aponta.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que torna um atributo "global".</li>
+  <li><code>id</code> e <code>class</code>: as regras que o validador confere.</li>
+  <li><code>title</code>: a dica que aparece com o mouse (e por que não confiar nela).</li>
+  <li><code>lang</code>: o idioma de um trecho, e por que <code>pt_BR</code> está errado.</li>
+  <li><code>dir</code>: textos da direita para a esquerda, como o árabe e o hebraico.</li>
+  <li><code>translate="no"</code>: o que o tradutor automático não deve traduzir.</li>
+  <li><code>hidden</code> e <code>hidden="until-found"</code>: esconder, e a armadilha do <code>hidden="false"</code>.</li>
+  <li><code>inert</code>: deixar um pedaço da página "dormindo".</li>
+  <li>A lista dos outros globais e onde cada um tem aula própria.</li>
+</ul>
+</div>
+
+<p>As mensagens do validador desta aula saíram do <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. Os resultados são desenhados pelo seu próprio navegador.</p>
+
+<hr>
+
+<h2>A ideia: o que todo mundo tem</h2>
+<p>Pense nos documentos de uma pessoa. Só quem dirige tem carteira de motorista, e só quem viaja para fora tem passaporte. Mas <strong>todo mundo</strong> tem nome e data de nascimento.</p>
+<p>No HTML é igual. Cada elemento tem os seus atributos próprios, e todos têm os globais:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tipo de atributo</th><th>Exemplo</th><th>Onde pode</th></tr>
+<tr><td>Próprio de um elemento (como a carteira de motorista)</td><td><code>href</code>, <code>src</code>, <code>alt</code>, <code>colspan</code></td><td>só em alguns elementos: <code>href</code> no <code>&lt;a&gt;</code>, <code>alt</code> na <code>&lt;img&gt;</code>…</td></tr>
+<tr><td><strong>Global</strong> (como o nome)</td><td><code>id</code>, <code>class</code>, <code>title</code>, <code>lang</code>, <code>hidden</code>…</td><td>em <strong>qualquer</strong> elemento</td></tr>
+</table>
+</div>
+
+<p>Um atributo global no lugar certo, com um valor errado, continua errado: cada um tem regras de valor, e é aí que o validador pega a maioria dos enganos. A forma de escrever qualquer atributo (<code>nome="valor"</code>) está em <a href="atributos.html">Atributos</a>.</p>
+
+<hr>
+
+<h2>1. id e class: nome único e grupo</h2>
+<p>Estes dois têm aula própria (<a href="class-id.html">class e id</a>). Aqui ficam as regras que valem em qualquer elemento:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1 id="topo"&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p class="destaque doce"&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;p class="doce"&gt;Brigadeiro de colher.&lt;/p&gt;
+&lt;p&gt;&lt;a href="#topo"&gt;Voltar ao topo&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>id="topo"</dt><dd><em>Identifier</em>, "identificador": um nome <strong>único</strong> na página inteira, como um CPF. Serve para links (<code>href="#topo"</code>, aula <a href="ancoras.html">Âncoras</a>), para o <code>&lt;label for&gt;</code> e para o JavaScript. Não pode ter espaço nem ficar vazio.</dd>
+  <dt>class="destaque doce"</dt><dd>"Classe": um <strong>grupo</strong>, como um sobrenome. Vários elementos podem ter a mesma classe, e um elemento pode ter várias, separadas por espaço: este parágrafo está nos grupos <code>destaque</code> e <code>doce</code>. O CSS usa as classes para dar estilo a todos de uma vez.</dd>
+  <dt>class="doce"</dt><dd>Outro elemento no mesmo grupo <code>doce</code>.</dd>
+</dl>
+
+<p>O resultado parece texto comum: <code>id</code> e <code>class</code> não mudam a aparência sozinhos. Eles são etiquetas que o CSS, os links e o JavaScript usam. (Clique em "Voltar ao topo" para ver o <code>id</code> trabalhando.)</p>
+
+<hr>
+
+<h2>2. title: a dica do mouse</h2>
+<p>O <code>title</code> ("título") guarda uma informação a mais sobre o elemento. Na maioria dos navegadores de computador, ela aparece numa caixinha (a <strong>dica</strong>, ou <em>tooltip</em>) quando você deixa o mouse parado em cima por um instante. Passe o mouse sobre o link e sobre a palavra "g":</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Leve 200 &lt;abbr title="gramas"&gt;g&lt;/abbr&gt; de açúcar.&lt;/p&gt;
+&lt;p&gt;&lt;a href="receitas.html" title="Mais de 30 receitas, todas testadas pela Ana"&gt;Todas as receitas&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;abbr title="gramas"&gt;</dt><dd>No <code>&lt;abbr&gt;</code> (abreviação), o <code>title</code> é o significado por extenso. É o uso mais comum (aula <a href="abreviacoes.html">Abreviações</a>).</dd>
+  <dt>title="Mais de 30 receitas…"</dt><dd>Num link, uma explicação extra sobre o destino.</dd>
+</dl>
+
+<div class="warning">
+<strong>Nunca esconda informação importante no title</strong>
+<p>A dica só aparece com o <strong>mouse</strong>. No celular (não existe "mouse parado em cima") e para quem navega pelo teclado, ela normalmente nunca aparece. Os leitores de tela também não leem o <code>title</code> de um jeito confiável. Use-o só para um extra; o que importa vai no próprio texto. E nunca use <code>title</code> no lugar do <code>alt</code> de uma imagem (aula <a href="imagens-alt.html">Texto Alternativo</a>).</p>
+</div>
+
+<hr>
+
+<h2>3. lang: em que idioma está este trecho</h2>
+<p>Você já põe <code>&lt;html lang="pt-BR"&gt;</code> em toda página: ele diz que a página inteira está em português do Brasil. O mesmo atributo pode marcar <strong>um trecho</strong> em outro idioma:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;No aniversário, todo mundo cantou &lt;span lang="en"&gt;Happy birthday to you&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;A sobremesa da noite foi um &lt;i lang="fr"&gt;crème brûlée&lt;/i&gt;.&lt;/p&gt;
+</pre>
+
+<p>Na tela, nada muda. A diferença aparece para quem <strong>usa</strong> o idioma:</p>
+<ul>
+  <li><strong>Leitores de tela</strong> trocam a pronúncia: leem "Happy birthday" com sotaque inglês, em vez de soletrar em português.</li>
+  <li><strong>Tradutores automáticos</strong> sabem de que língua traduzir cada trecho.</li>
+  <li>O <strong>corretor ortográfico</strong> do navegador (nos campos que o leitor digita) usa o dicionário certo.</li>
+  <li>Os <strong>buscadores</strong>, como o Google, entendem em que idioma a página está.</li>
+</ul>
+
+<dl class="anatomy">
+  <dt>lang="en"</dt><dd>O código do idioma: <code>en</code> = inglês (<em>English</em>).</dd>
+  <dt>lang="pt-BR"</dt><dd>Idioma + região, separados por <strong>hífen</strong>: português (<code>pt</code>) do Brasil (<code>BR</code>). Português de Portugal é <code>pt-PT</code>.</dd>
+  <dt>lang="fr"</dt><dd>Francês (<em>français</em>). Outros comuns: <code>es</code> (espanhol), <code>it</code> (italiano), <code>de</code> (alemão, <em>Deutsch</em>), <code>ja</code> (japonês).</dd>
+</dl>
+
+<p>Os códigos seguem uma lista oficial (a BCP 47, mantida pela IANA): duas ou três letras para o idioma e, se quiser, a região em maiúsculas. Escrever <code>pt_BR</code>, com sublinhado, como nos programas de computador, é o erro mais comum. O validador recusa:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p lang="pt_BR"&gt;Bolo de cenoura.&lt;/p&gt;
+&lt;p lang="ingles"&gt;Carrot cake.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.16: error: Bad value “pt_BR” for attribute “lang” on element “p”: The language subtag “pt_br” is not a valid language subtag.
+"file:/home/ana/site/index.html":9.1-9.17: error: Bad value “ingles” for attribute “lang” on element “p”: The language subtag “ingles” is not a valid IANA language part of a language tag.</pre>
+
+<dl class="anatomy">
+  <dt>Bad value “pt_BR” for attribute “lang”</dt><dd>"Valor ruim para o atributo <code>lang</code>".</dd>
+  <dt>The language subtag “pt_br” is not a valid language subtag</dt><dd>"O pedaço de idioma “pt_br” não é válido". O validador leu o <code>pt_br</code> inteiro como se fosse o nome de um idioma (e mostrou em minúsculas, porque maiúsculas não importam nos códigos). O conserto é o hífen: <code>pt-BR</code>.</dd>
+  <dt>“ingles” is not a valid IANA language part</dt><dd>"Não é uma parte de idioma válida da IANA". O código é <code>en</code>, e não o nome do idioma por extenso.</dd>
+</dl>
+
+<div class="tryhtml" data-goal="sel:span[lang|=en],texto:span[lang|=en]=Happy birthday">
+<p class="try-task"><strong>Missão:</strong> marque a música em inglês com o atributo <code>lang</code> e o código do inglês, para o leitor de tela pronunciar direito.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;A Ana aprendeu a cantar &lt;span&gt;Happy birthday to you&lt;/span&gt; no violão.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;A Ana aprendeu a cantar &lt;span lang="en"&gt;Happy birthday to you&lt;/span&gt; no violão.&lt;/p&gt;
+</pre>
+</div>
+
+<p>O resultado continua igual na tela: o <code>lang</code> não muda a aparência, e sim o modo como as máquinas entendem o trecho. (A meta aceita <code>en</code> e também <code>en-US</code> ou <code>en-GB</code>.)</p>
+
+<hr>
+
+<h2>4. dir: da direita para a esquerda</h2>
+<p>O português se lê da esquerda para a direita. O árabe, o hebraico e o persa, da <strong>direita para a esquerda</strong>. O <code>dir</code> (<em>direction</em>, "direção") avisa o navegador:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p dir="ltr"&gt;Olá, mundo!&lt;/p&gt;
+&lt;p dir="rtl"&gt;Olá, mundo!&lt;/p&gt;
+&lt;p dir="rtl" lang="he"&gt;שלום, עולם!&lt;/p&gt;
+&lt;p dir="auto"&gt;שלום, עולם!&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>dir="ltr"</dt><dd><em>Left to right</em>, "esquerda para a direita". É o normal da página.</dd>
+  <dt>dir="rtl"</dt><dd><em>Right to left</em>, "direita para a esquerda". O parágrafo encosta à <strong>direita</strong>. Veja a segunda linha: com texto em português, o <code>!</code> foi parar no começo, à esquerda. O navegador pôs a pontuação "no fim" de uma frase da direita para a esquerda, e o fim, nesse caso, é a esquerda.</dd>
+  <dt>dir="rtl" lang="he"</dt><dd>O uso certo: texto em hebraico (<code>he</code>), lido da direita para a esquerda. Agora a vírgula e o <code>!</code> ficam onde um leitor de hebraico espera.</dd>
+  <dt>dir="auto"</dt><dd>"Decida sozinho": o navegador olha a primeira letra "forte" do texto (aqui, uma letra hebraica) e escolhe a direção. Útil para textos que você não escreveu, como os comentários dos visitantes.</dd>
+</dl>
+
+<p>A segunda linha mostra que o <code>dir="rtl"</code> não é um "alinhar à direita": ele muda a lógica do texto. Para só alinhar, o certo é CSS (assunto do futuro Guia CSS). Uma página inteira em árabe usa <code>&lt;html lang="ar" dir="rtl"&gt;</code>.</p>
+
+<hr>
+
+<h2>5. translate="no": não traduza isto</h2>
+<p>Muita gente usa o tradutor do navegador para ler sites em outra língua. Ele traduz tudo, até o que não devia: o nome da loja da Ana, "Doces da Ana", viraria "Ana's Sweets" para um visitante em inglês. O <code>translate="no"</code> pede: "isto fica como está":</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Encomende na &lt;span translate="no"&gt;Doces da Ana&lt;/span&gt; pelo WhatsApp.&lt;/p&gt;
+&lt;p&gt;Para ver os arquivos, digite &lt;code translate="no"&gt;ls -l&lt;/code&gt; no terminal.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>translate="no"</dt><dd>Não traduzir: nomes de marcas e de pessoas, comandos, trechos de código. Os tradutores automáticos dos navegadores e o Google Tradutor respeitam esse pedido.</dd>
+  <dt>translate="yes"</dt><dd>Traduzir (o normal). Serve para liberar um trecho dentro de uma área marcada com <code>no</code>.</dd>
+</dl>
+
+<p>Os valores são só <code>yes</code> e <code>no</code>, em inglês. Escrever <code>translate="nao"</code> dá <code>error: Bad value “nao” for attribute “translate” on element “p”.</code> no validador.</p>
+
+<hr>
+
+<h2>6. hidden: esconder</h2>
+<p>O <code>hidden</code> ("escondido") tira o elemento da tela, como se ele não estivesse lá. Ele é um atributo <strong>booleano</strong> (de "verdadeiro ou falso"): basta escrever o nome, sem valor.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Bolo de cenoura: R$ 35&lt;/p&gt;
+&lt;p hidden&gt;Bolo de morango: R$ 40 (volta em dezembro)&lt;/p&gt;
+&lt;p&gt;Brigadeiro: R$ 2&lt;/p&gt;
+</pre>
+
+<p>O bolo de morango sumiu do resultado. Ele continua no código (e o JavaScript pode mostrá-lo de novo), mas o navegador não desenha o elemento, e os leitores de tela também o ignoram.</p>
+
+<h3>A armadilha: <code>hidden="false"</code> esconde!</h3>
+<p>Num atributo booleano, o que conta é ele <strong>existir</strong>. O valor não importa para o navegador. Por isso <code>hidden="false"</code> não quer dizer "não esconda": o elemento continua escondido. Veja:</p>
+
+<div class="tryhtml" data-goal="sel:#aviso[hidden],nsel:#promo[hidden]=0">
+<p class="try-task"><strong>Missão:</strong> a loja voltou das férias. Esconda o aviso <code>#aviso</code> e faça a promoção <code>#promo</code> aparecer. Repare que, no começo, ela está escondida, mesmo com <code>hidden="false"</code>.</p>
+<pre class="script" data-file="index.html">&lt;p id="aviso"&gt;Loja fechada para férias.&lt;/p&gt;
+&lt;p id="promo" hidden="false"&gt;Promoção: bolo de cenoura pela metade do preço!&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p id="aviso" hidden&gt;Loja fechada para férias.&lt;/p&gt;
+&lt;p id="promo"&gt;Promoção: bolo de cenoura pela metade do preço!&lt;/p&gt;
+</pre>
+</div>
+
+<p>Para mostrar, <strong>apague</strong> o atributo inteiro. O validador avisa da armadilha: com <code>&lt;p id="promo" hidden="false"&gt;</code>, ele mostra <code>error: Bad value “false” for attribute “hidden” on element “p”.</code> Os valores aceitos são três: nenhum (<code>hidden</code>), <code>hidden="hidden"</code> (o mesmo, escrito por extenso) e <code>hidden="until-found"</code>, logo abaixo.</p>
+
+<h3><code>hidden="until-found"</code>: escondido até alguém procurar</h3>
+<p>Com o valor <code>until-found</code> ("até ser achado"), o trecho fica escondido, mas a busca da página (<kbd>Ctrl</kbd> + <kbd>F</kbd>) encontra o texto dele. Quando encontra, o navegador tira o <code>hidden</code> e mostra o trecho. Experimente: procure "fermento" nesta página com <kbd>Ctrl</kbd> + <kbd>F</kbd>. (Se a busca não entrar no quadro do resultado, salve o código num arquivo <code>.html</code> e abra-o no navegador.)</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;p&gt;Ingredientes: cenoura, ovos, óleo, açúcar e farinha.&lt;/p&gt;
+&lt;p hidden="until-found"&gt;Dica: não esqueça o fermento, uma colher de sopa.&lt;/p&gt;
+</pre>
+
+<p>O Chrome e o Edge entendem o <code>until-found</code> desde 2022, e o Firefox passou a entender em 2025. Um navegador que ainda não o conhece trata o valor como um <code>hidden</code> comum: o texto fica escondido e a busca não o acha. Nada quebra.</p>
+
+<div class="note">
+<strong>hidden × CSS</strong>
+<p>O <code>hidden</code> funciona porque o navegador tem uma regra de estilo pronta para ele (<code>display: none</code>). Uma regra de CSS do seu site, como <code>p { display: block }</code>, pode passar por cima e fazer o elemento aparecer. Se um <code>hidden</code> "não funcionar", procure uma regra de <code>display</code> no CSS.</p>
+</div>
+
+<hr>
+
+<h2>7. inert: um pedaço da página "dormindo"</h2>
+<p>O <code>inert</code> ("inerte", parado) deixa o elemento <strong>visível, mas sem reação</strong>: não dá para clicar nos botões e links dele, o <kbd>Tab</kbd> pula tudo o que está dentro, e os leitores de tela ignoram aquele pedaço. É como uma vitrine com o vidro fechado: você vê, mas não pega.</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;button type="button"&gt;Este botão funciona&lt;/button&gt;&lt;/p&gt;
+
+&lt;div inert&gt;
+  &lt;p&gt;Encomendas de Natal (abrem em novembro):&lt;/p&gt;
+  &lt;p&gt;&lt;button type="button"&gt;Encomendar panetone&lt;/button&gt; &lt;a href="natal.html"&gt;Ver cardápio&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+</div>
+
+<p>Clique nos dois botões e no link, e use o <kbd>Tab</kbd>: só o primeiro botão reage. Repare que o navegador <strong>não</strong> deixa a área inerte com cara de desligada: a aparência é responsabilidade do seu CSS (por exemplo, deixá-la mais clara). Por isso, avise com texto, como "abrem em novembro". O <code>inert</code> também é booleano: <code>inert="false"</code> deixa inerte do mesmo jeito, e o validador recusa o valor. Todos os navegadores atuais entendem o <code>inert</code> desde 2023.</p>
+
+<hr>
+
+<h2>8. Os outros globais</h2>
+<p>A lista completa é maior. Vários têm aula própria; outros são raros:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>O que faz</th><th>Onde aprender</th></tr>
+<tr><td><code>style</code></td><td>CSS direto no elemento</td><td><a href="atributo-style.html">O Atributo style</a></td></tr>
+<tr><td><code>tabindex</code></td><td>Entra (ou não) na ordem do <kbd>Tab</kbd></td><td><a href="teclado.html">Teclado e Foco</a></td></tr>
+<tr><td><code>role</code>, <code>aria-*</code></td><td>Informações para leitores de tela</td><td><a href="aria.html">ARIA</a></td></tr>
+<tr><td><code>data-*</code></td><td>Dados seus, para o JavaScript</td><td><a href="data-atributos.html">Atributos data-*</a></td></tr>
+<tr><td><code>popover</code></td><td>Transforma o elemento numa janelinha que abre e fecha</td><td><a href="popover.html">popover</a></td></tr>
+<tr><td><code>contenteditable</code></td><td>Deixa o visitante editar o texto</td><td><a href="contenteditable.html">contenteditable</a></td></tr>
+<tr><td><code>draggable</code></td><td>Permite arrastar o elemento</td><td><a href="arrastar-soltar.html">Arrastar e Soltar</a></td></tr>
+<tr><td><code>is</code></td><td>Usa um elemento personalizado que estende um elemento comum</td><td><a href="web-components.html">Web Components</a></td></tr>
+<tr><td><code>spellcheck</code></td><td><code>"true"</code> ou <code>"false"</code>: liga ou desliga o corretor ortográfico num campo ou texto editável</td><td>(nesta aula)</td></tr>
+<tr><td><code>accesskey</code></td><td>Um atalho de teclado (uma letra) para o elemento</td><td>Evite: as combinações mudam de navegador para navegador e brigam com os atalhos dos leitores de tela.</td></tr>
+<tr><td><code>autofocus</code></td><td>O elemento recebe o foco quando a página abre</td><td><a href="atributos-input.html">placeholder, value, autocomplete…</a></td></tr>
+<tr><td><code>autocapitalize</code>, <code>autocorrect</code>, <code>enterkeyhint</code>, <code>inputmode</code>, <code>writingsuggestions</code></td><td>Como o teclado do celular e o corretor se comportam ao digitar</td><td><a href="atributos-input.html">placeholder, value, autocomplete…</a></td></tr>
+<tr><td><code>nonce</code></td><td>Uma senha de uso único para scripts e estilos permitidos</td><td><a href="seguranca.html">Segurança</a></td></tr>
+<tr><td><code>itemscope</code>, <code>itemprop</code>…</td><td>Microdados (dados estruturados escritos nas tags)</td><td><a href="dados-estruturados.html">Dados Estruturados</a></td></tr>
+<tr><td><code>onclick</code>, <code>oninput</code>… (os <code>on*</code>)</td><td>Rodam JavaScript quando algo acontece</td><td><a href="script.html">O Elemento script</a></td></tr>
+</table>
+</div>
+
+<p>Todos esses o validador W3C atual aceita em qualquer elemento. Cuidado com os que parecem booleanos, mas exigem um valor escrito: <code>spellcheck</code> e <code>draggable</code> aceitam só <code>true</code> ou <code>false</code>, e <code>spellcheck="no"</code> dá <code>Bad value “no” for attribute “spellcheck”</code>. Repare na diferença: <code>spellcheck="false"</code> é válido e <strong>desliga</strong>, enquanto <code>hidden="false"</code> é inválido e <strong>esconde</strong>. Cada atributo tem a sua regra.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: Duplicate ID “topo”.</code></strong>
+<p><strong>O que o navegador faz:</strong> mostra os dois elementos normalmente e não avisa nada. Mas o link <code>href="#topo"</code> e o <code>getElementById("topo")</code> do JavaScript sempre acham só o <strong>primeiro</strong>, e um <code>&lt;label for&gt;</code> pode ficar ligado ao campo errado.</p>
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1 id="topo"&gt;Receitas&lt;/h1&gt;
+&lt;p id="topo"&gt;Bolo&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":9.1-9.13: error: Duplicate ID “topo”.
+"file:/home/ana/site/index.html":8.1-8.14: info warning: The first occurrence of ID “topo” was here.</pre>
+<p>"ID “topo” repetida", e uma <code>info warning</code> (um aviso só informativo) mostrando onde está a primeira. <strong>Como consertar:</strong> dê nomes diferentes. Se a ideia era um grupo, use <code>class</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>An ID must not contain whitespace.</code></strong>
+<p>Com <code>&lt;p id="bolo de cenoura"&gt;Bolo de cenoura.&lt;/p&gt;</code> na linha 8 do mesmo esqueleto:</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.24: error: Bad value “bolo de cenoura” for attribute “id” on element “p”: An ID must not contain whitespace.</pre>
+<p>"Uma ID não pode conter espaço." Com <code>id=""</code>, a mensagem muda para <code>An ID must not be the empty string.</code> ("não pode ser vazia"). <strong>Como consertar:</strong> junte as palavras com hífen: <code>id="bolo-de-cenoura"</code>. Acentos e números são aceitos (<code>id="ç"</code>, <code>id="1receita"</code> passam no validador), mas nomes simples, sem acento, dão menos trabalho no CSS e no JavaScript.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Attribute “clase” not allowed on element “p” at this point.</code></strong>
+<p><strong>O que o navegador faz:</strong> guarda o atributo desconhecido e não faz nada com ele. O CSS da classe não se aplica, e você fica sem saber por quê. Com estas duas linhas no <code>&lt;body&gt;</code> (linhas 8 e 9 do mesmo esqueleto de página do exemplo anterior):</p>
+<pre class="file" data-file="index.html">&lt;p clase="destaque"&gt;Bolo de cenoura.&lt;/p&gt;
+&lt;p tooltip="Receita da vovó"&gt;Brigadeiro.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.20: error: Attribute “clase” not allowed on element “p” at this point.
+"file:/home/ana/site/index.html":9.1-9.29: error: Attribute “tooltip” not allowed on element “p” at this point.</pre>
+<p>A primeira linha é um erro de digitação (<code>clase</code>, em vez de <code>class</code>). A segunda é um atributo inventado: <code>tooltip</code> não existe; o nome certo da dica é <code>title</code>. Já <code>Class="destaque"</code>, com maiúscula, passa: no HTML, o nome do atributo não diferencia maiúsculas de minúsculas (mas o guia escreve tudo em minúsculas). Para guardar um dado seu num atributo, existe um jeito válido: <a href="data-atributos.html">data-*</a>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Bad value “false” for attribute “hidden”</code> (e o elemento sumiu)</strong>
+<p>Visto na seção 6: em atributos booleanos, <code>="false"</code> não desliga nada. O <code>hidden="false"</code> esconde; o <code>inert="false"</code> deixa inerte. <strong>Como consertar:</strong> apague o atributo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Bad value “direita” for attribute “dir”</code></strong>
+<p><strong>O que o navegador faz:</strong> ignora o valor, e o texto fica na direção de antes. Os valores aceitos são só <code>ltr</code>, <code>rtl</code> e <code>auto</code>. Com <code>&lt;p dir="direita"&gt;Olá, mundo!&lt;/p&gt;</code> na linha 8:</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.17: error: Bad value “direita” for attribute “dir” on element “p”.</pre>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>Valores</th><th>Para que serve</th></tr>
+<tr><td><code>id</code></td><td>um nome único, sem espaço</td><td>links <code>#</code>, <code>label for</code>, JavaScript</td></tr>
+<tr><td><code>class</code></td><td>um ou mais nomes, separados por espaço</td><td>grupos para o CSS e o JavaScript</td></tr>
+<tr><td><code>title</code></td><td>um texto</td><td>dica com o mouse (só um extra)</td></tr>
+<tr><td><code>lang</code></td><td><code>pt-BR</code>, <code>en</code>, <code>es</code>, <code>fr</code>…</td><td>idioma do trecho</td></tr>
+<tr><td><code>dir</code></td><td><code>ltr</code>, <code>rtl</code>, <code>auto</code></td><td>direção do texto</td></tr>
+<tr><td><code>translate</code></td><td><code>yes</code>, <code>no</code></td><td>pedir para o tradutor não traduzir</td></tr>
+<tr><td><code>hidden</code></td><td>(sem valor), <code>until-found</code></td><td>esconder</td></tr>
+<tr><td><code>inert</code></td><td>(sem valor)</td><td>visível, mas sem clique, foco nem leitor de tela</td></tr>
+<tr><td><code>spellcheck</code></td><td><code>true</code>, <code>false</code></td><td>corretor ortográfico</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O idioma</h3>
+<p>Complete para marcar a palavra em espanhol:</p>
+<div class="ex-code">&lt;span <input data-answer="lang" aria-label="atributo">="es"&gt;¡Hola!&lt;/span&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Português de Portugal</h3>
+<p>Complete o código do idioma de uma página escrita em português de Portugal:</p>
+<div class="ex-code">&lt;html lang="<input data-answer="pt-PT" aria-label="código do idioma">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Não traduzir</h3>
+<p>Complete para o tradutor do navegador não mexer no nome da loja:</p>
+<div class="ex-code">&lt;span translate="<input data-answer="no" aria-label="valor">"&gt;Doces da Ana&lt;/span&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. O que acontece com <code>&lt;p hidden="false"&gt;Oi&lt;/p&gt;</code>?</p>
+<label><input type="radio" name="q4"> O parágrafo aparece, porque o valor é <code>false</code></label>
+<label><input type="radio" name="q4"> O navegador mostra uma mensagem de erro na página</label>
+<label><input type="radio" name="q4"> O parágrafo fica escondido, e o validador acusa “Bad value”</label>
+<label><input type="radio" name="q4"> O parágrafo fica inerte</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Qual destes atributos <strong>não</strong> é global?</p>
+<label><input type="radio" name="q5"> <code>title</code></label>
+<label><input type="radio" name="q5"> <code>href</code></label>
+<label><input type="radio" name="q5"> <code>lang</code></label>
+<label><input type="radio" name="q5"> <code>hidden</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Por que não guardar uma informação importante só no <code>title</code>?</p>
+<label><input type="radio" name="q6"> Porque o validador proíbe textos longos no <code>title</code></label>
+<label><input type="radio" name="q6"> Porque o <code>title</code> só funciona no <code>&lt;abbr&gt;</code></label>
+<label><input type="radio" name="q6"> Porque o <code>title</code> fica escondido do Google</label>
+<label><input type="radio" name="q6"> Porque ele só aparece com o mouse: no celular e no teclado, quase ninguém o vê</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">7. Um trecho com <code>inert</code>…</p>
+<label><input type="radio" name="q7"> continua visível, mas não responde a cliques, <kbd>Tab</kbd> nem leitor de tela</label>
+<label><input type="radio" name="q7"> some da tela, como o <code>hidden</code></label>
+<label><input type="radio" name="q7"> fica cinza automaticamente</label>
+<label><input type="radio" name="q7"> só funciona dentro de formulários</label>
+</div>
+
+<h3>Missão final: o cartão da receita</h3>
+
+<div class="tryhtml" data-goal="sel:article#bolo.receita,attr:abbr[title]=gramas,sel:.frase[lang|=en],attr:.marca[translate]=no,sel:li.em-breve[hidden],nsrc:hidden=&quot;false&quot;">
+<p class="try-task"><strong>Missão:</strong> use os atributos globais no cartão da receita:</p>
+<ol>
+  <li>dê ao <code>&lt;article&gt;</code> a id <code>bolo</code> e a classe <code>receita</code>;</li>
+  <li>explique a abreviação <code>g</code> com <code>title="gramas"</code>;</li>
+  <li>marque a frase em inglês (<code>.frase</code>) com o idioma inglês;</li>
+  <li>peça para o tradutor não traduzir o nome da loja (<code>.marca</code>);</li>
+  <li>esconda o item que ainda não está pronto (<code>.em-breve</code>).</li>
+</ol>
+<pre class="script" data-file="index.html">&lt;article&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Uma receita da &lt;span class="marca"&gt;Doces da Ana&lt;/span&gt;.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+    &lt;li&gt;200 &lt;abbr&gt;g&lt;/abbr&gt; de açúcar&lt;/li&gt;
+    &lt;li class="em-breve"&gt;Versão sem glúten (em breve)&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;p&gt;O lema da vovó: &lt;span class="frase"&gt;less is more&lt;/span&gt;.&lt;/p&gt;
+&lt;/article&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;article id="bolo" class="receita"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Uma receita da &lt;span class="marca" translate="no"&gt;Doces da Ana&lt;/span&gt;.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+    &lt;li&gt;200 &lt;abbr title="gramas"&gt;g&lt;/abbr&gt; de açúcar&lt;/li&gt;
+    &lt;li class="em-breve" hidden&gt;Versão sem glúten (em breve)&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;p&gt;O lema da vovó: &lt;span class="frase" lang="en"&gt;less is more&lt;/span&gt;.&lt;/p&gt;
+&lt;/article&gt;
+</pre>
+</div>
+
+<p>No resultado, só o item "em breve" sumiu e a dica "gramas" aparece com o mouse sobre o "g". O resto mudou por dentro: para o CSS (<code>class</code>), os links (<code>id</code>), os leitores de tela (<code>lang</code>) e os tradutores (<code>translate</code>).</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Atributos <strong>globais</strong> valem em qualquer elemento; os outros são próprios de alguns (como <code>href</code> e <code>src</code>).</li>
+  <li><code>id</code>: único, sem espaço, não vazio. <code>class</code>: um ou mais grupos, separados por espaço.</li>
+  <li><code>title</code>: dica que aparece com o mouse. Só para extras: no celular e no teclado, quase ninguém vê.</li>
+  <li><code>lang</code>: idioma do trecho, com hífen (<code>pt-BR</code>, <code>en</code>). Muda a pronúncia do leitor de tela e ajuda tradutores e buscadores.</li>
+  <li><code>dir</code>: <code>ltr</code>, <code>rtl</code> ou <code>auto</code>, para a direção do texto (não é para alinhar).</li>
+  <li><code>translate="no"</code>: o tradutor automático não mexe no trecho.</li>
+  <li><code>hidden</code> esconde, e <code>hidden="until-found"</code> deixa a busca achar. Booleanos valem por existir: <code>hidden="false"</code> e <code>inert="false"</code> continuam ligados.</li>
+  <li><code>inert</code>: visível, mas sem clique, foco e leitor de tela.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
