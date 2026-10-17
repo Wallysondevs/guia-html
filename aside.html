@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML aside — o conteúdo à parte | Guia HTML</title>
+<meta name="description" content="O elemento aside em HTML para quem nunca fez um site: a barra lateral do site e o quadro de dica dentro de uma receita, o que é conteúdo relacionado mas à parte, por que aside não quer dizer do lado, quando ele é uma região para o leitor de tela, dar nome com aria-label e os avisos e erros reais do validador W3C (main dentro de aside, role complementary desnecessário), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">aside</span></h1>
+
+<p class="intro">Nem tudo numa página é o assunto principal. Ao lado da receita do bolo, a Ana quer mostrar as "Mais vistas" do site; no meio da receita, um quadrinho "Dica da Ana: não abra o forno". São conteúdos <strong>relacionados</strong>, mas <strong>à parte</strong>: dá para pular sem perder nada da receita. Para eles existe o <code>aside</code>. Nesta aula você vai usá-lo nos dois lugares em que ele aparece, descobrir por que "à parte" não quer dizer "do lado" e ver os erros e avisos reais do validador.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <code>aside</code> e o que é um conteúdo "relacionado, mas à parte".</li>
+  <li>O <code>aside</code> da página (a barra lateral) e o <code>aside</code> dentro de uma receita (o quadro de dica).</li>
+  <li>Por que o <code>aside</code> não vai para o lado sozinho, e o que não deve virar <code>aside</code>.</li>
+  <li>Quando o <code>aside</code> é uma região para o leitor de tela, e como dar um nome a ele.</li>
+  <li>Os erros e avisos reais: <code>main</code> dentro de <code>aside</code> e <code>role="complementary"</code> desnecessário.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/receitas</code>. Esta é a última aula da estrutura da página: ela usa o <code>header</code>, o <code>main</code> e o <code>article</code> das aulas anteriores.</p>
+
+<hr>
+
+<h2>A ideia: o quadro "Você sabia?" da revista</h2>
+<p>Abra uma revista. No meio de uma reportagem sobre cenouras, aparece um <strong>quadro colorido</strong>: "Você sabia? A cenoura laranja foi criada na Holanda." Ele tem a ver com a reportagem, mas você pode ler a reportagem inteira sem ele. E na lateral da página há uma coluna com "Leia também", que tem a ver com a revista toda.</p>
+
+<p>Os dois são <code>aside</code>. A palavra inglesa quer dizer "à parte", como no teatro, quando o ator fala com a plateia "à parte", fora da cena principal. O padrão do HTML define o <code>aside</code> como um conteúdo <strong>relacionado</strong> ao que está em volta dele, mas que pode ser considerado <strong>separado</strong> desse conteúdo.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na revista</th><th>Em HTML</th><th>No site da Ana</th></tr>
+<tr><td>A coluna "Leia também", na lateral</td><td><code>aside</code> da página (fora do <code>main</code>)</td><td>"Mais vistas", igual em todo o site</td></tr>
+<tr><td>O quadro "Você sabia?" no meio da reportagem</td><td><code>aside</code> dentro do <code>article</code></td><td>"Dica da Ana", sobre aquela receita</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O <code>aside</code> da página: a barra lateral</h2>
+<p>As "Mais vistas" não são do bolo; são do site. Por isso o <code>aside</code> fica <strong>fora</strong> do <code>main</code>, logo depois dele:</p>
+
+<pre class="file" data-file="bolo.html" data-resultado>&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;
+&lt;aside&gt;
+  &lt;h2&gt;Mais vistas&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="pao-de-queijo.html"&gt;Pão de queijo&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/aside&gt;
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;/main&gt;</dt><dd>O conteúdo principal terminou. O que vem depois não é o assunto da página.</dd>
+  <dt>&lt;aside&gt;</dt><dd>Começa o conteúdo à parte. É um bloco invisível, como os outros elementos de página.</dd>
+  <dt>&lt;h2&gt;Mais vistas&lt;/h2&gt;</dt><dd>O título do quadro. O <code>aside</code> não é obrigado a ter título (o validador não reclama), mas um título ajuda quem lê e quem ouve.</dd>
+  <dt>&lt;ul&gt; …</dt><dd>Os links para as outras receitas.</dd>
+  <dt>&lt;/aside&gt;</dt><dd>Termina o quadro. O <code>footer</code> vem depois, como sempre.</dd>
+</dl>
+
+<p>Repare no resultado: as "Mais vistas" apareceram <strong>embaixo</strong> da receita, e não do lado. O <code>aside</code> não muda nada na tela, como todos os elementos de página. Colocar o quadro numa coluna lateral é trabalho do CSS (seção 3).</p>
+
+<p>Para o leitor de tela, este <code>aside</code> vira a região <strong>complementar</strong> (papel <code>complementary</code>), e a pessoa pode pular para ela ou, principalmente, pular <strong>por cima</strong> dela (aula <a href="semantica.html">HTML Semântico</a>).</p>
+
+<div class="tryhtml" data-goal="sel:body &gt; main + aside,texto:aside &gt; h2=Mais vistas,sel:aside ul li a,nsel:main aside=0">
+<p class="try-task"><strong>Missão:</strong> a lista "Mais vistas" está dentro do <code>main</code>, como se fosse parte da receita. Tire o título e a lista de lá e coloque os dois num <code>&lt;aside&gt;</code>, logo <strong>depois</strong> do <code>&lt;/main&gt;</code>.</p>
+<pre class="script" data-file="bolo.html">&lt;main&gt;
+  &lt;article&gt;
+    &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+    &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;h2&gt;Mais vistas&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="pao-de-queijo.html"&gt;Pão de queijo&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/main&gt;
+</pre>
+<pre class="solucao" data-file="bolo.html">&lt;main&gt;
+  &lt;article&gt;
+    &lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+    &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;
+&lt;aside&gt;
+  &lt;h2&gt;Mais vistas&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="pao-de-queijo.html"&gt;Pão de queijo&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/aside&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O <code>aside</code> dentro de uma receita: o quadro de dica</h2>
+<p>A dica "não abra o forno" é <strong>sobre o bolo</strong>, então ela fica <strong>dentro</strong> do <code>article</code> do bolo. Ela continua à parte: a receita funciona sem ela.</p>
+
+<pre class="file" data-file="bolo.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+  &lt;aside style="border-left: 4px solid gray; padding-left: 8px;"&gt;
+    &lt;p&gt;&lt;strong&gt;Dica da Ana:&lt;/strong&gt; não abra o forno nos primeiros 30 minutos, senão o bolo murcha.&lt;/p&gt;
+  &lt;/aside&gt;
+  &lt;p&gt;Para a cobertura, derreta o chocolate com o creme de leite.&lt;/p&gt;
+&lt;/article&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;aside style="…"&gt;</dt><dd>O quadro de dica, dentro do <code>article</code>. O <code>style</code> desenha uma barra cinza à esquerda (<code>border-left</code>) e um espaço (<code>padding-left</code>), só para você enxergar o quadro (aula <a href="atributo-style.html">O Atributo style</a>).</dd>
+  <dt>&lt;strong&gt;Dica da Ana:&lt;/strong&gt;</dt><dd>O começo da dica, em negrito e com importância. Num quadro curto, um parágrafo assim pode fazer o papel de título.</dd>
+  <dt>&lt;/aside&gt;</dt><dd>Termina o quadro. A receita continua no parágrafo seguinte.</dd>
+</dl>
+
+<p>O teste é o mesmo da revista: leia a receita <strong>pulando</strong> o quadro. Ela continua completa? Então o quadro é um <code>aside</code>. Se, sem ele, faltasse um passo da receita, ele seria parte do conteúdo, e não um <code>aside</code>.</p>
+
+<div class="tryhtml" data-goal="sel:article aside p,texto:article aside=farinha,nsel:aside=1,nsel:article &gt; p=2">
+<p class="try-task"><strong>Missão:</strong> o pão de queijo tem uma dica no meio do texto: o parágrafo que começa com "Dica da Ana". Coloque esse parágrafo dentro de um <code>&lt;aside&gt;</code>, no mesmo lugar, dentro do <code>article</code>. Se quiser ver o quadro, use o <code>style</code> do exemplo acima.</p>
+<pre class="script" data-file="pao-de-queijo.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Misture o polvilho, os ovos e o queijo até dar liga.&lt;/p&gt;
+  &lt;p&gt;&lt;strong&gt;Dica da Ana:&lt;/strong&gt; se a massa grudar nas mãos, passe um pouco de óleo, e não farinha.&lt;/p&gt;
+  &lt;p&gt;Faça bolinhas e asse por 25 minutos.&lt;/p&gt;
+&lt;/article&gt;
+</pre>
+<pre class="solucao" data-file="pao-de-queijo.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Misture o polvilho, os ovos e o queijo até dar liga.&lt;/p&gt;
+  &lt;aside style="border-left: 4px solid gray; padding-left: 8px;"&gt;
+    &lt;p&gt;&lt;strong&gt;Dica da Ana:&lt;/strong&gt; se a massa grudar nas mãos, passe um pouco de óleo, e não farinha.&lt;/p&gt;
+  &lt;/aside&gt;
+  &lt;p&gt;Faça bolinhas e asse por 25 minutos.&lt;/p&gt;
+&lt;/article&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. "À parte" não quer dizer "do lado"</h2>
+<p>Muita gente acha que <code>aside</code> é "a coluna da direita". Não é. O <code>aside</code> diz <strong>o que</strong> o conteúdo é (relacionado, mas separado), e não <strong>onde</strong> ele aparece. Duas consequências:</p>
+
+<ul>
+  <li><strong>Um <code>aside</code> pode aparecer em qualquer lugar</strong>: embaixo da receita, no meio dela, numa coluna lateral, ou até escondido num botão "Ver dicas" no celular. Quem decide a posição é o CSS (o futuro Guia CSS mostra como fazer colunas).</li>
+  <li><strong>Nem tudo o que fica do lado é <code>aside</code></strong>. Se o design do site põe o <strong>menu</strong> numa coluna lateral, ele continua sendo um <code>nav</code> (aula <a href="nav.html">nav</a>). Se a foto da receita fica ao lado do texto, ela continua sendo parte da receita.</li>
+</ul>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Conteúdo</th><th>É <code>aside</code>?</th><th>Por quê</th></tr>
+<tr><td>"Mais vistas", "Leia também"</td><td><strong>Sim</strong></td><td>relacionado ao site, separado da receita</td></tr>
+<tr><td>"Dica da Ana" no meio da receita</td><td><strong>Sim</strong></td><td>relacionado à receita, mas dá para pular</td></tr>
+<tr><td>Um quadro "Sobre a autora" num post</td><td><strong>Sim</strong></td><td>informação extra, à parte do texto</td></tr>
+<tr><td>Um anúncio ou um quadro "Assine a newsletter"</td><td><strong>Sim</strong></td><td>conteúdo à parte do assunto da página</td></tr>
+<tr><td>O menu principal, mesmo na coluna lateral</td><td>Não</td><td>é navegação: <code>nav</code></td></tr>
+<tr><td>Um passo do modo de preparo, em destaque</td><td>Não</td><td>sem ele, a receita fica incompleta</td></tr>
+<tr><td>Um aviso importante, como "contém glúten"</td><td>Não</td><td>faz parte do conteúdo: um parágrafo com <code>strong</code></td></tr>
+<tr><td>Um comentário entre parênteses, no meio da frase</td><td>Não</td><td>é parte da frase; os parênteses bastam</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>4. O <code>aside</code> para o leitor de tela</h2>
+<p>Como o <code>header</code> e o <code>footer</code> (aula <a href="header-footer.html">header e footer</a>), o <code>aside</code> é uma região só em alguns lugares:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Onde está o <code>aside</code></th><th>Para o leitor de tela</th></tr>
+<tr><td>Direto no <code>body</code> ou no <code>main</code></td><td>Uma região "complementar" (papel <code>complementary</code>)</td></tr>
+<tr><td>Dentro de um <code>article</code>, <code>section</code>, <code>nav</code> ou outro <code>aside</code>, <strong>sem nome</strong></td><td>Não é uma região; é só um trecho à parte do texto</td></tr>
+<tr><td>Dentro de um <code>article</code> (ou <code>section</code>…), <strong>com nome</strong> (<code>aria-label</code> ou <code>aria-labelledby</code>)</td><td>Volta a ser uma região "complementar", com aquele nome</td></tr>
+</table>
+</div>
+
+<p>Isso evita que uma página com dez receitas, cada uma com a sua dica, fique com dez regiões iguais na lista do leitor de tela. Se você quer que um quadro seja encontrado como região, dê um nome a ele:</p>
+
+<pre class="file" data-file="bolo.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+  &lt;aside aria-labelledby="titulo-dica"&gt;
+    &lt;h3 id="titulo-dica"&gt;Dica da Ana&lt;/h3&gt;
+    &lt;p&gt;Não abra o forno nos primeiros 30 minutos.&lt;/p&gt;
+  &lt;/aside&gt;
+&lt;/article&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>aria-labelledby="titulo-dica"</dt><dd>"Rotulado por": o nome deste <code>aside</code> é o texto do elemento com <code>id="titulo-dica"</code>. Assim, o nome que o leitor de tela diz é o mesmo que os olhos leem.</dd>
+  <dt>&lt;h3 id="titulo-dica"&gt;</dt><dd>O título do quadro, com um <code>id</code> único (aula <a href="class-id.html">class e id</a>). É <code>h3</code> porque o quadro está dentro do artigo de <code>h2</code>.</dd>
+</dl>
+
+<p>Quando há mais de um <code>aside</code> que é região (por exemplo, "Mais vistas" e "Assine a newsletter", os dois fora do <code>main</code>), dê um nome a cada um, pelo mesmo motivo dos vários <code>nav</code> (aula <a href="nav.html">nav</a>).</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: The “main” element must not appear as a descendant of the “aside” element.</code></strong>
+<p>A Ana abriu o <code>aside</code> das "Mais vistas" e esqueceu de fechá-lo antes da receita. O <code>&lt;/aside&gt;</code> só apareceu no fim, e o <code>main</code> foi parar dentro dele:</p>
+<pre class="file" data-file="main-no-aside.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;aside&gt;
+  &lt;h2&gt;Mais vistas&lt;/h2&gt;
+  &lt;p&gt;Pão de queijo e brigadeiro.&lt;/p&gt;
+  &lt;main&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+  &lt;/main&gt;
+&lt;/aside&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu main-no-aside.html
+"file:/home/ana/receitas/main-no-aside.html":14.3-14.8: error: The “main” element must not appear as a descendant of the “aside” element.</pre>
+<p>"O elemento <code>main</code> não pode aparecer como descendente do elemento <code>aside</code>": o conteúdo principal não pode estar dentro de um conteúdo "à parte". Na tela, nada parece errado. Mas, para o leitor de tela, a receita inteira ficou dentro da região complementar, a que a pessoa costuma <strong>pular</strong>.</p>
+<p><strong>Como consertar:</strong> feche o <code>aside</code> antes do <code>main</code>, ou melhor, mova o <code>aside</code> para depois do <code>main</code>: primeiro o assunto da página, depois o que é à parte. É o que você vai fazer na missão final.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: The “complementary” role is unnecessary for element “aside”.</code></strong>
+<pre class="term" data-cwd="~/receitas">$ vnu aside-role.html
+"file:/home/ana/receitas/aside-role.html":9.1-9.28: info warning: The “complementary” role is unnecessary for element “aside”.</pre>
+<p>Na linha 9, a Ana escreveu <code>&lt;aside role="complementary"&gt;</code>. "O papel <code>complementary</code> é desnecessário para o elemento <code>aside</code>": ele já tem esse papel sozinho, quando fica no <code>body</code> ou no <code>main</code>.</p>
+<p><strong>Como consertar:</strong> apague o <code>role</code>. Para um <code>aside</code> dentro de um <code>article</code> virar região, o certo é dar um <strong>nome</strong> (seção 4), e não um <code>role</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Nenhum aviso: <code>aside</code> sem título e <code>aside</code> no lugar errado</strong>
+<p>Diferente da <code>section</code> (aula <a href="section-article.html">section e article</a>), um <code>aside</code> sem título passa no validador sem nenhuma mensagem:</p>
+<pre class="term" data-cwd="~/receitas">$ vnu --verbose aside-sem-titulo.html
+aside-sem-titulo.html             « nenhum aviso, mesmo sem h2 nem h3</pre>
+<p>Isso não quer dizer que o validador aprovou o <code>aside</code>. Ele também não reclama de um <code>aside</code> usado para um passo da receita ou para o menu: o significado é responsabilidade sua.</p>
+<p><strong>Como consertar:</strong> faça o teste da revista. Pulando o quadro, o conteúdo continua completo? Se sim, é <code>aside</code>; se não, é parte do conteúdo.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;aside&gt;…&lt;/aside&gt;</code></td><td>Conteúdo relacionado, mas à parte</td></tr>
+<tr><td><code>&lt;main&gt;…&lt;/main&gt;&lt;aside&gt;…&lt;/aside&gt;</code></td><td>Barra lateral do site (região <code>complementary</code>)</td></tr>
+<tr><td><code>&lt;article&gt;… &lt;aside&gt;…&lt;/aside&gt; …&lt;/article&gt;</code></td><td>Quadro de dica dentro de uma receita (não é região, se não tiver nome)</td></tr>
+<tr><td><code>&lt;aside aria-label="Dica da Ana"&gt;</code></td><td>Dá um nome ao quadro (e o torna região)</td></tr>
+<tr><td><code>&lt;aside aria-labelledby="id-do-titulo"&gt;</code></td><td>Usa o título visível como nome</td></tr>
+<tr><td>Não pode ter dentro</td><td><code>main</code></td></tr>
+<tr><td>Não é <code>aside</code></td><td>o menu (<code>nav</code>), um passo da receita, um aviso importante, parênteses</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O quadro à parte</h3>
+<p>Complete com o elemento do quadro de dica:</p>
+<div class="ex-code">&lt;<input data-answer="aside" aria-label="abertura">&gt;&lt;p&gt;Dica: use cenouras bem laranjas.&lt;/p&gt;&lt;/<input data-answer="aside" aria-label="fechamento">&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O nome do quadro</h3>
+<p>Complete o atributo que dá um nome invisível ao <code>aside</code>:</p>
+<div class="ex-code">&lt;aside <input data-answer="aria-label" aria-label="atributo">="Dica da Ana"&gt;</div>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">3. No design do site, o menu principal fica numa coluna à esquerda. Qual elemento o menu deve usar?</p>
+<label><input type="radio" name="q3"> <code>aside</code>, porque fica do lado</label>
+<label><input type="radio" name="q3"> <code>aside</code> dentro de <code>nav</code></label>
+<label><input type="radio" name="q3"> <code>section</code></label>
+<label><input type="radio" name="q3"> <code>nav</code>: a posição é do CSS, e o menu é navegação</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">4. O que aparece na tela quando você coloca as "Mais vistas" num <code>aside</code> depois do <code>main</code>, sem CSS?</p>
+<label><input type="radio" name="q4"> O quadro aparece embaixo da receita, como um bloco comum</label>
+<label><input type="radio" name="q4"> O quadro vai para a direita</label>
+<label><input type="radio" name="q4"> O quadro fica escondido</label>
+<label><input type="radio" name="q4"> O quadro ganha uma borda</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Uma receita tem um quadro com o passo "Unte a forma antes de despejar a massa". Ele deve ser um <code>aside</code>?</p>
+<label><input type="radio" name="q5"> Sim: todo quadro em destaque é <code>aside</code></label>
+<label><input type="radio" name="q5"> Não: sem esse passo, a receita fica incompleta</label>
+<label><input type="radio" name="q5"> Sim, desde que tenha <code>role="complementary"</code></label>
+<label><input type="radio" name="q5"> Não: <code>aside</code> só pode ficar fora do <code>main</code></label>
+</div>
+
+<h3>Missão final: o assunto primeiro, o resto à parte</h3>
+
+<div class="tryhtml" data-goal="nsel:aside main=0,sel:body &gt; main + aside &gt; h2,texto:body &gt; aside &gt; h2=Mais vistas,sel:main article aside[aria-label],attr:article aside[aria-label]=Dica da Ana,nsel:aside=2">
+<p class="try-task"><strong>Missão:</strong> esta é a página do cenário de erro, com o <code>main</code> preso dentro do <code>aside</code>. (1) Feche o <code>aside</code> das "Mais vistas" e mova-o para <strong>depois</strong> do <code>main</code>. (2) Dentro do <code>article</code>, coloque a dica num segundo <code>aside</code>, com <code>aria-label="Dica da Ana"</code>.</p>
+<pre class="script" data-file="bolo.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;aside&gt;
+  &lt;h2&gt;Mais vistas&lt;/h2&gt;
+  &lt;p&gt;Pão de queijo e brigadeiro.&lt;/p&gt;
+  &lt;main&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+      &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+      &lt;p&gt;Dica: não abra o forno nos primeiros 30 minutos.&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+&lt;/aside&gt;
+</pre>
+<pre class="solucao" data-file="bolo.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+    &lt;aside aria-label="Dica da Ana"&gt;
+      &lt;p&gt;Dica: não abra o forno nos primeiros 30 minutos.&lt;/p&gt;
+    &lt;/aside&gt;
+  &lt;/article&gt;
+&lt;/main&gt;
+&lt;aside&gt;
+  &lt;h2&gt;Mais vistas&lt;/h2&gt;
+  &lt;p&gt;Pão de queijo e brigadeiro.&lt;/p&gt;
+&lt;/aside&gt;
+</pre>
+</div>
+
+<p>Com isso, a estrutura da página está completa: <code>header</code> com <code>nav</code>, <code>main</code> com <code>article</code> e <code>section</code>, <code>aside</code> e <code>footer</code>. As próximas aulas do grupo Semântica tratam de elementos menores, que vão dentro do texto, começando por <a href="time.html">time e data</a>.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <code>aside</code> guarda um conteúdo <strong>relacionado</strong> ao que está em volta, mas <strong>à parte</strong>: dá para pular sem perder o assunto.</li>
+  <li>Fora do <code>main</code>, ele é a barra lateral do site ("Mais vistas"). Dentro de um <code>article</code>, é um quadro sobre aquele conteúdo ("Dica da Ana").</li>
+  <li>"À parte" não é "do lado": a posição é do CSS. O menu na lateral continua sendo <code>nav</code>; um passo da receita em destaque continua sendo parte da receita.</li>
+  <li>No <code>body</code> ou no <code>main</code>, o <code>aside</code> é a região <code>complementary</code>. Dentro de <code>article</code> ou <code>section</code>, só vira região com um nome (<code>aria-label</code> ou <code>aria-labelledby</code>).</li>
+  <li>Erros e avisos reais: <code>The “main” element must not appear as a descendant of the “aside” element.</code> e <code>The “complementary” role is unnecessary for element “aside”.</code> Um <code>aside</code> sem título não gera aviso.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
