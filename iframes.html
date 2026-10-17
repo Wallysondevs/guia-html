@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML iframe — uma página dentro da outra: title, sandbox e loading | Guia HTML</title>
+<meta name="description" content="O elemento iframe para quem nunca fez um site: mostrar uma página dentro da outra, o title para leitores de tela, largura e altura, loading=&quot;lazy&quot;, srcdoc, links que abrem dentro do quadro (name e target), o sandbox e suas permissões, por que alguns sites se recusam a aparecer num iframe (X-Frame-Options) e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">iframe</span></h1>
+
+<p class="intro">Às vezes você quer mostrar uma página <strong>dentro</strong> de outra: o cardápio da lojinha num quadro da página inicial, um mapa, um vídeo do YouTube, um formulário de outro site. O elemento que faz isso é o <code>&lt;iframe&gt;</code>. Ele abre uma "janela" na sua página, e dentro dela aparece outra página inteira, com o seu próprio HTML. Nesta aula você vai criar essa janela, dar um nome a ela para quem usa leitor de tela, fazê-la carregar só quando precisar e, o mais importante, colocar grades nela com o <code>sandbox</code>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Mostrar uma página dentro da outra com <code>&lt;iframe src&gt;</code>.</li>
+  <li>Por que todo iframe precisa de <code>title</code> (mesmo que o validador não reclame).</li>
+  <li>O tamanho com <code>width</code> e <code>height</code>, e o carregamento preguiçoso com <code>loading="lazy"</code>.</li>
+  <li>Escrever o conteúdo direto no atributo <code>srcdoc</code>.</li>
+  <li>Abrir links dentro do iframe com <code>name</code> e <code>target</code>.</li>
+  <li>Prender o conteúdo com <code>sandbox</code> e liberar só o necessário (<code>allow-scripts</code>, <code>allow-forms</code>…).</li>
+  <li>Por que alguns sites se recusam a aparecer num iframe.</li>
+  <li>Os erros comuns e as mensagens reais do validador.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula estão na pasta <code>~/site</code> da máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>) e foram conferidos com o validador W3C (<code>vnu</code>). Os exemplos com mais de um arquivo usam o editor do guia: cada aba é um arquivo, e o iframe abre a outra aba de verdade.</p>
+
+<hr>
+
+<h2>A ideia: uma janela para outro cômodo</h2>
+<p>Pense numa parede com uma janela de vidro. Através dela você vê o cômodo do lado: os móveis, as pessoas, tudo funcionando. Mas o cômodo do lado é <strong>outro</strong> cômodo, com as suas próprias coisas. O <code>&lt;iframe&gt;</code> é essa janela: a sua página é a parede, e o que aparece dentro é outra página, que tem o seu próprio <code>&lt;head&gt;</code>, o seu próprio título e o seu próprio CSS.</p>
+
+<p>O nome vem do inglês <em>inline frame</em>, "quadro em linha": um quadro que fica no meio do texto, como uma imagem.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na casa</th><th>No HTML</th></tr>
+<tr><td>O cômodo do lado</td><td>A página mostrada: <code>src="cardapio.html"</code></td></tr>
+<tr><td>A plaquinha na janela, dizendo o que é</td><td><code>title="Cardápio da lojinha"</code></td></tr>
+<tr><td>O tamanho da janela</td><td><code>width</code> e <code>height</code></td></tr>
+<tr><td>Uma grade na janela: dá para ver, mas não para entrar</td><td><code>sandbox</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O primeiro iframe</h2>
+<p>A Ana já tem a página <code>cardapio.html</code> e quer mostrá-la dentro da página inicial. No editor abaixo há duas abas: a página inicial (<code>index.html</code>) e o cardápio (<code>cardapio.html</code>). Veja o resultado e depois abra a aba do cardápio:</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> o cardápio aparece numa janela dentro da página inicial. Mude um preço na aba <code>cardapio.html</code> e veja a janela mudar. Depois troque o <code>width</code> e o <code>height</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;p&gt;Veja o que tem hoje:&lt;/p&gt;
+&lt;iframe src="cardapio.html" title="Cardápio da lojinha" width="400" height="220"&gt;&lt;/iframe&gt;
+&lt;p&gt;Encomendas pelo telefone.&lt;/p&gt;
+</pre>
+<pre class="script" data-file="cardapio.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Cardápio&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Cardápio de hoje&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;Bolo de cenoura: R$ 35&lt;/li&gt;
+  &lt;li&gt;Brigadeiro: R$ 3&lt;/li&gt;
+  &lt;li&gt;Bolo de pote: R$ 12&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<dl class="anatomy">
+  <dt>&lt;iframe</dt><dd>Abre o quadro. Ele sempre tem tag de fechamento, <code>&lt;/iframe&gt;</code>, e nada dentro.</dd>
+  <dt>src="cardapio.html"</dt><dd>A página que aparece dentro. Pode ser uma página sua (caminho relativo, como nos links) ou de outro site (endereço completo, <code>https://…</code>).</dd>
+  <dt>title="Cardápio da lojinha"</dt><dd>O <strong>nome</strong> do quadro, para quem usa leitor de tela. Veja a seção 2.</dd>
+  <dt>width="400"</dt><dd>A largura, em pixels, só o número. Sem ela, o quadro tem 300 pixels de largura.</dd>
+  <dt>height="220"</dt><dd>A altura, em pixels. Sem ela, 150. Se a página de dentro for maior que o quadro, aparece uma <strong>barra de rolagem</strong> dentro dele.</dd>
+</dl>
+
+<p>Repare em três coisas no resultado:</p>
+<ul>
+  <li>O quadro tem uma <strong>moldura</strong> fina (no Chrome, uma borda de 2 pixels). Para tirá-la, o jeito de hoje é CSS (<code>style="border: none"</code>), como você vai ver em <a href="#errado">Quando dá errado</a>.</li>
+  <li>O cardápio é uma página <strong>completa</strong>, com <code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;head&gt;</code> e <code>&lt;title&gt;</code>. O CSS da página de fora não entra no quadro, e o de dentro não sai.</li>
+  <li>O iframe fica <strong>em linha</strong>, como uma imagem: o texto pode continuar ao lado dele, se couber.</li>
+</ul>
+
+<hr>
+
+<h2>2. O <code>title</code>: o nome do quadro</h2>
+<p>Quem enxerga a tela entende o que tem no quadro olhando para ele. Quem usa um <strong>leitor de tela</strong> (o programa que lê a página em voz alta) só fica sabendo que "há um quadro". O <code>title</code> dá o nome: o leitor anuncia algo como "Cardápio da lojinha, quadro". Sem ele, a pessoa precisa entrar no quadro para descobrir o que é, ou ouve só o endereço do arquivo.</p>
+
+<p>O curioso: o validador <strong>não</strong> reclama de um iframe sem <code>title</code>, nem de um <code>title=""</code> vazio:</p>
+
+<pre class="file" data-file="i-semtitle.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;iframe src="cardapio.html" width="400" height="300"&gt;&lt;/iframe&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose i-semtitle.html
+i-semtitle.html                « nenhum erro: o validador não exige title no iframe</pre>
+
+<p>Mas as regras de acessibilidade, sim: todo quadro precisa de um nome que diga o que tem dentro (aula <a href="acessibilidade.html">Acessibilidade</a>). Ferramentas de acessibilidade, como o Lighthouse do Chrome, apontam o iframe sem <code>title</code>. Regra do guia: <strong>todo iframe tem <code>title</code></strong>, curto e descritivo: "Mapa da lojinha", "Vídeo: bolo de cenoura", e não "iframe" ou "quadro 1".</p>
+
+<hr>
+
+<h2>3. Tamanho e carregamento: <code>width</code>, <code>height</code> e <code>loading</code></h2>
+
+<h3>O tamanho</h3>
+<p>Como no vídeo, <code>width</code> e <code>height</code> são números de pixels sem unidade, e reservam o espaço antes de a página de dentro carregar. O navegador <strong>não</strong> ajusta o quadro ao tamanho do conteúdo: se o cardápio crescer, o quadro continua do mesmo tamanho e ganha uma barra de rolagem. Para o quadro ocupar a largura toda e encolher no celular, use CSS: <code>style="width: 100%"</code> (o atributo <code>width="100%"</code> não é válido; veja <a href="#errado">Quando dá errado</a>).</p>
+
+<h3><code>loading="lazy"</code>: só carregar quando chegar perto</h3>
+<p>Cada iframe é uma página inteira para baixar: HTML, CSS, imagens, scripts. Um mapa ou um vídeo no fim de uma página longa deixa o começo dela mais lento, mesmo que a pessoa nunca role até lá. O <code>loading</code> resolve isso:</p>
+
+<pre class="file" data-file="index.html">&lt;iframe src="mapa.html" title="Mapa da lojinha" width="400" height="300"
+        loading="lazy"&gt;&lt;/iframe&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Valor</th><th>O que o navegador faz</th></tr>
+<tr><td><code>loading="eager"</code></td><td>"Ansioso": carrega já, junto com a página. É o padrão, quando você não escreve nada.</td></tr>
+<tr><td><code>loading="lazy"</code></td><td>"Preguiçoso": só carrega quando a pessoa rola a página e o quadro chega <strong>perto</strong> da tela.</td></tr>
+</table>
+</div>
+
+<p>Use <code>lazy</code> nos iframes que ficam mais para baixo na página. No primeiro iframe do topo, deixe sem: ele vai aparecer logo de cara. O mesmo atributo funciona em imagens (aula <a href="lazy-loading.html">Carregamento Preguiçoso</a>).</p>
+
+<hr>
+
+<h2>4. O conteúdo no próprio atributo: <code>srcdoc</code></h2>
+<p>Em vez de apontar para um arquivo com <code>src</code>, você pode escrever o HTML de dentro direto no atributo <code>srcdoc</code> (<em>source document</em>, "documento-fonte"):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;iframe srcdoc="&lt;p&gt;Olá, eu moro &lt;strong&gt;dentro&lt;/strong&gt; do quadro!&lt;/p&gt;"
+        title="Exemplo de srcdoc" width="300" height="80"&gt;&lt;/iframe&gt;
+</pre>
+
+<ul>
+  <li>O <code>srcdoc</code> vence o <code>src</code>: se o iframe tiver os dois, o navegador mostra o <code>srcdoc</code>.</li>
+  <li>As aspas de dentro do HTML precisam virar <code>&amp;quot;</code> (ou use aspas simples no atributo de dentro), senão elas fecham o atributo antes da hora.</li>
+  <li>O validador <strong>não</strong> confere o HTML que está dentro do <code>srcdoc</code>: <code>srcdoc="&lt;p&gt;Olá&lt;/b&gt;"</code> passa sem nenhuma mensagem.</li>
+</ul>
+<p>O <code>srcdoc</code> é útil para pedaços pequenos, como uma prévia. Para uma página de verdade, prefira um arquivo e o <code>src</code>.</p>
+
+<hr>
+
+<h2>5. Links que abrem dentro do quadro: <code>name</code> e <code>target</code></h2>
+<p>Normalmente, um link troca a página inteira. Com um iframe que tem <code>name</code>, um link com <code>target</code> igual a esse nome abre <strong>dentro do quadro</strong>, e o resto da página fica parado. O <code>target</code> é o mesmo da aula <a href="links-target.html">Nova Aba</a>; lá, o valor era <code>_blank</code>, e aqui é o nome do quadro:</p>
+
+<div class="tryhtml" data-goal="attr:a[href='sobre.html'][target]=quadro">
+<p class="try-task"><strong>Missão:</strong> o link "Cardápio" já abre dentro do quadro. Faça o link "Sobre a Ana" abrir no quadro também, em vez de trocar a página inteira. Depois clique nos dois links, no resultado.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;p&gt;
+  &lt;a href="cardapio.html" target="quadro"&gt;Cardápio&lt;/a&gt; |
+  &lt;a href="sobre.html"&gt;Sobre a Ana&lt;/a&gt;
+&lt;/p&gt;
+&lt;iframe src="cardapio.html" name="quadro" title="Conteúdo escolhido no menu" width="400" height="200"&gt;&lt;/iframe&gt;
+</pre>
+<pre class="script" data-file="cardapio.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Cardápio&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Cardápio de hoje&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura, brigadeiro e bolo de pote.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Sobre a Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;A Ana faz doces desde os 12 anos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;p&gt;
+  &lt;a href="cardapio.html" target="quadro"&gt;Cardápio&lt;/a&gt; |
+  &lt;a href="sobre.html" target="quadro"&gt;Sobre a Ana&lt;/a&gt;
+&lt;/p&gt;
+&lt;iframe src="cardapio.html" name="quadro" title="Conteúdo escolhido no menu" width="400" height="200"&gt;&lt;/iframe&gt;
+</pre>
+</div>
+
+<div class="tip">
+<strong>Sites inteiros feitos de quadros? Não.</strong>
+<p>Nos anos 1990, era comum montar o site inteiro em quadros: o menu num, o conteúdo noutro. Isso trazia problemas: o endereço na barra do navegador não mudava (ninguém conseguia mandar o link de uma página), o botão Voltar confundia e os buscadores se perdiam. O elemento daquela época, o <code>&lt;frameset&gt;</code>, nem existe mais no HTML. Hoje, cada página tem o seu próprio menu (aula <a href="nav.html">nav</a>), e o iframe fica para conteúdo embutido: um mapa, um vídeo, uma prévia.</p>
+</div>
+
+<hr>
+
+<h2>6. A grade na janela: <code>sandbox</code></h2>
+<p>Um iframe de outro site é um pedaço de página que <strong>você não controla</strong>. Ele pode ter scripts, formulários, janelas que abrem sozinhas e até tentar trocar a sua página inteira por outra. O atributo <code>sandbox</code> ("caixa de areia", o cercadinho onde a criança brinca sem sair) prende o conteúdo do quadro. Escrito sozinho, ele bloqueia <strong>quase tudo</strong>:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Com <code>sandbox</code> (vazio), o quadro não pode…</th><th>Para liberar, acrescente</th></tr>
+<tr><td>rodar JavaScript</td><td><code>allow-scripts</code></td></tr>
+<tr><td>enviar formulários</td><td><code>allow-forms</code></td></tr>
+<tr><td>abrir janelas e abas novas (inclusive links com <code>target="_blank"</code>)</td><td><code>allow-popups</code></td></tr>
+<tr><td>trocar a página de fora (a sua) por outra</td><td><code>allow-top-navigation</code></td></tr>
+<tr><td>abrir o <code>alert()</code> e outras caixas de diálogo</td><td><code>allow-modals</code></td></tr>
+<tr><td>ser tratado como "do mesmo site", com acesso aos seus dados (cookies, armazenamento)</td><td><code>allow-same-origin</code></td></tr>
+</table>
+</div>
+
+<p>Os valores vão separados por espaço: <code>sandbox="allow-scripts allow-forms"</code>. A regra é a do <strong>menor privilégio</strong>: comece com <code>sandbox</code> vazio e libere só o que o conteúdo precisa para funcionar.</p>
+
+<p>No editor abaixo, a Ana pôs um joguinho dentro de um quadro com <code>sandbox</code>. O botão do jogo usa JavaScript (um <code>onclick</code>):</p>
+
+<div class="tryhtml" data-goal="attr:iframe[sandbox]=allow-scripts">
+<p class="try-task"><strong>Missão:</strong> clique no botão do jogo, no resultado: nada acontece, porque o <code>sandbox</code> bloqueou o JavaScript. Libere <strong>só</strong> os scripts no <code>sandbox</code> e clique de novo.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Joguinho da lojinha&lt;/h1&gt;
+&lt;iframe src="jogo.html" title="Jogo: adivinhe o doce" sandbox width="400" height="150"&gt;&lt;/iframe&gt;
+</pre>
+<pre class="script" data-file="jogo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Jogo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p id="dica"&gt;É redondo, de chocolate e tem granulado.&lt;/p&gt;
+&lt;button type="button" onclick="document.getElementById('dica').textContent = 'É o brigadeiro!'"&gt;Ver a resposta&lt;/button&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Joguinho da lojinha&lt;/h1&gt;
+&lt;iframe src="jogo.html" title="Jogo: adivinhe o doce" sandbox="allow-scripts" width="400" height="150"&gt;&lt;/iframe&gt;
+</pre>
+</div>
+
+<div class="warning">
+<strong>Nunca junte <code>allow-scripts</code> com <code>allow-same-origin</code> numa página do seu site</strong>
+<p>Com os dois juntos, um quadro que mostra uma página do <strong>mesmo</strong> site pode usar JavaScript para mexer na página de fora, inclusive para apagar o próprio <code>sandbox</code>. É como dar ao preso a chave da cela. Num teste no Chrome, uma página assim dentro do quadro trocou o título da página de fora sem nenhuma dificuldade. O validador avisa:</p>
+<pre class="term" data-cwd="~/site">$ vnu i-sandbox-ruim.html
+"file:/home/ana/site/i-sandbox-ruim.html":8.1-8.90: info warning: Potentially bad value “allow-scripts allow-same-origin” for attribute “sandbox” on element “iframe”: Setting both “allow-scripts” and “allow-same-origin” is not recommended, because it effectively enables an embedded page to break out of all sandboxing.</pre>
+<p>"Valor possivelmente ruim: usar os dois juntos não é recomendado, porque na prática permite que a página embutida escape de toda a caixa de areia". É um <code>info warning</code> (aviso informativo), e não um erro, porque com páginas de <strong>outro</strong> site a combinação é segura e às vezes necessária, como em players de vídeo.</p>
+</div>
+
+<p>Mais sobre segurança em páginas, como o <code>rel="noopener"</code> e a política de conteúdo (CSP), está na aula <a href="seguranca.html">Segurança</a>.</p>
+
+<hr>
+
+<h2>7. Sites que não aceitam ser mostrados num iframe</h2>
+<p>A Ana tentou mostrar a página inicial do Google num quadro. Apareceu um quadro cinza, com um ícone e uma mensagem dizendo que o site recusou a conexão. O HTML dela estava certo: quem recusou foi o <strong>Google</strong>. Todo servidor, quando entrega uma página, manda junto uns "bilhetes" chamados <strong>cabeçalhos</strong>. Um deles diz se a página aceita ser mostrada dentro de outra. O <code>curl -sI</code> mostra esses cabeçalhos (o <code>grep</code> filtra só as linhas que interessam):</p>
+
+<pre class="term" data-cwd="~/site">$ curl -sI https://www.google.com/ | grep -i x-frame-options
+x-frame-options: SAMEORIGIN
+$ curl -sI https://www.openstreetmap.org/ | grep -i x-frame-options
+x-frame-options: SAMEORIGIN</pre>
+
+<dl class="anatomy">
+  <dt>x-frame-options</dt><dd>"Opções de quadro": o cabeçalho que diz quem pode mostrar esta página num iframe.</dd>
+  <dt>SAMEORIGIN</dt><dd>"Mesma origem": só páginas do <strong>próprio</strong> site podem. Outro valor comum é <code>DENY</code> ("negar"): ninguém pode. Um cabeçalho mais novo, o <code>Content-Security-Policy</code> com <code>frame-ancestors</code>, faz o mesmo papel.</dd>
+</dl>
+
+<p>Bancos, redes sociais e buscadores fazem isso para se proteger de golpes: um site falso poderia mostrar o banco de verdade num quadro invisível e enganar a pessoa para clicar onde não queria. Não há nada no seu HTML que contorne isso. Quando o site <strong>quer</strong> ser mostrado em outros sites, ele oferece um endereço especial para isso, o <strong>código de incorporar</strong>, assunto da próxima aula: <a href="incorporar.html">Incorporar Vídeos e Mapas</a>.</p>
+
+<hr>
+
+<h2>Formas diferentes: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th></tr>
+<tr><td>Mandar a pessoa para outra página</td><td>Um link, <code>&lt;a href&gt;</code> (aula <a href="links.html">Links</a>)</td></tr>
+<tr><td>Mostrar um mapa, um vídeo ou um formulário de outro serviço</td><td><code>&lt;iframe&gt;</code> com o código de incorporar do serviço (<a href="incorporar.html">Incorporar</a>)</td></tr>
+<tr><td>Mostrar conteúdo de terceiros que pode ter scripts</td><td><code>&lt;iframe sandbox="…"&gt;</code> liberando só o necessário</td></tr>
+<tr><td>Repetir o menu em todas as páginas do seu site</td><td><strong>Não</strong> use iframe: copie o <code>&lt;nav&gt;</code> em cada página (ou use uma ferramenta que monte o site)</td></tr>
+<tr><td>Mostrar um vídeo seu</td><td><code>&lt;video&gt;</code> (aula <a href="video.html">Vídeo</a>), sem iframe</td></tr>
+<tr><td>Uma prévia pequena, escrita na hora</td><td><code>&lt;iframe srcdoc="…"&gt;</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos usam o esqueleto de sempre: as linhas 1 a 7 vão do <code>&lt;!DOCTYPE html&gt;</code> ao <code>&lt;body&gt;</code>, e o iframe está na <strong>linha 8</strong>, como no <code>i-semtitle.html</code> da seção 2.</p>
+
+<div class="cenario">
+<strong><code>&lt;iframe … /&gt;</code>: o resto da página vira texto escondido</strong>
+<pre class="file" data-file="i-fecha.html">&lt;iframe src="cardapio.html" title="Cardápio da lojinha" /&gt;
+&lt;p&gt;Peça pelo WhatsApp.&lt;/p&gt;
+</pre>
+<p>Com o <code>&lt;audio /&gt;</code>, o resto da página virava conteúdo do áudio. Com o iframe é pior: o navegador lê tudo o que vem depois como <strong>texto puro</strong> até achar um <code>&lt;/iframe&gt;</code>. Como ele não existe, o parágrafo, o <code>&lt;/body&gt;</code> e o <code>&lt;/html&gt;</code> viram letras escondidas dentro do quadro. Num teste no Chrome, até um <code>&lt;script&gt;</code> que vinha depois deixou de rodar. O validador reclama de cada pedaço de texto:</p>
+<pre class="term" data-cwd="~/site">$ vnu i-fecha.html
+"file:/home/ana/site/i-fecha.html":8.1-8.58: error: Self-closing syntax (“/&gt;”) used on a non-void HTML element. Ignoring the slash and treating as a start tag.
+"file:/home/ana/site/i-fecha.html":9.1-9.2: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-fecha.html":9.3-9.22: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-fecha.html":9.23-9.25: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-fecha.html":9.26-9.27: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-fecha.html":10.1-10.3: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-fecha.html":10.4-10.8: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-fecha.html":11.1-11.3: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-fecha.html":11.4-11.7: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-fecha.html":11.8-11.8: error: End of file seen when expecting text or an end tag.
+"file:/home/ana/site/i-fecha.html":8.1-8.58: error: Unclosed element “iframe”.</pre>
+<p>Onze erros por causa de uma barra. <em>Text not allowed in element “iframe”</em> = "texto não permitido dentro do <code>iframe</code>": cada pedaço do resto do arquivo (9.1-9.2 é o <code>&lt;p</code>, 9.3-9.22 é o texto, e assim por diante). <em>End of file seen when expecting text or an end tag</em> = "o arquivo acabou quando eu esperava texto ou uma tag de fechamento". <strong>Como consertar:</strong> <code>&lt;iframe …&gt;&lt;/iframe&gt;</code>. Quando o validador mostra uma avalanche de erros, conserte o <strong>primeiro</strong> e valide de novo: os outros costumam sumir juntos.</p>
+</div>
+
+<div class="cenario">
+<strong>Texto reserva dentro do iframe</strong>
+<p>No <code>&lt;audio&gt;</code> e no <code>&lt;video&gt;</code>, o que vai dentro é texto reserva. No iframe, <strong>não</strong>: antigamente era assim, mas hoje o iframe tem de ser vazio.</p>
+<pre class="file" data-file="i-conteudo.html">&lt;iframe src="cardapio.html" title="Cardápio da lojinha"&gt;
+  &lt;p&gt;Seu navegador não mostra iframes. &lt;a href="cardapio.html"&gt;Abra o cardápio&lt;/a&gt;.&lt;/p&gt;
+&lt;/iframe&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu i-conteudo.html
+"file:/home/ana/site/i-conteudo.html":9.3-9.4: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-conteudo.html":9.5-9.39: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-conteudo.html":9.40-9.41: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-conteudo.html":9.42-9.78: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-conteudo.html":9.79-9.81: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-conteudo.html":9.82-9.83: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-conteudo.html":9.84-9.86: error: Text not allowed in element “iframe” in this context.
+"file:/home/ana/site/i-conteudo.html":9.87-9.88: error: Text not allowed in element “iframe” in this context.</pre>
+<p><strong>Como consertar:</strong> deixe o iframe vazio. Se quiser um caminho para quem não consegue ver o quadro, ponha um link <strong>fora</strong> dele: <code>&lt;p&gt;&lt;a href="cardapio.html"&gt;Abrir o cardápio numa página separada&lt;/a&gt;&lt;/p&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>frameborder="0"</code> e <code>scrolling="no"</code>: atributos antigos</strong>
+<p>Muito código copiado da internet ainda tem esses atributos, que tiravam a moldura e a barra de rolagem:</p>
+<pre class="term" data-cwd="~/site">$ vnu i-frameborder.html
+"file:/home/ana/site/i-frameborder.html":8.1-8.87: info warning: The “frameborder” attribute on the “iframe” element is obsolete. Use CSS instead.
+"file:/home/ana/site/i-frameborder.html":8.1-8.87: info warning: The “scrolling” attribute on the “iframe” element is obsolete. Use CSS instead.</pre>
+<p>"O atributo <code>frameborder</code> no elemento <code>iframe</code> é obsoleto. Use CSS". São avisos informativos, e os navegadores ainda os obedecem, mas eles não fazem mais parte do HTML. O mesmo vale para <code>align</code>, <code>marginwidth</code> e <code>marginheight</code>. <strong>Como consertar:</strong> para tirar a moldura, <code>style="border: none"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Valores que não existem: <code>width="100%"</code>, <code>loading</code> e <code>sandbox</code></strong>
+<pre class="term" data-cwd="~/site">$ vnu i-pct.html
+"file:/home/ana/site/i-pct.html":8.1-8.82: error: Bad value “100%” for attribute “width” on element “iframe”: Expected a digit but saw “%” instead.
+$ vnu i-loading.html
+"file:/home/ana/site/i-loading.html":8.1-8.77: error: Bad value “preguicoso” for attribute “loading” on element “iframe”.
+$ vnu i-sandbox-token.html
+"file:/home/ana/site/i-sandbox-token.html":8.1-8.75: error: Bad value “allow-javascript” for attribute “sandbox” on element “iframe”: The string “allow-javascript” is not a valid keyword.</pre>
+<ul>
+  <li><code>width</code> só aceita pixels; para porcentagem, use CSS (<code>style="width: 100%"</code>).</li>
+  <li><code>loading</code> só aceita <code>lazy</code> e <code>eager</code>, em inglês.</li>
+  <li>O <code>sandbox</code> só aceita as palavras da tabela da seção 6. <em>The string “allow-javascript” is not a valid keyword</em> = "não é uma palavra-chave válida". O pior: o navegador ignora a palavra desconhecida, e o quadro continua <strong>sem</strong> scripts, sem aviso nenhum. O certo é <code>allow-scripts</code>.</li>
+</ul>
+</div>
+
+<div class="cenario">
+<strong>O quadro aparece vazio ou com uma mensagem de recusa</strong>
+<p>O validador não abre o endereço do <code>src</code>, então ele não sabe se a página existe, nem se ela aceita ser mostrada num quadro. Se o quadro aparecer vazio, com a página de erro 404 ou com uma mensagem de que o site recusou a conexão:</p>
+<ol class="passo">
+  <li>Abra o endereço do <code>src</code> sozinho, numa aba nova. Se não abrir, o caminho está errado (aula <a href="caminhos.html">Caminhos</a>).</li>
+  <li>Se abrir sozinho, mas não no quadro, o site não aceita iframes (seção 7). Procure o "código de incorporar" do serviço, ou use um link.</li>
+  <li>Página com <code>http://</code> (sem o "s") dentro de um site com <code>https://</code> também é bloqueada: o navegador não mistura conexão segura com insegura. Use o endereço com <code>https://</code>.</li>
+</ol>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo do <code>&lt;iframe&gt;</code></th><th>O que faz</th></tr>
+<tr><td><code>src</code></td><td>O endereço da página de dentro</td></tr>
+<tr><td><code>srcdoc</code></td><td>O HTML de dentro, escrito no atributo (vence o <code>src</code>)</td></tr>
+<tr><td><code>title</code></td><td>O nome do quadro para leitores de tela (use sempre)</td></tr>
+<tr><td><code>width</code> / <code>height</code></td><td>Tamanho em pixels (padrão: 300 × 150)</td></tr>
+<tr><td><code>loading="lazy"</code></td><td>Só carrega quando chega perto da tela</td></tr>
+<tr><td><code>name</code></td><td>Nome do quadro, para links com <code>target</code></td></tr>
+<tr><td><code>sandbox</code></td><td>Bloqueia scripts, formulários, janelas novas…</td></tr>
+<tr><td><code>sandbox="allow-…"</code></td><td>Libera só o que estiver na lista (<code>allow-scripts</code>, <code>allow-forms</code>, <code>allow-popups</code>, <code>allow-same-origin</code>…)</td></tr>
+<tr><td><code>allow</code></td><td>Libera recursos do aparelho e do navegador para o quadro, como a tela cheia (<code>allow="fullscreen"</code>); aparece nos códigos de incorporar</td></tr>
+<tr><td><code>referrerpolicy</code></td><td>Quanto do endereço da sua página o site de dentro fica sabendo; também aparece nos códigos de incorporar</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O nome do quadro</h3>
+<p>Complete o atributo que dá nome ao quadro para quem usa leitor de tela:</p>
+<div class="ex-code">&lt;iframe src="mapa.html" <input data-answer="title" aria-label="atributo">="Mapa da lojinha"&gt;&lt;/iframe&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Carregar depois</h3>
+<p>Complete para o quadro só carregar quando chegar perto da tela:</p>
+<div class="ex-code">&lt;iframe src="mapa.html" title="Mapa da lojinha" loading="<input data-answer="lazy" aria-label="valor">"&gt;&lt;/iframe&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Liberar os formulários</h3>
+<p>Complete o <code>sandbox</code> para liberar <strong>só</strong> o envio de formulários:</p>
+<div class="ex-code">&lt;iframe src="pedido.html" title="Formulário de pedido" sandbox="<input data-answer="allow-forms" aria-label="permissão">"&gt;&lt;/iframe&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. A Ana pôs <code>&lt;iframe src="https://www.google.com/" title="Google"&gt;&lt;/iframe&gt;</code> e o quadro mostra uma recusa. Por quê?</p>
+<label><input type="radio" name="q4"> Faltou o <code>sandbox</code></label>
+<label><input type="radio" name="q4"> O Google manda o cabeçalho <code>x-frame-options: SAMEORIGIN</code>: ele não aceita aparecer em quadros de outros sites</label>
+<label><input type="radio" name="q4"> O <code>title</code> está errado</label>
+<label><input type="radio" name="q4"> Faltou <code>width</code> e <code>height</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. O que o <code>sandbox</code> vazio (escrito sem valor) faz?</p>
+<label><input type="radio" name="q5"> Nada: precisa de um valor para funcionar</label>
+<label><input type="radio" name="q5"> Libera tudo</label>
+<label><input type="radio" name="q5"> Bloqueia quase tudo: scripts, formulários, janelas novas…</label>
+<label><input type="radio" name="q5"> Esconde o quadro</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Um iframe sem <code>title</code> passa no validador?</p>
+<label><input type="radio" name="q6"> Passa, mas fica sem nome para o leitor de tela: escreva o <code>title</code> mesmo assim</label>
+<label><input type="radio" name="q6"> Não: é erro</label>
+<label><input type="radio" name="q6"> Passa, e não faz diferença nenhuma</label>
+<label><input type="radio" name="q6"> Não: o navegador não mostra o quadro</label>
+</div>
+
+<h3>Missão final: o mapa no fim da página</h3>
+
+<div class="tryhtml" data-goal="attr:iframe[src]=mapa.html,sel:iframe[title],nsel:iframe[title='']=0,attr:iframe[width]=420,attr:iframe[height]=270,attr:iframe[loading]=lazy,attr:iframe[sandbox]=">
+<p class="try-task"><strong>Missão:</strong> no fim da página inicial, a Ana quer mostrar o mapa (a aba <code>mapa.html</code>) num quadro. Crie o <code>&lt;iframe&gt;</code> com: <code>src</code> para <code>mapa.html</code>, um <code>title</code> que diga o que é, tamanho <code>420</code> × <code>270</code> (a imagem do mapa tem 400 × 250, mais a margem da página de dentro), carregamento preguiçoso e um <code>sandbox</code> <strong>vazio</strong> (o mapa é só uma imagem: não precisa de nenhuma permissão).</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;p&gt;Bolos, brigadeiros e tortas feitos todo dia.&lt;/p&gt;
+&lt;h2&gt;Como chegar&lt;/h2&gt;
+&lt;!-- o iframe vem aqui --&gt;
+</pre>
+<pre class="script" data-file="mapa.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Mapa&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;img src="assets/midia/mapa-400.png" alt="Mapa: a Lojinha da Ana fica na esquina da Rua das Flores com a Avenida Central, ao lado da Praça da Árvore" width="400" height="250"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;p&gt;Bolos, brigadeiros e tortas feitos todo dia.&lt;/p&gt;
+&lt;h2&gt;Como chegar&lt;/h2&gt;
+&lt;iframe src="mapa.html" title="Mapa da lojinha" width="420" height="270" loading="lazy" sandbox&gt;&lt;/iframe&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;iframe src="pagina.html"&gt;&lt;/iframe&gt;</code> mostra uma página inteira dentro da sua. Ele é sempre vazio por dentro e sempre tem <code>&lt;/iframe&gt;</code>; com <code>/&gt;</code>, o resto da página vira texto escondido.</li>
+  <li>Todo iframe precisa de <code>title</code>, o nome que o leitor de tela anuncia, mesmo que o validador não exija.</li>
+  <li><code>width</code> e <code>height</code> em pixels (padrão 300 × 150); o quadro não se ajusta ao conteúdo. <code>loading="lazy"</code> adia os quadros que estão longe da tela.</li>
+  <li><code>srcdoc</code> põe o HTML no próprio atributo. <code>name</code> no iframe + <code>target</code> no link abrem links dentro do quadro.</li>
+  <li><code>sandbox</code> vazio bloqueia quase tudo; libere só o necessário (<code>allow-scripts</code>, <code>allow-forms</code>…). Nunca junte <code>allow-scripts</code> e <code>allow-same-origin</code> com páginas do seu próprio site.</li>
+  <li>Sites com <code>x-frame-options</code> (como o Google) recusam aparecer em quadros. Para mapas e vídeos, use o código de incorporar do serviço.</li>
+  <li><code>frameborder</code> e <code>scrolling</code> são obsoletos: use CSS.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
