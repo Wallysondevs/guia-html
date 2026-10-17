@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Negrito e Itálico — strong, em, b e i | Guia HTML</title>
+<meta name="description" content="Negrito e itálico em HTML para quem nunca fez um site: a diferença de sentido entre strong (importante), em (ênfase que muda a frase), b (chamar a atenção) e i (outra voz, palavra estrangeira), qual usar em cada caso, aninhar, e o que o navegador e o validador W3C fazem com tags cruzadas e um b sem fechar, com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Negrito e Itálico</span></h1>
+
+<p class="intro">Numa receita, a Ana quer destacar o aviso "não abra o forno nos primeiros 20 minutos". Num texto, quer dar ênfase a uma palavra, ou escrever um termo em francês. O HTML tem <strong>quatro</strong> tags para isso, e duas delas parecem iguais na tela: <code>&lt;strong&gt;</code> e <code>&lt;b&gt;</code> saem em negrito; <code>&lt;em&gt;</code> e <code>&lt;i&gt;</code> saem em itálico. A diferença está no <strong>sentido</strong>, e é isso que esta aula ensina: quando o destaque quer dizer "importante", "com ênfase", "repare nisto" ou "isto é outra voz".</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li><code>&lt;strong&gt;</code>: texto <strong>importante</strong>, sério ou urgente.</li>
+  <li><code>&lt;em&gt;</code>: a <strong>ênfase</strong> da fala, que muda o sentido da frase.</li>
+  <li><code>&lt;b&gt;</code>: chamar a atenção para uma palavra, sem dizer que ela é mais importante.</li>
+  <li><code>&lt;i&gt;</code>: uma "outra voz": palavra estrangeira, nome científico, pensamento.</li>
+  <li>Como escolher entre os quatro, e quando nenhum deles serve (é CSS).</li>
+  <li>O que o navegador e o validador fazem com tags cruzadas, um <code>&lt;b&gt;</code> sem fechar e um parágrafo dentro de <code>&lt;strong&gt;</code>.</li>
+</ul>
+</div>
+
+<p>Os exemplos são desenhados <strong>pelo seu navegador</strong>, no quadro "Resultado". As mensagens do validador saíram do <code>vnu</code> (o validador do W3C) na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: o marca-texto e o tom de voz</h2>
+<p>Imagine a Ana lendo uma receita em voz alta para uma amiga. Em certos momentos ela muda o jeito de falar:</p>
+<ul>
+  <li>Num aviso sério, ela fala <strong>firme</strong>: "Cuidado, o caramelo queima!" Isso é <strong>importância</strong>: <code>&lt;strong&gt;</code>.</li>
+  <li>Numa palavra, ela <strong>carrega na voz</strong>, e a frase muda de sentido: "Eu disse <em>uma</em> colher, não três". Isso é <strong>ênfase</strong>: <code>&lt;em&gt;</code>.</li>
+  <li>Ao ler o nome do ingrediente principal, ela aponta para ele na mesa, sem mudar a voz. Isso é <strong>chamar a atenção</strong>: <code>&lt;b&gt;</code>.</li>
+  <li>Ao falar um termo em francês, ela troca de sotaque. Isso é <strong>outra voz</strong>: <code>&lt;i&gt;</code>.</li>
+</ul>
+
+<p>No papel, você só tem negrito e itálico para mostrar as quatro coisas. No HTML, cada uma tem a sua tag, e o navegador escolhe a aparência. Quem lê o código (o navegador, um leitor de tela, um buscador, outra pessoa programadora) fica sabendo <strong>por que</strong> o trecho está destacado.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tag</th><th>Vem de</th><th>Quer dizer</th><th>Aparência padrão</th></tr>
+<tr><td><code>&lt;strong&gt;</code></td><td><em>strong</em>, "forte"</td><td>Importante, sério, urgente</td><td>Negrito</td></tr>
+<tr><td><code>&lt;em&gt;</code></td><td><em>emphasis</em>, "ênfase"</td><td>Ênfase na fala, muda o sentido</td><td>Itálico</td></tr>
+<tr><td><code>&lt;b&gt;</code></td><td><em>bold</em>, "negrito"</td><td>Chama a atenção, sem ser mais importante</td><td>Negrito</td></tr>
+<tr><td><code>&lt;i&gt;</code></td><td><em>italic</em>, "itálico"</td><td>Outra voz: termo estrangeiro, técnico, pensamento</td><td>Itálico</td></tr>
+</table>
+</div>
+
+<p>Os quatro são elementos <strong>em linha</strong> (aula <a href="bloco-inline.html">Bloco × Em Linha</a>): ficam no meio do texto, sem quebrar a linha, e vão <strong>dentro</strong> de um parágrafo, de um título, de um item de lista.</p>
+
+<hr>
+
+<h2>1. <code>&lt;strong&gt;</code>: importante</h2>
+
+<pre class="file" data-file="strong.html" data-resultado>&lt;p&gt;&lt;strong&gt;Não abra o forno&lt;/strong&gt; nos primeiros 20 minutos, ou o bolo murcha.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;strong&gt;</dt><dd>Abre o trecho importante.</dd>
+  <dt>Não abra o forno</dt><dd>O que é importante. Marque <strong>só</strong> a parte que importa, e não o parágrafo inteiro: se tudo é importante, nada é.</dd>
+  <dt>&lt;/strong&gt;</dt><dd>Fecha o trecho. O resto da frase continua normal.</dd>
+</dl>
+
+<p>Use <code>&lt;strong&gt;</code> para:</p>
+<ul>
+  <li><strong>avisos e alertas</strong>: "<strong>Atenção:</strong> contém amendoim";</li>
+  <li>a parte <strong>mais importante</strong> de um texto, a que o leitor não pode deixar de ver;</li>
+  <li>algo <strong>urgente</strong>: "Inscrições até <strong>sexta-feira</strong>".</li>
+</ul>
+
+<p>Um <code>&lt;strong&gt;</code> dentro de outro quer dizer "mais importante ainda". O navegador desenha igual (negrito é negrito), mas o sentido fica registrado:</p>
+
+<pre class="file" data-file="aninhado.html" data-resultado>&lt;p&gt;&lt;strong&gt;Atenção: &lt;strong&gt;o caramelo queima!&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
+</pre>
+
+<div class="tryhtml" data-goal="texto:strong=muito quente,nsel:strong=1,nsel:b=0">
+<p class="try-task"><strong>Experimente:</strong> o aviso desta receita é sério. Marque como importante o trecho <code>o caramelo sai do fogo muito quente</code>, com <code>&lt;strong&gt;</code>. Deixe "Cuidado:" fora, ou dentro, como achar melhor.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Pudim de leite&lt;/h2&gt;
+&lt;p&gt;Cuidado: o caramelo sai do fogo muito quente. Espere esfriar antes de tocar.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Pudim de leite&lt;/h2&gt;
+&lt;p&gt;Cuidado: &lt;strong&gt;o caramelo sai do fogo muito quente&lt;/strong&gt;. Espere esfriar antes de tocar.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. <code>&lt;em&gt;</code>: ênfase que muda a frase</h2>
+<p>A ênfase é o "carregar na voz" de uma palavra. Em português falado ela muda o sentido da frase toda. Leia em voz alta, carregando na palavra em itálico:</p>
+
+<pre class="file" data-file="em.html" data-resultado>&lt;p&gt;&lt;em&gt;Eu&lt;/em&gt; não disse que a Ana comeu o bolo.&lt;/p&gt;
+&lt;p&gt;Eu &lt;em&gt;não&lt;/em&gt; disse que a Ana comeu o bolo.&lt;/p&gt;
+&lt;p&gt;Eu não disse que a &lt;em&gt;Ana&lt;/em&gt; comeu o bolo.&lt;/p&gt;
+&lt;p&gt;Eu não disse que a Ana comeu o &lt;em&gt;bolo&lt;/em&gt;.&lt;/p&gt;
+</pre>
+
+<p>As palavras são as mesmas, mas cada frase quer dizer outra coisa:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Ênfase em</th><th>O que a frase quer dizer</th></tr>
+<tr><td><em>Eu</em></td><td>Alguém disse, mas não fui eu.</td></tr>
+<tr><td><em>não</em></td><td>Eu nunca disse isso, de jeito nenhum.</td></tr>
+<tr><td><em>Ana</em></td><td>Alguém comeu o bolo, mas não foi a Ana.</td></tr>
+<tr><td><em>bolo</em></td><td>A Ana comeu alguma coisa, mas não o bolo.</td></tr>
+</table>
+</div>
+
+<p>Essa é a diferença entre <code>&lt;em&gt;</code> e <code>&lt;strong&gt;</code>: o <code>&lt;strong&gt;</code> diz "isto é importante", sem mudar o sentido da frase; o <code>&lt;em&gt;</code> diz "a frase deve ser lida com a força <strong>aqui</strong>", e o sentido muda conforme o lugar. Como no <code>strong</code>, um <code>&lt;em&gt;</code> dentro de outro é "ênfase maior".</p>
+
+<div class="tryhtml" data-goal="texto:em=Ana,nsel:em=1">
+<p class="try-task"><strong>Experimente:</strong> a Ana quer dizer que alguém comeu o bolo, mas não foi ela. Coloque a ênfase com <code>&lt;em&gt;</code> na palavra certa (uma só).</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Eu não disse que a Ana comeu o bolo.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Eu não disse que a &lt;em&gt;Ana&lt;/em&gt; comeu o bolo.&lt;/p&gt;
+</pre>
+</div>
+
+<div class="note">
+<strong>E o leitor de tela?</strong>
+<p>Seria natural achar que um leitor de tela fala o <code>&lt;strong&gt;</code> mais alto e o <code>&lt;em&gt;</code> com outra entonação. Na configuração padrão, a maioria <strong>não</strong> muda a voz: alguns têm uma opção para anunciar a ênfase, que vem desligada. Então, se um aviso é importante, não confie só no negrito para avisar: escreva o aviso com palavras ("Atenção:", "Cuidado:"). Use as tags pelo sentido, para quem enxerga, para os programas que leem a página e para os leitores de tela que anunciam a ênfase.</p>
+</div>
+
+<hr>
+
+<h2>3. <code>&lt;b&gt;</code>: chamar a atenção</h2>
+<p>O <code>&lt;b&gt;</code> é para quando você quer que o olho <strong>pare</strong> numa palavra, mas ela não é mais importante nem tem ênfase na fala. O padrão do HTML dá exemplos: as palavras-chave de um resumo, os nomes de produto numa avaliação, a primeira frase de uma notícia.</p>
+
+<pre class="file" data-file="b.html" data-resultado>&lt;p&gt;Nesta receita, a &lt;b&gt;cenoura&lt;/b&gt; vai crua no liquidificador, e o &lt;b&gt;óleo&lt;/b&gt; substitui a manteiga.&lt;/p&gt;
+&lt;p&gt;Na lojinha: &lt;b&gt;Pano de prato Girassol&lt;/b&gt;, 100% algodão, R$ 15.&lt;/p&gt;
+</pre>
+
+<p>Nenhum desses nomes é um aviso ou é mais importante que o resto da frase: eles só ajudam quem passa os olhos pelo texto a achar os ingredientes e os produtos. Se você ficar em dúvida entre <code>&lt;b&gt;</code> e <code>&lt;strong&gt;</code>, pergunte: "se o leitor pular esse trecho, ele corre algum risco ou perde algo essencial?" Se sim, é <code>&lt;strong&gt;</code>.</p>
+
+<div class="warning">
+<strong>O <code>&lt;b&gt;</code> não é obsoleto</strong>
+<p>Muitos tutoriais antigos dizem que o <code>&lt;b&gt;</code> e o <code>&lt;i&gt;</code> foram "proibidos" e que só se deve usar <code>&lt;strong&gt;</code> e <code>&lt;em&gt;</code>. Não é verdade: no HTML de hoje, os quatro são válidos, e cada um tem o seu sentido. O que é obsoleto é usar <code>&lt;b&gt;</code> "porque eu quero negrito", sem motivo no texto. Para isso, use CSS.</p>
+</div>
+
+<hr>
+
+<h2>4. <code>&lt;i&gt;</code>: outra voz</h2>
+<p>O <code>&lt;i&gt;</code> marca um trecho que está numa "voz" diferente do resto do texto. Os casos mais comuns:</p>
+
+<pre class="file" data-file="i.html" data-resultado>&lt;p&gt;Antes de começar, faça a &lt;i lang="fr"&gt;mise en place&lt;/i&gt;: separe e meça todos os ingredientes.&lt;/p&gt;
+&lt;p&gt;A cenoura (&lt;i&gt;Daucus carota&lt;/i&gt;) é rica em betacaroteno.&lt;/p&gt;
+&lt;p&gt;A Ana olhou para o forno e pensou: &lt;i&gt;agora vai&lt;/i&gt;.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;i lang="fr"&gt;mise en place&lt;/i&gt;</dt><dd>Uma expressão em <strong>outra língua</strong> (francês: "pôr no lugar", a arrumação antes de cozinhar). O atributo <code>lang="fr"</code> diz ao navegador e aos leitores de tela que esse trecho é francês, para eles pronunciarem certo (mais em <a href="atributos-globais.html">Atributos Globais</a>).</dd>
+  <dt>&lt;i&gt;Daucus carota&lt;/i&gt;</dt><dd>Um <strong>nome científico</strong>, que por tradição vai em itálico.</dd>
+  <dt>&lt;i&gt;agora vai&lt;/i&gt;</dt><dd>Um <strong>pensamento</strong> de personagem, diferente da narração.</dd>
+</dl>
+
+<p>Outros usos de <code>&lt;i&gt;</code>: termos técnicos citados pela primeira vez, nomes de navios. Repare que nenhum deles é "ênfase": ninguém carrega na voz ao falar <i>Daucus carota</i>. Se a palavra em itálico muda o sentido da frase, é <code>&lt;em&gt;</code>; se é só uma voz diferente, é <code>&lt;i&gt;</code>.</p>
+
+<div class="tip">
+<strong>E o título de um livro?</strong>
+<p>Título de livro, filme ou música também sai em itálico, mas tem a sua própria tag: <code>&lt;cite&gt;</code> (aula <a href="citacoes.html">Citações</a>). E uma palavra que você está <strong>definindo</strong> ganha o <code>&lt;dfn&gt;</code> (aula <a href="abreviacoes.html">Abreviações e Definições</a>).</p>
+</div>
+
+<hr>
+
+<h2>5. Qual usar</h2>
+<p>Na dúvida, siga estas perguntas, nesta ordem:</p>
+<ol class="passo">
+  <li>O trecho é um aviso, algo sério ou urgente? → <code>&lt;strong&gt;</code></li>
+  <li>Lido em voz alta, a voz "carrega" ali, e o sentido da frase muda? → <code>&lt;em&gt;</code></li>
+  <li>É outra língua, um nome científico, um termo técnico, um pensamento? → <code>&lt;i&gt;</code> (com <code>lang</code>, se for outra língua)</li>
+  <li>É uma palavra-chave ou um nome que o leitor deve achar rápido, sem ser mais importante? → <code>&lt;b&gt;</code></li>
+  <li>Nada disso, você só quer a <strong>aparência</strong> (um slogan em negrito, todo o menu em itálico)? → CSS (<code>font-weight</code> e <code>font-style</code>; quer aprender mais? futuro Guia CSS)</li>
+</ol>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Trecho</th><th>Use</th><th>Por quê</th></tr>
+<tr><td>"<strong>Contém glúten.</strong>"</td><td><code>strong</code></td><td>Aviso de saúde: importante</td></tr>
+<tr><td>"Eu disse <em>uma</em> colher, não três."</td><td><code>em</code></td><td>Ênfase que muda o sentido</td></tr>
+<tr><td>"pizza", "mouse", "show"</td><td>nenhum</td><td>Já são palavras do português; não precisam de <code>i</code></td></tr>
+<tr><td>"<i lang="fr">croissant</i>" num texto sobre a padaria</td><td><code>i lang="fr"</code></td><td>Palavra estrangeira</td></tr>
+<tr><td>"Ingredientes: <b>farinha</b>, <b>ovos</b>, <b>leite</b>"</td><td><code>b</code></td><td>Palavras-chave para achar rápido</td></tr>
+<tr><td>O nome do site em negrito no cabeçalho</td><td>CSS</td><td>Aparência, sem sentido no texto</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O navegador nunca mostra mensagem de erro: ele conserta o código. Em cada caso, o quadro "Resultado" mostra o que o seu navegador fez de verdade.</p>
+
+<div class="cenario">
+<strong>Esqueceu de fechar o <code>&lt;b&gt;</code>: a página inteira em negrito</strong>
+<pre class="file" data-file="aberto.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Ingrediente principal: &lt;b&gt;cenoura.&lt;/p&gt;
+&lt;p&gt;Rende 12 pedaços.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> isto surpreende. O <code>&lt;/p&gt;</code> fecha o primeiro parágrafo, e o <code>&lt;b&gt;</code> é fechado junto. Mas o navegador "lembra" que o negrito ficou aberto e o <strong>abre de novo</strong> no parágrafo seguinte. O segundo parágrafo, que não tinha nada a ver, também sai em negrito; numa página maior, <strong>tudo</strong> até o fim. A página que o navegador montou (a que você veria no F12) ficou assim:</p>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;Ingrediente principal: &lt;b&gt;cenoura.&lt;/b&gt;&lt;/p&gt;&lt;b&gt;
+&lt;p&gt;Rende 12 pedaços.&lt;/p&gt;
+&lt;/b&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu aberto.html
+"file:/home/ana/site/aberto.html":8.38-8.41: error: End tag “p” seen, but there were open elements.
+"file:/home/ana/site/aberto.html":8.27-8.29: error: Unclosed element “b”.
+"file:/home/ana/site/aberto.html":9.1-9.3: error: Element “p” not allowed as child of element “b” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/aberto.html":10.1-10.7: error: End tag for  “body” seen, but there were unclosed elements.</pre>
+<dl class="anatomy">
+  <dt>End tag “p” seen, but there were open elements.</dt><dd>"Foi vista a tag de fechamento <code>p</code>, mas havia elementos abertos": o <code>&lt;/p&gt;</code> (colunas 38 a 41) chegou com o <code>b</code> ainda aberto.</dd>
+  <dt>Unclosed element “b”.</dt><dd>"Elemento <code>b</code> não fechado": ele aponta o <code>&lt;b&gt;</code> da linha 8, onde está o conserto.</dd>
+  <dt>Element “p” not allowed as child of element “b”…</dt><dd>O segundo parágrafo foi parar dentro do <code>b</code> reaberto, e um parágrafo não pode ficar dentro de um <code>b</code>.</dd>
+  <dt>End tag for  “body” seen, but there were unclosed elements.</dt><dd>"Foi vista a tag de fechamento do <code>body</code>, mas havia elementos não fechados": o <code>b</code> continuava aberto até o fim. (O espaço duplo depois de <em>for</em> está assim na própria mensagem.)</dd>
+</dl>
+<p>São quatro mensagens para um erro só. Quando o validador mostrar várias, comece pela que aponta o elemento <strong>não fechado</strong> (<code>Unclosed element</code>): consertar esse costuma fazer as outras sumirem.</p>
+<p><strong>Como consertar:</strong> feche o <code>&lt;b&gt;</code> antes do <code>&lt;/p&gt;</code>: <code>&lt;b&gt;cenoura.&lt;/b&gt;&lt;/p&gt;</code>. O mesmo vale para <code>strong</code>, <code>em</code> e <code>i</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:p + p b=0,nsel:b=1,texto:b=cenoura">
+<p class="try-task"><strong>Missão:</strong> veja no resultado: o segundo parágrafo saiu em negrito sem ninguém pedir. Conserte o código para só a palavra "cenoura" ficar em negrito.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Ingrediente principal: &lt;b&gt;cenoura.&lt;/p&gt;
+&lt;p&gt;Rende 12 pedaços.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Ingrediente principal: &lt;b&gt;cenoura&lt;/b&gt;.&lt;/p&gt;
+&lt;p&gt;Rende 12 pedaços.&lt;/p&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Tags cruzadas: <code>&lt;strong&gt;&lt;em&gt;…&lt;/strong&gt;&lt;/em&gt;</code></strong>
+<p>Para deixar um trecho em negrito <strong>e</strong> itálico, você põe uma tag dentro da outra. A regra é a mesma de <a href="aninhamento.html">Aninhamento</a>: a última que abriu é a primeira que fecha. A Ana fechou na ordem errada:</p>
+<pre class="file" data-file="cruzado.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Não abra o forno&lt;/strong&gt;&lt;/em&gt; nos primeiros 20 minutos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> aqui ele adivinha certo. Ao ver o <code>&lt;/strong&gt;</code> com o <code>em</code> ainda aberto, ele fecha os dois na ordem certa e ignora o <code>&lt;/em&gt;</code> que sobra. Na tela, tudo parece perfeito, e é por isso que o erro passa. Com código maior, esse conserto automático pode dar resultados bem estranhos.</p>
+<pre class="term" data-cwd="~/site">$ vnu cruzado.html
+"file:/home/ana/site/cruzado.html":8.32-8.40: error: End tag “strong” violates nesting rules.
+"file:/home/ana/site/cruzado.html":8.41-8.45: error: No “em” element in scope but a “em” end tag seen.</pre>
+<p>"A tag de fechamento <code>strong</code> viola as regras de aninhamento" e "nenhum elemento <code>em</code> aberto, mas foi vista uma tag de fechamento <code>em</code>" (o navegador já tinha fechado o <code>em</code>).</p>
+<p><strong>Como consertar:</strong> feche na ordem inversa da abertura: <code>&lt;strong&gt;&lt;em&gt;Não abra o forno&lt;/em&gt;&lt;/strong&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um parágrafo dentro de <code>&lt;strong&gt;</code></strong>
+<pre class="file" data-file="bloco.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;strong&gt;&lt;p&gt;Não abra o forno.&lt;/p&gt;&lt;/strong&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> monta exatamente o que está escrito, um parágrafo dentro do <code>strong</code>, e a frase sai em negrito. Parece funcionar. Mas o <code>&lt;strong&gt;</code> é um elemento <strong>em linha</strong>, feito para ir dentro do texto, e não para embrulhar um bloco.</p>
+<pre class="term" data-cwd="~/site">$ vnu bloco.html
+"file:/home/ana/site/bloco.html":8.9-8.11: error: Element “p” not allowed as child of element “strong” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>"O elemento <code>p</code> não é permitido como filho do elemento <code>strong</code> neste contexto."</p>
+<p><strong>Como consertar:</strong> inverta: o parágrafo por fora, o <code>strong</code> por dentro: <code>&lt;p&gt;&lt;strong&gt;Não abra o forno.&lt;/strong&gt;&lt;/p&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Negrito em tudo</strong>
+<p>Não é erro de validador, é erro de escrita: um parágrafo inteiro dentro de <code>&lt;strong&gt;</code>, ou um <code>&lt;strong&gt;</code> em cada frase. O validador não reclama. Mas, quando tudo está em destaque, o olho não sabe onde parar, e o destaque perde a força. Reserve o <code>&lt;strong&gt;</code> para o que realmente importa, de preferência poucas palavras.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Sentido</th><th>Aparência padrão</th></tr>
+<tr><td><code>&lt;strong&gt;…&lt;/strong&gt;</code></td><td>Importante, sério, urgente</td><td>Negrito</td></tr>
+<tr><td><code>&lt;em&gt;…&lt;/em&gt;</code></td><td>Ênfase que muda o sentido da frase</td><td>Itálico</td></tr>
+<tr><td><code>&lt;b&gt;…&lt;/b&gt;</code></td><td>Chamar a atenção (palavra-chave, nome de produto)</td><td>Negrito</td></tr>
+<tr><td><code>&lt;i&gt;…&lt;/i&gt;</code></td><td>Outra voz (estrangeirismo, nome científico, pensamento)</td><td>Itálico</td></tr>
+<tr><td><code>&lt;i lang="fr"&gt;…&lt;/i&gt;</code></td><td>Trecho em outra língua (aqui, francês)</td><td>Itálico</td></tr>
+<tr><td><code>&lt;strong&gt;&lt;em&gt;…&lt;/em&gt;&lt;/strong&gt;</code></td><td>Importante e com ênfase</td><td>Negrito e itálico</td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem do validador</th><th>Quer dizer</th></tr>
+<tr><td><code>Unclosed element “b”.</code></td><td>Faltou o <code>&lt;/b&gt;</code>; o negrito "vaza" para os blocos seguintes (error)</td></tr>
+<tr><td><code>End tag “strong” violates nesting rules.</code></td><td>Tags fechadas na ordem errada (error)</td></tr>
+<tr><td><code>Element “p” not allowed as child of element “strong” in this context.</code></td><td>Um bloco dentro de um elemento em linha (error)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O aviso</h3>
+<p>Complete com a tag de algo <strong>importante</strong>:</p>
+<div class="ex-code">&lt;p&gt;&lt;<input data-answer="strong" aria-label="tag de abertura">&gt;Contém amendoim.&lt;/strong&gt;&lt;/p&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Outra língua</h3>
+<p>Complete com a tag da "outra voz" e o código do francês:</p>
+<div class="ex-code">&lt;p&gt;Sobremesa: &lt;<input data-answer="i" aria-label="tag"> lang="<input data-answer="fr" aria-label="língua">"&gt;crème brûlée&lt;/i&gt;.&lt;/p&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Em "Eu disse <em>uma</em> colher, não três", qual tag combina com a palavra destacada?</p>
+<label><input type="radio" name="q3"> <code>&lt;i&gt;</code>, porque é itálico</label>
+<label><input type="radio" name="q3"> <code>&lt;em&gt;</code>, porque a ênfase muda o sentido da frase</label>
+<label><input type="radio" name="q3"> <code>&lt;b&gt;</code></label>
+<label><input type="radio" name="q3"> <code>&lt;strong&gt;</code>, porque é um aviso</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. A Ana escreveu <code>&lt;p&gt;Oferta: &lt;b&gt;bolo de pote.&lt;/p&gt;</code> e, depois, mais três parágrafos. O que aparece na tela?</p>
+<label><input type="radio" name="q4"> Uma mensagem de erro</label>
+<label><input type="radio" name="q4"> Só "bolo de pote." em negrito</label>
+<label><input type="radio" name="q4"> Nada em negrito</label>
+<label><input type="radio" name="q4"> "bolo de pote." e os três parágrafos seguintes em negrito</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Qual frase sobre <code>&lt;b&gt;</code> e <code>&lt;i&gt;</code> é verdadeira?</p>
+<label><input type="radio" name="q5"> São obsoletos e o validador dá erro</label>
+<label><input type="radio" name="q5"> São iguais a <code>&lt;strong&gt;</code> e <code>&lt;em&gt;</code></label>
+<label><input type="radio" name="q5"> São válidos e têm sentido próprio: chamar a atenção e outra voz</label>
+<label><input type="radio" name="q5"> Só funcionam dentro de títulos</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Qual está aninhado do jeito certo?</p>
+<label><input type="radio" name="q6"> <code>&lt;strong&gt;&lt;em&gt;Cuidado&lt;/em&gt;&lt;/strong&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;strong&gt;&lt;em&gt;Cuidado&lt;/strong&gt;&lt;/em&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;em&gt;&lt;strong&gt;Cuidado&lt;/em&gt;&lt;/strong&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;strong&gt;Cuidado&lt;em&gt;&lt;/strong&gt;&lt;/em&gt;</code></label>
+</div>
+
+<h3>Missão final: a dica da Ana</h3>
+
+<div class="tryhtml" data-goal="texto:strong=gelado,attr:i[lang]=fr,texto:i=chantilly,texto:em=nunca,texto:b=creme de leite fresco,nsel:strong=1,nsel:em=1,nsel:i=1,nsel:b=1">
+<p class="try-task"><strong>Missão:</strong> marque cada destaque com a tag certa: o aviso "o creme e a tigela precisam estar bem gelados" é <strong>importante</strong>; a palavra francesa <code>chantilly</code> é <strong>outra voz</strong> (não esqueça o <code>lang="fr"</code>); o "nunca" tem <strong>ênfase</strong> na fala; e o ingrediente "creme de leite fresco" deve <strong>chamar a atenção</strong> de quem passa os olhos. Uma tag de cada.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Dica da Ana: creme batido&lt;/h2&gt;
+&lt;p&gt;Para o chantilly, use creme de leite fresco, aquele da geladeira do mercado.
+Atenção: o creme e a tigela precisam estar bem gelados.
+E nunca bata demais, ou o creme vira manteiga.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Dica da Ana: creme batido&lt;/h2&gt;
+&lt;p&gt;Para o &lt;i lang="fr"&gt;chantilly&lt;/i&gt;, use &lt;b&gt;creme de leite fresco&lt;/b&gt;, aquele da geladeira do mercado.
+Atenção: &lt;strong&gt;o creme e a tigela precisam estar bem gelados&lt;/strong&gt;.
+E &lt;em&gt;nunca&lt;/em&gt; bata demais, ou o creme vira manteiga.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;strong&gt;</code> = importante, sério, urgente. <code>&lt;em&gt;</code> = ênfase que muda o sentido da frase. Os dois podem ser aninhados para "mais ainda".</li>
+  <li><code>&lt;b&gt;</code> = chamar a atenção sem ser mais importante (palavras-chave, nomes de produto). <code>&lt;i&gt;</code> = outra voz (outra língua, com <code>lang</code>; nome científico; pensamento).</li>
+  <li>Os quatro são válidos no HTML de hoje. Escolha pelo <strong>sentido</strong>; se você só quer a aparência, use CSS.</li>
+  <li>Leitores de tela, na configuração padrão, quase nunca mudam a voz: escreva os avisos com palavras, além do negrito.</li>
+  <li>São elementos em linha: vão dentro do parágrafo, nunca em volta dele. Feche na ordem inversa da abertura.</li>
+  <li>Um <code>&lt;b&gt;</code> (ou <code>strong</code>, <code>em</code>, <code>i</code>) sem fechar é reaberto pelo navegador nos blocos seguintes, e o destaque vaza pela página: <code>Unclosed element “b”.</code></li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
