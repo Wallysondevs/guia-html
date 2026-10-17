@@ -267,7 +267,7 @@ HTTP/1.0 200 OK</pre>
 
 <p>Nenhuma mensagem aparece na página: o pudim só fica <strong>sem estilo</strong>. Quem conta o 404 é o F12, na aba de rede (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>).</p>
 
-<p>No editor do guia, as abas podem ter pastas no nome (<code>css/estilo.css</code>, <code>receitas/pudim.html</code>) e funcionam como um site de verdade: um caminho errado não acha o arquivo, e um link errado mostra uma página "404: página não encontrada".</p>
+<p>No editor do guia, as abas podem ter pastas no nome (<code>css/estilo.css</code>, <code>receitas/pudim.html</code>) e funcionam como um site de verdade: um caminho errado não acha o arquivo, e um link errado mostra uma página "404: página não encontrada". Isso vale para o modo completo do editor, o do guia publicado. No modo simples (guia aberto direto do disco, por exemplo; veja <a href="simulador.html">O Editor do Guia</a>), um caminho com <code>../</code> não acha o arquivo, e um link errado só dá um aviso no console.</p>
 
 <div class="tryhtml" data-goal="css:h1{color}=rgb(178, 34, 34),attr:a[href]=../index.html">
 <p class="try-task"><strong>Missão:</strong> o resultado mostra a página <code>receitas/pudim.html</code>, mas o título deveria estar vermelho-tijolo (a cor do <code>estilo.css</code>) e o link "Voltar ao início" leva a um 404. Conserte os <strong>dois caminhos</strong> na aba <code>receitas/pudim.html</code>. Depois clique no link para conferir que ele chega ao início.</p>
