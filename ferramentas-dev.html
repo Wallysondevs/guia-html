@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Ferramentas do Desenvolvedor — F12, Inspecionar e Ver código-fonte | Guia HTML</title>
+<meta name="description" content="As ferramentas do desenvolvedor do navegador para quem está começando em HTML: abrir com F12, Ctrl+Shift+I ou Inspecionar, a diferença entre Ver código-fonte (Ctrl+U, o arquivo como chegou) e Inspecionar (o DOM consertado pelo navegador), com exemplos reais de tbody e de parágrafo fechado sozinho, editar ao vivo, o console, a aba de rede e o modo celular.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Ferramentas do Desenvolvedor</span></h1>
+
+<p class="intro">Todo navegador de computador tem uma caixa de ferramentas escondida, feita para quem constrói sites: as <strong>ferramentas do desenvolvedor</strong> (em inglês, <em>developer tools</em>, ou só <em>DevTools</em>). Ela abre com uma tecla, o <kbd>F12</kbd>, e mostra a página "por dentro": a árvore de elementos que o navegador montou, os erros, os arquivos que chegaram. Nesta aula você aprende a abri-la e, principalmente, a diferença entre duas formas de olhar o HTML de uma página: <strong>Ver código-fonte</strong> e <strong>Inspecionar</strong>. Elas parecem iguais, mas não são, e a diferença ensina muito sobre HTML.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Abrir as ferramentas do desenvolvedor no Chrome, no Edge, no Firefox e no Safari.</li>
+  <li><strong>Ver código-fonte</strong> (<kbd>Ctrl</kbd> + <kbd>U</kbd>): o arquivo exatamente como chegou.</li>
+  <li><strong>Inspecionar</strong>: o DOM, a árvore que o navegador montou, com os consertos dele.</li>
+  <li>Comparar os dois com um HTML que o navegador consertou (o <code>tbody</code> que ninguém escreveu, o parágrafo fechado antes da hora).</li>
+  <li>Mexer na página ao vivo, e por que nada disso fica salvo.</li>
+  <li>O console, a aba de rede e o modo de celular.</li>
+</ul>
+</div>
+
+<div class="warning">
+<strong>As telas variam</strong>
+<p>As ferramentas do desenvolvedor mudam a cada versão do navegador, e cada navegador dá nomes um pouco diferentes para as mesmas coisas, que ainda mudam com o idioma. Por isso esta aula descreve <strong>o que</strong> você vai encontrar e <strong>onde</strong>, mas não promete o texto exato de cada menu. Os atalhos de teclado são os de sempre. Os arquivos e as árvores mostrados aqui são reais: as árvores foram montadas por um navegador de verdade (Chromium) a partir de cada arquivo.</p>
+</div>
+
+<hr>
+
+<h2>A ideia: a planta e a casa construída</h2>
+<p>Pense na planta de uma casa, desenhada pelo arquiteto, e na casa pronta. Quase sempre são iguais. Mas, se a planta tinha um erro (uma porta que dava na parede), o pedreiro deu um jeito na obra, e a casa ficou um pouco diferente do papel. Para saber como a casa <strong>realmente</strong> ficou, você não olha a planta: entra na casa.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na obra</th><th>No navegador</th><th>Onde ver</th></tr>
+<tr><td>A planta, do jeito que o arquiteto desenhou</td><td>O <strong>código-fonte</strong>: o texto do arquivo, do jeito que você escreveu</td><td><strong>Ver código-fonte</strong> (<kbd>Ctrl</kbd> + <kbd>U</kbd>)</td></tr>
+<tr><td>O pedreiro, que conserta os erros da planta</td><td>O <em>parser</em> do navegador (aula <a href="como-funciona.html">Como o Navegador Lê HTML</a>)</td><td>(trabalha em silêncio)</td></tr>
+<tr><td>A casa construída</td><td>O <strong>DOM</strong>: a árvore de elementos que o navegador montou</td><td><strong>Inspecionar</strong> (<kbd>F12</kbd>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. Abrir as ferramentas do desenvolvedor</h2>
+<p>Há três caminhos, e todos levam ao mesmo painel, que aparece grudado num lado da janela (embaixo ou à direita):</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Caminho</th><th>Windows e Linux</th><th>macOS</th></tr>
+<tr><td>Tecla de função</td><td><kbd>F12</kbd></td><td>(em geral não funciona; use o atalho abaixo)</td></tr>
+<tr><td>Atalho</td><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd></td><td><kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>I</kbd></td></tr>
+<tr><td>Botão direito</td><td colspan="2">Clique com o botão direito em qualquer parte da página e escolha <strong>Inspecionar</strong> (o nome exato muda um pouco de navegador para navegador). Esse caminho já abre a árvore no elemento em que você clicou.</td></tr>
+</table>
+</div>
+
+<ul>
+  <li><strong>Chrome</strong> e <strong>Edge</strong> têm ferramentas quase idênticas, porque os dois são feitos sobre o mesmo motor (o Chromium).</li>
+  <li><strong>Firefox</strong> tem as suas próprias, com outros nomes e outra arrumação, mas as mesmas ideias.</li>
+  <li><strong>Safari</strong>, no macOS, vem com elas escondidas: nos ajustes do Safari, na parte avançada, ligue a opção dos recursos para desenvolvedores. Depois disso, o <kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>I</kbd> funciona.</li>
+  <li>Em notebooks, o <kbd>F12</kbd> às vezes controla o volume ou o brilho; aí é preciso segurar a tecla <kbd>Fn</kbd> junto.</li>
+  <li>No celular, os navegadores não têm esse painel. As ferramentas são coisa de computador.</li>
+</ul>
+
+<p>O painel tem várias <strong>abas</strong> (também chamadas de painéis) no alto. Nesta aula você vai usar três: a de <strong>elementos</strong> (no Chrome e no Edge ela se chama <em>Elements</em>, ou Elementos em português; no Firefox, Inspetor), o <strong>Console</strong> e a de <strong>rede</strong> (<em>Network</em>, ou Rede). As outras, de desempenho, memória e armazenamento, ficam para quando você estiver mais adiante.</p>
+
+<hr>
+
+<h2>2. Ver código-fonte: o arquivo como chegou</h2>
+<p>Antes do F12, a ferramenta mais simples: <strong>Ver código-fonte</strong>. Ela mostra, numa aba nova, o texto que o navegador recebeu, letra por letra, sem nenhum conserto. Para abrir:</p>
+<ul>
+  <li><kbd>Ctrl</kbd> + <kbd>U</kbd> no Chrome, no Edge e no Firefox (no macOS: <kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>U</kbd> no Chrome, no Edge e no Safari; <kbd>Cmd</kbd> + <kbd>U</kbd> no Firefox);</li>
+  <li>ou o botão direito na página e a opção de ver o código-fonte;</li>
+  <li>ou escreva <code>view-source:</code> antes do endereço, na barra: <code>view-source:https://exemplo.com/</code> (no Chrome, no Edge e no Firefox).</li>
+</ul>
+
+<p>Para um arquivo do seu computador, o código-fonte é o próprio arquivo, igualzinho ao que o <code>cat</code> mostra no terminal. Veja a tabela de preços da lojinha da Ana:</p>
+
+<pre class="term" data-cwd="~/site">$ cat precos.html
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Preços&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;td&gt;Bolo&lt;/td&gt;&lt;td&gt;R$ 30&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+<p>Abrindo o <code>precos.html</code> no navegador e apertando <kbd>Ctrl</kbd> + <kbd>U</kbd>, você vê exatamente essas doze linhas, com as cores do navegador e os números de linha na margem. Numa página da internet, o código-fonte é o que o servidor mandou, como o <code>curl</code> mostrava em <a href="como-funciona.html">Como o Navegador Lê HTML</a>.</p>
+
+<hr>
+
+<h2>3. Inspecionar: a árvore que o navegador montou</h2>
+<p>Agora abra o <kbd>F12</kbd> na mesma página. A aba de elementos mostra o HTML de novo, mas com diferenças:</p>
+<ul>
+  <li>Ele aparece <strong>como árvore</strong>: cada elemento que tem filhos tem um triângulo do lado, que abre e fecha.</li>
+  <li>Passando o mouse sobre um elemento da árvore, ele <strong>acende na página</strong>, com uma cor por cima, e uma etiqueta mostra o nome e o tamanho. O caminho inverso também funciona: com a ferramenta de seleção (um ícone de seta, no canto do painel), clique em algo na página e a árvore pula para ele.</li>
+  <li>Ao lado ou embaixo da árvore, outro quadro mostra o <strong>CSS</strong> que vale para o elemento selecionado, inclusive a folha de estilo padrão do navegador (o "estilo do agente do usuário", em inglês <em>user agent stylesheet</em>).</li>
+  <li>E, o mais importante: a árvore <strong>não é o seu arquivo</strong>. É o DOM, já com os consertos do navegador.</li>
+</ul>
+
+<p>Para o <code>precos.html</code>, esta é a árvore que o navegador montou (mostrada aqui como texto, do jeito que ela aparece aberta no F12):</p>
+
+<pre class="file" data-file="DOM montado pelo navegador">&lt;html lang="pt-BR"&gt;&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Preços&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Bolo&lt;/td&gt;&lt;td&gt;R$ 30&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+
+<p>Apareceu um <strong><code>&lt;tbody&gt;</code></strong> que a Ana não escreveu! Toda tabela tem um "corpo" (<code>tbody</code>, de <em>table body</em>), e as linhas (<code>tr</code>) moram dentro dele. Se o arquivo não tem o <code>tbody</code>, o navegador cria um. Isso não é erro: o validador aceita a tabela sem <code>tbody</code>, porque a regra do HTML deixa essa tag ser omitida.</p>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose precos.html
+precos.html                          « nenhum erro: o tbody pode ficar implícito</pre>
+
+<p>A tabela em si aparece igual nos dois casos (as tabelas têm a sua própria seção: <a href="tabelas-cabecalho.html">Cabeçalhos (th, thead, tbody, tfoot)</a>). Você pode ver esse <code>tbody</code> agora mesmo, no seu navegador, sem abrir o F12: a caixa abaixo tem um <code>script.js</code> que pede ao navegador o HTML da tabela <strong>como ele está no DOM</strong> e escreve no console, embaixo do resultado.</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;table&gt;
+&lt;tr&gt;&lt;td&gt;Bolo&lt;/td&gt;&lt;td&gt;R$ 30&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">// mostra o HTML da tabela como o navegador montou (o DOM)
+console.log(document.querySelector("table").outerHTML);
+</pre>
+</div>
+
+<p>O <code>index.html</code> não tem <code>tbody</code>, e o console mostra um. É o seu navegador, agora, fazendo o conserto. (O <code>outerHTML</code> é o jeito do JavaScript de pedir o HTML de um elemento a partir da árvore; o JavaScript tem guia próprio.)</p>
+
+<hr>
+
+<h2>4. Código-fonte × Inspecionar com um HTML consertado</h2>
+<p>O <code>tbody</code> é um conserto inofensivo. Agora um que muda a página. A Ana escreveu a lista de compras dentro de um parágrafo:</p>
+
+<pre class="file" data-file="compras.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Compras&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Lista de compras:
+&lt;ul&gt;
+&lt;li&gt;Farinha&lt;/li&gt;
+&lt;li&gt;Ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O <strong>Ver código-fonte</strong> mostra exatamente esse texto: o <code>&lt;ul&gt;</code> dentro do <code>&lt;p&gt;</code>, como ela escreveu. Já o <strong>Inspecionar</strong> mostra outra coisa:</p>
+
+<pre class="file" data-file="DOM montado pelo navegador (só o body)">&lt;body&gt;
+&lt;p&gt;Lista de compras:
+&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;Farinha&lt;/li&gt;
+&lt;li&gt;Ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;</pre>
+
+<p>No F12, você veria três irmãos dentro do <code>body</code>: um <code>p</code> com o texto, o <code>ul</code> e um segundo <code>p</code>, vazio. Passando o mouse no <code>p</code> vazio, ele acende na página como uma faixa fina, sem conteúdo. Nenhum dos dois <code>p</code> contém a lista. Como explicado em <a href="como-funciona.html">Como o Navegador Lê HTML</a>, um parágrafo não pode ter uma lista dentro: o navegador fechou o <code>p</code> quando chegou o <code>&lt;ul&gt;</code> e transformou o <code>&lt;/p&gt;</code> que sobrou num parágrafo vazio.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>Ver código-fonte (<kbd>Ctrl</kbd> + <kbd>U</kbd>)</th><th>Inspecionar (<kbd>F12</kbd>)</th></tr>
+<tr><td>Mostra</td><td>O texto do arquivo, como chegou</td><td>A árvore montada pelo navegador (o DOM)</td></tr>
+<tr><td>A lista da Ana</td><td><code>ul</code> dentro do <code>p</code></td><td><code>ul</code> ao lado do <code>p</code>, mais um <code>p</code> vazio</td></tr>
+<tr><td>Muda se o JavaScript mexer na página?</td><td>Não</td><td>Sim, na hora</td></tr>
+<tr><td>Dá para editar?</td><td>Não</td><td>Sim, mas só na memória (seção 5)</td></tr>
+<tr><td>Serve para</td><td>Ver o que você (ou o servidor) mandou</td><td>Ver o que o navegador entendeu, e por que a página está daquele jeito</td></tr>
+</table>
+</div>
+
+<p>Quando a página não está como você esperava, compare os dois. Se o Inspecionar mostra um elemento num lugar diferente do código-fonte, o navegador consertou alguma coisa ali, e o validador vai dizer o quê:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu compras.html
+"file:/home/ana/site/compras.html":13.1-13.4: error: No “p” element in scope but a “p” end tag seen.</pre>
+
+<div class="tryhtml" data-goal="nsel:tbody tr=2,texto:tbody tr:nth-child(2) td=Pudim">
+<p class="try-task"><strong>Experimente:</strong> as missões do guia olham o DOM, como o Inspecionar. Esta confere quantas linhas existem <strong>dentro do <code>tbody</code></strong>, e repare que o código não tem <code>tbody</code> nenhum. Acrescente uma segunda linha à tabela, com <code>Pudim</code> e <code>R$ 25</code>, copiando o padrão da primeira: <code>&lt;tr&gt;&lt;td&gt;Pudim&lt;/td&gt;&lt;td&gt;R$ 25&lt;/td&gt;&lt;/tr&gt;</code>. A missão vai achar as duas linhas dentro do <code>tbody</code> que o navegador criou.</p>
+<pre class="script" data-file="index.html">&lt;table&gt;
+&lt;tr&gt;&lt;td&gt;Bolo&lt;/td&gt;&lt;td&gt;R$ 30&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;table&gt;
+&lt;tr&gt;&lt;td&gt;Bolo&lt;/td&gt;&lt;td&gt;R$ 30&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Pudim&lt;/td&gt;&lt;td&gt;R$ 25&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. Mexer na página ao vivo</h2>
+<p>Na aba de elementos, você pode <strong>mudar</strong> a página: dê dois cliques num texto da árvore para editá-lo, num atributo para trocar o valor, ou selecione um elemento e aperte <kbd>Delete</kbd> para apagá-lo. Clicando com o botão direito num elemento da árvore, há também a opção de editar o HTML dele inteiro. A página muda na hora.</p>
+
+<p>É ótimo para testar uma ideia ("como ficaria com outro título?") sem mexer no arquivo. Mas atenção:</p>
+
+<div class="warning">
+<strong>Nada do que você muda no F12 é salvo</strong>
+<p>As mudanças acontecem só na árvore que está na memória do navegador, naquela aba. O arquivo no disco continua igual, e basta recarregar a página (<kbd>F5</kbd>) para tudo voltar. Gostou do resultado? Faça a mesma mudança no editor e salve. (E, pelo mesmo motivo, mudar uma página de outro site no F12 não muda nada para ninguém além de você: é só a cópia do seu navegador. Uma "captura de tela" de um site editado no F12 não prova nada.)</p>
+</div>
+
+<hr>
+
+<h2>6. O console</h2>
+<p>O <strong>Console</strong> é a aba onde o navegador escreve avisos e erros: um arquivo que não foi encontrado, um erro de JavaScript, um problema de segurança. Quando "alguma coisa não funciona", olhe ali primeiro. Erros aparecem destacados (normalmente em vermelho), avisos em amarelo.</p>
+
+<p>No console você também pode <strong>digitar</strong> JavaScript e ver a resposta na hora. Experimente, em qualquer página, digitar <code>document.title</code> e apertar <kbd>Enter</kbd>: o console responde com o título da página, o mesmo texto do <code>&lt;title&gt;</code> que aparece na aba. Na primeira vez que você tenta colar alguma coisa no console, o navegador pode mostrar um aviso de segurança e pedir uma confirmação: é uma proteção contra golpes em que alguém pede para você colar um código ali. <strong>Nunca cole no console um código que um desconhecido mandou.</strong></p>
+
+<p>O editor do guia tem um console parecido, embaixo do resultado. Nesta caixa, o <code>script.js</code> escreve o título da página nele:</p>
+
+<div class="tryhtml" data-goal="console:Título: Receitas da Ana">
+<p class="try-task"><strong>Experimente:</strong> o console está mostrando <code>Título: Document</code>, o título que o Emmet deixa por padrão. Troque o conteúdo do <code>&lt;title&gt;</code> no <code>index.html</code> por <code>Receitas da Ana</code> e veja o console mudar. Repare que o título não aparece no resultado (ele vai na aba do navegador), mas o JavaScript o encontra no DOM.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="script.js">console.log("Título: " + document.title);
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>7. Outras ferramentas úteis para HTML</h2>
+
+<h3>A aba de rede</h3>
+<p>A aba de rede (<em>Network</em>) lista cada arquivo que a página pediu: o HTML, as imagens, o CSS, o JavaScript. Para cada um, ela mostra o <strong>código de status</strong> (<code>200</code>, <code>404</code>…), o tipo (o <code>Content-type</code>) e o tamanho, as mesmas informações que o <code>curl -i</code> mostrava em <a href="como-funciona.html">Como o Navegador Lê HTML</a>. Ela só registra o que acontece com o painel aberto, então abra o F12 e recarregue a página. Uma imagem que não aparece quase sempre está ali, numa linha com <code>404</code>, com o endereço errado à vista (aula <a href="caminhos.html">Caminhos Relativos e Absolutos</a>).</p>
+
+<h3>O modo de celular</h3>
+<p>No Chrome, no Edge e no Firefox, o atalho <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> no macOS), com as ferramentas abertas, liga o <strong>modo de design responsivo</strong>: a página passa a ser desenhada numa "tela" do tamanho de um celular, que você pode trocar por outros tamanhos. É o jeito rápido de ver se a página funciona numa tela pequena (aula <a href="meta-viewport.html">Celular (meta viewport)</a>).</p>
+
+<h3>Acessibilidade</h3>
+<p>Os navegadores também mostram a <strong>árvore de acessibilidade</strong>, a versão do DOM que os leitores de tela usam, com o nome e o papel de cada elemento (no Chrome, num quadro ao lado da árvore de elementos; no Firefox, numa aba própria). Ela vai ser útil no Nível 3, em <a href="acessibilidade.html">Acessibilidade</a>.</p>
+
+<hr>
+
+<h2>Qual usar?</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th></tr>
+<tr><td>Ver o HTML exatamente como você escreveu ou como o servidor mandou</td><td>Ver código-fonte (<kbd>Ctrl</kbd> + <kbd>U</kbd>)</td></tr>
+<tr><td>Entender por que a página está com aquela cara (um espaço a mais, um negrito que vazou)</td><td>Inspecionar (<kbd>F12</kbd>, aba de elementos)</td></tr>
+<tr><td>Saber se o HTML está certo</td><td>O validador (<code>vnu</code> ou validator.w3.org/nu): o F12 não aponta erros de HTML</td></tr>
+<tr><td>Testar uma mudança rápida sem mexer no arquivo</td><td>Editar no Inspecionar (e depois repetir no editor)</td></tr>
+<tr><td>Achar um arquivo que não carregou</td><td>Console e aba de rede</td></tr>
+<tr><td>Ver a página como num celular</td><td>Modo de design responsivo (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Quando dá errado</h2>
+
+<div class="cenario">
+<strong>O F12 não abre nada</strong>
+<p><strong>O que significa:</strong> no notebook, o <kbd>F12</kbd> pode estar fazendo outra coisa (volume, brilho); no Safari, os recursos para desenvolvedores estão desligados; num computador de escola ou de empresa, o administrador pode ter bloqueado as ferramentas.</p>
+<p><strong>Como consertar:</strong> tente <kbd>Fn</kbd> + <kbd>F12</kbd>, ou <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>, ou o botão direito e Inspecionar. No Safari, ligue a opção nos ajustes avançados. Se for bloqueio, só o administrador libera.</p>
+</div>
+
+<div class="cenario">
+<strong>Eu consertei no F12, recarreguei e o erro voltou</strong>
+<p><strong>O que significa:</strong> as mudanças no F12 ficam só na memória do navegador. O arquivo não foi alterado.</p>
+<p><strong>Como consertar:</strong> faça a mesma mudança no editor, salve e recarregue.</p>
+</div>
+
+<div class="cenario">
+<strong>O Inspecionar mostra tags que eu não escrevi</strong>
+<p><strong>O que significa:</strong> o navegador completou o DOM. <code>html</code>, <code>head</code>, <code>body</code> e <code>tbody</code> aparecem sempre, mesmo que o arquivo não tenha. Isso é normal e não é erro.</p>
+<p><strong>Como consertar:</strong> nada a consertar. Se quiser que o código-fonte e a árvore fiquem iguais, escreva essas tags no arquivo.</p>
+</div>
+
+<div class="cenario">
+<strong>O Inspecionar mostra um elemento em outro lugar, ou um elemento vazio a mais</strong>
+<p><strong>O que significa:</strong> o navegador consertou um erro: um elemento num lugar proibido (a lista dentro do parágrafo), uma tag não fechada, um fechamento sem abertura.</p>
+<p><strong>Como consertar:</strong> passe a página no validador. A mensagem dele aponta a linha do problema, e a árvore do F12 mostra o efeito.</p>
+</div>
+
+<div class="cenario">
+<strong>O código-fonte não tem o texto que aparece na tela</strong>
+<p><strong>O que significa:</strong> o conteúdo foi colocado na página pelo JavaScript, depois que ela carregou. Muitos sites grandes funcionam assim: o código-fonte é quase vazio, e o JavaScript monta o resto. O Inspecionar mostra o DOM atual, com tudo o que o JavaScript acrescentou; o código-fonte, não.</p>
+<p><strong>Como consertar:</strong> para estudar o HTML de uma página assim, use o Inspecionar. Nas páginas deste guia (só HTML), os dois mostram o mesmo conteúdo, a não ser pelos consertos do navegador.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Ação</th><th>Windows e Linux</th><th>macOS</th></tr>
+<tr><td>Abrir as ferramentas do desenvolvedor</td><td><kbd>F12</kbd> ou <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd></td><td><kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>I</kbd></td></tr>
+<tr><td>Inspecionar um elemento</td><td colspan="2">Botão direito sobre ele → Inspecionar</td></tr>
+<tr><td>Ver código-fonte</td><td><kbd>Ctrl</kbd> + <kbd>U</kbd></td><td><kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>U</kbd> (no Firefox, <kbd>Cmd</kbd> + <kbd>U</kbd>)</td></tr>
+<tr><td>Código-fonte pela barra de endereço</td><td colspan="2"><code>view-source:</code> antes do endereço (Chrome, Edge, Firefox)</td></tr>
+<tr><td>Modo de design responsivo (celular)</td><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd></td><td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd></td></tr>
+<tr><td>Recarregar (desfaz o que você mudou no F12)</td><td><kbd>F5</kbd> ou <kbd>Ctrl</kbd> + <kbd>R</kbd></td><td><kbd>Cmd</kbd> + <kbd>R</kbd></td></tr>
+<tr><td>No console: o título da página</td><td colspan="2"><code>document.title</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A tecla</h3>
+<p>Que tecla abre as ferramentas do desenvolvedor no Chrome, no Edge e no Firefox, no Windows?</p>
+<div class="ex-code"><input data-answer="F12|f12" aria-label="tecla"></div>
+</div>
+
+<div class="exercise">
+<h3>2. O prefixo do código-fonte</h3>
+<p>Complete o endereço que mostra o código-fonte da página:</p>
+<div class="ex-code"><input data-answer="view-source:" aria-label="prefixo">https://exemplo.com/</div>
+</div>
+
+<div class="exercise">
+<h3>3. O elemento que aparece sozinho</h3>
+<p>Que elemento o navegador cria entre o <code>table</code> e o <code>tr</code> quando o arquivo não tem?</p>
+<div class="ex-code">&lt;<input data-answer="tbody" aria-label="elemento">&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que o <strong>Ver código-fonte</strong> mostra?</p>
+<label><input type="radio" name="q4"> A árvore que o navegador montou, com os consertos</label>
+<label><input type="radio" name="q4"> O texto do arquivo exatamente como chegou ao navegador</label>
+<label><input type="radio" name="q4"> Só o CSS da página</label>
+<label><input type="radio" name="q4"> Os erros de HTML, com linha e coluna</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. A Ana apagou um parágrafo pelo F12 e recarregou a página. O que acontece?</p>
+<label><input type="radio" name="q5"> O parágrafo some para sempre do arquivo</label>
+<label><input type="radio" name="q5"> O navegador pergunta se ela quer salvar</label>
+<label><input type="radio" name="q5"> O parágrafo some para todo mundo que visita o site</label>
+<label><input type="radio" name="q5"> O parágrafo volta: a mudança estava só na memória do navegador</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. No código-fonte, a lista está dentro do parágrafo; no Inspecionar, ela está ao lado, com um <code>p</code> vazio depois. O que isso indica?</p>
+<label><input type="radio" name="q6"> Que o navegador consertou um erro de HTML, e vale a pena passar a página no validador</label>
+<label><input type="radio" name="q6"> Que o F12 está com defeito</label>
+<label><input type="radio" name="q6"> Que o arquivo não foi salvo</label>
+<label><input type="radio" name="q6"> Nada: o código-fonte e o Inspecionar nunca mostram a mesma coisa</label>
+</div>
+
+<h3>Missão final: o parágrafo que não fecha</h3>
+
+<div class="tryhtml" data-goal="nsel:p=2,nsel:p:empty=0,sel:p + ul,texto:p=Lista de compras:">
+<p class="try-task"><strong>Missão:</strong> este é o código da lista de compras da Ana, com o erro desta aula. No DOM, ele vira um <code>p</code>, um <code>ul</code> e um <code>p</code> vazio. Conserte de verdade: feche o primeiro parágrafo logo depois de <code>Lista de compras:</code>, deixe a lista fora dele e apague o <code>&lt;/p&gt;</code> que sobrou. No fim, acrescente um parágrafo novo depois da lista: <code>&lt;p&gt;Comprar até sábado.&lt;/p&gt;</code>. A missão confere a árvore: dois <code>p</code>, nenhum vazio, e a lista logo depois do primeiro.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Lista de compras:
+&lt;ul&gt;
+  &lt;li&gt;Farinha&lt;/li&gt;
+  &lt;li&gt;Ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Lista de compras:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Farinha&lt;/li&gt;
+  &lt;li&gt;Ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Comprar até sábado.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Repare que o código inicial já tinha "dois <code>p</code>" no DOM, só que um deles vazio. Por isso a missão também confere que nenhum está vazio (<code>p:empty</code>). Se tiver um navegador de computador por perto, abra o F12 neste resultado e compare a árvore antes e depois do seu conserto.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>As ferramentas do desenvolvedor abrem com <kbd>F12</kbd>, <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> (<kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>I</kbd> no macOS) ou com o botão direito → Inspecionar. No Safari, é preciso ligá-las nos ajustes.</li>
+  <li><strong>Ver código-fonte</strong> (<kbd>Ctrl</kbd> + <kbd>U</kbd>, <code>view-source:</code>) mostra o arquivo como chegou. <strong>Inspecionar</strong> mostra o <strong>DOM</strong>: a árvore montada pelo navegador, com os consertos dele.</li>
+  <li>Elementos que você não escreveu (<code>html</code>, <code>head</code>, <code>body</code>, <code>tbody</code>) aparecem no Inspecionar: é normal. Um elemento fora do lugar ou um <code>p</code> vazio é sinal de erro consertado; o validador diz qual.</li>
+  <li>Mudar a página no F12 é ótimo para testar, mas nada é salvo: recarregou, voltou.</li>
+  <li>O Console mostra avisos e erros e aceita JavaScript (nunca cole código de desconhecidos). A aba de rede mostra cada arquivo pedido, com o status. O modo responsivo (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd>) imita um celular.</li>
+  <li>O F12 não aponta erros de HTML: para isso, o validador.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
