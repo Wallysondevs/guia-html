@@ -34,7 +34,7 @@
 </ul>
 </div>
 
-<p>Os arquivos desta aula estão na pasta <code>~/site</code> da máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>) e foram conferidos com o validador W3C (<code>vnu</code>). Os exemplos com mais de um arquivo usam o editor do guia: cada aba é um arquivo, e o iframe abre a outra aba de verdade.</p>
+<p>Os arquivos desta aula estão na pasta <code>~/site</code> da máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>) e foram conferidos com o validador W3C (<code>vnu</code>). Os exemplos com mais de um arquivo usam o editor do guia: cada aba é um arquivo, e o iframe abre a outra aba de verdade. (Com o guia aberto direto do disco, ou numa janela anônima do Firefox, o editor usa um modo simples, e aí o iframe não acha a outra aba: aparece uma página de erro 404 dentro dele.)</p>
 
 <hr>
 
@@ -233,27 +233,25 @@ i-semtitle.html                « nenhum erro: o validador não exige title no i
 
 <p>Os valores vão separados por espaço: <code>sandbox="allow-scripts allow-forms"</code>. A regra é a do <strong>menor privilégio</strong>: comece com <code>sandbox</code> vazio e libere só o que o conteúdo precisa para funcionar.</p>
 
-<p>No editor abaixo, a Ana pôs um joguinho dentro de um quadro com <code>sandbox</code>. O botão do jogo usa JavaScript (um <code>onclick</code>):</p>
+<p>No editor abaixo, a Ana pôs um joguinho dentro de um quadro com <code>sandbox</code>. O jogo é pequeno, então está escrito no próprio <code>srcdoc</code> (seção 4), com aspas simples nos atributos de dentro. A resposta começa escondida (<code>hidden</code>), e o botão usa JavaScript (um <code>onclick</code>) para mostrá-la: no script, o <code>id</code> <code>resposta</code> vira um nome que dá para usar direto.</p>
+<div class="note">
+<strong>Por que não <code>src="jogo.html"</code>?</strong>
+<p>Num site publicado, funcionaria. Mas, no editor do guia, um iframe com <code>sandbox</code> (sem <code>allow-same-origin</code>) não enxerga as outras abas da caixa: dentro dele aparece uma página de erro 404. Com o <code>srcdoc</code>, o jogo vem junto com a página.</p>
+</div>
 
 <div class="tryhtml" data-goal="attr:iframe[sandbox]=allow-scripts">
 <p class="try-task"><strong>Missão:</strong> clique no botão do jogo, no resultado: nada acontece, porque o <code>sandbox</code> bloqueou o JavaScript. Libere <strong>só</strong> os scripts no <code>sandbox</code> e clique de novo.</p>
 <pre class="script" data-file="index.html">&lt;h1&gt;Joguinho da lojinha&lt;/h1&gt;
-&lt;iframe src="jogo.html" title="Jogo: adivinhe o doce" sandbox width="400" height="150"&gt;&lt;/iframe&gt;
-</pre>
-<pre class="script" data-file="jogo.html">&lt;!DOCTYPE html&gt;
-&lt;html lang="pt-BR"&gt;
-&lt;head&gt;
-&lt;meta charset="utf-8"&gt;
-&lt;title&gt;Jogo&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;p id="dica"&gt;É redondo, de chocolate e tem granulado.&lt;/p&gt;
-&lt;button type="button" onclick="document.getElementById('dica').textContent = 'É o brigadeiro!'"&gt;Ver a resposta&lt;/button&gt;
-&lt;/body&gt;
-&lt;/html&gt;
+&lt;iframe sandbox title="Jogo: adivinhe o doce" width="400" height="150"
+  srcdoc="&lt;p&gt;É redondo, de chocolate e tem granulado.&lt;/p&gt;
+  &lt;p id='resposta' hidden&gt;É o brigadeiro!&lt;/p&gt;
+  &lt;button type='button' onclick='resposta.hidden = false'&gt;Ver a resposta&lt;/button&gt;"&gt;&lt;/iframe&gt;
 </pre>
 <pre class="solucao" data-file="index.html">&lt;h1&gt;Joguinho da lojinha&lt;/h1&gt;
-&lt;iframe src="jogo.html" title="Jogo: adivinhe o doce" sandbox="allow-scripts" width="400" height="150"&gt;&lt;/iframe&gt;
+&lt;iframe sandbox="allow-scripts" title="Jogo: adivinhe o doce" width="400" height="150"
+  srcdoc="&lt;p&gt;É redondo, de chocolate e tem granulado.&lt;/p&gt;
+  &lt;p id='resposta' hidden&gt;É o brigadeiro!&lt;/p&gt;
+  &lt;button type='button' onclick='resposta.hidden = false'&gt;Ver a resposta&lt;/button&gt;"&gt;&lt;/iframe&gt;
 </pre>
 </div>
 
@@ -445,8 +443,8 @@ $ vnu i-sandbox-token.html
 
 <h3>Missão final: o mapa no fim da página</h3>
 
-<div class="tryhtml" data-goal="attr:iframe[src]=mapa.html,sel:iframe[title],nsel:iframe[title='']=0,attr:iframe[width]=420,attr:iframe[height]=270,attr:iframe[loading]=lazy,attr:iframe[sandbox]=">
-<p class="try-task"><strong>Missão:</strong> no fim da página inicial, a Ana quer mostrar o mapa (a aba <code>mapa.html</code>) num quadro. Crie o <code>&lt;iframe&gt;</code> com: <code>src</code> para <code>mapa.html</code>, um <code>title</code> que diga o que é, tamanho <code>420</code> × <code>270</code> (a imagem do mapa tem 400 × 250, mais a margem da página de dentro), carregamento preguiçoso e um <code>sandbox</code> <strong>vazio</strong> (o mapa é só uma imagem: não precisa de nenhuma permissão).</p>
+<div class="tryhtml" data-goal="attr:iframe[src]=mapa.html,sel:iframe[title],nsel:iframe[title='']=0,attr:iframe[width]=420,attr:iframe[height]=270,attr:iframe[loading]=lazy">
+<p class="try-task"><strong>Missão:</strong> no fim da página inicial, a Ana quer mostrar o mapa (a aba <code>mapa.html</code>) num quadro. Crie o <code>&lt;iframe&gt;</code> com: <code>src</code> para <code>mapa.html</code>, um <code>title</code> que diga o que é, tamanho <code>420</code> × <code>270</code> (a imagem do mapa tem 400 × 250, mais a margem da página de dentro), carregamento preguiçoso. Aqui não precisa de <code>sandbox</code>: o mapa é uma página da própria Ana, e não de outro site (seção 6).</p>
 <pre class="script" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
 &lt;p&gt;Bolos, brigadeiros e tortas feitos todo dia.&lt;/p&gt;
 &lt;h2&gt;Como chegar&lt;/h2&gt;
@@ -459,14 +457,14 @@ $ vnu i-sandbox-token.html
 &lt;title&gt;Mapa&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
-&lt;img src="assets/midia/mapa-400.png" alt="Mapa: a Lojinha da Ana fica na esquina da Rua das Flores com a Avenida Central, ao lado da Praça da Árvore" width="400" height="250"&gt;
+&lt;img src="assets/midia/mapa-400.png" alt="Mapa: a Lojinha da Ana fica na esquina da Rua das Flores com a Avenida Central; a Praça da Árvore fica na esquina oposta" width="400" height="250"&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </pre>
 <pre class="solucao" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
 &lt;p&gt;Bolos, brigadeiros e tortas feitos todo dia.&lt;/p&gt;
 &lt;h2&gt;Como chegar&lt;/h2&gt;
-&lt;iframe src="mapa.html" title="Mapa da lojinha" width="420" height="270" loading="lazy" sandbox&gt;&lt;/iframe&gt;
+&lt;iframe src="mapa.html" title="Mapa da lojinha" width="420" height="270" loading="lazy"&gt;&lt;/iframe&gt;
 </pre>
 </div>
 
