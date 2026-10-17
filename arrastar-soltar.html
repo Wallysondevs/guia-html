@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Arrastar e Soltar — draggable e um JavaScript mínimo | Guia HTML</title>
+<meta name="description" content="Arrastar e soltar no HTML para quem nunca fez um site: o que já arrasta sozinho, o atributo draggable (true e false, e por que draggable sem valor não funciona), os eventos dragstart, dragover e drop com um JavaScript mínimo, o preventDefault esquecido, acessibilidade e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Arrastar e Soltar</span></h1>
+
+<p class="intro">Arrastar um arquivo para a lixeira, mudar um cartão de coluna num quadro de tarefas, puxar uma foto para dentro de um e-mail: tudo isso é <strong>arrastar e soltar</strong> (em inglês, <em>drag and drop</em>). O HTML tem um atributo para dizer "este elemento pode ser arrastado", o <code>draggable</code>. Mas o HTML sozinho só faz <strong>metade</strong> do trabalho: o "soltar" precisa de um pouco de JavaScript. Nesta aula a Ana monta um quadro de tarefas da cozinha, com o mínimo de JavaScript possível, e aprende o erro que faz o "soltar" nunca acontecer.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que o navegador já deixa arrastar sozinho: links, imagens e texto selecionado.</li>
+  <li>O atributo <code>draggable="true"</code> e o <code>draggable="false"</code>, e por que <code>draggable</code> sem valor <strong>não</strong> funciona.</li>
+  <li>Os três eventos do arraste: <code>dragstart</code>, <code>dragover</code> e <code>drop</code>.</li>
+  <li>O <code>preventDefault()</code> que, esquecido, faz o elemento nunca ser solto.</li>
+  <li>Por que o arraste precisa de uma alternativa para teclado e celular.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram conferidos no <strong>validador W3C</strong> (<code>vnu</code> 26.10.12, o mesmo do validator.w3.org) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/arrastar</code>. Os arrastes foram feitos de verdade, com o mouse simulado, no Chromium 155. Os quadros "Resultado" e "Experimente" usam o <strong>seu</strong> navegador: pegue os itens com o mouse e arraste.</p>
+
+<hr>
+
+<h2>A ideia: os ímãs da geladeira</h2>
+<p>A Ana organiza a semana com ímãs na porta da geladeira: um quadro "A fazer" e outro "Feito". Mudar um ímã de lugar tem três momentos: <strong>pegar</strong>, <strong>passar por cima</strong> do quadro e <strong>largar</strong>. Na página é igual, e cada momento tem um nome:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na geladeira</th><th>Na página</th><th>Quem faz</th></tr>
+<tr><td>O ímã pode ser pego</td><td><code>draggable="true"</code></td><td>HTML</td></tr>
+<tr><td>Pegar o ímã</td><td>evento <code>dragstart</code> ("começo do arraste")</td><td>JavaScript</td></tr>
+<tr><td>Passar por cima do quadro, que diz "aqui pode"</td><td>evento <code>dragover</code> ("arrastando por cima") + <code>preventDefault()</code></td><td>JavaScript</td></tr>
+<tr><td>Largar o ímã no quadro</td><td>evento <code>drop</code> ("soltar")</td><td>JavaScript</td></tr>
+</table>
+</div>
+
+<p>O HTML decide o que pode ser <strong>pego</strong>. Onde ele pode ser <strong>largado</strong> e o que acontece depois é decisão do JavaScript.</p>
+
+<hr>
+
+<h2>1. O que já arrasta sozinho</h2>
+<p>Antes de qualquer atributo, três coisas já são arrastáveis em qualquer página: <strong>links</strong>, <strong>imagens</strong> e <strong>texto selecionado</strong>. Experimente no Resultado: arraste o link para a barra de endereços do navegador (ele abre a página) ou selecione um pedaço do parágrafo e arraste.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Selecione um pedaço deste texto e arraste.&lt;/p&gt;
+&lt;p&gt;Este link também arrasta: &lt;a href="https://example.com/"&gt;example.com&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Mas este parágrafo inteiro não sai do lugar.&lt;/p&gt;
+</pre>
+
+<p>O JavaScript enxerga isso pela propriedade <code>draggable</code> de cada elemento. No Chromium 155, um <code>&lt;a href&gt;</code> e um <code>&lt;img&gt;</code> deram <code>true</code>; um <code>&lt;p&gt;</code> comum deu <code>false</code>.</p>
+
+<hr>
+
+<h2>2. Deixar qualquer elemento arrastável: <code>draggable="true"</code></h2>
+<p>Para que um parágrafo, um item de lista ou um cartão possa ser pego, escreva <code>draggable="true"</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;A fazer&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li draggable="true"&gt;Comprar farinha&lt;/li&gt;
+  &lt;li&gt;Lavar a forma&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>draggable</dt><dd>"Arrastável". O nome vem do inglês <em>drag</em>, "arrastar".</dd>
+  <dt>="true"</dt><dd>"Verdadeiro": sim, pode ser arrastado. O valor é <strong>obrigatório</strong> (veja logo abaixo).</dd>
+  <dt>&lt;li&gt;Lavar a forma&lt;/li&gt;</dt><dd>Sem o atributo: continua um item comum, que não sai do lugar.</dd>
+</dl>
+
+<p>No Resultado, pegue "Comprar farinha" com o mouse: o navegador desenha uma cópia meio transparente do item, que segue o cursor. Tente com "Lavar a forma": em vez de arrastar, o mouse seleciona o texto. E repare no que acontece quando você solta "Comprar farinha" em qualquer lugar: <strong>nada</strong>. A cópia some e o item continua onde estava. É a metade do trabalho que falta, e ela fica para a seção 4.</p>
+
+<h3>Os valores: só <code>true</code> e <code>false</code></h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você escreve</th><th>O que o navegador faz</th><th>Validador</th></tr>
+<tr><td><code>draggable="true"</code></td><td>Arrastável</td><td>certo</td></tr>
+<tr><td><code>draggable="false"</code></td><td>Não arrastável, mesmo que seja link ou imagem</td><td>certo</td></tr>
+<tr><td>Sem o atributo</td><td>O padrão: links, imagens e texto selecionado arrastam; o resto, não</td><td>certo</td></tr>
+<tr><td><code>draggable</code> (sem valor)</td><td><strong>Não</strong> arrastável: valor desconhecido é tratado como "sem o atributo"</td><td><code>Bad value “”</code></td></tr>
+<tr><td><code>draggable="sim"</code>, <code>"auto"</code></td><td>O mesmo: tratado como "sem o atributo"</td><td><code>Bad value</code></td></tr>
+</table>
+</div>
+
+<div class="warning">
+<strong><code>draggable</code> não é um atributo booleano</strong>
+<p>Atributos como <code>required</code> e <code>disabled</code> funcionam sozinhos, sem valor (aula <a href="atributos.html">Atributos</a>). O <code>draggable</code> parece um deles, mas não é: ele precisa do <code>="true"</code>. No Chromium 155, um <code>&lt;li draggable&gt;</code> deu <code>draggable</code> = <code>false</code>, e o arraste com o mouse simplesmente não começou. Maiúsculas no valor tanto faz (<code>"TRUE"</code> funcionou e passou no validador), mas o costume é escrever em minúsculas.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:li[draggable=true]=3">
+<p class="try-task"><strong>Missão:</strong> os três cartões do quadro da Ana ainda não saem do lugar. Deixe os <strong>três</strong> itens arrastáveis. Depois pegue cada um com o mouse para conferir (soltar ainda não faz nada).</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;A fazer&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Comprar farinha&lt;/li&gt;
+  &lt;li&gt;Lavar a forma&lt;/li&gt;
+  &lt;li&gt;Ralar as cenouras&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;A fazer&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li draggable="true"&gt;Comprar farinha&lt;/li&gt;
+  &lt;li draggable="true"&gt;Lavar a forma&lt;/li&gt;
+  &lt;li draggable="true"&gt;Ralar as cenouras&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Impedir o arraste: <code>draggable="false"</code></h2>
+<p>Às vezes o arraste automático atrapalha. Num jogo de memória, por exemplo, um clique um pouco tremido numa imagem vira um arraste, e o clique se perde. Com <code>draggable="false"</code>, o link ou a imagem fica parado:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="https://example.com/"&gt;Este link arrasta&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://example.com/" draggable="false"&gt;Este não&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<p>No Chromium 155, o segundo link deu <code>draggable</code> = <code>false</code>. Ele continua sendo um link: o clique funciona normalmente. Só o arraste foi desligado.</p>
+
+<div class="note">
+<strong>Não é proteção</strong>
+<p>Desligar o arraste de uma imagem não impede ninguém de copiá-la: o visitante ainda pode clicar com o botão direito e salvar, ou abrir o endereço da imagem. Use o <code>draggable="false"</code> para melhorar o uso da página, não para "proteger" arquivos.</p>
+</div>
+
+<hr>
+
+<h2>4. Soltar: o JavaScript mínimo</h2>
+<p>Agora a metade que falta. O quadro da Ana tem duas listas, "A fazer" e "Feito". O objetivo: arrastar um cartão da primeira e soltá-lo na segunda. O HTML só marca os cartões como arrastáveis e dá um <code>id</code> para cada coisa que o JavaScript precisa achar. O JavaScript cuida dos três momentos.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> arraste "Comprar farinha" para a caixa "Feito" e solte. Olhe o console embaixo: cada momento do arraste deixa uma mensagem. Depois arraste também "Lavar a forma" (ele ainda não está pronto: descubra por quê no HTML e conserte).</p>
+<pre class="script" data-file="index.html">&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;h2&gt;A fazer&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li id="farinha" draggable="true"&gt;Comprar farinha&lt;/li&gt;
+  &lt;li id="forma"&gt;Lavar a forma&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Feito&lt;/h2&gt;
+&lt;ul id="feito"&gt;&lt;/ul&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const feito = document.getElementById("feito");
+
+document.querySelectorAll("li").forEach(function (item) {
+  item.addEventListener("dragstart", function (evento) {
+    console.log("pegou: " + item.id);
+    evento.dataTransfer.setData("text/plain", item.id);
+  });
+});
+
+feito.addEventListener("dragover", function (evento) {
+  evento.preventDefault();
+});
+
+feito.addEventListener("drop", function (evento) {
+  evento.preventDefault();
+  const id = evento.dataTransfer.getData("text/plain");
+  console.log("soltou: " + id);
+  feito.appendChild(document.getElementById(id));
+});
+</pre>
+<pre class="script" data-file="estilo.css">#feito {
+  min-height: 3em;
+  border: 2px dashed gray;
+}
+</pre>
+</div>
+
+<p>Parte por parte:</p>
+
+<dl class="anatomy">
+  <dt>addEventListener("dragstart", …)</dt><dd>"Quando o arraste deste item <strong>começar</strong>, rode isto." É o momento de pegar o ímã.</dd>
+  <dt>evento.dataTransfer.setData("text/plain", item.id)</dt><dd>O <code>dataTransfer</code> ("transferência de dados") é um bilhete que viaja junto com o arraste. Aqui a Ana escreve nele o <code>id</code> do item, como texto puro (<code>"text/plain"</code>), para saber depois <strong>qual</strong> item foi solto.</dd>
+  <dt>addEventListener("dragover", …) + evento.preventDefault()</dt><dd>Enquanto o item passa por cima de <code>#feito</code>, este código diz "aqui pode soltar". Por padrão, <strong>nenhum</strong> lugar da página aceita um elemento solto; o <code>preventDefault()</code> ("impedir o padrão") cancela essa recusa. Sem ele, o <code>drop</code> nunca acontece (seção 5).</dd>
+  <dt>addEventListener("drop", …)</dt><dd>"Quando soltarem algo aqui, rode isto." O <code>preventDefault()</code> desta vez impede o navegador de fazer o que faria com um texto ou link solto (como abrir o endereço).</dd>
+  <dt>evento.dataTransfer.getData("text/plain")</dt><dd>Lê o bilhete: o <code>id</code> escrito no <code>dragstart</code>.</dd>
+  <dt>feito.appendChild(document.getElementById(id))</dt><dd>"Ponha este elemento como último filho de <code>#feito</code>." Como o item já existia na página, ele <strong>muda</strong> de lista, não é copiado.</dd>
+  <dt>estilo.css</dt><dd>Só para a lista "Feito", ainda vazia, ter altura e uma borda tracejada onde dá para mirar. (O CSS tem guia próprio, o futuro Guia CSS.)</dd>
+</dl>
+
+<p>Com este mesmo código, um arraste de verdade de "Comprar farinha" até a lista "Feito", no Chromium 155, deixou no console:</p>
+
+<pre class="file" data-file="Console">pegou: farinha
+soltou: farinha
+</pre>
+
+<p>E o HTML da página, depois do arraste, ficou assim (o arquivo continua igual; quem mudou foi a página aberta). A linha em branco em "A fazer" é o espaço que ficou onde o item estava: o <code>appendChild</code> leva só o elemento, não os espaços em volta dele.</p>
+
+<pre class="file" data-file="a página depois do arraste">&lt;h2&gt;A fazer&lt;/h2&gt;
+&lt;ul&gt;
+  
+  &lt;li id="forma"&gt;Lavar a forma&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Feito&lt;/h2&gt;
+&lt;ul id="feito"&gt;&lt;li id="farinha" draggable="true"&gt;Comprar farinha&lt;/li&gt;&lt;/ul&gt;
+</pre>
+
+<p>Como no <a href="contenteditable.html">contenteditable</a>, nada disso é salvo: recarregue a página e "Comprar farinha" volta para "A fazer". Guardar o quadro exige mais JavaScript, e isso fica para um guia de JavaScript.</p>
+
+<hr>
+
+<h2>5. O erro clássico: o <code>drop</code> que nunca acontece</h2>
+<p>O erro mais comum do arraste não dá mensagem nenhuma. A Ana escreveu o <code>dragover</code>, mas esqueceu o <code>preventDefault()</code>:</p>
+
+<pre class="file" data-file="script.js">feito.addEventListener("dragover", function (evento) {
+  console.log("passando por cima");
+});
+</pre>
+
+<p>O arraste de verdade no Chromium 155 deixou isto no console:</p>
+
+<pre class="file" data-file="Console">pegou: farinha
+passando por cima
+passando por cima
+</pre>
+
+<p>O item começou a ser arrastado, passou por cima da lista "Feito" (duas vezes, e muitas mais num arraste lento, porque o <code>dragover</code> repete enquanto o mouse se mexe) e... nenhum "soltou". O cursor mostra o sinal de "proibido" e, ao soltar, o item volta para o lugar. Sem o <code>preventDefault()</code> no <code>dragover</code>, o navegador entende que aquela lista <strong>não aceita</strong> o item, e o evento <code>drop</code> nem é disparado. Nenhum erro no console, nenhum aviso do validador (ele não lê JavaScript).</p>
+
+<div class="tip">
+<strong>Regra de bolso</strong>
+<p>Todo lugar que aceita um elemento solto precisa de <strong>dois</strong> ouvintes: <code>dragover</code> (com <code>preventDefault()</code>, para dizer "aqui pode") e <code>drop</code> (para fazer alguma coisa). Se o <code>drop</code> "não funciona", olhe primeiro o <code>dragover</code>.</p>
+</div>
+
+<hr>
+
+<h2>6. Acessibilidade: nem todo mundo arrasta</h2>
+<p>Arrastar exige um mouse, ou um dedo firme numa tela de toque. Quem navega pelo <strong>teclado</strong> (aula <a href="teclado.html">Teclado e Foco</a>) ou usa um <strong>leitor de tela</strong> não tem como "pegar e largar". O <code>draggable</code> não cria nenhum atalho de teclado, e nos celulares o suporte ao arraste varia de navegador para navegador.</p>
+
+<p>Por isso, o arraste deve ser um <strong>atalho</strong>, e não o único jeito. Ofereça também um botão que faz a mesma coisa:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ul&gt;
+  &lt;li draggable="true"&gt;Comprar farinha
+    &lt;button type="button"&gt;Mover para Feito&lt;/button&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<p>O botão recebe o foco com <kbd>Tab</kbd>, é anunciado pelo leitor de tela e funciona com <kbd>Enter</kbd>. O JavaScript dele seria um <code>addEventListener("click", …)</code> que faz o mesmo <code>appendChild</code> do <code>drop</code> (aula <a href="botoes.html">Botões</a>).</p>
+
+<hr>
+
+<h2>Formas de mover coisas na página: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>Bom para</th><th>Cuidado</th></tr>
+<tr><td>Botões ("Mover para Feito", "Subir", "Descer")</td><td>Funciona com mouse, teclado, toque e leitor de tela</td><td>Mais cliques para quem usa mouse</td></tr>
+<tr><td><code>draggable="true"</code> + JavaScript</td><td>Quadros de tarefas, listas para reordenar: rápido com o mouse</td><td>Precisa de JavaScript e de uma alternativa por teclado</td></tr>
+<tr><td>Soltar <strong>arquivos</strong> do computador numa área da página</td><td>Envio de fotos e documentos</td><td>Também é <code>dragover</code> + <code>drop</code>, lendo <code>evento.dataTransfer.files</code>; mantenha um <code>&lt;input type="file"&gt;</code> ao lado (aula <a href="tipos-input.html">Tipos de input</a>)</td></tr>
+<tr><td><code>draggable="false"</code></td><td>Evitar arrastes acidentais em links e imagens que são clicados muito</td><td>Não protege nada contra cópia</td></tr>
+</table>
+</div>
+
+<p><strong>Qual usar?</strong> Comece pelos botões, que funcionam para todo mundo. Acrescente o arraste como atalho quando ele deixar a página mais agradável para quem usa mouse.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<pre class="file" data-file="teste.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;Tarefas&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;p draggable="true"&gt;certo&lt;/p&gt;
+&lt;p draggable="false"&gt;certo&lt;/p&gt;
+&lt;p draggable&gt;vazio&lt;/p&gt;
+&lt;p draggable="sim"&gt;sim&lt;/p&gt;
+&lt;p draggable="TRUE"&gt;maiúsculo&lt;/p&gt;
+&lt;p draggable="auto"&gt;auto&lt;/p&gt;
+&lt;p dropzone="move"&gt;dropzone&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/arrastar">$ vnu teste.html
+"file:/home/ana/arrastar/teste.html":7.1-7.13: error: Bad value “” for attribute “draggable” on element “p”.
+"file:/home/ana/arrastar/teste.html":8.1-8.19: error: Bad value “sim” for attribute “draggable” on element “p”.
+"file:/home/ana/arrastar/teste.html":10.1-10.20: error: Bad value “auto” for attribute “draggable” on element “p”.
+"file:/home/ana/arrastar/teste.html":11.1-11.19: error: The “dropzone” attribute is obsolete. Use script to handle the “dragenter” and “dragover” events instead.</pre>
+
+<div class="cenario">
+<strong><code>Bad value “” for attribute “draggable” on element “p”.</code></strong>
+<p><strong>O que significa:</strong> "Valor ruim, vazio, para o atributo <code>draggable</code>". Você escreveu <code>draggable</code> sozinho, como se fosse um atributo booleano. O mesmo erro aparece com <code>“sim”</code> e <code>“auto”</code>.</p>
+<p><strong>O que o navegador faz:</strong> nenhum erro na tela; ele trata o valor como desconhecido e o elemento fica com o comportamento padrão. Um parágrafo ou item de lista simplesmente <strong>não arrasta</strong>.</p>
+<p><strong>Como consertar:</strong> <code>draggable="true"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>The “dropzone” attribute is obsolete. Use script to handle the “dragenter” and “dragover” events instead.</code></strong>
+<p><strong>O que significa:</strong> "O atributo <code>dropzone</code> é obsoleto. Use um script para tratar os eventos <code>dragenter</code> e <code>dragover</code>." Uma versão antiga da especificação tinha um atributo para marcar onde soltar, mas nenhum navegador chegou a usá-lo de verdade, e ele foi retirado. Não existe "zona de soltar" em HTML puro.</p>
+<p><strong>Como consertar:</strong> apague o atributo e use o <code>dragover</code> com <code>preventDefault()</code>, como na seção 4. (O <code>dragenter</code>, "entrou arrastando", dispara uma vez quando o item entra na área; é útil para destacar a área, mas o que libera o <code>drop</code> é o <code>dragover</code>.)</p>
+</div>
+
+<div class="cenario">
+<strong>O item arrasta, mas ao soltar volta para o lugar</strong>
+<p><strong>O que significa:</strong> o lugar onde você soltou não disse "aqui pode". Ou falta o ouvinte de <code>dragover</code>, ou ele existe sem o <code>evento.preventDefault()</code>, ou ele está no elemento errado (o <code>id</code> não confere).</p>
+<p><strong>Como consertar:</strong> no elemento que recebe, ponha um <code>dragover</code> com <code>evento.preventDefault()</code>. Um <code>console.log</code> dentro do <code>drop</code> mostra se ele está sendo chamado.</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>drop</code> acontece, mas o item não muda de lugar</strong>
+<p><strong>O que significa:</strong> o bilhete veio vazio. Faltou o <code>setData</code> no <code>dragstart</code>, ou o tipo escrito é diferente do lido (<code>setData("text/plain", …)</code> e <code>getData("text")</code> com nomes trocados, por exemplo), ou o item não tem <code>id</code>. Em alguns navegadores, um arraste sem nada no <code>dataTransfer</code> nem chega a começar. Por isso, sempre chame o <code>setData</code> no <code>dragstart</code>.</p>
+<p><strong>Como consertar:</strong> escreva e leia com o mesmo tipo, <code>"text/plain"</code>, e confira que todo item arrastável tem um <code>id</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>draggable="true"</code></td><td>O elemento pode ser arrastado</td></tr>
+<tr><td><code>draggable="false"</code></td><td>Não pode, nem se for link ou imagem</td></tr>
+<tr><td>evento <code>dragstart</code></td><td>O arraste começou (no elemento arrastado)</td></tr>
+<tr><td>evento <code>dragenter</code></td><td>O item entrou numa área (uma vez)</td></tr>
+<tr><td>evento <code>dragover</code></td><td>O item está passando por cima de uma área (repete); com <code>preventDefault()</code>, a área aceita</td></tr>
+<tr><td>evento <code>dragleave</code></td><td>O item saiu da área</td></tr>
+<tr><td>evento <code>drop</code></td><td>O item foi solto na área</td></tr>
+<tr><td>evento <code>dragend</code></td><td>O arraste terminou, com ou sem <code>drop</code> (no elemento arrastado)</td></tr>
+<tr><td><code>evento.dataTransfer.setData("text/plain", texto)</code></td><td>Escreve o bilhete do arraste</td></tr>
+<tr><td><code>evento.dataTransfer.getData("text/plain")</code></td><td>Lê o bilhete (no <code>drop</code>)</td></tr>
+<tr><td><code>evento.dataTransfer.files</code></td><td>Os arquivos soltos, quando vêm do computador</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Arrastável</h3>
+<p>Complete para que o cartão possa ser arrastado:</p>
+<div class="ex-code">&lt;li draggable="<input data-answer="true" aria-label="valor">"&gt;Comprar farinha&lt;/li&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Liberar o soltar</h3>
+<p>Complete a linha que diz "aqui pode soltar" dentro do ouvinte de <code>dragover</code>:</p>
+<div class="ex-code">evento.<input data-answer="preventDefault()|preventDefault();" aria-label="método"></div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. A Ana escreveu <code>&lt;li draggable&gt;Ovos&lt;/li&gt;</code>. O que acontece?</p>
+<label><input type="radio" name="q3"> O item arrasta normalmente</label>
+<label><input type="radio" name="q3"> O navegador mostra um erro na página</label>
+<label><input type="radio" name="q3"> O validador acusa <code>Bad value “”</code> e o item não arrasta</label>
+<label><input type="radio" name="q3"> A lista inteira passa a arrastar</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Sem nenhum atributo, o que já pode ser arrastado numa página?</p>
+<label><input type="radio" name="q4"> Nada</label>
+<label><input type="radio" name="q4"> Links, imagens e texto selecionado</label>
+<label><input type="radio" name="q4"> Todos os elementos</label>
+<label><input type="radio" name="q4"> Só os botões</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. O cartão arrasta, passa por cima da lista "Feito", mas o <code>drop</code> nunca é chamado. Qual o suspeito número um?</p>
+<label><input type="radio" name="q5"> Falta <code>evento.preventDefault()</code> no <code>dragover</code> da lista</label>
+<label><input type="radio" name="q5"> Falta <code>draggable="true"</code> na lista "Feito"</label>
+<label><input type="radio" name="q5"> O validador W3C bloqueou o script</label>
+<label><input type="radio" name="q5"> O <code>&lt;ul&gt;</code> não aceita filhos novos</label>
+</div>
+
+<h3>Missão final: o quadro da cozinha</h3>
+
+<div class="tryhtml" data-goal="nsel:#fazer li[draggable=true]=3,src:dragover[^]*preventDefault">
+<p class="try-task"><strong>Missão:</strong> o quadro está quase pronto, mas nada funciona. Conserte as duas metades: no <strong>HTML</strong>, deixe os três cartões de "A fazer" arrastáveis (um deles já tem o atributo, mas escrito errado); no <strong>script.js</strong>, complete o ouvinte de <code>dragover</code> para que a lista "Feito" aceite os cartões. Depois arraste os três para "Feito" e acompanhe o console.</p>
+<pre class="script" data-file="index.html">&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;h2&gt;A fazer&lt;/h2&gt;
+&lt;ul id="fazer"&gt;
+  &lt;li id="farinha"&gt;Comprar farinha&lt;/li&gt;
+  &lt;li id="forma" draggable&gt;Lavar a forma&lt;/li&gt;
+  &lt;li id="cenoura"&gt;Ralar as cenouras&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Feito&lt;/h2&gt;
+&lt;ul id="feito"&gt;&lt;/ul&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const feito = document.getElementById("feito");
+
+document.querySelectorAll("#fazer li").forEach(function (item) {
+  item.addEventListener("dragstart", function (evento) {
+    evento.dataTransfer.setData("text/plain", item.id);
+  });
+});
+
+feito.addEventListener("dragover", function (evento) {
+  // falta uma linha aqui
+});
+
+feito.addEventListener("drop", function (evento) {
+  const id = evento.dataTransfer.getData("text/plain");
+  console.log("feito: " + id);
+  feito.appendChild(document.getElementById(id));
+});
+</pre>
+<pre class="script" data-file="estilo.css">#feito {
+  min-height: 3em;
+  border: 2px dashed gray;
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;h2&gt;A fazer&lt;/h2&gt;
+&lt;ul id="fazer"&gt;
+  &lt;li id="farinha" draggable="true"&gt;Comprar farinha&lt;/li&gt;
+  &lt;li id="forma" draggable="true"&gt;Lavar a forma&lt;/li&gt;
+  &lt;li id="cenoura" draggable="true"&gt;Ralar as cenouras&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Feito&lt;/h2&gt;
+&lt;ul id="feito"&gt;&lt;/ul&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="solucao" data-file="script.js">const feito = document.getElementById("feito");
+
+document.querySelectorAll("#fazer li").forEach(function (item) {
+  item.addEventListener("dragstart", function (evento) {
+    evento.dataTransfer.setData("text/plain", item.id);
+  });
+});
+
+feito.addEventListener("dragover", function (evento) {
+  evento.preventDefault();
+});
+
+feito.addEventListener("drop", function (evento) {
+  const id = evento.dataTransfer.getData("text/plain");
+  console.log("feito: " + id);
+  feito.appendChild(document.getElementById(id));
+});
+</pre>
+</div>
+
+<p>Repare que a meta conta os cartões <strong>dentro de <code>#fazer</code></strong>: ela confere a página como foi carregada, antes de você arrastar qualquer coisa.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Links, imagens e texto selecionado já arrastam sozinhos. Para qualquer outro elemento, use <code>draggable="true"</code>; para impedir, <code>draggable="false"</code>.</li>
+  <li><code>draggable</code> não é booleano: sem valor, dá <code>Bad value “”</code> no validador e o elemento não arrasta.</li>
+  <li>O HTML só decide o que pode ser <strong>pego</strong>. Soltar precisa de JavaScript: <code>dragstart</code> (com <code>setData</code>), <code>dragover</code> (com <code>preventDefault()</code>) e <code>drop</code> (com <code>getData</code>).</li>
+  <li>Sem <code>preventDefault()</code> no <code>dragover</code>, o <code>drop</code> nunca acontece, e não aparece erro nenhum.</li>
+  <li>O atributo <code>dropzone</code> é obsoleto. Nada é salvo: recarregar a página desfaz os arrastes.</li>
+  <li>O arraste é um atalho para quem usa mouse. Ofereça sempre botões que fazem o mesmo, para teclado, toque e leitores de tela.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
