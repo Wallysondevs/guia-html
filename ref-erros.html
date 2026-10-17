@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Mensagens do Validador — os erros e avisos do W3C explicados | Guia HTML</title>
+<meta name="description" content="Referência das mensagens do validador W3C (vnu, o mesmo do validator.w3.org): como ler uma mensagem, error × warning × info, os códigos de saída, o vocabulário (stray, in scope, not allowed as child, bad value) e dezenas de mensagens reais, agrupadas, com o que cada uma significa, como consertar e a aula que ensina o assunto.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Mensagens do Validador</span></h1>
+
+<p class="intro">O navegador quase nunca reclama de um HTML errado: ele conserta sozinho, do jeito dele, e segue em frente. Quem reclama é o <strong>validador W3C</strong>. Esta página junta as mensagens que você mais vai ver, em inglês, como elas saem, com o que cada uma quer dizer, como consertar e a aula onde o assunto é explicado. Todas foram <strong>provocadas de verdade</strong>, com o <code>vnu</code> 26.10.12 na máquina da Ana. Para aprender a usar o validador, veja a aula <a href="validar.html">Validar o HTML</a>.</p>
+
+<div class="note">
+<strong>Como usar esta página</strong>
+<ul>
+  <li>Copie um pedaço da mensagem que apareceu para você (por exemplo, <code>Stray end tag</code>) e procure aqui com <kbd>Ctrl</kbd>+<kbd>F</kbd>.</li>
+  <li>Os arquivos de teste estão na pasta <code>~/ref/erros</code> da Ana, um erro por arquivo. No seu computador, o nome do arquivo e os números de linha e coluna serão outros; o <strong>texto</strong> da mensagem é o mesmo.</li>
+  <li>O validador on-line, <strong>validator.w3.org/nu</strong>, usa o mesmo programa: as mensagens são idênticas. O botão "Validar no W3C" do editor do guia manda o código para lá (só depois de você confirmar).</li>
+  <li>As mensagens usam aspas tipográficas “assim”. Ao procurar no Google, copie a mensagem inteira, com as aspas.</li>
+</ul>
+</div>
+
+<p>Atalhos: <a href="#ler">Ler uma mensagem</a> · <a href="#tipos">error, warning, info</a> · <a href="#vocabulario">Vocabulário</a> · <a href="#cascata">Erros em cascata</a> · <a href="#documento">Estrutura do documento</a> · <a href="#tags">Tags e fechamento</a> · <a href="#lugar">Elemento fora do lugar</a> · <a href="#atributos">Atributos</a> · <a href="#formularios">Formulários</a> · <a href="#tabelas">Tabelas</a> · <a href="#semantica">Títulos e semântica</a> · <a href="#head">head, CSS e scripts</a> · <a href="#entidades">Entidades e codificação</a> · <a href="#obsoletos">Obsoletos</a> · <a href="#silencio">O que ele não pega</a> · <a href="#experimente">Experimente</a></p>
+
+<hr>
+
+<h2 id="ler">Como ler uma mensagem</h2>
+<p>A página de receita da Ana tem dois problemas. O validador, no terminal:</p>
+<pre class="term" data-cwd="~/ref/demo">$ vnu receita.html
+"file:/home/ana/ref/demo/receita.html":9.1-9.20: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+"file:/home/ana/ref/demo/receita.html":1.16-2.6: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.
+$ echo $?
+1</pre>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Pedaço</th><th>O que quer dizer</th></tr>
+<tr><td><code>"file:/home/ana/ref/demo/receita.html"</code></td><td>O arquivo, escrito como endereço (<code>file:</code> = um arquivo do computador).</td></tr>
+<tr><td><code>9.1-9.20</code></td><td>Onde está o problema: da <strong>linha 9, coluna 1</strong> até a <strong>linha 9, coluna 20</strong>. Quase sempre é a tag inteira em que o erro aparece. Um intervalo como <code>1.16-2.6</code> atravessa duas linhas.</td></tr>
+<tr><td><code>error:</code></td><td>O tipo: erro. Veja a <a href="#tipos">próxima tabela</a>.</td></tr>
+<tr><td><code>An “img” element must have an “alt” attribute…</code></td><td>A mensagem: "Um elemento <code>img</code> precisa ter um atributo <code>alt</code>, a não ser em certas condições."</td></tr>
+<tr><td><code>echo $?</code> → <code>1</code></td><td>O código de saída do <code>vnu</code>: <code>1</code> = encontrou pelo menos um erro; <code>0</code> = nenhum erro.</td></tr>
+</table>
+</div>
+<p>Na aula <a href="validar.html">Validar o HTML</a> você aprende a rodar o <code>vnu</code> e a usar o validador on-line.</p>
+
+<h2 id="tipos">error, info warning e info</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tipo</th><th>O que é</th><th>Código de saída</th><th>Exemplo real</th></tr>
+<tr><td><code>error</code></td><td>O HTML está errado: quebra uma regra do padrão. Conserte sempre.</td><td><code>1</code></td><td><code>Element “head” is missing a required instance of child element “title”.</code></td></tr>
+<tr><td><code>error fatal</code></td><td>Um erro tão grave que o validador <strong>para</strong>: o resto do arquivo não é conferido.</td><td><code>1</code></td><td><code>Cannot recover after last error. Any further errors will be ignored.</code></td></tr>
+<tr><td><code>info warning</code></td><td>Um <strong>aviso</strong>: o HTML é válido, mas provavelmente há algo a melhorar (faltou o idioma, uma seção sem título, um atributo antigo).</td><td><code>0</code></td><td><code>Consider adding a “lang” attribute to the “html” start tag…</code></td></tr>
+<tr><td><code>info</code></td><td>Uma nota, só informação.</td><td><code>0</code></td><td><code>Trailing slash on void elements has no effect and interacts badly with unquoted attribute values.</code></td></tr>
+</table>
+</div>
+<p>Opções do <code>vnu</code> que ajudam (todas conferidas no lab):</p>
+<pre class="term" data-cwd="~/ref/erros">$ vnu semlang.html; echo "código: $?"
+"file:/home/ana/ref/erros/semlang.html":1.16-2.6: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.
+código: 0
+$ vnu --Werror semlang.html; echo "código: $?"
+"file:/home/ana/ref/erros/semlang.html":1.16-2.6: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.
+código: 1
+$ vnu --errors-only semlang.html; echo "código: $?"
+código: 0</pre>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Comando</th><th>O que faz</th></tr>
+<tr><td><code>vnu arquivo.html</code></td><td>Mostra erros, avisos e notas. Sem nenhuma mensagem = tudo certo.</td></tr>
+<tr><td><code>vnu --verbose arquivo.html</code></td><td>Também mostra o nome de cada arquivo conferido, mesmo os que passaram (assim você sabe que ele foi lido).</td></tr>
+<tr><td><code>vnu --errors-only arquivo.html</code></td><td>Só os erros; esconde avisos e notas.</td></tr>
+<tr><td><code>vnu --Werror arquivo.html</code></td><td>Trata avisos como erros: o código de saída vira <code>1</code> se houver qualquer aviso.</td></tr>
+<tr><td><code>vnu .</code></td><td>Confere todos os <code>.html</code> da pasta.</td></tr>
+<tr><td><code>vnu --stdout --format json arquivo.html</code></td><td>As mensagens em JSON, para outros programas lerem. Vem com o trecho do código (<code>"extract"</code>).</td></tr>
+</table>
+</div>
+
+<h2 id="vocabulario">O vocabulário das mensagens</h2>
+<p>As mesmas palavras aparecem em dezenas de mensagens. Sabendo estas, você entende quase todas:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Em inglês</th><th>Em português</th><th>Exemplo</th></tr>
+<tr><td><strong>start tag</strong> / <strong>end tag</strong></td><td>tag de abertura (<code>&lt;p&gt;</code>) / tag de fechamento (<code>&lt;/p&gt;</code>)</td><td><code>End tag “h2” seen…</code></td></tr>
+<tr><td><strong>seen</strong></td><td>"vista", encontrada</td><td><code>Start tag seen without seeing a doctype first.</code></td></tr>
+<tr><td><strong>stray</strong></td><td>perdida, solta: uma tag que não tem par ou não cabe ali</td><td><code>Stray end tag “div”.</code></td></tr>
+<tr><td><strong>open elements</strong> / <strong>unclosed element</strong></td><td>elementos ainda abertos / elemento que não foi fechado</td><td><code>Unclosed element “div”.</code></td></tr>
+<tr><td><strong>in scope</strong></td><td>"no alcance": um elemento aberto que essa tag poderia fechar</td><td><code>No “p” element in scope but a “p” end tag seen.</code></td></tr>
+<tr><td><strong>not allowed as child of</strong></td><td>não pode ser filho de (ficar direto dentro de)</td><td><code>Element “p” not allowed as child of element “ul”…</code></td></tr>
+<tr><td><strong>descendant</strong></td><td>descendente: dentro, em qualquer nível</td><td><code>…must not appear as a descendant of the “button” element.</code></td></tr>
+<tr><td><strong>in this context</strong> / <strong>at this point</strong></td><td>"neste lugar"</td><td><code>Attribute “tamanho” not allowed on element “p” at this point.</code></td></tr>
+<tr><td><strong>missing required</strong></td><td>falta um obrigatório</td><td><code>Element “a” is missing required attribute “href”.</code></td></tr>
+<tr><td><strong>bad value</strong></td><td>valor ruim, inválido</td><td><code>Bad value “200px” for attribute “width”…</code></td></tr>
+<tr><td><strong>duplicate</strong></td><td>repetido</td><td><code>Duplicate ID “x”.</code></td></tr>
+<tr><td><strong>obsolete</strong></td><td>obsoleto: saiu do HTML</td><td><code>The “center” element is obsolete.</code></td></tr>
+<tr><td><strong>consider</strong></td><td>"considere": uma sugestão, típica dos avisos</td><td><code>Consider adding a “lang” attribute…</code></td></tr>
+<tr><td><strong>(Suppressing further errors from this subtree.)</strong></td><td>"não vou mostrar mais erros do que está dentro deste elemento"</td><td>Depois de um elemento fora do lugar.</td></tr>
+</table>
+</div>
+
+<h2 id="cascata">Erros em cascata: conserte o primeiro</h2>
+<p>Um erro pode gerar várias mensagens. Uma <code>&lt;div&gt;</code> que nunca foi fechada dá duas, e uma delas aponta para a linha do <code>&lt;/body&gt;</code>, longe do erro de verdade:</p>
+<pre class="term" data-cwd="~/ref/erros">$ vnu naofechou.html
+"file:/home/ana/ref/erros/naofechou.html":10.1-10.7: error: End tag for  “body” seen, but there were unclosed elements.
+"file:/home/ana/ref/erros/naofechou.html":8.1-8.5: error: Unclosed element “div”.</pre>
+<p>(O espaço duplo em <code>for  “body”</code> sai assim mesmo do <code>vnu</code>.) Regras práticas:</p>
+<ol class="passo">
+  <li>Conserte <strong>a primeira mensagem</strong> e rode o validador de novo. Muitas das outras somem sozinhas.</li>
+  <li>Se a mensagem aponta para o <code>&lt;/body&gt;</code> ou para o fim do arquivo, o erro de verdade está <strong>antes</strong>: procure a tag que ficou aberta.</li>
+  <li>Depois de um <code>error fatal</code>, o validador para. Conserte e rode de novo para ver o resto.</li>
+</ol>
+
+<h2 id="documento">Estrutura do documento</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem real</th><th>O que significa e como consertar</th><th>Aula</th></tr>
+<tr><td><code>Start tag seen without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.</code></td><td>Faltou o <code>&lt;!DOCTYPE html&gt;</code> na primeira linha. Sem ele, o navegador desenha a página em "modo quirks", imitando navegadores dos anos 1990.</td><td><a href="doctype.html">O DOCTYPE</a></td></tr>
+<tr><td><code>Obsolete doctype. Expected “&lt;!DOCTYPE html&gt;”.</code></td><td>Um DOCTYPE antigo, como o do HTML 4.01. Troque pela forma curta.</td><td><a href="doctype.html">O DOCTYPE</a></td></tr>
+<tr><td><code>Element “head” is missing a required instance of child element “title”.</code></td><td>O <code>head</code> não tem <code>&lt;title&gt;</code>, que é obrigatório.</td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>Element “title” must not be empty.</code></td><td>O <code>&lt;title&gt;&lt;/title&gt;</code> está vazio. Escreva o título da página.</td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>Stray end tag “head”.</code> seguido de <code>Start tag “body” seen but an element of the same type was already open.</code></td><td>Há <strong>texto</strong> dentro do <code>head</code> (no teste, a palavra "Receitas" solta). O navegador fecha o <code>head</code> ali e abre o <code>body</code> sozinho; aí o <code>&lt;/head&gt;</code> e o <code>&lt;body&gt;</code> de verdade sobram. Leve o texto para o <code>body</code>.</td><td><a href="head.html">O head</a></td></tr>
+<tr><td><code>Start tag “body” seen but an element of the same type was already open.</code></td><td>Dois <code>&lt;body&gt;</code>. Uma página tem um só.</td><td><a href="estrutura.html">Estrutura de uma Página</a></td></tr>
+<tr><td><code>Stray start tag “p”.</code> e <code>error fatal: Cannot recover after last error. Any further errors will be ignored.</code></td><td>Há conteúdo <strong>depois</strong> do <code>&lt;/html&gt;</code>. Tudo tem de ficar dentro do <code>body</code>.</td><td><a href="estrutura.html">Estrutura de uma Página</a></td></tr>
+<tr><td><code>Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.</code> (aviso)</td><td>Faltou o idioma: <code>&lt;html lang="pt-BR"&gt;</code>. Sem ele, o leitor de tela pode ler o texto com a pronúncia de outra língua.</td><td><a href="estrutura.html">Estrutura de uma Página</a></td></tr>
+</table>
+</div>
+
+<h2 id="tags">Tags e fechamento</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem real</th><th>O que significa e como consertar</th><th>Aula</th></tr>
+<tr><td><code>End tag “h2” seen, but there were open elements.</code></td><td>Abriu com uma tag e fechou com outra: <code>&lt;h1&gt;…&lt;/h2&gt;</code>. Use o mesmo nome nas duas.</td><td><a href="elementos.html">Elementos e Tags</a></td></tr>
+<tr><td><code>Unclosed element “div”.</code></td><td>A <code>div</code> foi aberta e nunca fechada. A mensagem aponta para a abertura. Normalmente vem junto com <code>End tag for  “body” seen, but there were unclosed elements.</code></td><td><a href="elementos.html">Elementos e Tags</a></td></tr>
+<tr><td><code>Stray end tag “div”.</code></td><td>Um <code>&lt;/div&gt;</code> sobrando, sem abertura. Apague ou ache onde faltou o <code>&lt;div&gt;</code>.</td><td><a href="elementos.html">Elementos e Tags</a></td></tr>
+<tr><td><code>End tag “strong” violates nesting rules.</code> e <code>No “em” element in scope but a “em” end tag seen.</code></td><td>Tags cruzadas: <code>&lt;strong&gt;&lt;em&gt;…&lt;/strong&gt;&lt;/em&gt;</code>. Feche na ordem contrária da abertura: <code>&lt;strong&gt;&lt;em&gt;…&lt;/em&gt;&lt;/strong&gt;</code>.</td><td><a href="aninhamento.html">Aninhamento</a></td></tr>
+<tr><td><code>No “p” element in scope but a “p” end tag seen.</code></td><td>Um <code>&lt;div&gt;</code> (ou outro bloco) dentro de um <code>&lt;p&gt;</code>. O navegador fecha o parágrafo antes do bloco, e o seu <code>&lt;/p&gt;</code> fica sem par. Um parágrafo só aceita conteúdo de texto.</td><td><a href="paragrafos.html">Parágrafos</a></td></tr>
+<tr><td><code>Start tag “a” seen but an element of the same type was already open.</code> e <code>Stray end tag “a”.</code></td><td>Um link dentro de outro link. Não pode: feche o primeiro antes de abrir o segundo.</td><td><a href="links.html">Links</a></td></tr>
+<tr><td><code>End tag “br”.</code></td><td>Escreveu <code>&lt;/br&gt;</code>. O <code>br</code> é vazio: só <code>&lt;br&gt;</code>. (O navegador ainda desenha uma quebra para o <code>&lt;/br&gt;</code>.)</td><td><a href="quebras.html">Quebras</a></td></tr>
+<tr><td><code>Stray end tag “img”.</code></td><td>Escreveu <code>&lt;/img&gt;</code>. Elementos vazios não têm fechamento.</td><td><a href="imagens.html">Imagens</a></td></tr>
+<tr><td><code>Self-closing syntax (“/&gt;”) used on a non-void HTML element. Ignoring the slash and treating as a start tag.</code></td><td><code>&lt;div /&gt;</code>: a barra não fecha um elemento que não é vazio. Escreva <code>&lt;div&gt;&lt;/div&gt;</code>.</td><td><a href="elementos.html">Elementos e Tags</a></td></tr>
+<tr><td><code>Trailing slash on void elements has no effect and interacts badly with unquoted attribute values.</code> (info)</td><td><code>&lt;br /&gt;</code>: a barra é permitida, mas não faz nada. Pode tirar.</td><td><a href="elementos.html">Elementos e Tags</a></td></tr>
+<tr><td><code>End of file reached when inside an attribute value. Ignoring tag.</code></td><td>Faltou fechar as aspas de um atributo: <code>&lt;a href="receitas.html&gt;</code>. O navegador lê o <strong>resto do arquivo</strong> como parte do valor, e tudo depois some da tela.</td><td><a href="atributos.html">Atributos</a></td></tr>
+<tr><td><code>No space between attributes.</code></td><td><code>class="aviso"id="topo"</code>: ponha um espaço entre os atributos.</td><td><a href="atributos.html">Atributos</a></td></tr>
+<tr><td><code>End of file inside comment.</code></td><td>Um <code>&lt;!--</code> sem o <code>--&gt;</code>. Tudo depois dele vira comentário e some da tela.</td><td><a href="comentarios.html">Comentários</a></td></tr>
+</table>
+</div>
+
+<h2 id="lugar">Elemento fora do lugar</h2>
+<p>Cada elemento tem regras sobre o que pode ficar dentro dele (o "modelo de conteúdo").</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem real</th><th>O que significa e como consertar</th><th>Aula</th></tr>
+<tr><td><code>Element “p” not allowed as child of element “ul” in this context. (Suppressing further errors from this subtree.)</code></td><td>Dentro de <code>ul</code> e <code>ol</code>, só <code>li</code>. Ponha o título da lista antes do <code>&lt;ul&gt;</code>, ou o texto dentro de um <code>li</code>.</td><td><a href="listas.html">Listas</a></td></tr>
+<tr><td><code>Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)</code></td><td>Um <code>li</code> solto, sem <code>ul</code> ou <code>ol</code> em volta.</td><td><a href="listas.html">Listas</a></td></tr>
+<tr><td><code>Element “li” not allowed as child of element “dl” in this context. (Suppressing further errors from this subtree.)</code></td><td>Dentro de <code>dl</code>, use <code>dt</code> e <code>dd</code>.</td><td><a href="listas-descricao.html">Listas de Descrição</a></td></tr>
+<tr><td><code>Element “p” not allowed as child of element “figure” in this context. (Suppressing further errors from this subtree.)</code></td><td>O <code>figcaption</code> tem de ser o primeiro ou o último filho do <code>figure</code>. No teste, havia um <code>&lt;p&gt;</code> depois dele.</td><td><a href="figure.html">figure e figcaption</a></td></tr>
+<tr><td><code>Start tag “p” seen in “table”.</code> e <code>error fatal: Cannot recover after last error…</code></td><td>Texto ou parágrafo direto dentro de <code>&lt;table&gt;</code>. O navegador joga esse conteúdo para <strong>antes</strong> da tabela. Para o título, use <code>&lt;caption&gt;</code>.</td><td><a href="tabelas-legenda.html">Legenda e Acessibilidade</a></td></tr>
+<tr><td><code>The element “a” with the attribute “href” must not appear as a descendant of the “button” element.</code></td><td>Um link dentro de um botão. Escolha um: é um link (vai para outra página) ou um botão (faz uma ação)?</td><td><a href="botoes.html">Botões</a></td></tr>
+<tr><td><code>Saw a “form” start tag, but there was already an active “form” element. Nested forms are not allowed. Ignoring the tag.</code></td><td>Um formulário dentro de outro. O navegador ignora o de dentro. Use formulários separados.</td><td><a href="formularios.html">Formulários</a></td></tr>
+<tr><td><code>Element “paragrafo” not allowed as child of element “body” in this context.</code> e <code>The “paragrafo” element is a completely-unknown element that is not allowed anywhere in any HTML content.</code></td><td>Um elemento que não existe (nome em português ou com erro de digitação). Veja a lista em <a href="ref-elementos.html">Todos os Elementos</a>.</td><td><a href="elementos.html">Elementos e Tags</a></td></tr>
+<tr><td><code>A document must not include more than one visible “main” element.</code></td><td>Dois <code>&lt;main&gt;</code>. Cada página tem um só conteúdo principal.</td><td><a href="main.html">main</a></td></tr>
+</table>
+</div>
+
+<h2 id="atributos">Atributos</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem real</th><th>O que significa e como consertar</th><th>Aula</th></tr>
+<tr><td><code>An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</code></td><td>Falta o <code>alt</code>. Descreva a imagem; se ela for só enfeite, <code>alt=""</code>.</td><td><a href="imagens-alt.html">Texto Alternativo</a></td></tr>
+<tr><td><code>Bad value “” for attribute “src” on element “img”: Must be non-empty.</code></td><td><code>src=""</code>: o endereço da imagem está vazio.</td><td><a href="imagens.html">Imagens</a></td></tr>
+<tr><td><code>Bad value “200px” for attribute “width” on element “img”: Expected a digit but saw “p” instead.</code></td><td>Largura com unidade. Só o número: <code>width="200"</code>.</td><td><a href="imagens-tamanho.html">Largura e Altura</a></td></tr>
+<tr><td><code>Bad value “minha pagina.html” for attribute “href” on element “a”: Illegal character in path segment. Space is not allowed.</code></td><td>Espaço no endereço. Renomeie o arquivo sem espaços (<code>minha-pagina.html</code>).</td><td><a href="caminhos.html">Caminhos</a></td></tr>
+<tr><td><code>Bad value “pt_BR” for attribute “lang” on element “html”: The language subtag “pt_br” is not a valid language subtag.</code></td><td>Idioma com sublinhado. O certo é <code>pt-BR</code>.</td><td><a href="estrutura.html">Estrutura de uma Página</a></td></tr>
+<tr><td><code>Duplicate ID “x”.</code> (e o aviso <code>The first occurrence of ID “x” was here.</code>)</td><td>Dois elementos com o mesmo <code>id</code>. Cada <code>id</code> é único na página.</td><td><a href="class-id.html">class e id</a></td></tr>
+<tr><td><code>Bad value “um dois” for attribute “id” on element “div”: An ID must not contain whitespace.</code></td><td><code>id</code> com espaço. Use hífen: <code>um-dois</code>.</td><td><a href="class-id.html">class e id</a></td></tr>
+<tr><td><code>Duplicate attribute “class”.</code></td><td>O mesmo atributo duas vezes na tag. Junte os valores: <code>class="a b"</code>.</td><td><a href="atributos.html">Atributos</a></td></tr>
+<tr><td><code>Attribute “tamanho” not allowed on element “p” at this point.</code></td><td>Atributo que não existe nesse elemento. Para um dado seu, use <code>data-tamanho</code>.</td><td><a href="data-atributos.html">Atributos data-*</a></td></tr>
+<tr><td><code>Element “a” is missing required attribute “href”.</code></td><td>Apareceu num <code>&lt;a name="topo"&gt;</code> antigo. Para criar um ponto de chegada, ponha <code>id="topo"</code> no título ou na seção.</td><td><a href="ancoras.html">Âncoras</a></td></tr>
+<tr><td><code>Bad value “false” for attribute “required” on element “input”.</code></td><td>Atributo booleano com <code>="false"</code>: ele continua <strong>ligado</strong>. Para desligar, apague o atributo.</td><td><a href="ref-atributos.html#booleanos">Booleanos</a></td></tr>
+<tr><td><code>Bad value “enviar” for attribute “type” on element “button”.</code></td><td>Valor que não está na lista. Os valores são em inglês: <code>submit</code>, <code>reset</code>, <code>button</code>.</td><td><a href="botoes.html">Botões</a></td></tr>
+<tr><td><code>Bad value “17/10/2026” for attribute “datetime” on element “time”: The literal did not satisfy the time-datetime format.</code></td><td>Data no formato brasileiro. Para máquinas: <code>2026-10-17</code>.</td><td><a href="time.html">time e data</a></td></tr>
+<tr><td><code>Bad value “botao” for attribute “role” on element “div”.</code></td><td>Papel ARIA inventado. Melhor: use o elemento <code>&lt;button&gt;</code>.</td><td><a href="aria.html">ARIA</a></td></tr>
+<tr><td><code>The “aria-label” attribute must not be specified on any “div” element unless the element has a “role” value other than “caption”, “code”, “deletion”, “emphasis”, “generic”, “insertion”, “paragraph”, “presentation”, “strong”, “subscript”, or “superscript”.</code></td><td>Um <code>aria-label</code> numa <code>div</code> ou <code>span</code> comum é ignorado pelos leitores de tela. Use um elemento com significado, ou um texto visível.</td><td><a href="aria.html">ARIA</a></td></tr>
+</table>
+</div>
+<p>Mais de vinte outros erros de valor estão em <a href="ref-atributos.html#errados">Atributos → Valores errados</a>.</p>
+
+<h2 id="formularios">Formulários</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem real</th><th>O que significa e como consertar</th><th>Aula</th></tr>
+<tr><td><code>The value of the “for” attribute of the “label” element must be the ID of a non-hidden form control.</code></td><td>O <code>for</code> do rótulo aponta para um <code>id</code> que não existe. Confira as duas grafias.</td><td><a href="label.html">label</a></td></tr>
+<tr><td><code>Bad value “numero” for attribute “type” on element “input”.</code></td><td>Tipo de campo inventado. O navegador mostra uma caixa de texto comum.</td><td><a href="tipos-input.html">Tipos de input</a></td></tr>
+<tr><td><code>Attribute “placeholder” is only allowed when the input type is “email”, “number”, “password”, “search”, “tel”, “text”, or “url”.</code></td><td>Atributo num tipo de campo em que ele não vale. A mensagem lista os tipos certos.</td><td><a href="ref-input.html#atributos">Atributos × tipos</a></td></tr>
+<tr><td><code>Attribute “min” not allowed on element “input” at this point.</code></td><td>O mesmo problema, sem a lista: <code>min</code> num campo de texto.</td><td><a href="validacao.html">Validação</a></td></tr>
+<tr><td><code>The “list” attribute of the “input” element must refer to a “datalist” element.</code></td><td>O <code>list</code> aponta para um <code>id</code> que não é de um <code>&lt;datalist&gt;</code>.</td><td><a href="datalist.html">datalist</a></td></tr>
+<tr><td><code>The first “option” element in a “select” element with a “required” attribute, and without a “multiple” attribute, and without a “size” attribute whose value is greater than “1”, must have either an empty “value” attribute, or must have no text content. Consider either adding a placeholder option label, or adding a “size” attribute with a value equal to the number of “option” elements.</code></td><td>Num <code>select</code> obrigatório, a primeira opção precisa ser o "Escolha…" vazio: <code>&lt;option value=""&gt;Escolha um sabor&lt;/option&gt;</code>. Senão, a primeira opção já vem escolhida, e o <code>required</code> nunca reclama.</td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>Element “input” is missing required attribute “alt”.</code></td><td>Um <code>&lt;input type="image"&gt;</code> sem <code>alt</code>.</td><td><a href="botoes.html">Botões</a></td></tr>
+</table>
+</div>
+<p>Todas as mensagens do <code>&lt;input&gt;</code> estão em <a href="ref-input.html#erros">Tipos de input → Mensagens</a>.</p>
+
+<h2 id="tabelas">Tabelas</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem real</th><th>O que significa e como consertar</th><th>Aula</th></tr>
+<tr><td><code>A table row was 3 columns wide and exceeded the column count established by the first row (2).</code> (aviso)</td><td>Uma linha tem mais células que a primeira. Confira se faltou um <code>colspan</code> ou sobrou um <code>&lt;td&gt;</code>.</td><td><a href="tabelas.html">Tabelas</a></td></tr>
+<tr><td><code>Table cell spans past the end of its row group established by a “tbody” element; clipped to the end of the row group.</code></td><td>Um <code>rowspan</code> maior que o número de linhas que sobram.</td><td><a href="tabelas-mesclar.html">Mesclar Células</a></td></tr>
+<tr><td><code>Bad value “0” for attribute “colspan” on element “td”: Zero is not a positive integer.</code></td><td><code>colspan</code> começa em 1.</td><td><a href="tabelas-mesclar.html">Mesclar Células</a></td></tr>
+<tr><td><code>The “headers” attribute on the element “td” refers to the ID “h”, but there is no “th” element with that ID in the same table.</code></td><td>O <code>headers</code> aponta para um <code>th</code> que não existe.</td><td><a href="tabelas-legenda.html">Legenda e Acessibilidade</a></td></tr>
+<tr><td><code>Stray start tag “td”.</code></td><td>Um <code>&lt;td&gt;</code> fora de qualquer tabela.</td><td><a href="tabelas.html">Tabelas</a></td></tr>
+</table>
+</div>
+
+<h2 id="semantica">Títulos e semântica</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem real</th><th>O que significa e como consertar</th><th>Aula</th></tr>
+<tr><td><code>The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.</code></td><td>Pulou um nível: depois do <code>h1</code> veio um <code>h3</code>. No <code>vnu</code> 26.10 isto é <strong>erro</strong>. Use <code>h2</code>; para um título menor na tela, mude o tamanho no CSS.</td><td><a href="titulos.html">Títulos</a></td></tr>
+<tr><td><code>Empty heading.</code> (aviso)</td><td>Um título vazio, <code>&lt;h1&gt;&lt;/h1&gt;</code>.</td><td><a href="titulos.html">Títulos</a></td></tr>
+<tr><td><code>Section lacks heading. Consider using “h2”-“h6” elements to add identifying headings to all sections, or else use a “div” element instead for any cases where no heading is needed.</code> (aviso)</td><td>Uma <code>section</code> sem título. Ponha um título ou, se aquilo é só uma caixa, use <code>div</code>.</td><td><a href="section-article.html">section e article</a></td></tr>
+<tr><td><code>Article lacks heading. Consider using “h2”-“h6” elements to add identifying headings to all articles.</code> (aviso)</td><td>Um <code>article</code> sem título.</td><td><a href="section-article.html">section e article</a></td></tr>
+<tr><td><code>The “banner” role is unnecessary for element “header”.</code> (aviso)</td><td><code>&lt;header role="banner"&gt;</code>: o <code>header</code> já tem esse papel. Apague o <code>role</code>. O mesmo vale para <code>&lt;nav role="navigation"&gt;</code>.</td><td><a href="aria.html">ARIA</a></td></tr>
+</table>
+</div>
+
+<h2 id="head">head, CSS e scripts</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem real</th><th>O que significa e como consertar</th><th>Aula</th></tr>
+<tr><td><code>Element “meta” is missing one or more of the following attributes: “content”, “property”.</code></td><td>Um <code>&lt;meta name="…"&gt;</code> sem <code>content</code>.</td><td><a href="ref-meta.html#erros">Metas do head</a></td></tr>
+<tr><td><code>A document must not include more than one “meta” element with its “name” attribute set to the value “description”.</code></td><td>Duas metas <code>description</code>.</td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>Consider avoiding viewport values that prevent users from resizing documents.</code> (aviso)</td><td>O <code>viewport</code> proíbe o zoom (<code>user-scalable=no</code>, <code>maximum-scale=1</code>). Tire essas partes.</td><td><a href="meta-viewport.html">Celular</a></td></tr>
+<tr><td><code>Using the “meta” element to specify the document-wide default language is obsolete. Consider specifying the language on the root element instead.</code></td><td>Idioma numa meta. Use <code>&lt;html lang="pt-BR"&gt;</code>.</td><td><a href="estrutura.html">Estrutura de uma Página</a></td></tr>
+<tr><td><code>The text content of element “script” was not in the required format: Expected space, tab, newline, or slash but found “c” instead.</code></td><td>Um <code>&lt;script src="…"&gt;</code> com código dentro. Com <code>src</code>, o código de dentro é ignorado: deixe o <code>&lt;script src="…"&gt;&lt;/script&gt;</code> vazio e ponha o código no arquivo.</td><td><a href="script.html">O Elemento script</a></td></tr>
+<tr><td><code>The “type” attribute is unnecessary for JavaScript resources.</code> (aviso)</td><td><code>type="text/javascript"</code>: pode apagar.</td><td><a href="script.html">O Elemento script</a></td></tr>
+<tr><td><code>The “type” attribute for the “style” element is not needed and should be omitted.</code> (aviso)</td><td><code>&lt;style type="text/css"&gt;</code>: pode apagar o <code>type</code>.</td><td><a href="ligar-css.html">Ligar CSS</a></td></tr>
+<tr><td><code>A “style” element in “body” must be the first child of its parent.</code> e <code>Style rule “p” not allowed outside an “@scope” rule in a “style” element in “body”.</code></td><td>Um <code>&lt;style&gt;</code> no meio do <code>body</code>. Leve-o para o <code>head</code>.</td><td><a href="ligar-css.html">Ligar CSS</a></td></tr>
+<tr><td><code>CSS: “color”: “rede” is not a “color” value.</code></td><td>O validador também confere o CSS do <code>style</code>. Aqui, um nome de cor errado (<code>red</code>).</td><td><a href="atributo-style.html">O Atributo style</a></td></tr>
+<tr><td><code>CSS: “font-size”: only “0” can be a “unit”. You must put a unit after your number.</code></td><td>Número sem unidade no CSS: <code>font-size: 12px</code>. (No CSS a unidade é obrigatória; nos atributos <code>width</code> e <code>height</code> do HTML, é proibida.)</td><td><a href="atributo-style.html">O Atributo style</a></td></tr>
+<tr><td><code>CSS: “colour”: Property “colour” doesn't exist.</code></td><td>Propriedade de CSS escrita errado (o certo é <code>color</code>, sem o "u" do inglês britânico).</td><td><a href="ligar-css.html">Ligar CSS</a></td></tr>
+</table>
+</div>
+
+<h2 id="entidades">Entidades e codificação</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem real</th><th>O que significa e como consertar</th><th>Aula</th></tr>
+<tr><td><code>Named character reference was not terminated by a semicolon. (Or “&amp;” should have been escaped as “&amp;amp;”.)</code></td><td>Entidade sem o <code>;</code> (<code>&amp;copy 2026</code>, <code>A&amp;nbsp B</code>), ou um <code>&amp;</code> solto que parece entidade. Ponha o <code>;</code> ou escreva <code>&amp;amp;</code>.</td><td><a href="entidades.html">Entidades</a></td></tr>
+<tr><td><code>A numeric character reference expanded to the C1 controls range.</code></td><td>Um número de caractere inválido, como <code>&amp;#128;</code>. Veja a tabela em <a href="ref-entidades.html">Entidades</a>.</td><td><a href="entidades.html">Entidades</a></td></tr>
+<tr><td><code>The only allowed value for the “charset” attribute for the “meta” element is “utf-8”.</code></td><td>Use <code>&lt;meta charset="utf-8"&gt;</code>.</td><td><a href="acentos-utf8.html">Acentos e UTF-8</a></td></tr>
+<tr><td><code>Internal encoding declaration “iso-8859-1” disagrees with the actual encoding of the document (“utf-8”).</code></td><td>O arquivo está salvo numa codificação e a meta diz outra.</td><td><a href="acentos-utf8.html">Acentos e UTF-8</a></td></tr>
+<tr><td><code>A “charset” attribute on a “meta” element found after the first 1024 bytes.</code></td><td>O <code>&lt;meta charset&gt;</code> está muito para baixo. Ele deve ser a primeira linha do <code>head</code>.</td><td><a href="acentos-utf8.html">Acentos e UTF-8</a></td></tr>
+</table>
+</div>
+
+<h2 id="obsoletos">Obsoletos</h2>
+<p>Elementos antigos dão <strong>erro</strong> (<code>The “center” element is obsolete. Use CSS instead.</code>); atributos antigos de aparência dão <strong>aviso</strong> (<code>The “align” attribute on the “p” element is obsolete. Use CSS instead.</code>). As listas completas, com o que usar no lugar, estão em <a href="ref-elementos.html#obsoletos">Todos os Elementos → Obsoletos</a> e <a href="ref-atributos.html#obsoletos">Atributos → Obsoletos</a>.</p>
+
+<h2 id="silencio">O que o validador não pega</h2>
+<div class="cenario">
+<strong>Passou no validador, mas está errado</strong>
+<p>Nestes testes da Ana, o <code>vnu</code> não deu <strong>nenhuma</strong> mensagem:</p>
+<ul>
+  <li><code>&lt;iframe src="mapa.html"&gt;</code> sem <code>title</code>: o leitor de tela não sabe o que tem no quadro (aula <a href="iframes.html">iframe</a>).</li>
+  <li><code>&lt;a href="index.html"&gt;&lt;img src="logo.png" alt=""&gt;&lt;/a&gt;</code>: um link cujo único conteúdo é uma imagem com <code>alt</code> vazio. O link fica sem nome nenhum para o leitor de tela; o <code>alt</code> devia dizer para onde ele leva ("Início").</li>
+  <li><code>Bolo&amp;nbps;de cenoura</code>: um nome de entidade errado, com <code>;</code>. O navegador mostra o texto como está (<a href="ref-entidades.html#errado">Entidades</a>).</li>
+  <li><code>min="10" max="1"</code> num <code>type="number"</code>: o formato está certo, a regra não faz sentido.</li>
+  <li>Um texto alternativo ruim, como <code>alt="imagem"</code>: o validador só confere se o <code>alt</code> existe, não se ele descreve a imagem.</li>
+</ul>
+<p>O validador confere as <strong>regras</strong> do HTML. Se a página faz sentido, é acessível e diz o que você queria dizer, só você (e os seus leitores) podem conferir. Veja <a href="acessibilidade.html">Acessibilidade</a> e <a href="boas-praticas.html">Boas Práticas</a>.</p>
+</div>
+
+<h2 id="experimente">Experimente</h2>
+<p>Esta é a página da Ana e o que o <code>vnu</code> disse dela:</p>
+<pre class="term" data-cwd="~/ref/missao">$ vnu receita.html
+"file:/home/ana/ref/missao/receita.html":8.22-8.26: error: End tag “h2” seen, but there were open elements.
+"file:/home/ana/ref/missao/receita.html":10.3-10.39: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.
+"file:/home/ana/ref/missao/receita.html":9.3-9.6: error: The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.</pre>
+<p>Repare que o erro da linha 9 veio <strong>por último</strong>: o <code>vnu</code> confere a ordem dos títulos só depois de ler a página inteira.</p>
+
+<div class="tryhtml" data-goal="src:Receitas da Ana&lt;/h1&gt;,nsrc:Ana&lt;/h2&gt;,nsel:h3=0,texto:h2=Bolo de cenoura,sel:img[alt]">
+<p class="try-task"><strong>Missão:</strong> conserte os três erros que o validador mostrou: feche o <code>h1</code> com a tag certa, troque o <code>h3</code> pelo nível que vem depois do <code>h1</code> e dê à imagem o texto alternativo "Bolo de cenoura com cobertura de chocolate". Repare que, na tela, o primeiro erro não muda nada: o navegador já conserta sozinho. Se quiser, use o botão "Validar no W3C" para conferir.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h2&gt;
+  &lt;h3&gt;Bolo de cenoura&lt;/h3&gt;
+  &lt;img src="assets/midia/bolo-400.jpg"&gt;
+  &lt;p&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate"&gt;
+  &lt;p&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Formato: <code>"arquivo":linha.coluna-linha.coluna: tipo: mensagem</code>.</li>
+  <li><code>error</code> = HTML errado (código de saída 1); <code>info warning</code> = aviso (código 0, a não ser com <code>--Werror</code>); <code>info</code> = nota; <code>error fatal</code> = o validador parou.</li>
+  <li>Palavras-chave: <em>stray</em> (sobrando), <em>unclosed</em> (não fechado), <em>in scope</em> (aberto, ao alcance), <em>not allowed as child</em> (fora do lugar), <em>bad value</em> (valor inválido), <em>obsolete</em> (antigo).</li>
+  <li>Conserte a primeira mensagem e rode de novo: um erro gera vários.</li>
+  <li>O validador não confere se a página faz sentido: <code>alt</code> ruim, <code>iframe</code> sem <code>title</code> e entidades com nome errado passam.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
