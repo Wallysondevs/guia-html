@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Todos os Elementos — lista completa, agrupada, com a aula de cada um | Guia HTML</title>
+<meta name="description" content="Referência de todos os elementos do HTML Living Standard, agrupados (head, seções, texto, links, imagens e mídia, tabelas, formulários, interativos, scripts): para que serve cada um, se tem tag de fechamento, os elementos vazios, os obsoletos com a mensagem real do validador W3C e a aula do guia que ensina cada um.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Todos os Elementos</span></h1>
+
+<p class="intro">Esta é a lista de consulta de <strong>todos os elementos</strong> do HTML de hoje (o HTML Living Standard), separados por assunto. Cada linha diz, em uma frase, para que o elemento serve, se ele tem tag de fechamento e em que aula do guia ele é explicado com calma. No fim estão os elementos <strong>obsoletos</strong>, que você ainda vai encontrar em sites antigos, com a mensagem real do validador W3C.</p>
+
+<div class="note">
+<strong>Como usar esta página</strong>
+<ul>
+  <li>Procure um elemento com <kbd>Ctrl</kbd>+<kbd>F</kbd>: digite o nome dele com o sinal de menor, por exemplo <code>&lt;abbr</code>.</li>
+  <li>A coluna <strong>Fechamento</strong> diz como o elemento termina:
+    <ul>
+      <li><strong>obrigatório</strong>: sempre escreva a tag de fechamento (<code>&lt;/strong&gt;</code>);</li>
+      <li><strong>vazio</strong>: o elemento não tem conteúdo nem tag de fechamento (<code>&lt;br&gt;</code>, <code>&lt;img&gt;</code>);</li>
+      <li><strong>pode faltar</strong>: as regras do HTML deixam omitir o fechamento em certas situações. Mesmo assim, <strong>o guia sempre fecha</strong>, porque o código fica mais fácil de ler e de consertar.</li>
+    </ul>
+  </li>
+  <li>A última coluna leva à aula. Para os atributos de cada elemento, veja a referência de <a href="ref-atributos.html">Atributos</a>.</li>
+</ul>
+</div>
+
+<p>Atalhos: <a href="#anatomia">Anatomia</a> · <a href="#raiz">Raiz e head</a> · <a href="#secoes">Seções</a> · <a href="#agrupamento">Agrupar conteúdo</a> · <a href="#texto">Texto</a> · <a href="#edicoes">Edições</a> · <a href="#imagens">Imagens e mídia</a> · <a href="#tabelas">Tabelas</a> · <a href="#formularios">Formulários</a> · <a href="#interativos">Interativos</a> · <a href="#scripts">Scripts e componentes</a> · <a href="#vazios">Os elementos vazios</a> · <a href="#obsoletos">Obsoletos</a> · <a href="#experimente">Experimente</a></p>
+
+<hr>
+
+<h2 id="anatomia">Anatomia de um elemento</h2>
+<p>Um <strong>elemento</strong> é uma peça da página: um título, um parágrafo, uma imagem. Ele é escrito com <strong>tags</strong> (etiquetas) entre os sinais <code>&lt;</code> e <code>&gt;</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p class="aviso"&gt;Bolo de &lt;strong&gt;cenoura&lt;/strong&gt;.&lt;/p&gt;
+&lt;img src="bolo.jpg" alt="Bolo de cenoura com cobertura"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt><code>&lt;p class="aviso"&gt;</code></dt><dd>A <strong>tag de abertura</strong>: o nome do elemento (<code>p</code>, de "paragraph", parágrafo) e, se precisar, os atributos (<code>class="aviso"</code>).</dd>
+  <dt><code>Bolo de … .</code></dt><dd>O <strong>conteúdo</strong>: texto e outros elementos. Aqui há um <code>&lt;strong&gt;</code> dentro do <code>&lt;p&gt;</code> (veja <a href="aninhamento.html">Aninhamento</a>).</dd>
+  <dt><code>&lt;/p&gt;</code></dt><dd>A <strong>tag de fechamento</strong>: a barra <code>/</code> e o mesmo nome.</dd>
+  <dt><code>&lt;img …&gt;</code></dt><dd>Um elemento <strong>vazio</strong>: só a tag de abertura, sem conteúdo e sem <code>&lt;/img&gt;</code>.</dd>
+</dl>
+<p>A imagem acima não aparece porque o arquivo <code>bolo.jpg</code> não existe aqui. No lugar dela, o navegador mostra o texto do <code>alt</code> (ou um ícone de imagem quebrada). Saiba mais em <a href="elementos.html">Elementos e Tags</a>.</p>
+
+<h2 id="raiz">Raiz e head (metadados)</h2>
+<p>Os elementos que montam o esqueleto da página e os que ficam dentro do <code>&lt;head&gt;</code>. Eles <strong>não aparecem</strong> na página: dão informações ao navegador, aos buscadores e às redes sociais.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Fechamento</th><th>Aula</th></tr>
+<tr><td><code>&lt;html&gt;</code></td><td>A raiz: envolve a página inteira. Leva o idioma: <code>&lt;html lang="pt-BR"&gt;</code>.</td><td>pode faltar</td><td><a href="estrutura.html">Estrutura de uma Página</a></td></tr>
+<tr><td><code>&lt;head&gt;</code></td><td>A "cabeça" da página: título, codificação, CSS, ícone, metas.</td><td>pode faltar</td><td><a href="head.html">O head</a></td></tr>
+<tr><td><code>&lt;title&gt;</code></td><td>O título que aparece na aba e nos resultados de busca. Obrigatório.</td><td>obrigatório</td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>&lt;meta&gt;</code></td><td>Informações sobre a página: <code>charset</code>, <code>viewport</code>, <code>description</code>… Veja <a href="ref-meta.html">Metas do head</a>.</td><td>vazio</td><td><a href="meta.html">title e meta</a></td></tr>
+<tr><td><code>&lt;link&gt;</code></td><td>Liga um arquivo externo à página: CSS (<code>rel="stylesheet"</code>), ícone (<code>rel="icon"</code>)…</td><td>vazio</td><td><a href="ligar-css.html">Ligar CSS</a>, <a href="favicon.html">Favicon</a></td></tr>
+<tr><td><code>&lt;style&gt;</code></td><td>CSS escrito dentro da própria página.</td><td>obrigatório</td><td><a href="ligar-css.html">Ligar CSS</a></td></tr>
+<tr><td><code>&lt;base&gt;</code></td><td>Muda o endereço de partida de <strong>todos</strong> os links relativos da página. Raro; use com cuidado.</td><td>vazio</td><td><a href="caminhos.html">Caminhos</a></td></tr>
+<tr><td><code>&lt;body&gt;</code></td><td>O "corpo": tudo o que aparece na tela.</td><td>pode faltar</td><td><a href="estrutura.html">Estrutura de uma Página</a></td></tr>
+</table>
+</div>
+
+<h2 id="secoes">Seções (semântica)</h2>
+<p>Elementos que dizem <strong>qual é o papel</strong> de cada parte da página: o topo, o menu, o conteúdo principal, um artigo. Na tela, quase todos parecem um <code>&lt;div&gt;</code>; a diferença está no significado, que ajuda os leitores de tela e os buscadores. Veja <a href="semantica.html">HTML Semântico</a>.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Fechamento</th><th>Aula</th></tr>
+<tr><td><code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code></td><td>Títulos ("heading"), do mais importante (<code>h1</code>) ao menos importante (<code>h6</code>). Não pule níveis.</td><td>obrigatório</td><td><a href="titulos.html">Títulos</a></td></tr>
+<tr><td><code>&lt;hgroup&gt;</code></td><td>Junta um título com uma linha de subtítulo (<code>&lt;p&gt;</code>) que pertence a ele.</td><td>obrigatório</td><td><a href="titulos.html">Títulos</a></td></tr>
+<tr><td><code>&lt;header&gt;</code></td><td>O cabeçalho da página ou de uma seção: logo, título, menu.</td><td>obrigatório</td><td><a href="header-footer.html">header e footer</a></td></tr>
+<tr><td><code>&lt;footer&gt;</code></td><td>O rodapé da página ou de uma seção: autoria, direitos, contato.</td><td>obrigatório</td><td><a href="header-footer.html">header e footer</a></td></tr>
+<tr><td><code>&lt;nav&gt;</code></td><td>Um bloco de links de navegação principal (o menu).</td><td>obrigatório</td><td><a href="nav.html">nav</a></td></tr>
+<tr><td><code>&lt;main&gt;</code></td><td>O conteúdo principal da página. Só um visível por página.</td><td>obrigatório</td><td><a href="main.html">main</a></td></tr>
+<tr><td><code>&lt;article&gt;</code></td><td>Um conteúdo que faz sentido sozinho: um post, uma receita, um produto.</td><td>obrigatório</td><td><a href="section-article.html">section e article</a></td></tr>
+<tr><td><code>&lt;section&gt;</code></td><td>Uma parte temática da página, normalmente com um título.</td><td>obrigatório</td><td><a href="section-article.html">section e article</a></td></tr>
+<tr><td><code>&lt;aside&gt;</code></td><td>Um conteúdo à parte, ligado ao principal: uma caixa "saiba mais", uma barra lateral.</td><td>obrigatório</td><td><a href="aside.html">aside</a></td></tr>
+<tr><td><code>&lt;search&gt;</code></td><td>Envolve um formulário de busca ou de filtro. Elemento recente (2023).</td><td>obrigatório</td><td><a href="semantica.html">HTML Semântico</a></td></tr>
+<tr><td><code>&lt;address&gt;</code></td><td>O contato de quem é responsável pela página ou pelo artigo.</td><td>obrigatório</td><td><a href="endereco.html">Endereço</a></td></tr>
+</table>
+</div>
+
+<h2 id="agrupamento">Agrupar conteúdo</h2>
+<p>Parágrafos, listas, citações e caixas. Todos são elementos <strong>de bloco</strong>: começam numa linha nova e ocupam a largura toda (veja <a href="bloco-inline.html">Bloco × Em Linha</a>).</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Fechamento</th><th>Aula</th></tr>
+<tr><td><code>&lt;p&gt;</code></td><td>Um parágrafo ("paragraph").</td><td>pode faltar</td><td><a href="paragrafos.html">Parágrafos</a></td></tr>
+<tr><td><code>&lt;hr&gt;</code></td><td>Uma mudança de assunto, desenhada como uma linha horizontal ("horizontal rule").</td><td>vazio</td><td><a href="quebras.html">Quebras</a></td></tr>
+<tr><td><code>&lt;pre&gt;</code></td><td>Texto pré-formatado: os espaços e as quebras de linha ficam como foram escritos.</td><td>obrigatório</td><td><a href="codigo.html">Código</a></td></tr>
+<tr><td><code>&lt;blockquote&gt;</code></td><td>Uma citação longa, em bloco, de outra fonte.</td><td>obrigatório</td><td><a href="citacoes.html">Citações</a></td></tr>
+<tr><td><code>&lt;ul&gt;</code></td><td>Lista com marcadores, sem ordem ("unordered list").</td><td>obrigatório</td><td><a href="listas.html">Listas (ul)</a></td></tr>
+<tr><td><code>&lt;ol&gt;</code></td><td>Lista numerada, em ordem ("ordered list").</td><td>obrigatório</td><td><a href="listas-ordenadas.html">Listas Numeradas</a></td></tr>
+<tr><td><code>&lt;li&gt;</code></td><td>Um item de lista ("list item"), dentro de <code>ul</code>, <code>ol</code> ou <code>menu</code>.</td><td>pode faltar</td><td><a href="listas.html">Listas (ul)</a></td></tr>
+<tr><td><code>&lt;menu&gt;</code></td><td>Uma lista de comandos (botões de uma barra de ferramentas). Funciona como um <code>ul</code>.</td><td>obrigatório</td><td><a href="listas.html">Listas (ul)</a></td></tr>
+<tr><td><code>&lt;dl&gt;</code></td><td>Lista de descrição ("description list"): pares termo → explicação.</td><td>obrigatório</td><td><a href="listas-descricao.html">Listas de Descrição</a></td></tr>
+<tr><td><code>&lt;dt&gt;</code></td><td>O termo, dentro de <code>dl</code> ("description term").</td><td>pode faltar</td><td><a href="listas-descricao.html">Listas de Descrição</a></td></tr>
+<tr><td><code>&lt;dd&gt;</code></td><td>A explicação do termo ("description details").</td><td>pode faltar</td><td><a href="listas-descricao.html">Listas de Descrição</a></td></tr>
+<tr><td><code>&lt;figure&gt;</code></td><td>Uma figura: imagem, gráfico, trecho de código ou citação, com legenda opcional.</td><td>obrigatório</td><td><a href="figure.html">figure e figcaption</a></td></tr>
+<tr><td><code>&lt;figcaption&gt;</code></td><td>A legenda da figura, primeiro ou último filho do <code>figure</code>.</td><td>obrigatório</td><td><a href="figure.html">figure e figcaption</a></td></tr>
+<tr><td><code>&lt;div&gt;</code></td><td>Uma caixa genérica, sem significado ("division"). Use quando nenhum elemento semântico serve.</td><td>obrigatório</td><td><a href="div-span.html">div e span</a></td></tr>
+</table>
+</div>
+
+<h2 id="texto">Texto (em linha)</h2>
+<p>Elementos que marcam um <strong>pedaço</strong> de texto dentro de um parágrafo. São <strong>em linha</strong>: não quebram a linha.</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Fechamento</th><th>Aula</th></tr>
+<tr><td><code>&lt;a&gt;</code></td><td>Um link ("anchor", âncora), com o endereço no <code>href</code>.</td><td>obrigatório</td><td><a href="links.html">Links</a></td></tr>
+<tr><td><code>&lt;strong&gt;</code></td><td>Importância, seriedade ou urgência. Aparece em negrito.</td><td>obrigatório</td><td><a href="negrito-italico.html">Negrito e Itálico</a></td></tr>
+<tr><td><code>&lt;em&gt;</code></td><td>Ênfase ("emphasis"): muda o sentido da frase, como a voz que destaca uma palavra. Aparece em itálico.</td><td>obrigatório</td><td><a href="negrito-italico.html">Negrito e Itálico</a></td></tr>
+<tr><td><code>&lt;b&gt;</code></td><td>Chama a atenção sem dar importância: palavras-chave, nome de produto. Negrito.</td><td>obrigatório</td><td><a href="negrito-italico.html">Negrito e Itálico</a></td></tr>
+<tr><td><code>&lt;i&gt;</code></td><td>Uma voz diferente: termo estrangeiro, nome científico, pensamento. Itálico.</td><td>obrigatório</td><td><a href="negrito-italico.html">Negrito e Itálico</a></td></tr>
+<tr><td><code>&lt;mark&gt;</code></td><td>Texto marcado, como com marca-texto (fundo amarelo).</td><td>obrigatório</td><td><a href="formatacao.html">Formatação</a></td></tr>
+<tr><td><code>&lt;small&gt;</code></td><td>Letras miúdas: avisos legais, direitos autorais.</td><td>obrigatório</td><td><a href="formatacao.html">Formatação</a></td></tr>
+<tr><td><code>&lt;s&gt;</code></td><td>Algo que não vale mais (um preço antigo). Aparece riscado.</td><td>obrigatório</td><td><a href="formatacao.html">Formatação</a></td></tr>
+<tr><td><code>&lt;u&gt;</code></td><td>Uma anotação sem palavras, como um erro de ortografia. Aparece sublinhado; evite, porque parece link.</td><td>obrigatório</td><td><a href="formatacao.html">Formatação</a></td></tr>
+<tr><td><code>&lt;sub&gt;</code></td><td>Texto subscrito, abaixo da linha: H<sub>2</sub>O.</td><td>obrigatório</td><td><a href="formatacao.html">Formatação</a></td></tr>
+<tr><td><code>&lt;sup&gt;</code></td><td>Texto sobrescrito, acima da linha: 10<sup>3</sup>, 1<sup>º</sup>.</td><td>obrigatório</td><td><a href="formatacao.html">Formatação</a></td></tr>
+<tr><td><code>&lt;q&gt;</code></td><td>Uma citação curta, dentro da frase. O navegador põe as aspas.</td><td>obrigatório</td><td><a href="citacoes.html">Citações</a></td></tr>
+<tr><td><code>&lt;cite&gt;</code></td><td>O título de uma obra: livro, filme, música, site.</td><td>obrigatório</td><td><a href="citacoes.html">Citações</a></td></tr>
+<tr><td><code>&lt;abbr&gt;</code></td><td>Uma abreviação ("abbreviation"), com a forma por extenso no <code>title</code>.</td><td>obrigatório</td><td><a href="abreviacoes.html">Abreviações</a></td></tr>
+<tr><td><code>&lt;dfn&gt;</code></td><td>O termo que está sendo definido naquele trecho ("definition").</td><td>obrigatório</td><td><a href="abreviacoes.html">Abreviações</a></td></tr>
+<tr><td><code>&lt;code&gt;</code></td><td>Um pedaço de código de computador.</td><td>obrigatório</td><td><a href="codigo.html">Código</a></td></tr>
+<tr><td><code>&lt;kbd&gt;</code></td><td>Uma tecla ou algo que o usuário digita ("keyboard"): <kbd>Ctrl</kbd>+<kbd>S</kbd>.</td><td>obrigatório</td><td><a href="codigo.html">Código</a></td></tr>
+<tr><td><code>&lt;samp&gt;</code></td><td>A saída de um programa ("sample", amostra).</td><td>obrigatório</td><td><a href="codigo.html">Código</a></td></tr>
+<tr><td><code>&lt;var&gt;</code></td><td>Uma variável, na matemática ou na programação.</td><td>obrigatório</td><td><a href="codigo.html">Código</a></td></tr>
+<tr><td><code>&lt;time&gt;</code></td><td>Uma data ou hora, com a versão para máquinas no <code>datetime</code>.</td><td>obrigatório</td><td><a href="time.html">time e data</a></td></tr>
+<tr><td><code>&lt;data&gt;</code></td><td>Um valor com a versão para máquinas no <code>value</code> (um código de produto).</td><td>obrigatório</td><td><a href="time.html">time e data</a></td></tr>
+<tr><td><code>&lt;span&gt;</code></td><td>Um pedaço genérico de texto, sem significado. O "div em linha".</td><td>obrigatório</td><td><a href="div-span.html">div e span</a></td></tr>
+<tr><td><code>&lt;br&gt;</code></td><td>Quebra de linha dentro do texto ("break"): poemas, endereços.</td><td>vazio</td><td><a href="quebras.html">Quebras</a></td></tr>
+<tr><td><code>&lt;wbr&gt;</code></td><td>Um ponto onde uma palavra muito longa <strong>pode</strong> quebrar ("word break opportunity").</td><td>vazio</td><td><a href="quebras.html">Quebras</a></td></tr>
+<tr><td><code>&lt;ruby&gt;</code></td><td>Anotação de pronúncia em cima de ideogramas (japonês, chinês).</td><td>obrigatório</td><td><a href="acentos-utf8.html">Acentos e UTF-8</a></td></tr>
+<tr><td><code>&lt;rt&gt;</code></td><td>O texto da anotação, dentro de <code>ruby</code> ("ruby text").</td><td>pode faltar</td><td><a href="acentos-utf8.html">Acentos e UTF-8</a></td></tr>
+<tr><td><code>&lt;rp&gt;</code></td><td>Parênteses mostrados só por navegadores que não sabem desenhar <code>ruby</code> ("ruby parenthesis").</td><td>pode faltar</td><td><a href="acentos-utf8.html">Acentos e UTF-8</a></td></tr>
+<tr><td><code>&lt;bdi&gt;</code></td><td>Isola um texto de direção desconhecida (um nome em árabe no meio do português).</td><td>obrigatório</td><td><a href="acentos-utf8.html">Acentos e UTF-8</a></td></tr>
+<tr><td><code>&lt;bdo&gt;</code></td><td>Força a direção do texto com <code>dir="rtl"</code> ou <code>dir="ltr"</code> ("bidirectional override").</td><td>obrigatório</td><td><a href="acentos-utf8.html">Acentos e UTF-8</a></td></tr>
+</table>
+</div>
+
+<h2 id="edicoes">Edições</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Fechamento</th><th>Aula</th></tr>
+<tr><td><code>&lt;del&gt;</code></td><td>Um trecho que foi <strong>removido</strong> do documento ("deleted"). Riscado.</td><td>obrigatório</td><td><a href="formatacao.html">Formatação</a></td></tr>
+<tr><td><code>&lt;ins&gt;</code></td><td>Um trecho que foi <strong>acrescentado</strong> ("inserted"). Sublinhado.</td><td>obrigatório</td><td><a href="formatacao.html">Formatação</a></td></tr>
+</table>
+</div>
+<p><code>&lt;s&gt;</code> × <code>&lt;del&gt;</code>: os dois aparecem riscados. Use <code>del</code> para uma correção no texto ("onde se lia… leia-se") e <code>s</code> para algo que só deixou de valer, como o preço antigo de uma promoção.</p>
+
+<h2 id="imagens">Imagens, mídia e conteúdo incorporado</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Fechamento</th><th>Aula</th></tr>
+<tr><td><code>&lt;img&gt;</code></td><td>Uma imagem ("image"). O <code>alt</code> é obrigatório.</td><td>vazio</td><td><a href="imagens.html">Imagens</a>, <a href="imagens-alt.html">Texto Alternativo</a></td></tr>
+<tr><td><code>&lt;picture&gt;</code></td><td>Oferece várias versões de uma imagem (formatos, tamanhos de tela); o navegador escolhe uma.</td><td>obrigatório</td><td><a href="picture.html">O Elemento picture</a></td></tr>
+<tr><td><code>&lt;source&gt;</code></td><td>Uma opção de arquivo, dentro de <code>picture</code>, <code>video</code> ou <code>audio</code>.</td><td>vazio</td><td><a href="picture.html">picture</a>, <a href="video.html">Vídeo</a></td></tr>
+<tr><td><code>&lt;audio&gt;</code></td><td>Um som ou música, com controles.</td><td>obrigatório</td><td><a href="audio.html">Áudio</a></td></tr>
+<tr><td><code>&lt;video&gt;</code></td><td>Um vídeo, com controles.</td><td>obrigatório</td><td><a href="video.html">Vídeo</a></td></tr>
+<tr><td><code>&lt;track&gt;</code></td><td>Legendas ou capítulos (arquivo WebVTT) de um vídeo ou áudio.</td><td>vazio</td><td><a href="legendas.html">Legendas</a></td></tr>
+<tr><td><code>&lt;iframe&gt;</code></td><td>Uma página dentro da página ("inline frame"): mapas, vídeos de outros sites.</td><td>obrigatório</td><td><a href="iframes.html">iframe</a></td></tr>
+<tr><td><code>&lt;embed&gt;</code></td><td>Incorpora um conteúdo externo tratado por um programa do navegador (um PDF, por exemplo).</td><td>vazio</td><td><a href="incorporar.html">Incorporar</a></td></tr>
+<tr><td><code>&lt;object&gt;</code></td><td>Incorpora um recurso externo, com um conteúdo reserva dentro dele.</td><td>obrigatório</td><td><a href="incorporar.html">Incorporar</a></td></tr>
+<tr><td><code>&lt;map&gt;</code></td><td>Um mapa de imagem: áreas clicáveis sobre uma imagem (<code>usemap</code>).</td><td>obrigatório</td><td><a href="imagens.html">Imagens</a></td></tr>
+<tr><td><code>&lt;area&gt;</code></td><td>Uma área clicável, dentro de <code>map</code>, com <code>href</code> e <code>alt</code>.</td><td>vazio</td><td><a href="imagens.html">Imagens</a></td></tr>
+<tr><td><code>&lt;svg&gt;</code></td><td>Um desenho vetorial (SVG) escrito direto no HTML.</td><td>obrigatório</td><td><a href="svg.html">SVG no HTML</a></td></tr>
+<tr><td><code>&lt;math&gt;</code></td><td>Uma fórmula matemática em MathML.</td><td>obrigatório</td><td><a href="novidades.html">Novidades do HTML</a></td></tr>
+<tr><td><code>&lt;canvas&gt;</code></td><td>Uma área de desenho, pintada com JavaScript.</td><td>obrigatório</td><td><a href="canvas.html">canvas</a></td></tr>
+</table>
+</div>
+
+<h2 id="tabelas">Tabelas</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Fechamento</th><th>Aula</th></tr>
+<tr><td><code>&lt;table&gt;</code></td><td>Uma tabela de dados.</td><td>obrigatório</td><td><a href="tabelas.html">Tabelas</a></td></tr>
+<tr><td><code>&lt;caption&gt;</code></td><td>O título da tabela. Primeiro filho do <code>table</code>.</td><td>pode faltar</td><td><a href="tabelas-legenda.html">Legenda e Acessibilidade</a></td></tr>
+<tr><td><code>&lt;thead&gt;</code></td><td>O grupo das linhas de cabeçalho ("table head").</td><td>pode faltar</td><td><a href="tabelas-cabecalho.html">Cabeçalhos</a></td></tr>
+<tr><td><code>&lt;tbody&gt;</code></td><td>O grupo das linhas de dados ("table body"). O navegador cria um sozinho se você não escrever.</td><td>pode faltar</td><td><a href="tabelas-cabecalho.html">Cabeçalhos</a></td></tr>
+<tr><td><code>&lt;tfoot&gt;</code></td><td>O grupo das linhas de rodapé: totais ("table foot").</td><td>pode faltar</td><td><a href="tabelas-cabecalho.html">Cabeçalhos</a></td></tr>
+<tr><td><code>&lt;tr&gt;</code></td><td>Uma linha ("table row").</td><td>pode faltar</td><td><a href="tabelas.html">Tabelas</a></td></tr>
+<tr><td><code>&lt;th&gt;</code></td><td>Uma célula de cabeçalho ("table header"), com <code>scope</code>.</td><td>pode faltar</td><td><a href="tabelas-cabecalho.html">Cabeçalhos</a></td></tr>
+<tr><td><code>&lt;td&gt;</code></td><td>Uma célula de dado ("table data").</td><td>pode faltar</td><td><a href="tabelas.html">Tabelas</a></td></tr>
+<tr><td><code>&lt;colgroup&gt;</code></td><td>Um grupo de colunas, para dar estilo a colunas inteiras.</td><td>pode faltar</td><td><a href="tabelas-legenda.html">Legenda e Acessibilidade</a></td></tr>
+<tr><td><code>&lt;col&gt;</code></td><td>Uma coluna (ou várias, com <code>span</code>), dentro de <code>colgroup</code>.</td><td>vazio</td><td><a href="tabelas-legenda.html">Legenda e Acessibilidade</a></td></tr>
+</table>
+</div>
+
+<h2 id="formularios">Formulários</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Fechamento</th><th>Aula</th></tr>
+<tr><td><code>&lt;form&gt;</code></td><td>O formulário: junta os campos e diz para onde enviar (<code>action</code>, <code>method</code>).</td><td>obrigatório</td><td><a href="formularios.html">Formulários</a></td></tr>
+<tr><td><code>&lt;label&gt;</code></td><td>O rótulo de um campo. Clicar nele ativa o campo, e o leitor de tela lê o nome.</td><td>obrigatório</td><td><a href="label.html">label</a></td></tr>
+<tr><td><code>&lt;input&gt;</code></td><td>Um campo de entrada. O <code>type</code> muda tudo: texto, e-mail, data, caixa de marcar… Veja <a href="ref-input.html">Tipos de input</a>.</td><td>vazio</td><td><a href="input.html">O Elemento input</a></td></tr>
+<tr><td><code>&lt;textarea&gt;</code></td><td>Uma caixa de texto de várias linhas.</td><td>obrigatório</td><td><a href="textarea.html">textarea</a></td></tr>
+<tr><td><code>&lt;select&gt;</code></td><td>Uma lista de escolha (caixa que abre).</td><td>obrigatório</td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>&lt;option&gt;</code></td><td>Uma opção, dentro de <code>select</code> ou <code>datalist</code>.</td><td>pode faltar</td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>&lt;optgroup&gt;</code></td><td>Um grupo de opções com título, dentro de <code>select</code>.</td><td>pode faltar</td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>&lt;selectedcontent&gt;</code></td><td>Mostra uma cópia da opção escolhida dentro do botão de um <code>select</code> personalizado. Elemento novíssimo (2025); nem todo navegador desenha.</td><td>obrigatório</td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>&lt;datalist&gt;</code></td><td>Sugestões para um <code>input</code> (o leitor ainda pode digitar outra coisa).</td><td>obrigatório</td><td><a href="datalist.html">datalist</a></td></tr>
+<tr><td><code>&lt;button&gt;</code></td><td>Um botão: enviar (<code>submit</code>), limpar (<code>reset</code>) ou comum (<code>button</code>).</td><td>obrigatório</td><td><a href="botoes.html">Botões</a></td></tr>
+<tr><td><code>&lt;fieldset&gt;</code></td><td>Uma moldura que agrupa campos relacionados.</td><td>obrigatório</td><td><a href="fieldset.html">fieldset e legend</a></td></tr>
+<tr><td><code>&lt;legend&gt;</code></td><td>O título do <code>fieldset</code>, desenhado na moldura.</td><td>obrigatório</td><td><a href="fieldset.html">fieldset e legend</a></td></tr>
+<tr><td><code>&lt;output&gt;</code></td><td>O resultado de um cálculo feito na página.</td><td>obrigatório</td><td><a href="output-progress.html">output, progress e meter</a></td></tr>
+<tr><td><code>&lt;progress&gt;</code></td><td>Uma barra de progresso de uma tarefa (envio, download).</td><td>obrigatório</td><td><a href="output-progress.html">output, progress e meter</a></td></tr>
+<tr><td><code>&lt;meter&gt;</code></td><td>Uma medida dentro de uma faixa conhecida (espaço em disco, nota).</td><td>obrigatório</td><td><a href="output-progress.html">output, progress e meter</a></td></tr>
+</table>
+</div>
+
+<h2 id="interativos">Interativos</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Fechamento</th><th>Aula</th></tr>
+<tr><td><code>&lt;details&gt;</code></td><td>Um bloco que abre e fecha com um clique, sem JavaScript.</td><td>obrigatório</td><td><a href="details.html">details e summary</a></td></tr>
+<tr><td><code>&lt;summary&gt;</code></td><td>A linha sempre visível do <code>details</code>, onde se clica.</td><td>obrigatório</td><td><a href="details.html">details e summary</a></td></tr>
+<tr><td><code>&lt;dialog&gt;</code></td><td>Uma janela de diálogo (caixa que aparece por cima da página).</td><td>obrigatório</td><td><a href="dialog.html">dialog</a></td></tr>
+</table>
+</div>
+<p>O atributo <code>popover</code> (aula <a href="popover.html">popover</a>) também cria caixas que aparecem por cima, mas ele é um atributo, não um elemento.</p>
+
+<h2 id="scripts">Scripts e componentes</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Para que serve</th><th>Fechamento</th><th>Aula</th></tr>
+<tr><td><code>&lt;script&gt;</code></td><td>JavaScript, escrito dentro ou ligado com <code>src</code>. Mesmo com <code>src</code>, precisa de <code>&lt;/script&gt;</code>.</td><td>obrigatório</td><td><a href="script.html">O Elemento script</a></td></tr>
+<tr><td><code>&lt;noscript&gt;</code></td><td>Conteúdo mostrado só quando o JavaScript está desligado.</td><td>obrigatório</td><td><a href="script.html">O Elemento script</a></td></tr>
+<tr><td><code>&lt;template&gt;</code></td><td>Um pedaço de HTML guardado, que não aparece até o JavaScript copiá-lo para a página.</td><td>obrigatório</td><td><a href="template.html">template e slot</a></td></tr>
+<tr><td><code>&lt;slot&gt;</code></td><td>Um "buraco" dentro de um componente, onde entra o conteúdo de quem usa o componente.</td><td>obrigatório</td><td><a href="template.html">template e slot</a>, <a href="web-components.html">Web Components</a></td></tr>
+</table>
+</div>
+
+<h2 id="vazios">Os elementos vazios</h2>
+<p>São só <strong>13</strong>, e vale decorar: <code>area</code>, <code>base</code>, <code>br</code>, <code>col</code>, <code>embed</code>, <code>hr</code>, <code>img</code>, <code>input</code>, <code>link</code>, <code>meta</code>, <code>source</code>, <code>track</code> e <code>wbr</code>. Eles não têm conteúdo, então não têm tag de fechamento.</p>
+<ul>
+  <li><code>&lt;br&gt;</code> e <code>&lt;br /&gt;</code> são a mesma coisa no HTML. A barra no fim é permitida, mas não faz nada; o guia não usa. O validador só deixa uma nota (<code>info</code>, que não é erro): <code>Trailing slash on void elements has no effect and interacts badly with unquoted attribute values.</code></li>
+  <li>Escrever <code>&lt;/img&gt;</code> é um erro: <code>Stray end tag “img”.</code> ("tag de fechamento perdida"). O <code>&lt;/br&gt;</code> também (<code>End tag “br”.</code>), e o navegador ainda faz uma coisa estranha com ele: desenha uma quebra de linha, como se fosse um <code>&lt;br&gt;</code>. Veja <a href="ref-erros.html">Mensagens do Validador</a>.</li>
+  <li>Num elemento que <strong>não</strong> é vazio, a barra não fecha nada: <code>&lt;div /&gt;</code> é só uma tag de abertura de <code>div</code>. O validador avisa: <code>Self-closing syntax (“/&gt;”) used on a non-void HTML element. Ignoring the slash and treating as a start tag.</code></li>
+</ul>
+
+<h2 id="obsoletos">Elementos obsoletos (não use)</h2>
+<p>Estes elementos existiam em versões antigas do HTML. O navegador ainda desenha a maioria deles, para não quebrar sites velhos, mas o validador W3C dá <strong>erro</strong>. As mensagens abaixo são reais, do <code>vnu</code> na máquina da Ana (veja <a href="validar.html">Validar o HTML</a>). Na coluna da direita está o que usar no lugar.</p>
+<pre class="term" data-cwd="~/ref">$ vnu obsoletos.html
+"file:/home/ana/ref/obsoletos.html":8.1-8.8: error: The “center” element is obsolete. Use CSS instead.
+"file:/home/ana/ref/obsoletos.html":9.4-9.21: error: The “font” element is obsolete. Use CSS instead.
+"file:/home/ana/ref/obsoletos.html":10.1-10.9: error: The “marquee” element is obsolete. Use CSS instead.</pre>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento antigo</th><th>Mensagem real do validador</th><th>Use no lugar</th></tr>
+<tr><td><code>&lt;center&gt;</code></td><td><code>The “center” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>text-align: center</code> (<a href="atributo-style.html">O Atributo style</a>)</td></tr>
+<tr><td><code>&lt;font&gt;</code></td><td><code>The “font” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>color</code>, <code>font-family</code>, <code>font-size</code></td></tr>
+<tr><td><code>&lt;big&gt;</code></td><td><code>The “big” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>font-size</code>; ou <code>&lt;strong&gt;</code>, se for importância</td></tr>
+<tr><td><code>&lt;tt&gt;</code></td><td><code>The “tt” element is obsolete. Use CSS instead.</code></td><td><code>&lt;code&gt;</code>, <code>&lt;kbd&gt;</code> ou <code>&lt;samp&gt;</code></td></tr>
+<tr><td><code>&lt;strike&gt;</code></td><td><code>The “strike” element is obsolete. Use “del” or “s” element instead.</code></td><td><code>&lt;del&gt;</code> ou <code>&lt;s&gt;</code></td></tr>
+<tr><td><code>&lt;acronym&gt;</code></td><td><code>The “acronym” element is obsolete. Use the “abbr” element instead.</code></td><td><code>&lt;abbr&gt;</code></td></tr>
+<tr><td><code>&lt;dir&gt;</code></td><td><code>The “dir” element is obsolete. Use the “ul” element instead.</code></td><td><code>&lt;ul&gt;</code></td></tr>
+<tr><td><code>&lt;marquee&gt;</code></td><td><code>The “marquee” element is obsolete. Use CSS instead.</code></td><td>Nada: texto que se mexe atrapalha a leitura. Se precisar, animação em CSS.</td></tr>
+<tr><td><code>&lt;nobr&gt;</code></td><td><code>The “nobr” element is obsolete. Use CSS instead.</code></td><td>CSS: <code>white-space: nowrap</code></td></tr>
+<tr><td><code>&lt;basefont&gt;</code></td><td><code>The “basefont” element is obsolete. Use CSS instead.</code></td><td>CSS no <code>body</code></td></tr>
+<tr><td><code>&lt;applet&gt;</code></td><td><code>The “applet” element is obsolete. Use “embed” or “object” element instead.</code></td><td>Os applets Java não rodam mais em nenhum navegador.</td></tr>
+<tr><td><code>&lt;listing&gt;</code>, <code>&lt;xmp&gt;</code></td><td><code>The “listing” element is obsolete. Use “pre” or “code” element instead.</code></td><td><code>&lt;pre&gt;</code> e <code>&lt;code&gt;</code>, com <code>&amp;lt;</code> no lugar de <code>&lt;</code></td></tr>
+<tr><td><code>&lt;plaintext&gt;</code></td><td><code>The “plaintext” element is obsolete. Use the “text/plain” MIME type instead.</code></td><td><code>&lt;pre&gt;</code>. Cuidado: tudo depois de <code>&lt;plaintext&gt;</code> vira texto, até o fim do arquivo.</td></tr>
+<tr><td><code>&lt;frameset&gt;</code>, <code>&lt;frame&gt;</code></td><td><code>Stray start tag “frameset”.</code> ("tag de abertura perdida": o validador nem reconhece o elemento no corpo)</td><td><code>&lt;iframe&gt;</code> ou páginas separadas com links</td></tr>
+<tr><td><code>&lt;blink&gt;</code></td><td><code>The “blink” element is a completely-unknown element that is not allowed anywhere in any HTML content.</code></td><td>Nada: nenhum navegador atual faz o texto piscar.</td></tr>
+</table>
+</div>
+
+<div class="cenario">
+<strong>Quando dá errado: um elemento que não existe</strong>
+<p>Se você erra o nome (<code>&lt;paragrafo&gt;</code>) ou usa um elemento antigo que saiu do HTML (<code>&lt;blink&gt;</code>), o navegador <strong>não dá erro</strong>: cria um elemento desconhecido, que se comporta como um <code>&lt;span&gt;</code> sem estilo, e mostra o texto normalmente. Por isso o erro passa despercebido. Experimente na primeira caixa do <a href="#experimente">Experimente</a>: troque um <code>&lt;p&gt;</code> por <code>&lt;paragrafo&gt;</code> e veja que o texto continua lá, só que grudado no resto.</p>
+<p>O validador pega na hora, com duas mensagens para o mesmo lugar:</p>
+<pre class="term" data-cwd="~/ref">$ vnu erros1.html
+"file:/home/ana/ref/erros1.html":8.1-8.11: error: Element “paragrafo” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/ref/erros1.html":8.1-8.11: error: The “paragrafo” element is a completely-unknown element that is not allowed anywhere in any HTML content.</pre>
+<p>A primeira diz que o elemento não pode ficar ali (e que o validador não vai olhar o que está dentro dele); a segunda, que esse elemento não existe em lugar nenhum do HTML.</p>
+</div>
+
+<h2 id="experimente">Experimente</h2>
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> esta é a receita da Ana, com elementos de quase todos os grupos desta página. Mude os elementos, troque um pelo outro (<code>strong</code> por <code>b</code>, <code>ul</code> por <code>ol</code>) e veja o resultado mudar.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;/header&gt;
+  &lt;main&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+      &lt;p&gt;Publicado em &lt;time datetime="2026-10-17"&gt;17 de outubro&lt;/time&gt;. &lt;mark&gt;Sem glúten!&lt;/mark&gt;&lt;/p&gt;
+      &lt;ul&gt;
+        &lt;li&gt;3 cenouras&lt;/li&gt;
+        &lt;li&gt;4 ovos&lt;/li&gt;
+        &lt;li&gt;2 xícaras de farinha de arroz&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;p&gt;&lt;strong&gt;Cuidado:&lt;/strong&gt; o forno deve estar a 180 &amp;deg;C.&lt;/p&gt;
+      &lt;details&gt;
+        &lt;summary&gt;Dica da Ana&lt;/summary&gt;
+        &lt;p&gt;Bata as cenouras com os ovos no liquidificador.&lt;/p&gt;
+      &lt;/details&gt;
+    &lt;/article&gt;
+  &lt;/main&gt;
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;Receitas da Ana, 2026&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<div class="tryhtml" data-goal="nsel:kbd=2,attr:abbr[title]=HyperText Markup Language,texto:abbr=HTML">
+<p class="try-task"><strong>Missão:</strong> use os elementos de texto certos. Marque as teclas <code>Ctrl</code> e <code>S</code>, cada uma com o seu elemento de tecla, e marque a sigla <code>HTML</code> com o elemento de abreviação, com a forma por extenso <code>HyperText Markup Language</code>. Dica: procure na tabela <a href="#texto">Texto</a>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Para salvar a receita, aperte Ctrl+S.&lt;/p&gt;
+&lt;p&gt;Esta página foi feita em HTML.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Para salvar a receita, aperte &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;S&lt;/kbd&gt;.&lt;/p&gt;
+&lt;p&gt;Esta página foi feita em &lt;abbr title="HyperText Markup Language"&gt;HTML&lt;/abbr&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Um elemento = tag de abertura + conteúdo + tag de fechamento. Os 13 <strong>vazios</strong> (<code>br</code>, <code>img</code>, <code>input</code>, <code>meta</code>, <code>link</code>, <code>hr</code>…) só têm a abertura.</li>
+  <li>No <code>head</code>: <code>title</code>, <code>meta</code>, <code>link</code>, <code>style</code>, <code>base</code>, <code>script</code>. Eles não aparecem na tela.</li>
+  <li>Semântica: <code>header</code>, <code>nav</code>, <code>main</code>, <code>article</code>, <code>section</code>, <code>aside</code>, <code>footer</code>. Sem significado: <code>div</code> (bloco) e <code>span</code> (em linha).</li>
+  <li>Texto: <code>strong</code> (importância) × <code>b</code> (destaque visual), <code>em</code> (ênfase) × <code>i</code> (voz diferente), <code>del</code> (removido) × <code>s</code> (não vale mais).</li>
+  <li>Obsoletos (<code>center</code>, <code>font</code>, <code>marquee</code>…) ainda aparecem na tela, mas o validador dá erro. Troque por CSS ou pelo elemento indicado.</li>
+  <li>Um nome errado não dá erro no navegador; só o <a href="validar.html">validador</a> pega.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
