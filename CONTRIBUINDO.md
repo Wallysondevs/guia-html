@@ -70,7 +70,7 @@ As metas olham a **página já desenhada pelo navegador** (o DOM), e não o text
 | `sel:SELETOR` | existe pelo menos um elemento que casa com o seletor CSS (`sel:img[alt]`, `sel:nav ul li a`) |
 | `nsel:SELETOR=N` | existem exatamente N elementos (`nsel:li=3`) |
 | `texto:SELETOR=TEXTO` | o texto do **primeiro** elemento que casa (espaços juntados, sem as pontas) **contém** TEXTO |
-| `attr:SELETOR[ATRIBUTO]=VALOR` | o atributo do primeiro elemento é **igual** a VALOR; sem `=VALOR`, basta o atributo existir |
+| `attr:SELETOR[ATRIBUTO]=VALOR` | o atributo do primeiro elemento é **igual** a VALOR; sem `=VALOR`, basta o atributo existir. **O último `[…]` é sempre o atributo** e o resto é o seletor: `attr:nav a[aria-current]=page` lê o `aria-current` do **primeiro** `nav a`. Para escolher o link que tem o atributo, filtre no seletor: `attr:nav a[aria-current][aria-current]=page` |
 | `css:SELETOR{propriedade}=VALOR` | o estilo **calculado** (`getComputedStyle`) do primeiro elemento é igual a VALOR (`css:h1{color}=rgb(255, 0, 0)`) |
 | `console:TEXTO` | a saída do console (log e erros) contém TEXTO |
 | `src:REGEX` | o código de todas as abas casa com a regex (flags `m` e `i`) |
@@ -229,7 +229,7 @@ Saída real:
 "file:/home/ana/site/index.html":4.13-4.17: error: End tag “h2” seen, but there were open elements.
 ```
 - **As mensagens do validador são em inglês**, com aspas tipográficas “ ”: copie como saíram e explique em português.
-  - Formato: `"arquivo":linha.coluna-linha.coluna: error: …`. `warning` não muda o código de saída; `error` dá código de saída 1.
+  - Formato: `"arquivo":linha.coluna-linha.coluna: error: …`. Os avisos saem como `info warning:` (o vnu 26 escreve assim) e não mudam o código de saída; `error` dá código de saída 1. Pular nível de título (`h1` → `h3`) agora é **error**.
   - Use `vnu --verbose` (mostra o nome do arquivo quando está tudo certo) e `vnu --errors-only`.
 - Ensine também o validador **on-line** (validator.w3.org/nu). As mensagens são as mesmas.
 - **Servidor local:** `python3 -m http.server` dá "Serving HTTP on 0.0.0.0 port 8000…".
