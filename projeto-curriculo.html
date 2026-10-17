@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Projeto Currículo Pessoal — títulos, listas e links de contato | Guia HTML</title>
+<meta name="description" content="Projeto passo a passo: o currículo da Ana numa página HTML. Esqueleto, nome e apresentação; seções com h2 e h3 em ordem; listas ul e dl para experiência, formação, idiomas e habilidades; links de e-mail e telefone (mailto e tel). Quatro versões, cada uma com uma missão, os erros reais do validador W3C e a página final validada.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>Projeto <span class="hl">Currículo Pessoal</span></h1>
+
+<p class="intro">A Ana quer trabalhar numa confeitaria grande e precisa de um currículo. Em vez de um arquivo de texto, ela vai fazer uma <strong>página</strong>: dá para mandar o link por mensagem, abre em qualquer celular e, mais tarde, pode ser <a href="publicar.html">publicada na internet</a>. É o projeto para treinar o básico de todo site: o esqueleto, os <strong>títulos em ordem</strong>, as <strong>listas</strong> e os <strong>links</strong>.</p>
+
+<div class="note">
+<strong>Você vai praticar</strong>
+<ul>
+  <li>Montar o esqueleto de uma página completa (<a href="estrutura.html">Estrutura</a>).</li>
+  <li>Organizar o conteúdo com <code>h1</code>, <code>h2</code> e <code>h3</code>, sem pular nível (<a href="titulos.html">Títulos</a>).</li>
+  <li>Usar a lista certa para cada coisa: <code>ul</code> para itens soltos e <code>dl</code> para pares "nome → descrição" (<a href="listas.html">Listas</a>, <a href="listas-descricao.html">Listas de Descrição</a>).</li>
+  <li>Fazer links que abrem o e-mail e o telefone (<a href="links-email-tel.html">Links de E-mail e Telefone</a>).</li>
+  <li>Destacar com <code>strong</code> e separar com <code>hr</code> (<a href="negrito-italico.html">strong e em</a>, <a href="quebras.html">Quebras</a>).</li>
+  <li>Conferir cada versão no validador do W3C.</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>O que vamos construir</h2>
+<p>O currículo pronto, desenhado pelo seu navegador. Ainda sem CSS nenhum: é o visual padrão do navegador, e já está organizado e legível.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de &lt;strong&gt;auxiliar de confeitaria&lt;/strong&gt;.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Telefone: &lt;a href="tel:+5511900000000"&gt;(11) 90000-0000&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Cidade: São Paulo, SP&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;Doces da Ana&lt;/strong&gt;, de 2022 até hoje.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Produzo bolos, tortas e docinhos por encomenda.&lt;/li&gt;
+    &lt;li&gt;Cuido das vendas na loja on-line e nas redes sociais.&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;Padaria Pão Quente&lt;/strong&gt;, de 2019 a 2022.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Atendimento no balcão e no caixa.&lt;/li&gt;
+    &lt;li&gt;Ajuda na produção de pães e salgados.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Formação&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Curso de Confeitaria, Escola Técnica Doce Saber, 2021.&lt;/li&gt;
+    &lt;li&gt;Ensino Médio, Colégio Estadual Jardim das Flores, 2018.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Idiomas&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Português&lt;/dt&gt;
+    &lt;dd&gt;Nativo&lt;/dd&gt;
+    &lt;dt&gt;Inglês&lt;/dt&gt;
+    &lt;dd&gt;Intermediário&lt;/dd&gt;
+    &lt;dt&gt;Espanhol&lt;/dt&gt;
+    &lt;dd&gt;Básico&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Bolos decorados e pasta americana&lt;/li&gt;
+    &lt;li&gt;Controle de estoque e de custos&lt;/li&gt;
+    &lt;li&gt;Atendimento ao cliente&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;hr&gt;
+  &lt;p&gt;&lt;small&gt;Atualizado em outubro de 2026.&lt;/small&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<ol class="passo">
+  <li><a href="#versao1">O esqueleto, o nome e a apresentação</a>.</li>
+  <li><a href="#versao2">As seções: títulos em ordem</a> (<code>h2</code> e <code>h3</code>).</li>
+  <li><a href="#versao3">As listas</a> (<code>ul</code> e <code>dl</code>).</li>
+  <li><a href="#versao4">Contato clicável e acabamento</a> (<code>mailto:</code>, <code>tel:</code>, <code>strong</code>, <code>hr</code>).</li>
+</ol>
+
+<h3>Antes de começar</h3>
+<p>Você precisa ter visto <a href="estrutura.html">Estrutura de uma Página</a>, <a href="titulos.html">Títulos</a>, <a href="paragrafos.html">Parágrafos</a> e <a href="listas.html">Listas</a>. Se for fazer no seu computador, crie a pasta do projeto; o arquivo vai se chamar <code>index.html</code> (o nome que os servidores abrem sozinhos, veja <a href="organizar-arquivos.html">Organizar os Arquivos</a>):</p>
+
+<pre class="term">$ mkdir -p sites/curriculo
+$ cd sites/curriculo</pre>
+
+<hr>
+
+<h2 id="versao1">Versão 1 · O esqueleto, o nome e a apresentação</h2>
+<p>Todo currículo começa igual: o nome bem grande e uma frase dizendo quem você é e o que procura. Na página, o nome é o <strong>título principal</strong>, o <code>h1</code>; a frase é um parágrafo, o <code>p</code>. Em volta, o esqueleto de sempre.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de auxiliar de confeitaria.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Parte</th><th>O que faz</th></tr>
+<tr><td><code>&lt;!DOCTYPE html&gt;</code></td><td>Avisa ao navegador que é HTML de hoje (<a href="doctype.html">O DOCTYPE</a>).</td></tr>
+<tr><td><code>&lt;html lang="pt-BR"&gt;</code></td><td>A página está em português do Brasil. O leitor de tela pronuncia "Costa" e "confeitaria" em português, e o tradutor do navegador não oferece "traduzir do inglês".</td></tr>
+<tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>A tabela de letras: garante o "ç" de "Currículo" e o "ã" de "São".</td></tr>
+<tr><td><code>&lt;title&gt;Ana Costa — Currículo&lt;/title&gt;</code></td><td>O nome da aba. Quem recebe o link e abre várias abas de candidatos sabe qual é a da Ana. Também é o nome sugerido quando alguém salva a página nos favoritos.</td></tr>
+<tr><td><code>&lt;h1&gt;Ana Costa&lt;/h1&gt;</code></td><td>O título principal da página. <strong>Um</strong> <code>h1</code> por página, com o assunto dela: aqui, o nome.</td></tr>
+<tr><td><code>&lt;p&gt;…&lt;/p&gt;</code></td><td>Um parágrafo: a apresentação. O navegador quebra a linha sozinho conforme a largura da tela (veja <a href="espacos.html">Espaços e Quebras de Linha</a>).</td></tr>
+</table>
+</div>
+
+<div class="tip">
+<strong>Por que o título da aba não é só "Currículo"?</strong>
+<p>Porque quem recebe o link recebe também o de outras pessoas. "Currículo", "Currículo", "Currículo" nas abas não ajuda ninguém. Comece pelo que diferencia a página (o nome) e termine com o tipo de página.</p>
+</div>
+
+<div class="tryhtml" data-goal="texto:h1=Ana Costa,sel:h1 + p">
+<p class="try-task"><strong>Missão (versão 1):</strong> o esqueleto já está pronto. Troque o título <code>Meu nome</code> por <code>Ana Costa</code> e, logo abaixo dele, escreva um parágrafo (<code>&lt;p&gt;</code>) com a apresentação da Ana. Pode ser a do exemplo ou uma frase sua.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Meu nome&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de auxiliar de confeitaria.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>No terminal, a Ana confere a versão 1 com o validador. O <code>--verbose</code> mostra o nome do arquivo; nada depois dele quer dizer nenhum erro:</p>
+
+<pre class="term" data-cwd="~/sites/curriculo">$ vnu --verbose index.html
+index.html</pre>
+
+<hr>
+
+<h2 id="versao2">Versão 2 · As seções: títulos em ordem</h2>
+<p>Um currículo tem partes: contato, experiência, formação, habilidades. Cada parte ganha um título <code>h2</code>. Dentro da experiência, cada emprego ganha um título <code>h3</code>, um nível abaixo. É como o sumário de um livro: o livro (<code>h1</code>), os capítulos (<code>h2</code>) e as seções de cada capítulo (<code>h3</code>).</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de auxiliar de confeitaria.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;p&gt;E-mail: ana@example.com. Telefone: (11) 90000-0000. São Paulo, SP.&lt;/p&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;Doces da Ana, de 2022 até hoje.&lt;/p&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;Padaria Pão Quente, de 2019 a 2022.&lt;/p&gt;
+
+  &lt;h2&gt;Formação&lt;/h2&gt;
+  &lt;p&gt;Curso de Confeitaria (2021) e Ensino Médio (2018).&lt;/p&gt;
+
+  &lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;p&gt;Bolos decorados, controle de estoque e atendimento ao cliente.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;h1&gt;Ana Costa&lt;/h1&gt;</dt><dd>Nível 1: o assunto da página inteira.</dd>
+  <dt>&lt;h2&gt;Experiência&lt;/h2&gt;</dt><dd>Nível 2: uma parte do currículo. Tudo o que vem depois, até o próximo <code>h2</code>, pertence a ela.</dd>
+  <dt>&lt;h3&gt;Atendente&lt;/h3&gt;</dt><dd>Nível 3: uma parte dentro da experiência (um emprego).</dd>
+  <dt>&lt;p&gt;…&lt;/p&gt;</dt><dd>Os textos de cada parte, por enquanto em parágrafos. Na versão 3, eles viram listas.</dd>
+</dl>
+
+<p>As linhas em branco entre as seções não aparecem na tela (o navegador junta espaços e linhas em branco). Elas servem para <strong>você</strong> enxergar as partes no código.</p>
+
+<p>Os títulos não são só letras grandes. Quem usa leitor de tela costuma pular de título em título para achar a parte que interessa, como quem passa o olho num currículo de papel. Por isso a ordem importa: depois de um <code>h1</code> vem um <code>h2</code>, nunca um <code>h4</code>.</p>
+
+<div class="cenario">
+<strong>"Usei <code>h4</code> porque o <code>h2</code> é grande demais"</strong>
+<p>A Ana achou o título "Contato" grande e trocou por um <code>h4</code>, que é menor:</p>
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Ana Costa&lt;/h1&gt;
+&lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de auxiliar de confeitaria.&lt;/p&gt;
+
+&lt;h4&gt;Contato&lt;/h4&gt;
+&lt;p&gt;E-mail: ana@example.com. Telefone: (11) 90000-0000. São Paulo, SP.&lt;/p&gt;
+
+&lt;h2&gt;Experiência&lt;/h2&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> mostra "Contato" pequeno, como ela queria, e não reclama de nada. <strong>O que o validador diz:</strong></p>
+<pre class="term" data-cwd="~/sites/curriculo">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/curriculo/index.html":12.3-12.6: error: The heading “h4” (with computed level 4) follows the heading “h1” (with computed level 1), skipping 2 heading levels.</pre>
+<p>"O título <code>h4</code> (nível 4) vem depois do título <code>h1</code> (nível 1), pulando 2 níveis." Para um leitor de tela, o currículo fica com um buraco: parece que faltam as partes de nível 2 e 3 antes do contato.</p>
+<p><strong>Como consertar:</strong> escolha o título pelo <strong>lugar</strong> dele no conteúdo, e não pelo tamanho. O tamanho é trabalho do CSS (<code>h2 { font-size: 1.2em; }</code>, por exemplo; veja <a href="ligar-css.html">Ligar CSS</a>; quer aprender mais? futuro Guia CSS).</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:h2=4,texto:h2:nth-of-type(3)=Formação,texto:h2:nth-of-type(4)=Habilidades">
+<p class="try-task"><strong>Missão (versão 2):</strong> os dois últimos parágrafos estão sem título. Coloque um <code>&lt;h2&gt;Formação&lt;/h2&gt;</code> antes do parágrafo dos cursos e um <code>&lt;h2&gt;Habilidades&lt;/h2&gt;</code> antes do último parágrafo. No fim, a página tem quatro <code>h2</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de auxiliar de confeitaria.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;p&gt;E-mail: ana@example.com. Telefone: (11) 90000-0000. São Paulo, SP.&lt;/p&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;Doces da Ana, de 2022 até hoje.&lt;/p&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;Padaria Pão Quente, de 2019 a 2022.&lt;/p&gt;
+
+  &lt;p&gt;Curso de Confeitaria (2021) e Ensino Médio (2018).&lt;/p&gt;
+
+  &lt;p&gt;Bolos decorados, controle de estoque e atendimento ao cliente.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de auxiliar de confeitaria.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;p&gt;E-mail: ana@example.com. Telefone: (11) 90000-0000. São Paulo, SP.&lt;/p&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;Doces da Ana, de 2022 até hoje.&lt;/p&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;Padaria Pão Quente, de 2019 a 2022.&lt;/p&gt;
+
+  &lt;h2&gt;Formação&lt;/h2&gt;
+  &lt;p&gt;Curso de Confeitaria (2021) e Ensino Médio (2018).&lt;/p&gt;
+
+  &lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;p&gt;Bolos decorados, controle de estoque e atendimento ao cliente.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao3">Versão 3 · As listas</h2>
+<p>Ninguém lê um currículo palavra por palavra: a pessoa passa o olho. Para isso, as listas são perfeitas. Cada tarefa de um emprego, cada curso e cada habilidade vira um item com um marcador na frente. E os idiomas, que são pares "idioma → nível", ganham uma lista de descrição.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de auxiliar de confeitaria.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;p&gt;E-mail: ana@example.com. Telefone: (11) 90000-0000. São Paulo, SP.&lt;/p&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;Doces da Ana, de 2022 até hoje.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Produzo bolos, tortas e docinhos por encomenda.&lt;/li&gt;
+    &lt;li&gt;Cuido das vendas na loja on-line e nas redes sociais.&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;Padaria Pão Quente, de 2019 a 2022.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Atendimento no balcão e no caixa.&lt;/li&gt;
+    &lt;li&gt;Ajuda na produção de pães e salgados.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Formação&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Curso de Confeitaria, Escola Técnica Doce Saber, 2021.&lt;/li&gt;
+    &lt;li&gt;Ensino Médio, Colégio Estadual Jardim das Flores, 2018.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Idiomas&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Português&lt;/dt&gt;
+    &lt;dd&gt;Nativo&lt;/dd&gt;
+    &lt;dt&gt;Inglês&lt;/dt&gt;
+    &lt;dd&gt;Intermediário&lt;/dd&gt;
+    &lt;dt&gt;Espanhol&lt;/dt&gt;
+    &lt;dd&gt;Básico&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Bolos decorados e pasta americana&lt;/li&gt;
+    &lt;li&gt;Controle de estoque e de custos&lt;/li&gt;
+    &lt;li&gt;Atendimento ao cliente&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;ul&gt;</dt><dd><em>Unordered list</em>, "lista não ordenada": itens em que a ordem não importa. O navegador põe uma bolinha na frente de cada um e um recuo à esquerda.</dd>
+  <dt>&lt;li&gt;</dt><dd><em>List item</em>, "item da lista". Só pode morar dentro de um <code>ul</code>, de um <code>ol</code> ou de um <code>menu</code>.</dd>
+  <dt>&lt;dl&gt;</dt><dd><em>Description list</em>, "lista de descrição": uma lista de pares.</dd>
+  <dt>&lt;dt&gt;</dt><dd><em>Description term</em>, "o termo": o idioma.</dd>
+  <dt>&lt;dd&gt;</dt><dd><em>Description details</em>, "a descrição": o nível. O navegador mostra com um recuo, embaixo do termo.</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No currículo</th><th>Lista</th><th>Por quê</th></tr>
+<tr><td>Tarefas de cada emprego, cursos, habilidades</td><td><code>ul</code></td><td>Itens soltos; trocar a ordem não muda o sentido.</td></tr>
+<tr><td>Idiomas e nível</td><td><code>dl</code></td><td>Cada item é um par: o nome e a descrição.</td></tr>
+<tr><td>(não usamos aqui)</td><td><code>ol</code></td><td>Para quando a ordem importa, como os passos de uma receita (veja o <a href="projeto-receita.html">próximo projeto</a>).</td></tr>
+</table>
+</div>
+
+<div class="cenario">
+<strong>Itens <code>li</code> sem a lista em volta</strong>
+<p>A Ana escreveu as habilidades direto com <code>&lt;li&gt;</code>, esquecendo o <code>&lt;ul&gt;</code>:</p>
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;li&gt;Bolos decorados e pasta americana&lt;/li&gt;
+  &lt;li&gt;Controle de estoque e de custos&lt;/li&gt;
+  &lt;li&gt;Atendimento ao cliente&lt;/li&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> olhe o resultado acima. Os itens aparecem um embaixo do outro, mas sem o recuo que a lista dá. A bolinha de cada item fica do lado de fora dele e, sem o recuo, cai na margem da página: conforme o navegador, aparece encostada na borda ou some. E o leitor de tela não anuncia uma lista de 3 itens.</p>
+<p><strong>O que o validador diz</strong> (uma vez para cada item):</p>
+<pre class="term" data-cwd="~/sites/curriculo">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/curriculo/index.html":46.5-46.8: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/sites/curriculo/index.html":47.5-47.8: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/sites/curriculo/index.html":48.5-48.8: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>"O elemento <code>li</code> não é permitido como filho do <code>body</code> neste contexto." O final, "suprimindo os outros erros desta subárvore", só quer dizer que ele não vai procurar mais erros <strong>dentro</strong> desse item.</p>
+<p><strong>Como consertar:</strong> todo grupo de <code>li</code> fica dentro de um <code>&lt;ul&gt;</code> (ou <code>&lt;ol&gt;</code>).</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:h2:last-of-type + ul > li=3">
+<p class="try-task"><strong>Missão (versão 3):</strong> as habilidades ainda estão num parágrafo só. Troque o último <code>&lt;p&gt;</code> por uma lista <code>&lt;ul&gt;</code> com três itens: <code>Bolos decorados e pasta americana</code>, <code>Controle de estoque e de custos</code> e <code>Atendimento ao cliente</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de auxiliar de confeitaria.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;p&gt;E-mail: ana@example.com. Telefone: (11) 90000-0000. São Paulo, SP.&lt;/p&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;Doces da Ana, de 2022 até hoje.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Produzo bolos, tortas e docinhos por encomenda.&lt;/li&gt;
+    &lt;li&gt;Cuido das vendas na loja on-line e nas redes sociais.&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;Padaria Pão Quente, de 2019 a 2022.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Atendimento no balcão e no caixa.&lt;/li&gt;
+    &lt;li&gt;Ajuda na produção de pães e salgados.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Formação&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Curso de Confeitaria, Escola Técnica Doce Saber, 2021.&lt;/li&gt;
+    &lt;li&gt;Ensino Médio, Colégio Estadual Jardim das Flores, 2018.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Idiomas&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Português&lt;/dt&gt;
+    &lt;dd&gt;Nativo&lt;/dd&gt;
+    &lt;dt&gt;Inglês&lt;/dt&gt;
+    &lt;dd&gt;Intermediário&lt;/dd&gt;
+    &lt;dt&gt;Espanhol&lt;/dt&gt;
+    &lt;dd&gt;Básico&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;p&gt;Bolos decorados e pasta americana. Controle de estoque e de custos. Atendimento ao cliente.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de auxiliar de confeitaria.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;p&gt;E-mail: ana@example.com. Telefone: (11) 90000-0000. São Paulo, SP.&lt;/p&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;Doces da Ana, de 2022 até hoje.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Produzo bolos, tortas e docinhos por encomenda.&lt;/li&gt;
+    &lt;li&gt;Cuido das vendas na loja on-line e nas redes sociais.&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;Padaria Pão Quente, de 2019 a 2022.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Atendimento no balcão e no caixa.&lt;/li&gt;
+    &lt;li&gt;Ajuda na produção de pães e salgados.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Formação&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Curso de Confeitaria, Escola Técnica Doce Saber, 2021.&lt;/li&gt;
+    &lt;li&gt;Ensino Médio, Colégio Estadual Jardim das Flores, 2018.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Idiomas&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Português&lt;/dt&gt;
+    &lt;dd&gt;Nativo&lt;/dd&gt;
+    &lt;dt&gt;Inglês&lt;/dt&gt;
+    &lt;dd&gt;Intermediário&lt;/dd&gt;
+    &lt;dt&gt;Espanhol&lt;/dt&gt;
+    &lt;dd&gt;Básico&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Bolos decorados e pasta americana&lt;/li&gt;
+    &lt;li&gt;Controle de estoque e de custos&lt;/li&gt;
+    &lt;li&gt;Atendimento ao cliente&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao4">Versão 4 · Contato clicável e acabamento</h2>
+<p>Quem lê o currículo no celular quer tocar no e-mail e já escrever, tocar no telefone e já ligar. Para isso servem dois tipos especiais de link: <code>mailto:</code> abre o programa de e-mail com o endereço preenchido, e <code>tel:</code> oferece a ligação. O contato também vira lista. E, para terminar, três detalhes: <code>strong</code> nos nomes das empresas e na vaga, uma linha <code>hr</code> e a data em letra pequena.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de &lt;strong&gt;auxiliar de confeitaria&lt;/strong&gt;.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Telefone: &lt;a href="tel:+5511900000000"&gt;(11) 90000-0000&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Cidade: São Paulo, SP&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;Doces da Ana&lt;/strong&gt;, de 2022 até hoje.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Produzo bolos, tortas e docinhos por encomenda.&lt;/li&gt;
+    &lt;li&gt;Cuido das vendas na loja on-line e nas redes sociais.&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;Padaria Pão Quente&lt;/strong&gt;, de 2019 a 2022.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Atendimento no balcão e no caixa.&lt;/li&gt;
+    &lt;li&gt;Ajuda na produção de pães e salgados.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Formação&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Curso de Confeitaria, Escola Técnica Doce Saber, 2021.&lt;/li&gt;
+    &lt;li&gt;Ensino Médio, Colégio Estadual Jardim das Flores, 2018.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Idiomas&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Português&lt;/dt&gt;
+    &lt;dd&gt;Nativo&lt;/dd&gt;
+    &lt;dt&gt;Inglês&lt;/dt&gt;
+    &lt;dd&gt;Intermediário&lt;/dd&gt;
+    &lt;dt&gt;Espanhol&lt;/dt&gt;
+    &lt;dd&gt;Básico&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Bolos decorados e pasta americana&lt;/li&gt;
+    &lt;li&gt;Controle de estoque e de custos&lt;/li&gt;
+    &lt;li&gt;Atendimento ao cliente&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;hr&gt;
+  &lt;p&gt;&lt;small&gt;Atualizado em outubro de 2026.&lt;/small&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;a href="mailto:ana@example.com"&gt;</dt><dd>Um link de e-mail. <code>mailto:</code> (de "mail to", "enviar para") seguido do endereço, <strong>sem espaço</strong>.</dd>
+  <dt>ana@example.com&lt;/a&gt;</dt><dd>O texto do link: o próprio endereço, para quem vai copiar ou imprimir.</dd>
+  <dt>&lt;a href="tel:+5511900000000"&gt;</dt><dd>Um link de telefone, no formato internacional: <code>+55</code> (Brasil), <code>11</code> (DDD) e o número, só com dígitos.</dd>
+  <dt>(11) 90000-0000&lt;/a&gt;</dt><dd>O texto do link pode ter parênteses e traço, do jeito que as pessoas leem.</dd>
+  <dt>&lt;strong&gt;</dt><dd>"Importante": o navegador mostra em negrito. Use para o que você quer que salte aos olhos, e não em tudo.</dd>
+  <dt>&lt;hr&gt;</dt><dd>Uma mudança de assunto; o navegador desenha uma linha.</dd>
+  <dt>&lt;small&gt;</dt><dd>Letras miúdas: avisos e observações, como a data de atualização.</dd>
+</dl>
+
+<div class="note">
+<strong>Por que <code>example.com</code>?</strong>
+<p>É um domínio reservado de propósito para exemplos: nenhum e-mail de verdade chega lá. No seu currículo, use o seu endereço e o seu telefone.</p>
+</div>
+
+<div class="cenario">
+<strong>Telefone com espaço e parênteses no <code>href</code></strong>
+<p>A Ana copiou o telefone do jeito que escreve no papel: <code>&lt;a href="tel:(11) 90000-0000"&gt;</code>. O link aparece igualzinho na tela, e no computador ninguém nota diferença. Mas um endereço (o <code>href</code>) não pode ter espaço, e o validador avisa:</p>
+<pre class="term" data-cwd="~/sites/curriculo">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/curriculo/index.html":15.19-15.48: error: Bad value “tel:(11) 90000-0000” for attribute “href” on element “a”: Illegal character after “tel:”. Space is not allowed.</pre>
+<p>"Valor ruim para o atributo <code>href</code>: caractere proibido depois de <code>tel:</code>. Espaço não é permitido." Cada celular trata um endereço errado do seu jeito, e não dá para garantir que o número vai chegar certo ao discador.</p>
+<p><strong>Como consertar:</strong> no <code>href</code>, só o <code>+</code> e os dígitos: <code>tel:+5511900000000</code>. A formatação bonita fica no texto do link. O mesmo vale para o e-mail: <code>mailto: ana@example.com</code>, com espaço depois dos dois-pontos, também dá erro (<code>Illegal character after “ilto:”. Space is not allowed.</code>).</p>
+</div>
+
+<div class="cenario">
+<strong>Esquecer o <code>mailto:</code></strong>
+<p>Com <code>&lt;a href="ana@example.com"&gt;</code>, o validador <strong>não</strong> reclama: para ele, é um link válido para um <strong>arquivo</strong> chamado <code>ana@example.com</code> na mesma pasta (um <a href="caminhos.html">caminho relativo</a>). Ao clicar, o navegador procura esse arquivo e mostra uma página de erro de "arquivo não encontrado". Teste sempre os links clicando neles.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:a[href='mailto:ana@example.com'],sel:a[href='tel:+5511900000000']">
+<p class="try-task"><strong>Missão (versão 4):</strong> deixe o contato clicável. Transforme o e-mail num link <code>mailto:ana@example.com</code> e o telefone num link <code>tel:+5511900000000</code>, mantendo o texto que aparece na tela. Depois, clique nos links do resultado para ver o que o seu computador faz.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de &lt;strong&gt;auxiliar de confeitaria&lt;/strong&gt;.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;E-mail: ana@example.com&lt;/li&gt;
+    &lt;li&gt;Telefone: (11) 90000-0000&lt;/li&gt;
+    &lt;li&gt;Cidade: São Paulo, SP&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;Doces da Ana&lt;/strong&gt;, de 2022 até hoje.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Produzo bolos, tortas e docinhos por encomenda.&lt;/li&gt;
+    &lt;li&gt;Cuido das vendas na loja on-line e nas redes sociais.&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;Padaria Pão Quente&lt;/strong&gt;, de 2019 a 2022.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Atendimento no balcão e no caixa.&lt;/li&gt;
+    &lt;li&gt;Ajuda na produção de pães e salgados.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Formação&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Curso de Confeitaria, Escola Técnica Doce Saber, 2021.&lt;/li&gt;
+    &lt;li&gt;Ensino Médio, Colégio Estadual Jardim das Flores, 2018.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Idiomas&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Português&lt;/dt&gt;
+    &lt;dd&gt;Nativo&lt;/dd&gt;
+    &lt;dt&gt;Inglês&lt;/dt&gt;
+    &lt;dd&gt;Intermediário&lt;/dd&gt;
+    &lt;dt&gt;Espanhol&lt;/dt&gt;
+    &lt;dd&gt;Básico&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Bolos decorados e pasta americana&lt;/li&gt;
+    &lt;li&gt;Controle de estoque e de custos&lt;/li&gt;
+    &lt;li&gt;Atendimento ao cliente&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;hr&gt;
+  &lt;p&gt;&lt;small&gt;Atualizado em outubro de 2026.&lt;/small&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de &lt;strong&gt;auxiliar de confeitaria&lt;/strong&gt;.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Telefone: &lt;a href="tel:+5511900000000"&gt;(11) 90000-0000&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Cidade: São Paulo, SP&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;Doces da Ana&lt;/strong&gt;, de 2022 até hoje.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Produzo bolos, tortas e docinhos por encomenda.&lt;/li&gt;
+    &lt;li&gt;Cuido das vendas na loja on-line e nas redes sociais.&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;Padaria Pão Quente&lt;/strong&gt;, de 2019 a 2022.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Atendimento no balcão e no caixa.&lt;/li&gt;
+    &lt;li&gt;Ajuda na produção de pães e salgados.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Formação&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Curso de Confeitaria, Escola Técnica Doce Saber, 2021.&lt;/li&gt;
+    &lt;li&gt;Ensino Médio, Colégio Estadual Jardim das Flores, 2018.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Idiomas&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Português&lt;/dt&gt;
+    &lt;dd&gt;Nativo&lt;/dd&gt;
+    &lt;dt&gt;Inglês&lt;/dt&gt;
+    &lt;dd&gt;Intermediário&lt;/dd&gt;
+    &lt;dt&gt;Espanhol&lt;/dt&gt;
+    &lt;dd&gt;Básico&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Bolos decorados e pasta americana&lt;/li&gt;
+    &lt;li&gt;Controle de estoque e de custos&lt;/li&gt;
+    &lt;li&gt;Atendimento ao cliente&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;hr&gt;
+  &lt;p&gt;&lt;small&gt;Atualizado em outubro de 2026.&lt;/small&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>A página completa</h2>
+<p>A versão final é a versão 4, a mesma que você viu desenhada em <a href="#versao4">Versão 4</a>. Salve como <code>index.html</code> na pasta <code>sites/curriculo</code>:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ana Costa — Currículo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira há quatro anos, com loja on-line própria de doces caseiros. Procuro uma vaga de &lt;strong&gt;auxiliar de confeitaria&lt;/strong&gt;.&lt;/p&gt;
+
+  &lt;h2&gt;Contato&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;E-mail: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Telefone: &lt;a href="tel:+5511900000000"&gt;(11) 90000-0000&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Cidade: São Paulo, SP&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Experiência&lt;/h2&gt;
+  &lt;h3&gt;Confeiteira autônoma&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;Doces da Ana&lt;/strong&gt;, de 2022 até hoje.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Produzo bolos, tortas e docinhos por encomenda.&lt;/li&gt;
+    &lt;li&gt;Cuido das vendas na loja on-line e nas redes sociais.&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Atendente&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;Padaria Pão Quente&lt;/strong&gt;, de 2019 a 2022.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Atendimento no balcão e no caixa.&lt;/li&gt;
+    &lt;li&gt;Ajuda na produção de pães e salgados.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Formação&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Curso de Confeitaria, Escola Técnica Doce Saber, 2021.&lt;/li&gt;
+    &lt;li&gt;Ensino Médio, Colégio Estadual Jardim das Flores, 2018.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Idiomas&lt;/h2&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;Português&lt;/dt&gt;
+    &lt;dd&gt;Nativo&lt;/dd&gt;
+    &lt;dt&gt;Inglês&lt;/dt&gt;
+    &lt;dd&gt;Intermediário&lt;/dd&gt;
+    &lt;dt&gt;Espanhol&lt;/dt&gt;
+    &lt;dd&gt;Básico&lt;/dd&gt;
+  &lt;/dl&gt;
+
+  &lt;h2&gt;Habilidades&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Bolos decorados e pasta americana&lt;/li&gt;
+    &lt;li&gt;Controle de estoque e de custos&lt;/li&gt;
+    &lt;li&gt;Atendimento ao cliente&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;hr&gt;
+  &lt;p&gt;&lt;small&gt;Atualizado em outubro de 2026.&lt;/small&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O que o projeto juntou: o <a href="estrutura.html">esqueleto</a>, os <a href="titulos.html">títulos</a> em ordem, <a href="paragrafos.html">parágrafos</a>, <a href="listas.html">listas</a> e <a href="listas-descricao.html">listas de descrição</a>, <a href="links-email-tel.html">links de e-mail e telefone</a>, <a href="negrito-italico.html">strong</a>, <a href="quebras.html">hr</a> e <a href="formatacao.html">small</a>.</p>
+
+<h3>Validando no laboratório</h3>
+<p>A Ana salvou a página final e conferiu tudo no terminal:</p>
+
+<pre class="term" data-cwd="~/sites/curriculo">$ ls
+index.html
+$ vnu --verbose index.html
+index.html
+$ echo $?
+0</pre>
+
+<p>Nenhum erro. Se preferir o site, abra validator.w3.org/nu, escolha a opção de enviar um arquivo (<em>File upload</em>) e mande o <code>index.html</code>: a resposta vem numa página, com as mesmas mensagens em inglês.</p>
+
+<hr>
+
+<h2>Desafios extras</h2>
+<ol>
+  <li><strong>Uma foto.</strong> Coloque uma foto sua logo depois do <code>h1</code>, com <code>alt</code> descrevendo a foto, <code>width</code> e <code>height</code> (veja <a href="imagens.html">Imagens</a> e <a href="imagens-alt.html">Texto Alternativo</a>).</li>
+  <li><strong>Datas de verdade.</strong> Troque os anos por <code>&lt;time datetime="2022"&gt;2022&lt;/time&gt;</code>, para os programas entenderem que são datas (veja <a href="time.html">time</a>).</li>
+  <li><strong>Assunto pronto no e-mail.</strong> Faça o link de e-mail já preencher o assunto: <code>mailto:ana@example.com?subject=Vaga%20de%20auxiliar</code> (o <code>%20</code> é o espaço; veja <a href="links-email-tel.html">Links de E-mail e Telefone</a>).</li>
+  <li><strong>Cursos em ordem.</strong> Crie uma seção "Cursos livres" com uma <code>ol</code>, do mais recente para o mais antigo, e explique para si mesmo por que ali a ordem importa.</li>
+  <li><strong>Um link para a loja.</strong> No texto da experiência, ponha um link para a loja on-line da Ana (pode ser <code>https://example.com</code>).</li>
+</ol>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">1. No currículo, o nome da Ana é marcado com qual elemento?</p>
+<label><input type="radio" name="q1"> <code>title</code>, porque é o título.</label>
+<label><input type="radio" name="q1"> <code>h1</code>, o título principal da página.</label>
+<label><input type="radio" name="q1"> <code>strong</code>, porque é importante.</label>
+<label><input type="radio" name="q1"> <code>h2</code>, porque o <code>h1</code> é grande demais.</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">2. Depois do <code>h1</code>, a Ana pôs um <code>h4</code>. O que acontece?</p>
+<label><input type="radio" name="q2"> O navegador mostra uma página de erro.</label>
+<label><input type="radio" name="q2"> O título não aparece.</label>
+<label><input type="radio" name="q2"> Nada: está certo.</label>
+<label><input type="radio" name="q2"> A tela mostra o título pequeno, mas o validador acusa que dois níveis foram pulados.</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Qual lista combina com "Português → Nativo, Inglês → Intermediário"?</p>
+<label><input type="radio" name="q3"> <code>ul</code></label>
+<label><input type="radio" name="q3"> <code>ol</code></label>
+<label><input type="radio" name="q3"> <code>dl</code>, com <code>dt</code> e <code>dd</code></label>
+<label><input type="radio" name="q3"> Um <code>p</code> para cada idioma</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">4. Qual destes links de telefone passa no validador?</p>
+<label><input type="radio" name="q4"> <code>&lt;a href="tel:+5511900000000"&gt;(11) 90000-0000&lt;/a&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;a href="tel:(11) 90000-0000"&gt;(11) 90000-0000&lt;/a&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;a href="tel: 11 90000 0000"&gt;telefone&lt;/a&gt;</code></label>
+<label><input type="radio" name="q4"> Nenhum: telefone não pode ser link.</label>
+</div>
+
+<div class="exercise">
+<p>5. Complete o link que abre o e-mail da Ana:</p>
+<div class="ex-code">&lt;a href="<input data-answer="mailto:" aria-label="começo do endereço" size="8">ana@example.com"&gt;ana@example.com&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<p>6. Complete o par da lista de idiomas:</p>
+<div class="ex-code">&lt;dl&gt; &lt;<input data-answer="dt" aria-label="elemento do termo" size="3">&gt;Inglês&lt;/dt&gt; &lt;<input data-answer="dd" aria-label="elemento da descrição" size="3">&gt;Intermediário&lt;/dd&gt; &lt;/dl&gt;</div>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Toda página começa pelo esqueleto: <code>&lt;!DOCTYPE html&gt;</code>, <code>lang="pt-BR"</code>, <code>meta charset</code> e um <code>title</code> que diga de quem é a página.</li>
+  <li>Um <code>h1</code> com o assunto; <code>h2</code> para as partes; <code>h3</code> dentro delas. Escolha o título pelo lugar, não pelo tamanho; pular nível é erro no validador.</li>
+  <li><code>ul</code> para itens soltos, <code>ol</code> quando a ordem importa, <code>dl</code> para pares. <code>li</code> só existe dentro de uma lista.</li>
+  <li><code>mailto:</code> e <code>tel:</code> fazem links de e-mail e telefone; no <code>href</code>, nada de espaços.</li>
+  <li>O navegador mostra quase tudo, até o que está errado; o validador mostra o que está errado.</li>
+</ul>
+<p>Próximo projeto: <a href="projeto-receita.html">Página de Receita</a>.</p>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
