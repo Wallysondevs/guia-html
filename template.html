@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML template e slot — moldes de HTML e espaços para encaixar | Guia HTML</title>
+<meta name="description" content="Os elementos template e slot para quem nunca fez um site: o molde que não aparece na página, copiar o molde com content.cloneNode(true), template dentro de tabelas e listas, o shadow DOM declarativo (shadowrootmode) com slot e conteúdo padrão, e os erros reais do validador W3C e do console.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">template e slot</span></h1>
+
+<p class="intro">Imagine o site de receitas da Ana com 200 receitas, cada uma num cartão igual: título, foto, tempo de forno. Escrever 200 cartões à mão é trabalho de sobra, e uma mudança no cartão vira 200 mudanças. O <code>&lt;template&gt;</code> resolve isso: ele guarda um <strong>molde</strong> de HTML que não aparece na página, para o JavaScript copiar quantas vezes precisar. E o <code>&lt;slot&gt;</code> marca, dentro de um molde, os <strong>espaços</strong> onde cada cópia encaixa o seu conteúdo. Nesta aula você vai usar os dois, com um JavaScript pequeno e explicado.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que o <code>&lt;template&gt;</code> faz com o que está dentro dele (e por que nada aparece).</li>
+  <li>Como copiar o molde com JavaScript: <code>content.cloneNode(true)</code>, preencher e pôr na página.</li>
+  <li>Por que o <code>&lt;template&gt;</code> pode ficar até dentro de uma tabela.</li>
+  <li>O que é o <strong>shadow DOM</strong>, criado sem JavaScript com <code>shadowrootmode</code>.</li>
+  <li>Como o <code>&lt;slot&gt;</code> e o atributo <code>slot</code> encaixam conteúdo no molde, e o conteúdo padrão.</li>
+  <li>Os erros reais: <code>&lt;template /&gt;</code>, esquecer o <code>.content</code>, <code>shadowrootmode="aberto"</code> e um caso que o validador aceita, mas o navegador recusa.</li>
+</ul>
+</div>
+
+<p>As mensagens do validador desta aula saíram do <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. As do console foram conferidas no Chromium. Os resultados são desenhados pelo seu próprio navegador.</p>
+
+<hr>
+
+<h2>A ideia: a forma de biscoito</h2>
+<p>Na cozinha da Ana tem uma gaveta com <strong>formas de biscoito</strong>: uma estrela, um coração. A forma em si não se come e não vai para a mesa. Ela fica guardada, e cada vez que a Ana aperta a forma na massa, sai um biscoito igual, que ela decora do jeito que quiser.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na cozinha</th><th>Na página</th></tr>
+<tr><td>A forma guardada na gaveta</td><td><code>&lt;template&gt;</code>: o molde, que não aparece</td></tr>
+<tr><td>Apertar a forma na massa</td><td><code>molde.content.cloneNode(true)</code>: fazer uma cópia</td></tr>
+<tr><td>Decorar cada biscoito</td><td>trocar o texto da cópia</td></tr>
+<tr><td>Pôr o biscoito na mesa</td><td><code>append(copia)</code>: pôr a cópia na página</td></tr>
+<tr><td>Os buracos da forma, que cada biscoito recheia</td><td><code>&lt;slot&gt;</code>: espaços para encaixar conteúdo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O template: um molde que não aparece</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;template id="molde-receita"&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Nome da receita&lt;/h2&gt;
+    &lt;p&gt;Este texto está guardado no molde.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/template&gt;
+&lt;p&gt;Só o título e este parágrafo aparecem.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;template&gt;</dt><dd>"Molde", "modelo". Tudo o que está dentro é lido pelo navegador, mas <strong>não</strong> é desenhado.</dd>
+  <dt>id="molde-receita"</dt><dd>O nome do molde, para o JavaScript achá-lo.</dd>
+  <dt>&lt;article&gt;…&lt;/article&gt;</dt><dd>O conteúdo do molde: qualquer HTML. Aqui, um cartão de receita (aula <a href="section-article.html">section e article</a>).</dd>
+  <dt>&lt;/template&gt;</dt><dd>A tag de fechamento é obrigatória.</dd>
+</dl>
+
+<p>O conteúdo de um <code>&lt;template&gt;</code> fica numa espécie de <strong>gaveta</strong> separada da página, chamada <code>content</code> ("conteúdo"). Enquanto está na gaveta:</p>
+<ul>
+  <li>não aparece na tela e não é lido por leitores de tela;</li>
+  <li>um <code>&lt;script&gt;</code> lá dentro <strong>não roda</strong>, e uma <code>&lt;img&gt;</code> <strong>não é baixada</strong>;</li>
+  <li>a busca do JavaScript na página (<code>document.querySelector("article")</code>) não acha o que está lá dentro.</li>
+</ul>
+<p>Mas o navegador lê e <strong>organiza</strong> o conteúdo, como faz com o resto da página: um <code>&lt;p&gt;Oi&lt;p&gt;Tchau</code> dentro do molde vira dois parágrafos fechados. Assim, cada cópia já sai pronta.</p>
+
+<div class="tip">
+<strong>Desde quando?</strong>
+<p>O <code>&lt;template&gt;</code> entrou no HTML junto com os Web Components e funciona em todos os navegadores atuais há muitos anos. É seguro usar.</p>
+</div>
+
+<hr>
+
+<h2>2. Copiar o molde com JavaScript</h2>
+<p>Um molde guardado não serve para nada sozinho. O JavaScript faz as cópias. Aqui, uma lista de três nomes vira três cartões:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;div id="receitas"&gt;&lt;/div&gt;
+
+&lt;template id="molde-receita"&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Nome da receita&lt;/h2&gt;
+    &lt;p&gt;Receita testada pela Ana.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/template&gt;
+
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const nomes = ["Bolo de cenoura", "Brigadeiro", "Pudim"];
+const molde = document.getElementById("molde-receita");
+const lugar = document.getElementById("receitas");
+
+for (const nome of nomes) {
+  const copia = molde.content.cloneNode(true);
+  copia.querySelector("h2").textContent = nome;
+  lugar.append(copia);
+}
+
+console.log("Cartões na página: " + lugar.querySelectorAll("article").length);
+</pre>
+</div>
+
+<dl class="anatomy">
+  <dt>const nomes = ["…", "…", "…"]</dt><dd>Uma <strong>lista</strong> (<em>array</em>) de textos, entre colchetes e separados por vírgula. Num site de verdade, essa lista poderia vir de um arquivo ou de um servidor.</dd>
+  <dt>document.getElementById("molde-receita")</dt><dd>Acha o <code>&lt;template&gt;</code> pela id. (O <code>&lt;template&gt;</code> em si está na página; só o conteúdo dele fica na gaveta.)</dd>
+  <dt>for (const nome of nomes) { … }</dt><dd>"Para cada <code>nome</code> da lista <code>nomes</code>, faça o que está entre as chaves." O bloco roda três vezes, uma por nome.</dd>
+  <dt>molde.content</dt><dd>A gaveta: o conteúdo do molde.</dd>
+  <dt>.cloneNode(true)</dt><dd>"Clonar": faz uma cópia. O <code>true</code> quer dizer "copie também tudo o que está dentro" (o <code>&lt;h2&gt;</code>, o <code>&lt;p&gt;</code>…); com <code>false</code>, sairia uma cópia vazia.</dd>
+  <dt>copia.querySelector("h2").textContent = nome</dt><dd>Acha o <code>&lt;h2&gt;</code> <strong>dentro da cópia</strong> e troca o texto dele pelo nome da vez. É a "decoração do biscoito".</dd>
+  <dt>lugar.append(copia)</dt><dd><em>Append</em> = "acrescentar no fim": põe a cópia dentro do <code>&lt;div id="receitas"&gt;</code>. Só agora o cartão aparece.</dd>
+</dl>
+
+<p>O console mostra <code>Cartões na página: 3</code>. Acrescente <code>"Torta de limão"</code> na lista e rode de novo: aparece um quarto cartão, sem nenhuma linha nova de HTML. E se a Ana quiser mudar o texto do parágrafo de todos os cartões, muda uma vez só, no molde.</p>
+
+<div class="tryhtml" data-goal="sel:template#molde-doce,nsel:#doces li=3,texto:#doces li=Brigadeiro,nsel:#doces li strong=3">
+<p class="try-task"><strong>Missão:</strong> o <code>script.js</code> já está pronto, mas falta o molde. Escreva no <code>index.html</code> um <code>&lt;template&gt;</code> com <code>id="molde-doce"</code> contendo um <code>&lt;li&gt;</code> com um <code>&lt;strong&gt;</code> dentro. O script vai copiar o molde três vezes.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;ul id="doces"&gt;&lt;/ul&gt;
+
+&lt;!-- escreva o template aqui --&gt;
+
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const doces = ["Brigadeiro", "Beijinho", "Cajuzinho"];
+const molde = document.getElementById("molde-doce");
+const lista = document.getElementById("doces");
+
+for (const doce of doces) {
+  const copia = molde.content.cloneNode(true);
+  copia.querySelector("strong").textContent = doce;
+  lista.append(copia);
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;ul id="doces"&gt;&lt;/ul&gt;
+
+&lt;template id="molde-doce"&gt;
+  &lt;li&gt;&lt;strong&gt;Nome do doce&lt;/strong&gt;: R$ 2 a unidade&lt;/li&gt;
+&lt;/template&gt;
+
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+</div>
+
+<p>Do jeito que começa, o console mostra um erro: <code>Cannot read properties of null (reading 'content')</code>. O <code>getElementById("molde-doce")</code> não achou nenhum molde e devolveu <code>null</code> ("nada"), e "nada" não tem <code>content</code>. O erro some quando o molde existe.</p>
+
+<hr>
+
+<h2>3. Um molde dentro de uma tabela</h2>
+<p>Algumas tags só aceitam filhos certos: dentro de um <code>&lt;tbody&gt;</code> só cabem linhas (<code>&lt;tr&gt;</code>), e dentro de um <code>&lt;ul&gt;</code> só itens (<code>&lt;li&gt;</code>). Um <code>&lt;div&gt;</code> ali seria erro. O <code>&lt;template&gt;</code> é uma exceção: ele pode ficar <strong>em qualquer lugar</strong>, até no meio de uma tabela, bem perto de onde as cópias vão entrar:</p>
+
+<pre class="file" data-file="index.html">&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Doce&lt;/th&gt;&lt;th&gt;Preço&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody id="linhas"&gt;
+    &lt;template id="molde-linha"&gt;
+      &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;/template&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</pre>
+
+<p>Esse código passa no validador sem nenhum erro. A missão final desta aula usa exatamente essa ideia. (Tabelas têm aulas próprias, a partir de <a href="tabelas.html">Tabelas</a>.)</p>
+
+<hr>
+
+<h2>4. O slot: espaços para encaixar conteúdo</h2>
+<p>Até aqui, o JavaScript copiava o molde e trocava os textos um por um. Existe outro jeito, em que o próprio navegador encaixa o conteúdo nos lugares certos: o <strong>slot</strong> ("encaixe", "fenda"). Para entendê-lo, falta uma peça: o shadow DOM.</p>
+
+<h3>O shadow DOM: uma página dentro do elemento</h3>
+<p>O <strong>DOM</strong> é a árvore de elementos que o navegador monta a partir do seu HTML (aula <a href="como-funciona.html">Como o Navegador Lê HTML</a>). O <strong>shadow DOM</strong> ("DOM de sombra") é uma árvore <strong>escondida dentro de um elemento</strong>, com o seu próprio HTML e o seu próprio CSS. É como um aquário dentro da sala: o que está dentro do vidro tem a sua própria água, e o que acontece na sala não molha o aquário.</p>
+
+<p>Você cria um shadow DOM sem JavaScript, pondo um <code>&lt;template shadowrootmode="open"&gt;</code> como <strong>primeiro filho</strong> de um elemento. Esse template é diferente: em vez de ir para a gaveta, o conteúdo dele vira o shadow DOM do elemento <strong>pai</strong>, na hora. Dentro dele, cada <code>&lt;slot name="…"&gt;</code> é um espaço; cada filho comum do elemento com <code>slot="…"</code> vai para o espaço de mesmo nome:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Cartões de receita&lt;/h1&gt;
+
+&lt;div class="cartao"&gt;
+  &lt;template shadowrootmode="open"&gt;
+    &lt;style&gt;
+      div { border: 2px solid darkred; padding: 8px; margin-bottom: 8px; }
+      h2 { color: darkred; margin: 0; }
+    &lt;/style&gt;
+    &lt;div&gt;
+      &lt;h2&gt;&lt;slot name="titulo"&gt;Receita sem nome&lt;/slot&gt;&lt;/h2&gt;
+      &lt;slot name="descricao"&gt;Ainda sem descrição.&lt;/slot&gt;
+    &lt;/div&gt;
+  &lt;/template&gt;
+  &lt;span slot="titulo"&gt;Bolo de cenoura&lt;/span&gt;
+  &lt;p slot="descricao"&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class="cartao"&gt;
+  &lt;template shadowrootmode="open"&gt;
+    &lt;style&gt;
+      div { border: 2px solid darkred; padding: 8px; margin-bottom: 8px; }
+      h2 { color: darkred; margin: 0; }
+    &lt;/style&gt;
+    &lt;div&gt;
+      &lt;h2&gt;&lt;slot name="titulo"&gt;Receita sem nome&lt;/slot&gt;&lt;/h2&gt;
+      &lt;slot name="descricao"&gt;Ainda sem descrição.&lt;/slot&gt;
+    &lt;/div&gt;
+  &lt;/template&gt;
+  &lt;span slot="titulo"&gt;Brigadeiro&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;h2&gt;Este h2 é da página&lt;/h2&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;div class="cartao"&gt;</dt><dd>O <strong>hospedeiro</strong> (<em>host</em>): o elemento que vai ganhar o shadow DOM.</dd>
+  <dt>&lt;template shadowrootmode="open"&gt;</dt><dd><em>Shadow root mode</em> = "modo da raiz de sombra". Transforma o conteúdo deste template no shadow DOM do <code>&lt;div&gt;</code>. O valor <code>open</code> ("aberto") deixa o JavaScript da página olhar lá dentro; <code>closed</code> ("fechado") não deixa.</dd>
+  <dt>&lt;style&gt;…&lt;/style&gt;</dt><dd>Um CSS que vale <strong>só dentro</strong> do shadow DOM. Repare no resultado: o "Este h2 é da página" continua preto, e as bordas não vazaram para o resto. É o vidro do aquário.</dd>
+  <dt>&lt;slot name="titulo"&gt;Receita sem nome&lt;/slot&gt;</dt><dd>Um espaço chamado <code>titulo</code>. O texto de dentro é o <strong>conteúdo padrão</strong>: aparece só se ninguém encaixar nada ali.</dd>
+  <dt>&lt;span slot="titulo"&gt;Bolo de cenoura&lt;/span&gt;</dt><dd>Um filho comum do <code>&lt;div&gt;</code>, com o atributo <strong>global</strong> <code>slot="titulo"</code>: "encaixe-me no espaço <code>titulo</code>". Ele aparece dentro do <code>&lt;h2&gt;</code> vermelho do molde e até herda a cor dele.</dd>
+  <dt>&lt;p slot="descricao"&gt;</dt><dd>Vai para o espaço <code>descricao</code>. O segundo cartão não tem esse filho, e por isso mostra o conteúdo padrão: "Ainda sem descrição."</dd>
+</dl>
+
+<p>Repare no que <strong>não</strong> aconteceu: nenhuma linha de JavaScript. O navegador montou os cartões sozinho, já na leitura da página. Esse jeito de escrever, com <code>shadowrootmode</code>, se chama <strong>shadow DOM declarativo</strong> e funciona em todos os navegadores atuais desde 2024 (o Chrome e o Safari aceitaram em 2023, e o Firefox no começo de 2024). O validador W3C atual aceita o <code>shadowrootmode</code>.</p>
+
+<div class="warning">
+<strong>O slot sem nome e os espaços em branco</strong>
+<p>Existe também o <code>&lt;slot&gt;</code> <strong>sem</strong> <code>name</code>: ele recebe todos os filhos que não têm <code>slot="…"</code>. Mas isso inclui os <strong>espaços e quebras de linha</strong> entre as tags do seu código. Na prática, o conteúdo padrão de um slot sem nome quase nunca aparece, porque sempre "tem alguma coisa" (um espaço) encaixada. Por isso esta aula usa slots com nome.</p>
+</div>
+
+<p>O preço desse jeito sem JavaScript está à vista no código: o molde foi <strong>repetido</strong> nos dois cartões, porque cada hospedeiro precisa do seu <code>&lt;template shadowrootmode&gt;</code>. Para escrever o molde uma vez só e usar uma tag sua, como <code>&lt;cartao-receita&gt;</code>, entram os <a href="web-components.html">Web Components</a>, a próxima aula.</p>
+
+<div class="tryhtml" data-goal="texto:#cartao span[slot=titulo]=Pudim de leite,texto:#cartao p[slot=descricao]=sem furinhos">
+<p class="try-task"><strong>Missão:</strong> o cartão está mostrando os conteúdos padrão. Encaixe o título <code>Pudim de leite</code> (num <code>&lt;span&gt;</code>) e a descrição <code>Cremoso e sem furinhos.</code> (num <code>&lt;p&gt;</code>) nos espaços certos, usando o atributo <code>slot</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receita do dia&lt;/h1&gt;
+&lt;div id="cartao"&gt;
+  &lt;template shadowrootmode="open"&gt;
+    &lt;style&gt;
+      div { border: 2px solid darkred; padding: 8px; }
+      h2 { color: darkred; margin: 0; }
+    &lt;/style&gt;
+    &lt;div&gt;
+      &lt;h2&gt;&lt;slot name="titulo"&gt;Receita sem nome&lt;/slot&gt;&lt;/h2&gt;
+      &lt;slot name="descricao"&gt;Ainda sem descrição.&lt;/slot&gt;
+    &lt;/div&gt;
+  &lt;/template&gt;
+  &lt;!-- encaixe o título e a descrição aqui --&gt;
+&lt;/div&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receita do dia&lt;/h1&gt;
+&lt;div id="cartao"&gt;
+  &lt;template shadowrootmode="open"&gt;
+    &lt;style&gt;
+      div { border: 2px solid darkred; padding: 8px; }
+      h2 { color: darkred; margin: 0; }
+    &lt;/style&gt;
+    &lt;div&gt;
+      &lt;h2&gt;&lt;slot name="titulo"&gt;Receita sem nome&lt;/slot&gt;&lt;/h2&gt;
+      &lt;slot name="descricao"&gt;Ainda sem descrição.&lt;/slot&gt;
+    &lt;/div&gt;
+  &lt;/template&gt;
+  &lt;span slot="titulo"&gt;Pudim de leite&lt;/span&gt;
+  &lt;p slot="descricao"&gt;Cremoso e sem furinhos.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+</div>
+
+<p>Troque de lugar as duas linhas novas (a descrição antes do título) e rode: o resultado não muda. Quem decide a <strong>posição</strong> é o molde; o atributo <code>slot</code> só diz em qual espaço cada coisa encaixa.</p>
+
+<hr>
+
+<h2>5. Qual usar?</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>Muitas cópias iguais, com os dados vindos de uma lista</td><td><code>&lt;template&gt;</code> + <code>content.cloneNode(true)</code> no JavaScript</td></tr>
+<tr><td>Um bloco com CSS próprio, isolado do resto, escrito direto no HTML</td><td><code>&lt;template shadowrootmode="open"&gt;</code> + <code>&lt;slot name&gt;</code></td></tr>
+<tr><td>Uma tag nova sua, reutilizável, com o molde escrito uma vez só</td><td><a href="web-components.html">Web Components</a> (o template e os slots também aparecem lá)</td></tr>
+<tr><td>Uma página simples, com três ou quatro blocos</td><td>HTML normal: escreva os blocos e pronto</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Fechar com <code>&lt;template /&gt;</code>: o resto da página vai para a gaveta</strong>
+<p><strong>O que o navegador faz:</strong> a barra do <code>/&gt;</code> é ignorada (o <code>&lt;template&gt;</code> não é um elemento vazio), a tag fica aberta, e <strong>tudo</strong> o que vem depois vira conteúdo do molde, invisível. Veja o parágrafo sumir:</p>
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;template id="molde" /&gt;
+&lt;p&gt;Este parágrafo deveria aparecer.&lt;/p&gt;
+</pre>
+</div>
+<p>O validador, com esse código numa página completa (o <code>&lt;template&gt;</code> na linha 9):</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":9.1-9.23: error: Self-closing syntax (“/&gt;”) used on a non-void HTML element. Ignoring the slash and treating as a start tag.
+"file:/home/ana/site/index.html":11.1-11.7: error: End tag for  “body” seen, but there were unclosed elements.
+"file:/home/ana/site/index.html":9.1-9.23: error: Unclosed element “template”.</pre>
+<p>"Sintaxe de autofechamento num elemento que não é vazio: ignorando a barra"; "fim do <code>body</code> com elementos abertos"; "elemento <code>template</code> não fechado". <strong>Como consertar:</strong> <code>&lt;template id="molde"&gt;…&lt;/template&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Esqueceu o <code>.content</code>: nada aparece, e nenhum erro</strong>
+<p><strong>O que acontece:</strong> com <code>molde.cloneNode(true)</code>, sem o <code>.content</code>, o JavaScript copia o <strong>próprio</strong> <code>&lt;template&gt;</code>, com gaveta e tudo. A cópia vai para a página, mas é outro molde invisível. O console fica quieto, e a página, vazia. Se o código procurar algo dentro da cópia, aí sim aparece um erro:</p>
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;ul id="doces"&gt;&lt;/ul&gt;
+&lt;template id="molde-doce"&gt;&lt;li&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/li&gt;&lt;/template&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const molde = document.getElementById("molde-doce");
+const copia = molde.cloneNode(true);
+copia.querySelector("strong").textContent = "Brigadeiro";
+document.getElementById("doces").append(copia);
+</pre>
+</div>
+<p>O console mostra <code>Cannot set properties of null (setting 'textContent')</code>: o <code>&lt;strong&gt;</code> está na gaveta da cópia, e o <code>querySelector</code> não procura em gavetas. <strong>Como consertar:</strong> <code>molde.content.cloneNode(true)</code>. O validador não pega esse erro: o HTML está certo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Bad value “aberto” for attribute “shadowrootmode”</code></strong>
+<p><strong>O que o navegador faz:</strong> não cria o shadow DOM; o template vira um molde comum, invisível. Os filhos com <code>slot="…"</code> aparecem soltos, sem o cartão. O Chrome escreve no console do F12: <code>Invalid declarative shadowrootmode attribute value. Valid values are "open" and "closed".</code> ("valor inválido; os válidos são <code>open</code> e <code>closed</code>").</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.6-8.39: error: Bad value “aberto” for attribute “shadowrootmode” on element “template”.</pre>
+<p>(Com <code>&lt;div&gt;&lt;template shadowrootmode="aberto"&gt;</code> na linha 8.) <strong>Como consertar:</strong> os valores são em inglês: <code>open</code> ou <code>closed</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O validador aceita, o navegador recusa: shadow DOM num <code>&lt;a&gt;</code></strong>
+<p><strong>O que acontece:</strong> só alguns elementos podem hospedar um shadow DOM: <code>&lt;div&gt;</code>, <code>&lt;span&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;blockquote&gt;</code>, <code>&lt;body&gt;</code>, os títulos <code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code> e as tags personalizadas. Um <code>&lt;a&gt;&lt;template shadowrootmode="open"&gt;…</code> passa no validador W3C <strong>sem nenhum erro</strong>, mas o navegador não cria o shadow DOM: o template fica como um molde comum, e o Chrome avisa no console do F12: <code>This element does not support attachShadow</code> ("este elemento não aceita um shadow DOM").</p>
+<p><strong>Como consertar:</strong> ponha o template num <code>&lt;div&gt;</code> ou num <code>&lt;span&gt;</code> dentro do link, ou num elemento personalizado. Lição: "passou no validador" quer dizer que a sintaxe está certa, não que tudo funciona. Sempre olhe o resultado.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;template id="molde"&gt;…&lt;/template&gt;</code></td><td>Guarda um molde que não aparece (pode ficar em qualquer lugar, até numa tabela)</td></tr>
+<tr><td><code>molde.content</code></td><td>A "gaveta" com o conteúdo do molde</td></tr>
+<tr><td><code>molde.content.cloneNode(true)</code></td><td>Uma cópia do conteúdo, com tudo o que está dentro</td></tr>
+<tr><td><code>copia.querySelector("h2").textContent = "…"</code></td><td>Troca um texto da cópia</td></tr>
+<tr><td><code>lugar.append(copia)</code></td><td>Põe a cópia na página</td></tr>
+<tr><td><code>&lt;template shadowrootmode="open"&gt;</code></td><td>Primeiro filho de um elemento: vira o shadow DOM dele (sem JavaScript)</td></tr>
+<tr><td><code>&lt;slot name="titulo"&gt;padrão&lt;/slot&gt;</code></td><td>No molde: um espaço com nome e conteúdo padrão</td></tr>
+<tr><td><code>slot="titulo"</code></td><td>Atributo global: encaixa este elemento no espaço <code>titulo</code></td></tr>
+<tr><td><code>&lt;style&gt;</code> dentro do shadow DOM</td><td>CSS que vale só lá dentro</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A gaveta</h3>
+<p>Complete para copiar o conteúdo do molde, com tudo o que está dentro:</p>
+<div class="ex-code">const copia = molde.<input data-answer="content" aria-label="propriedade">.cloneNode(<input data-answer="true" aria-label="valor">);</div>
+</div>
+
+<div class="exercise">
+<h3>2. Encaixar</h3>
+<p>Complete para este parágrafo ir para o <code>&lt;slot name="descricao"&gt;</code>:</p>
+<div class="ex-code">&lt;p <input data-answer="slot" aria-label="atributo">="descricao"&gt;Fofinho.&lt;/p&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Sem JavaScript</h3>
+<p>Complete o atributo que transforma o template no shadow DOM do elemento pai:</p>
+<div class="ex-code">&lt;template <input data-answer="shadowrootmode" aria-label="atributo">="open"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Uma <code>&lt;img&gt;</code> dentro de um <code>&lt;template&gt;</code> comum…</p>
+<label><input type="radio" name="q4"> aparece na página, mas sem borda</label>
+<label><input type="radio" name="q4"> não aparece e nem é baixada, até uma cópia ir para a página</label>
+<label><input type="radio" name="q4"> dá erro no validador</label>
+<label><input type="radio" name="q4"> aparece só no celular</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Um <code>&lt;slot name="titulo"&gt;Sem nome&lt;/slot&gt;</code> mostra "Sem nome" quando…</p>
+<label><input type="radio" name="q5"> sempre</label>
+<label><input type="radio" name="q5"> o JavaScript está desligado</label>
+<label><input type="radio" name="q5"> nenhum filho do hospedeiro tem <code>slot="titulo"</code></label>
+<label><input type="radio" name="q5"> o validador encontra um erro</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. O <code>&lt;style&gt;</code> dentro de um <code>&lt;template shadowrootmode="open"&gt;</code> pinta de vermelho os <code>h2</code>…</p>
+<label><input type="radio" name="q6"> só de dentro daquele shadow DOM</label>
+<label><input type="radio" name="q6"> da página inteira</label>
+<label><input type="radio" name="q6"> de nenhum lugar: <code>style</code> não funciona ali</label>
+<label><input type="radio" name="q6"> só depois de um <code>cloneNode</code></label>
+</div>
+
+<h3>Missão final: o cardápio em tabela</h3>
+
+<div class="tryhtml" data-goal="sel:#cardapio tbody template#molde-linha,nsel:#cardapio tbody tr=3,texto:#cardapio tbody tr td=Bolo de cenoura,texto:#cardapio tbody tr td:last-child=R$ 35,src:\.content\.cloneNode\(\s*true\s*\)">
+<p class="try-task"><strong>Missão:</strong> o cardápio deve ganhar uma linha por doce, mas está vazio.</p>
+<ol>
+  <li>No <code>index.html</code>, o molde da linha está com uma célula só. Complete-o com duas: uma para o nome e outra para o preço.</li>
+  <li>No <code>script.js</code>, a cópia está sendo feita do jeito errado (veja em <a href="#errado">Quando dá errado</a>). Conserte para copiar o <strong>conteúdo</strong> do molde.</li>
+</ol>
+<pre class="script" data-file="index.html">&lt;h1&gt;Cardápio da Ana&lt;/h1&gt;
+&lt;table id="cardapio"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Doce&lt;/th&gt;&lt;th&gt;Preço&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;template id="molde-linha"&gt;
+      &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;/template&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const doces = [
+  ["Bolo de cenoura", "R$ 35"],
+  ["Brigadeiro", "R$ 2"],
+  ["Pudim", "R$ 28"]
+];
+const molde = document.getElementById("molde-linha");
+const corpo = document.querySelector("#cardapio tbody");
+
+for (const [nome, preco] of doces) {
+  const copia = molde.cloneNode(true);
+  const celulas = copia.querySelectorAll("td");
+  celulas[0].textContent = nome;
+  celulas[1].textContent = preco;
+  corpo.append(copia);
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Cardápio da Ana&lt;/h1&gt;
+&lt;table id="cardapio"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Doce&lt;/th&gt;&lt;th&gt;Preço&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;template id="molde-linha"&gt;
+      &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;/template&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="solucao" data-file="script.js">const doces = [
+  ["Bolo de cenoura", "R$ 35"],
+  ["Brigadeiro", "R$ 2"],
+  ["Pudim", "R$ 28"]
+];
+const molde = document.getElementById("molde-linha");
+const corpo = document.querySelector("#cardapio tbody");
+
+for (const [nome, preco] of doces) {
+  const copia = molde.content.cloneNode(true);
+  const celulas = copia.querySelectorAll("td");
+  celulas[0].textContent = nome;
+  celulas[1].textContent = preco;
+  corpo.append(copia);
+}
+</pre>
+</div>
+
+<p>A lista agora tem pares: <code>["Bolo de cenoura", "R$ 35"]</code> é o nome e o preço de um doce, e o <code>for (const [nome, preco] of doces)</code> separa cada par em duas caixas. O <code>querySelectorAll("td")</code> pega todas as células da cópia, e <code>celulas[0]</code> e <code>celulas[1]</code> são a primeira e a segunda (a contagem começa do zero). Se você consertar só o JavaScript, o console reclama de <code>celulas[1]</code>: o molde ainda tem uma célula só.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;template&gt;</code> guarda um molde que não aparece: lá dentro, scripts não rodam, imagens não são baixadas e o <code>querySelector</code> da página não procura. Ele pode ficar em qualquer lugar, até numa tabela.</li>
+  <li>Para usar: <code>molde.content.cloneNode(true)</code> faz a cópia, você troca os textos com <code>querySelector</code> e põe na página com <code>append</code>. Sem o <code>.content</code>, você copia o molde inteiro, e nada aparece.</li>
+  <li>O <strong>shadow DOM</strong> é uma árvore escondida dentro de um elemento, com CSS próprio que não vaza. Sem JavaScript: <code>&lt;template shadowrootmode="open"&gt;</code> como primeiro filho.</li>
+  <li><code>&lt;slot name="x"&gt;padrão&lt;/slot&gt;</code> marca um espaço no shadow DOM; um filho com <code>slot="x"</code> encaixa nele. Sem ninguém encaixado, aparece o conteúdo padrão. O molde decide a posição.</li>
+  <li>Os valores de <code>shadowrootmode</code> são <code>open</code> e <code>closed</code>. Nem todo elemento aceita shadow DOM (o <code>&lt;a&gt;</code> não aceita), e o validador não avisa.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
