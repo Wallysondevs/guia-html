@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML contenteditable — deixar o visitante editar o texto | Guia HTML</title>
+<meta name="description" content="O atributo contenteditable para quem nunca fez um site: os valores true, false e plaintext-only, a herança para os filhos, o que acontece com valores errados, por que nada é salvo, spellcheck, acessibilidade e quando usar textarea, com o resultado real e as mensagens do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">contenteditable</span></h1>
+
+<p class="intro">Uma página HTML normal é como um cartaz impresso: o visitante lê, mas não muda nada. Com um único atributo, o <code>contenteditable</code>, qualquer pedaço da página vira um lugar onde o visitante pode <strong>clicar e digitar</strong>, como numa lousa. Nesta aula a Ana vai deixar a lista de compras do site de receitas editável, proteger o título, entender por que o que o visitante escreve some quando ele recarrega a página e descobrir quando é melhor usar um campo de formulário.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como deixar um elemento editável: <code>&lt;p contenteditable&gt;</code>.</li>
+  <li>Os valores <code>true</code>, <code>false</code> e <code>plaintext-only</code>, e o que o navegador faz com um valor errado.</li>
+  <li>Como os filhos <strong>herdam</strong> a edição e como proteger um pedaço com <code>contenteditable="false"</code>.</li>
+  <li>Por que o texto editado <strong>não é salvo</strong> e o mínimo de JavaScript para ler o que foi digitado.</li>
+  <li>O corretor ortográfico (<code>spellcheck</code>) e a acessibilidade de uma área editável.</li>
+  <li>Quando usar <code>contenteditable</code> e quando usar um <code>&lt;textarea&gt;</code>.</li>
+</ul>
+</div>
+
+<p>Os exemplos desta aula foram conferidos no <strong>validador W3C</strong> (<code>vnu</code> 26.10.12, o mesmo do validator.w3.org) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/editavel</code>, e o comportamento do navegador foi conferido no Chromium 155. Os quadros "Resultado" são desenhados pelo <strong>seu</strong> navegador: clique neles e digite.</p>
+
+<hr>
+
+<h2>A ideia: o cartaz e a lousa</h2>
+<p>Pense no mural da escola. Um <strong>cartaz impresso</strong> só serve para ler. Uma <strong>lousa</strong> deixa qualquer pessoa pegar o giz e escrever. Mas repare: o que alguém escreve na lousa fica só naquela lousa. Quando o faxineiro passa o apagador à noite, volta tudo ao que era.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escola</th><th>Página HTML</th></tr>
+<tr><td>O cartaz impresso</td><td>um elemento comum, como <code>&lt;p&gt;</code></td></tr>
+<tr><td>A lousa</td><td>um elemento com <code>contenteditable</code></td></tr>
+<tr><td>Um canto da lousa com "NÃO APAGUE"</td><td>um filho com <code>contenteditable="false"</code></td></tr>
+<tr><td>O apagador da noite</td><td>recarregar a página (F5): volta o HTML original</td></tr>
+<tr><td>Fotografar a lousa antes de apagar</td><td>um JavaScript que lê e guarda o texto</td></tr>
+</table>
+</div>
+
+<p>O nome vem do inglês: <em>content</em> = "conteúdo" e <em>editable</em> = "editável". "Conteúdo editável".</p>
+
+<hr>
+
+<h2>1. Deixar um elemento editável</h2>
+<p>Basta escrever o atributo na tag de abertura. Ele funciona em quase todo elemento que mostra texto: <code>&lt;p&gt;</code>, <code>&lt;div&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;h1&gt;</code>…</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;p&gt;Este parágrafo é um cartaz: só dá para ler.&lt;/p&gt;
+&lt;p contenteditable&gt;Este é uma lousa: clique aqui e escreva.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;p contenteditable&gt;</dt><dd>Um parágrafo comum com o atributo <code>contenteditable</code>. Escrito assim, sem valor, ele quer dizer "sim, editável".</dd>
+  <dt>O que o visitante pode fazer</dt><dd>Clicar, ver o cursor piscando, digitar, apagar, colar, desfazer com <kbd>Ctrl</kbd>+<kbd>Z</kbd>. Em muitos navegadores, <kbd>Ctrl</kbd>+<kbd>B</kbd> deixa o texto selecionado em negrito.</dd>
+  <dt>O que muda no código</dt><dd><strong>Nada.</strong> O arquivo <code>index.html</code> continua igual no seu computador ou no servidor. Quem muda é a cópia da página que está aberta no navegador daquele visitante.</dd>
+</dl>
+
+<p>No Resultado acima, clique no segundo parágrafo e digite. O primeiro não aceita o cursor. A maioria dos navegadores desenha um contorno em volta da área editável enquanto você digita nela; isso vem do próprio navegador, e o CSS pode mudar.</p>
+
+<h3>Os valores</h3>
+<p>O <code>contenteditable</code> aceita só estes valores. Maiúsculas e minúsculas tanto faz (<code>TRUE</code> passou no validador), mas o costume é escrever tudo em minúsculas:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você escreve</th><th>O que quer dizer</th></tr>
+<tr><td><code>contenteditable</code> ou <code>contenteditable=""</code></td><td>Editável (igual a <code>true</code>)</td></tr>
+<tr><td><code>contenteditable="true"</code></td><td>Editável, com formatação: negrito, itálico, colar texto com estilo</td></tr>
+<tr><td><code>contenteditable="plaintext-only"</code></td><td>Editável, mas <strong>só texto puro</strong>, sem formatação (seção 3)</td></tr>
+<tr><td><code>contenteditable="false"</code></td><td><strong>Não</strong> editável, mesmo que o pai seja (seção 2)</td></tr>
+<tr><td>Sem o atributo</td><td>Faz o mesmo que o pai: herda</td></tr>
+<tr><td>Qualquer outra coisa (<code>"sim"</code>, <code>"yes"</code>)</td><td>Erro no validador, e o navegador trata como "sem o atributo" (veja <a href="#errado">Quando dá errado</a>)</td></tr>
+</table>
+</div>
+
+<p>Confira no validador. Este arquivo tem as formas certas:</p>
+
+<pre class="file" data-file="certo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;Lista&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;p contenteditable&gt;Ana&lt;/p&gt;
+&lt;p contenteditable="true"&gt;Ana&lt;/p&gt;
+&lt;p contenteditable="false"&gt;Ana&lt;/p&gt;
+&lt;p contenteditable="plaintext-only"&gt;Ana&lt;/p&gt;
+&lt;p contenteditable=""&gt;Ana&lt;/p&gt;
+&lt;div contenteditable="TRUE"&gt;x&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/editavel">$ vnu --verbose certo.html
+certo.html               « com --verbose, o vnu mostra o nome do arquivo e nenhum erro</pre>
+
+<div class="tryhtml" data-goal="sel:li:read-write,nsel:h2:read-write=0">
+<p class="try-task"><strong>Missão:</strong> a Ana quer que o visitante possa mudar os itens da lista de compras. Deixe a <strong>lista</strong> (o <code>&lt;ul&gt;</code>) editável, sem mexer no título. Depois clique num item no resultado e troque "Farinha" por "Fubá".</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Lista de compras&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Farinha&lt;/li&gt;
+  &lt;li&gt;Ovos&lt;/li&gt;
+  &lt;li&gt;Cenoura&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Lista de compras&lt;/h2&gt;
+&lt;ul contenteditable&gt;
+  &lt;li&gt;Farinha&lt;/li&gt;
+  &lt;li&gt;Ovos&lt;/li&gt;
+  &lt;li&gt;Cenoura&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<p>Repare que você não precisou pôr o atributo em cada <code>&lt;li&gt;</code>: os itens ficaram editáveis porque estão <strong>dentro</strong> do <code>&lt;ul&gt;</code> editável. Isso é a herança, o assunto da próxima seção.</p>
+
+<hr>
+
+<h2>2. A herança: os filhos fazem o que o pai faz</h2>
+<p>Um elemento sem <code>contenteditable</code> segue o pai. Se o pai é editável, tudo o que está dentro dele também é, até os netos e bisnetos. Para proteger um pedaço, marque-o com <code>contenteditable="false"</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;article contenteditable&gt;
+  &lt;h2 contenteditable="false"&gt;Recado da Ana&lt;/h2&gt;
+  &lt;p&gt;Escreva aqui o seu recado.&lt;/p&gt;
+  &lt;p&gt;Pode usar &lt;strong&gt;mais de um parágrafo&lt;/strong&gt;.&lt;/p&gt;
+&lt;/article&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;article contenteditable&gt;</dt><dd>O pai: o recado inteiro é a lousa.</dd>
+  <dt>&lt;h2 contenteditable="false"&gt;</dt><dd>O canto "NÃO APAGUE": o título fica fora da edição, mesmo estando dentro do <code>&lt;article&gt;</code>.</dd>
+  <dt>&lt;p&gt; e &lt;strong&gt;</dt><dd>Não têm o atributo: herdam do <code>&lt;article&gt;</code> e ficam editáveis.</dd>
+</dl>
+
+<p>No Resultado, tente clicar no título "Recado da Ana" e digitar: nada acontece. Nos dois parágrafos, funciona.</p>
+
+<div class="warning">
+<strong>O "false" protege da digitação, mas não do apagador</strong>
+<p>Se o visitante selecionar um trecho que começa num parágrafo editável, passa <strong>por cima</strong> do elemento protegido e termina em outro parágrafo editável, e apertar <kbd>Delete</kbd>, o navegador apaga tudo, inclusive o protegido. No Chromium 155, com <code>&lt;p&gt;Antes&lt;/p&gt;&lt;h2 contenteditable="false"&gt;Título&lt;/h2&gt;&lt;p&gt;Depois&lt;/p&gt;</code>, apagar de "An" até "Dep" deixou só <code>&lt;p&gt;Anois&lt;/p&gt;</code>: o título sumiu. O <code>false</code> impede que alguém escreva <em>dentro</em> do título; ele não é um cadeado. Para uma parte que nunca pode sumir, deixe-a <strong>fora</strong> do elemento editável.</p>
+</div>
+
+<p>No navegador, o JavaScript enxerga essa herança pela propriedade <code>isContentEditable</code> ("é conteúdo editável?"). No Chromium 155, o mesmo arquivo deu: <code>article</code> → <code>true</code>, <code>h2</code> → <code>false</code>, os dois <code>p</code> → <code>true</code>. E o CSS tem um seletor para "o que está editável agora": <code>:read-write</code> ("leitura e escrita"); o contrário é <code>:read-only</code> ("só leitura"). As missões desta aula usam o <code>:read-write</code> para conferir o que você fez.</p>
+
+<hr>
+
+<h2>3. Só texto puro: <code>plaintext-only</code></h2>
+<p>Com <code>true</code>, a área aceita <strong>formatação</strong>: <kbd>Ctrl</kbd>+<kbd>B</kbd> põe negrito e um texto colado de outro site pode chegar com cores, tamanhos e links. Para um campo de "nome" ou "título", isso atrapalha. O valor <code>plaintext-only</code> ("só texto puro") aceita apenas letras, sem formatação:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p contenteditable="true"&gt;Com true: selecione e aperte Ctrl+B.&lt;/p&gt;
+&lt;p contenteditable="plaintext-only"&gt;Com plaintext-only: o Ctrl+B não faz nada.&lt;/p&gt;
+</pre>
+
+<p>Conferido no Chromium 155, com o comando que o navegador usa quando você aperta <kbd>Ctrl</kbd>+<kbd>B</kbd>: no parágrafo <code>true</code>, o texto selecionado virou <code>&lt;b&gt;Farinha&lt;/b&gt;</code>; no <code>plaintext-only</code>, o comando foi recusado e o texto continuou <code>Farinha</code>.</p>
+
+<div class="note">
+<strong>Um valor mais novo</strong>
+<p>O <code>plaintext-only</code> existe há anos no Chrome e no Safari, mas entrou oficialmente no HTML e chegou ao Firefox só em 2025. Num navegador muito antigo, ele é tratado como valor desconhecido (não editável). O validador W3C atual aceita.</p>
+</div>
+
+<h3>O que o navegador escreve quando você digita</h3>
+<p>Com <code>true</code>, cada tecla especial vira HTML de verdade, escrito pelo navegador. No Chromium 155, apertar <kbd>Enter</kbd> no fim de um parágrafo editável <code>&lt;p contenteditable&gt;Ovos&lt;/p&gt;</code> e digitar "Leite" deixou isto na página:</p>
+
+<pre class="file" data-file="o que ficou na memória">&lt;p contenteditable=""&gt;Ovos&lt;div&gt;Leite&lt;/div&gt;&lt;/p&gt;
+</pre>
+
+<p>Um <code>&lt;div&gt;</code> <strong>dentro</strong> de um <code>&lt;p&gt;</code>, coisa que o validador nunca aceitaria num arquivo (o <code>&lt;p&gt;</code> só pode ter conteúdo "de frase", aula <a href="bloco-inline.html">Bloco × Em Linha</a>). E cada navegador escreve um pouco diferente: outro pode usar <code>&lt;br&gt;</code> ou outro <code>&lt;p&gt;</code>. Por isso, numa área com várias linhas, prefira um <code>&lt;div contenteditable&gt;</code> a um <code>&lt;p contenteditable&gt;</code>, e não conte com um HTML "bonito" saindo dali.</p>
+
+<hr>
+
+<h2>4. Nada é salvo</h2>
+<p>Esta é a parte que mais surpreende. Faça o teste: edite um dos Resultados acima e aperte <kbd>F5</kbd>. O texto volta ao original. O que o visitante digitou:</p>
+<ul>
+  <li>fica só na memória do navegador <strong>dele</strong>, naquela aba;</li>
+  <li><strong>não</strong> vai para o arquivo <code>index.html</code>;</li>
+  <li><strong>não</strong> aparece para outras pessoas;</li>
+  <li><strong>não</strong> é enviado com um formulário (o <code>&lt;form&gt;</code> só envia campos como <code>&lt;input&gt;</code> e <code>&lt;textarea&gt;</code>, aula <a href="enviar-formulario.html">Enviar</a>).</li>
+</ul>
+
+<p>Para guardar alguma coisa, é preciso <strong>JavaScript</strong>: ele lê o texto da área editável e faz algo com ele (guardar no próprio navegador, mandar para um servidor). Este guia é de HTML, então aqui vai só o mínimo: <strong>ler</strong> o texto a cada tecla e mostrar no console.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> digite no recado do resultado e olhe o console embaixo: a cada letra, o script mostra o texto atual. Depois troque <code>textContent</code> por <code>innerHTML</code>, aperte <kbd>Ctrl</kbd>+<kbd>B</kbd> num pedaço selecionado e veja as tags que o navegador criou.</p>
+<pre class="script" data-file="index.html">&lt;div id="recado" contenteditable&gt;Comprar ovos&lt;/div&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const recado = document.getElementById("recado");
+
+recado.addEventListener("input", function () {
+  console.log(recado.textContent);
+});
+</pre>
+</div>
+
+<dl class="anatomy">
+  <dt>document.getElementById("recado")</dt><dd>Pega o elemento que tem <code>id="recado"</code> (aula <a href="class-id.html">class e id</a>).</dd>
+  <dt>addEventListener("input", …)</dt><dd>"Quando acontecer o evento <code>input</code>, rode isto". O evento <code>input</code> ("entrada") dispara a cada mudança no conteúdo: uma letra digitada, apagada ou colada.</dd>
+  <dt>recado.textContent</dt><dd>O texto do elemento, sem as tags. Já o <code>innerHTML</code> devolve o HTML de dentro, com as tags que o navegador criou.</dd>
+</dl>
+
+<div class="warning">
+<strong>O que vem de uma área editável é texto do visitante</strong>
+<p>Se um dia você pegar o <code>innerHTML</code> de uma área editável e mostrar para <strong>outras pessoas</strong> (num mural de recados, por exemplo), um visitante mal-intencionado pode ter colado ali um HTML com código perigoso. Quem guarda e mostra texto de visitantes precisa limpá-lo no servidor. A aula <a href="seguranca.html">Segurança</a> fala dos cuidados do lado do HTML.</p>
+</div>
+
+<hr>
+
+<h2>5. O corretor ortográfico: <code>spellcheck</code></h2>
+<p>Em áreas editáveis, os navegadores costumam sublinhar as palavras erradas com uma linha ondulada vermelha, como nos editores de texto. O atributo <code>spellcheck</code> ("verificar a ortografia") liga ou desliga isso:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p contenteditable spellcheck="true"&gt;Bolo de cenora com cobertura.&lt;/p&gt;
+&lt;p contenteditable spellcheck="false"&gt;Bolo de cenora com cobertura.&lt;/p&gt;
+</pre>
+
+<ul>
+  <li><code>spellcheck="true"</code> (ou só <code>spellcheck</code>): peça ao navegador para conferir.</li>
+  <li><code>spellcheck="false"</code>: não confira. Útil para códigos, nomes de usuário, endereços.</li>
+  <li>Sem o atributo: o navegador decide; nas áreas editáveis, normalmente confere.</li>
+</ul>
+
+<p>Clique em cada parágrafo do Resultado. No primeiro, "cenora" pode ganhar o sublinhado; no segundo, não. É um <strong>pedido</strong>: o corretor depende do navegador e do dicionário instalado, e o idioma usado vem do <code>lang</code> da página (<code>&lt;html lang="pt-BR"&gt;</code>). Com o <code>lang</code> errado, o navegador confere em outra língua e sublinha tudo. Valores diferentes de <code>true</code> e <code>false</code> são erro: <code>spellcheck="sim"</code> deu <code>Bad value “sim” for attribute “spellcheck” on element “p”.</code></p>
+
+<hr>
+
+<h2>6. Acessibilidade: uma lousa precisa de nome</h2>
+<p>Um <code>&lt;textarea&gt;</code> ganha um nome com o <code>&lt;label&gt;</code> (aula <a href="label.html">label</a>), e um leitor de tela anuncia "Recado, campo de edição". Um <code>&lt;div contenteditable&gt;</code> é editável, mas <strong>não tem nome</strong>, e o <code>&lt;label for&gt;</code> não funciona com ele. Dê o nome e o papel com atributos ARIA (aula <a href="aria.html">ARIA</a>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;div contenteditable role="textbox" aria-multiline="true" aria-label="Recado para a Ana"&gt;Escreva aqui&lt;/div&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>role="textbox"</dt><dd>"Papel: caixa de texto". Diz ao leitor de tela que isto funciona como um campo.</dd>
+  <dt>aria-multiline="true"</dt><dd>"Várias linhas": o campo aceita <kbd>Enter</kbd>, como um <code>&lt;textarea&gt;</code>.</dd>
+  <dt>aria-label="Recado para a Ana"</dt><dd>O nome que o leitor de tela fala. Ele faz o papel do <code>&lt;label&gt;</code>.</dd>
+</dl>
+
+<p>O arquivo com essa linha passou no validador sem erros. Mesmo assim, perceba o trabalho a mais: o <code>&lt;textarea&gt;</code> já vem com tudo isso de graça.</p>
+
+<hr>
+
+<h2>Formas de deixar o visitante escrever: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>Bom para</th><th>Cuidado</th></tr>
+<tr><td><code>&lt;input&gt;</code></td><td>Uma linha: nome, e-mail, busca</td><td>Sem formatação, sem várias linhas</td></tr>
+<tr><td><code>&lt;textarea&gt;</code></td><td>Texto de várias linhas que vai num <strong>formulário</strong>: comentário, recado</td><td>Só texto puro</td></tr>
+<tr><td><code>contenteditable="plaintext-only"</code></td><td>Editar um texto <strong>no lugar</strong> em que ele aparece (o título de um cartão, um item de lista)</td><td>Não vai com o formulário; precisa de JS para guardar</td></tr>
+<tr><td><code>contenteditable</code> (<code>true</code>)</td><td>Editores de texto com negrito, itálico, listas (os "editores ricos" de blogs e e-mails)</td><td>O HTML gerado muda de navegador para navegador; dá muito trabalho fazer direito</td></tr>
+</table>
+</div>
+
+<p><strong>Qual usar?</strong> Se o texto vai ser <strong>enviado</strong>, use <code>&lt;input&gt;</code> ou <code>&lt;textarea&gt;</code>, com <code>&lt;label&gt;</code>: funciona sem JavaScript e é acessível desde o começo. Use o <code>contenteditable</code> quando faz sentido editar o texto ali mesmo, na página, e você já planeja um JavaScript para guardar. Os grandes editores de texto da web usam <code>contenteditable</code> por baixo, mas com milhares de linhas de JavaScript em cima.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<pre class="file" data-file="errado.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;Lista&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;p contenteditable="sim"&gt;Ana&lt;/p&gt;
+&lt;p contenteditable="yes"&gt;Ana&lt;/p&gt;
+&lt;p contenteditable="contenteditable"&gt;Ana&lt;/p&gt;
+&lt;p contentEditable="true"&gt;camel&lt;/p&gt;
+&lt;p content-editable="true"&gt;hifen&lt;/p&gt;
+&lt;p editable&gt;ed&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/editavel">$ vnu errado.html
+"file:/home/ana/editavel/errado.html":5.1-5.25: error: Bad value “sim” for attribute “contenteditable” on element “p”.
+"file:/home/ana/editavel/errado.html":6.1-6.25: error: Bad value “yes” for attribute “contenteditable” on element “p”.
+"file:/home/ana/editavel/errado.html":7.1-7.37: error: Bad value “contenteditable” for attribute “contenteditable” on element “p”.
+"file:/home/ana/editavel/errado.html":9.1-9.27: error: Attribute “content-editable” not allowed on element “p” at this point.
+"file:/home/ana/editavel/errado.html":10.1-10.12: error: Attribute “editable” not allowed on element “p” at this point.
+$ echo $?
+1                        « houve error: o código de saída é 1</pre>
+
+<p>A linha 8 (<code>contentEditable</code>, com E maiúsculo) não apareceu: no HTML, o <strong>nome</strong> dos atributos não diferencia maiúsculas, e o navegador o guarda como <code>contenteditable</code>. Funciona, mas o costume é tudo minúsculo.</p>
+
+<div class="cenario">
+<strong><code>Bad value “sim” for attribute “contenteditable” on element “p”.</code></strong>
+<p><strong>O que significa:</strong> "Valor ruim, <code>sim</code>, para o atributo <code>contenteditable</code> no elemento <code>p</code>". O atributo só entende <code>true</code>, <code>false</code>, <code>plaintext-only</code> ou vazio, em inglês. O mesmo vale para <code>yes</code> e para <code>contenteditable="contenteditable"</code> (um costume antigo de outros atributos, que aqui não vale).</p>
+<p><strong>O que o navegador faz:</strong> ele não dá erro nenhum. Um valor desconhecido é tratado como se o atributo <strong>não existisse</strong>: o elemento segue o pai. No Chromium 155, um <code>&lt;p contenteditable="sim"&gt;</code> solto na página ficou <strong>não editável</strong> (<code>isContentEditable</code> = <code>false</code>). O mesmo <code>&lt;p contenteditable="sim"&gt;</code> dentro de um <code>&lt;div contenteditable&gt;</code> ficou <strong>editável</strong>, porque herdou do <code>div</code>. O mesmo erro, dois comportamentos: só o validador avisa.</p>
+<p><strong>Como consertar:</strong> escreva <code>contenteditable</code> sozinho, ou <code>contenteditable="true"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Attribute “content-editable” not allowed on element “p” at this point.</code></strong>
+<p><strong>O que significa:</strong> "O atributo <code>content-editable</code> não é permitido no elemento <code>p</code> neste ponto". Com hífen, ou com outro nome (<code>editable</code>), é um atributo que o HTML não conhece. O navegador o guarda, mas ignora: nada fica editável.</p>
+<p><strong>Como consertar:</strong> o nome é uma palavra só, sem hífen: <code>contenteditable</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>"Eu editei a página e, quando voltei, estava tudo como antes"</strong>
+<p><strong>O que significa:</strong> nenhum erro: o <code>contenteditable</code> funciona assim. A edição fica só na aba aberta do visitante. Recarregar, fechar a aba ou abrir em outro computador mostra o arquivo original.</p>
+<p><strong>Como consertar:</strong> para mudar o site de verdade, edite o <strong>arquivo</strong> no seu editor (aula <a href="editores.html">Editores</a>). Para guardar o que o visitante escreve, é preciso JavaScript ou um servidor.</p>
+</div>
+
+<div class="cenario">
+<strong>"O formulário foi enviado sem o texto que eu digitei"</strong>
+<p><strong>O que significa:</strong> um <code>&lt;div contenteditable&gt;</code> dentro de um <code>&lt;form&gt;</code> não é um campo. O navegador só envia <code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, <code>&lt;select&gt;</code> e companhia, e só os que têm <code>name</code>.</p>
+<p><strong>Como consertar:</strong> troque o <code>&lt;div contenteditable&gt;</code> por um <code>&lt;textarea name="recado"&gt;</code> com um <code>&lt;label&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>contenteditable</code></td><td>Deixa o elemento (e o que está dentro) editável, com formatação</td></tr>
+<tr><td><code>contenteditable="true"</code></td><td>O mesmo</td></tr>
+<tr><td><code>contenteditable="plaintext-only"</code></td><td>Editável, só texto puro</td></tr>
+<tr><td><code>contenteditable="false"</code></td><td>Não editável, mesmo dentro de um pai editável</td></tr>
+<tr><td><code>spellcheck="true"</code> / <code>"false"</code></td><td>Pede (ou não) a correção ortográfica do navegador</td></tr>
+<tr><td><code>role="textbox" aria-label="…"</code></td><td>Papel e nome da área para leitores de tela</td></tr>
+<tr><td><code>aria-multiline="true"</code></td><td>Avisa que a área aceita várias linhas</td></tr>
+<tr><td><code>:read-write</code> / <code>:read-only</code> (CSS)</td><td>Seleciona o que está editável agora / o que não está</td></tr>
+<tr><td><code>elemento.isContentEditable</code> (JS)</td><td><code>true</code> se o elemento está editável, contando a herança</td></tr>
+<tr><td>evento <code>input</code> (JS)</td><td>Dispara a cada mudança no conteúdo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Ligar a edição</h3>
+<p>Complete para deixar o parágrafo editável:</p>
+<div class="ex-code">&lt;p <input data-answer="contenteditable|contenteditable=&quot;true&quot;|contenteditable=&quot;&quot;" aria-label="atributo">&gt;Meu recado&lt;/p&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Proteger um pedaço</h3>
+<p>Complete para que o título <strong>não</strong> seja editável dentro do cartão editável:</p>
+<div class="ex-code">&lt;section contenteditable&gt;&lt;h2 contenteditable="<input data-answer="false" aria-label="valor">"&gt;Cardápio&lt;/h2&gt;…&lt;/section&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. A Ana deixou o cardápio editável, um visitante trocou "Bolo" por "Torta" e apertou F5. O que aparece?</p>
+<label><input type="radio" name="q3"> "Torta", para todo mundo</label>
+<label><input type="radio" name="q3"> "Torta", só para esse visitante</label>
+<label><input type="radio" name="q3"> "Bolo": a edição não foi salva em lugar nenhum</label>
+<label><input type="radio" name="q3"> Uma mensagem de erro</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Um <code>&lt;p contenteditable="sim"&gt;</code> está solto na página, sem nenhum pai editável. O que acontece?</p>
+<label><input type="radio" name="q4"> Fica editável, porque "sim" quer dizer sim</label>
+<label><input type="radio" name="q4"> O validador acusa <code>Bad value “sim”</code> e o navegador o trata como sem o atributo: não fica editável</label>
+<label><input type="radio" name="q4"> O navegador mostra uma mensagem de erro na página</label>
+<label><input type="radio" name="q4"> A página inteira fica editável</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. A Ana quer um campo "Deixe seu comentário" que vai junto quando o visitante clicar em Enviar. O que usar?</p>
+<label><input type="radio" name="q5"> <code>&lt;div contenteditable&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;p contenteditable="plaintext-only"&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;div spellcheck&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;textarea name="comentario"&gt;</code> com um <code>&lt;label&gt;</code></label>
+</div>
+
+<h3>Missão final: o cartão de recado</h3>
+
+<div class="tryhtml" data-goal="sel:article:read-write,sel:p:read-write,nsel:h2:read-write=0,attr:article[spellcheck]=false,attr:article[aria-label]">
+<p class="try-task"><strong>Missão:</strong> deixe o <strong>cartão inteiro</strong> (o <code>&lt;article&gt;</code>) editável, mas proteja o título <code>&lt;h2&gt;</code>. Desligue o corretor ortográfico no cartão (os recados da Ana estão cheios de apelidos) e dê ao cartão o nome "Recado da Ana" para leitores de tela, com <code>aria-label</code>. Depois teste: o título não deve aceitar o cursor.</p>
+<pre class="script" data-file="index.html">&lt;article&gt;
+  &lt;h2&gt;Recado&lt;/h2&gt;
+  &lt;p&gt;Ju, o bolo está no forno. Tira às 16h!&lt;/p&gt;
+&lt;/article&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;article contenteditable spellcheck="false" aria-label="Recado da Ana"&gt;
+  &lt;h2 contenteditable="false"&gt;Recado&lt;/h2&gt;
+  &lt;p&gt;Ju, o bolo está no forno. Tira às 16h!&lt;/p&gt;
+&lt;/article&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>contenteditable</code> transforma um elemento num lugar onde o visitante clica e digita. Valores: vazio ou <code>true</code> (com formatação), <code>plaintext-only</code> (só texto) e <code>false</code> (protegido).</li>
+  <li>Os filhos <strong>herdam</strong>: dentro de um pai editável, tudo é editável, menos o que tiver <code>contenteditable="false"</code>.</li>
+  <li>Um valor errado (<code>"sim"</code>, <code>"yes"</code>) dá <code>Bad value</code> no validador, e o navegador age como se o atributo não existisse: o elemento segue o pai.</li>
+  <li>Nada é salvo: a edição fica só na aba do visitante, não muda o arquivo e não vai com formulários. Para guardar, é preciso JavaScript (o evento <code>input</code> avisa cada mudança).</li>
+  <li><code>spellcheck</code> pede ou dispensa o corretor ortográfico; o idioma vem do <code>lang</code>.</li>
+  <li>Uma área editável precisa de nome para leitores de tela (<code>role="textbox"</code> + <code>aria-label</code>). Para campos de formulário, prefira <code>&lt;textarea&gt;</code> com <code>&lt;label&gt;</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
