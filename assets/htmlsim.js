@@ -238,6 +238,7 @@
     return {
       texto: antes + "</head><body>" + resto + (/\n$/.test(resto) ? "" : "\n") + "</body></html>\n",
       deslocamento: 1,
+      linhasCodigo: f.replace(/\n$/, "").split("\n").length,
       // onde entrou o "</head><body>" (linha e coluna no documento), para corrigir as colunas
       ins: { linha: linhas.length, coluna: linhas[linhas.length - 1].length + 1, n: 13 }
     };
@@ -250,7 +251,7 @@
     if (!linha) return null;
     if (v.ins && linha === v.ins.linha && coluna >= v.ins.coluna + v.ins.n) coluna -= v.ins.n;
     linha -= v.deslocamento || 0;
-    return linha > 0 ? { linha: linha, coluna: coluna } : null;
+    return linha > 0 && (!v.linhasCodigo || linha <= v.linhasCodigo) ? { linha: linha, coluna: coluna } : null;
   };
 
   var TIPOS = { html: "text/html", htm: "text/html", css: "text/css", js: "text/javascript", mjs: "text/javascript", json: "application/json", svg: "image/svg+xml", txt: "text/plain", vtt: "text/vtt", xml: "application/xml", md: "text/markdown", csv: "text/csv" };
@@ -590,8 +591,11 @@
     var fd;
     try { fd = new win.FormData(form, sub || undefined); } catch (x) { fd = new win.FormData(form); }
     var campos = [], partes = [];
+    // como o algoritmo de envio do HTML: quebras de linha viram CRLF (%0D%0A) antes de codificar
+    var crlf = function (x) { return String(x).replace(/\r\n|\r|\n/g, "\r\n"); };
+    var cod = function (x) { return encodeURIComponent(crlf(x)).replace(/%20/g, "+"); };
     fd.forEach(function (v, k) {
-      if (typeof v === "string") { campos.push([k, v]); partes.push(encodeURIComponent(k).replace(/%20/g, "+") + "=" + encodeURIComponent(v).replace(/%20/g, "+")); }
+      if (typeof v === "string") { campos.push([k, v]); partes.push(cod(k) + "=" + cod(v)); }
       else { campos.push([k, v.name ? v.name + " (" + v.size + " bytes)" : "(nenhum arquivo)", true]); partes.push(encodeURIComponent(k) + "=" + encodeURIComponent(v.name || "")); }
     });
     var q = partes.join("&");
@@ -736,7 +740,8 @@
     if (lista.length) {
       h += "<ol>" + lista.map(function (m) {
         var l = m.firstLine || m.lastLine, p = HS.posicaoNoCodigo(res.doc, l, m.firstColumn);
-        var onde = p ? "linha " + p.linha + (m.firstColumn ? ", coluna " + p.coluna : "") : (l ? "no esqueleto que o editor pôs em volta" : "");
+        if (!m.firstColumn && p) p = HS.posicaoNoCodigo(res.doc, m.lastLine, m.lastColumn);
+        var onde = p ? "linha " + p.linha + (p.coluna ? ", coluna " + p.coluna : "") : (l ? "no esqueleto que o editor pôs em volta" : "");
         return "<li><span class=\"" + (m.type === "error" ? "hs-e\">Error" : "hs-a\">Warning") + "</span>" + (onde ? " (" + onde + ")" : "") + ": " + escHtml(m.message) + (m.extract ? "<br><code>" + escHtml(m.extract.replace(/\n/g, "↵")) + "</code>" : "") + "</li>";
       }).join("") + "</ol>";
     }

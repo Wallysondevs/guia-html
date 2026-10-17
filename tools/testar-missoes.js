@@ -160,7 +160,8 @@ function validarNoLab(docs) {
 // mensagem do vnu no formato da linha de comando (com as linhas do código do autor)
 function linhaVnu(nome, m, v) {
   const ini = HS.posicaoNoCodigo(v, m.firstLine || m.lastLine, m.firstColumn), fim = HS.posicaoNoCodigo(v, m.lastLine, m.lastColumn);
-  const pos = ini && fim ? ini.linha + "." + ini.coluna + "-" + fim.linha + "." + fim.coluna : "";
+  // sem firstColumn (ex.: "End of file seen…"), o vnu na linha de comando mostra só "linha.coluna"
+  const pos = !fim ? "" : ini && m.firstColumn ? ini.linha + "." + ini.coluna + "-" + fim.linha + "." + fim.coluna : fim.linha + "." + fim.coluna + "-" + fim.linha + "." + fim.coluna;
   const tipo = m.type === "info" ? (m.subType === "warning" ? "warning" : "info") : m.type;
   return "\"" + nome + "\":" + pos + ": " + tipo + ": " + m.message + (m.lastLine && !fim ? "  (no esqueleto que o testador pôs em volta do fragmento)" : "");
 }
