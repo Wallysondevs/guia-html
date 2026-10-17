@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML output, progress e meter — resultado, andamento e medida | Guia HTML</title>
+<meta name="description" content="Os elementos output, progress e meter para quem nunca fez um site: a barra de andamento (progress com value e max), o medidor com faixas boa, média e ruim (meter com min, max, low, high e optimum), o resultado de um cálculo num formulário (output com for), o que o navegador faz com valores errados e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">output, progress e meter</span></h1>
+
+<p class="intro">Uma página não serve só para mostrar texto: às vezes ela precisa mostrar um <strong>número com significado</strong>. Quanto falta para o download terminar? A bateria está boa ou fraca? Quanto vai custar o pedido? O HTML tem três elementos feitos para isso: <code>&lt;progress&gt;</code> (o andamento de uma tarefa), <code>&lt;meter&gt;</code> (uma medida dentro de uma faixa) e <code>&lt;output&gt;</code> (o resultado de um cálculo). Nesta aula você vai usar os três na lojinha de doces da Ana e ver o que o navegador faz quando um valor está errado.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Desenhar uma barra de andamento com <code>&lt;progress value max&gt;</code>, e a barra "sem fim" (sem <code>value</code>).</li>
+  <li>Desenhar um medidor com <code>&lt;meter&gt;</code> e as faixas boa, média e ruim (<code>low</code>, <code>high</code>, <code>optimum</code>).</li>
+  <li>Quando usar <code>progress</code> e quando usar <code>meter</code> (eles parecem iguais, mas não são).</li>
+  <li>Mostrar o resultado de uma conta com <code>&lt;output&gt;</code> e ligá-lo aos campos com <code>for</code>.</li>
+  <li>Dar um nome aos três com <code>&lt;label&gt;</code>.</li>
+  <li>Os erros mais comuns (vírgula no número, <code>50%</code>, valor maior que o máximo) e as mensagens reais do validador.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula estão na pasta <code>~/site</code> da máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>) e foram conferidos com o validador W3C (<code>vnu</code>), o mesmo do site validator.w3.org. Cada quadro "Resultado" é desenhado agora, pelo seu navegador.</p>
+
+<hr>
+
+<h2>A ideia: três visores diferentes</h2>
+<p>Pense em três coisas que você vê todo dia:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No dia a dia</th><th>O que ele mostra</th><th>No HTML</th></tr>
+<tr><td>A barrinha de "baixando…" no celular</td><td>Quanto de uma <strong>tarefa</strong> já foi feito. Ela anda até acabar.</td><td><code>&lt;progress&gt;</code></td></tr>
+<tr><td>O marcador de combustível do carro</td><td>Uma <strong>medida</strong> entre um mínimo e um máximo. Não é uma tarefa: o tanque não "termina".</td><td><code>&lt;meter&gt;</code></td></tr>
+<tr><td>O visor da calculadora</td><td>O <strong>resultado</strong> de uma conta feita com outros valores.</td><td><code>&lt;output&gt;</code></td></tr>
+</table>
+</div>
+
+<p>Os nomes vêm do inglês: <em>progress</em> = "progresso", <em>meter</em> = "medidor" e <em>output</em> = "saída", o que sai de uma conta.</p>
+
+<hr>
+
+<h2>1. A barra de andamento: <code>&lt;progress&gt;</code></h2>
+<p>A Ana está enviando o cardápio novo da lojinha, e 70 de 100 partes já foram. Em HTML:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Enviando cardapio.pdf: &lt;progress value="70" max="100"&gt;70%&lt;/progress&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;progress</dt><dd>Abre o elemento. Ele desenha uma barra, e o desenho muda de navegador para navegador (cor, cantos, altura).</dd>
+  <dt>value="70"</dt><dd>O <strong>valor</strong>: quanto já foi feito. Um número, sem unidade e sem <code>%</code>.</dd>
+  <dt>max="100"</dt><dd>O <strong>máximo</strong>: quanto é a tarefa inteira. A barra mostra <code>value ÷ max</code>: 70 ÷ 100 = 70% pintado.</dd>
+  <dt>70%</dt><dd>O conteúdo entre as tags é um <strong>texto reserva</strong>: só aparece num navegador muito antigo, que não conhece o <code>&lt;progress&gt;</code>. Nos navegadores de hoje ele fica escondido, como você viu no Resultado.</dd>
+  <dt>&lt;/progress&gt;</dt><dd>Fecha o elemento. A tag de fechamento é obrigatória.</dd>
+</dl>
+
+<p>O <code>max</code> não precisa ser 100. Use o número que faz sentido para a tarefa. A Ana está lendo um livro de 12 capítulos e já leu 7:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Capítulos lidos: &lt;progress value="7" max="12"&gt;7 de 12&lt;/progress&gt; 7 de 12&lt;/p&gt;
+&lt;p&gt;Sem max: &lt;progress value="0.25"&gt;25%&lt;/progress&gt;&lt;/p&gt;
+</pre>
+
+<ul>
+  <li>Na primeira linha, 7 ÷ 12 dá um pouco mais da metade da barra. Repare que a barra <strong>não escreve o número</strong>: se ele for importante, escreva-o também no texto, como o "7 de 12" depois da barra.</li>
+  <li>Na segunda, não há <code>max</code>. Aí o máximo é <strong>1</strong>, e o <code>value</code> vai de 0 a 1: <code>0.25</code> é um quarto da barra.</li>
+  <li>Número com vírgula, no HTML, se escreve com <strong>ponto</strong>: <code>0.25</code>, e não <code>0,25</code>. A seção <a href="#errado">Quando dá errado</a> mostra o que a vírgula faz.</li>
+</ul>
+
+<h3>A barra "sem fim": progress sem <code>value</code></h3>
+<p>Às vezes você sabe que uma tarefa está acontecendo, mas não sabe quanto falta, como quando o site está "procurando receitas…". Tire o <code>value</code>, e a barra vira uma animação que vai e volta:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Procurando receitas… &lt;progress&gt;procurando&lt;/progress&gt;&lt;/p&gt;
+</pre>
+
+<p>Essa barra se chama <strong>indeterminada</strong> (<em>indeterminate</em>): ela diz "estou trabalhando", sem dizer quanto. Quando a página souber o andamento, um script pode colocar o <code>value</code>, e ela volta a ser uma barra normal (o <code>&lt;script&gt;</code> tem aula própria: <a href="script.html">O Elemento script</a>).</p>
+
+<h3>Dar um nome à barra com <code>&lt;label&gt;</code></h3>
+<p>Uma barra sozinha não diz <strong>do que</strong> é o andamento. Quem enxerga a tela lê o texto ao lado; quem usa um <strong>leitor de tela</strong> (o programa que lê a página em voz alta para pessoas cegas) precisa de um nome ligado à barra. O <code>&lt;label&gt;</code>, o mesmo dos formulários (aula <a href="label.html">label</a>), também funciona com <code>progress</code>, <code>meter</code> e <code>output</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="leitura"&gt;Leitura do livro:&lt;/label&gt;
+&lt;progress id="leitura" value="7" max="12"&gt;7 de 12 capítulos&lt;/progress&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>for="leitura"</dt><dd>O <code>for</code> do <code>label</code> aponta para o <code>id</code> do elemento que ele nomeia.</dd>
+  <dt>id="leitura"</dt><dd>A identidade da barra (aula <a href="class-id.html">class e id</a>). Os dois textos têm de ser <strong>iguais</strong>, letra por letra.</dd>
+</dl>
+
+<p>Agora o leitor de tela anuncia algo como "Leitura do livro, barra de progresso, 58%". As palavras exatas mudam de um leitor de tela para outro.</p>
+
+<p>O arquivo completo, conferido pelo validador:</p>
+
+<pre class="file" data-file="certo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Painel da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;label for="leitura"&gt;Leitura do livro:&lt;/label&gt; &lt;progress id="leitura" value="7" max="12"&gt;7 de 12 capítulos&lt;/progress&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose certo.html
+certo.html                « só o nome do arquivo: nenhum erro</pre>
+
+<div class="tryhtml" data-goal="attr:progress[value]=7,attr:progress[max]=12">
+<p class="try-task"><strong>Missão:</strong> a barra mostra 3 de 10 capítulos, mas o livro da Ana tem <strong>12</strong> capítulos e ela já leu <strong>7</strong>. Corrija o <code>value</code> e o <code>max</code> da barra (e, se quiser, o texto reserva e o texto do parágrafo).</p>
+<pre class="script" data-file="index.html">&lt;p&gt;
+  &lt;label for="leitura"&gt;Leitura do livro:&lt;/label&gt;
+  &lt;progress id="leitura" value="3" max="10"&gt;3 de 10 capítulos&lt;/progress&gt;
+  3 de 10
+&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;
+  &lt;label for="leitura"&gt;Leitura do livro:&lt;/label&gt;
+  &lt;progress id="leitura" value="7" max="12"&gt;7 de 12 capítulos&lt;/progress&gt;
+  7 de 12
+&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O medidor: <code>&lt;meter&gt;</code></h2>
+<p>O <code>&lt;meter&gt;</code> também desenha uma barra, mas ela mostra uma <strong>medida</strong>: a bateria do celular, o espaço ocupado no disco, a nota de uma receita. A diferença principal: o <code>meter</code> sabe dizer se o valor é <strong>bom ou ruim</strong>, e muda de cor.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Nota do bolo de cenoura: &lt;meter value="4" min="0" max="5"&gt;4 de 5&lt;/meter&gt; 4 de 5&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>value="4"</dt><dd>A medida. No <code>meter</code>, o <code>value</code> é <strong>obrigatório</strong>.</dd>
+  <dt>min="0"</dt><dd>O <strong>mínimo</strong> da escala. Se você não escrever, é 0. (O <code>progress</code> não tem <code>min</code>: ele sempre começa do zero.)</dd>
+  <dt>max="5"</dt><dd>O <strong>máximo</strong> da escala. Se você não escrever, é 1, igual ao <code>progress</code>.</dd>
+  <dt>4 de 5</dt><dd>Texto reserva, como no <code>progress</code>: escondido nos navegadores de hoje.</dd>
+</dl>
+
+<h3>As faixas: <code>low</code>, <code>high</code> e <code>optimum</code></h3>
+<p>A bateria do celular da Ana vai de 0 a 100. Abaixo de 20 está fraca; acima de 80 está ótima. Três atributos contam isso ao navegador:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Cheia: &lt;meter value="90" min="0" max="100" low="20" high="80" optimum="100"&gt;90%&lt;/meter&gt;&lt;/p&gt;
+&lt;p&gt;Média: &lt;meter value="50" min="0" max="100" low="20" high="80" optimum="100"&gt;50%&lt;/meter&gt;&lt;/p&gt;
+&lt;p&gt;Fraca: &lt;meter value="10" min="0" max="100" low="20" high="80" optimum="100"&gt;10%&lt;/meter&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>low="20"</dt><dd>Até aqui é a faixa <strong>baixa</strong> (de 0 a 20).</dd>
+  <dt>high="80"</dt><dd>Daqui para cima é a faixa <strong>alta</strong> (de 80 a 100). Entre <code>low</code> e <code>high</code> fica a faixa do meio.</dd>
+  <dt>optimum="100"</dt><dd>O valor <strong>ideal</strong> (<em>optimum</em> = "ótimo"). Ele diz qual faixa é a boa: aqui, a alta. A faixa do meio vira "mais ou menos" e a baixa, a ruim.</dd>
+</dl>
+
+<p>No Chrome, o medidor da bateria cheia fica verde, o do meio fica amarelo e o da fraca fica vermelho. Outros navegadores usam cores parecidas. A cor quem escolhe é o navegador, a partir das faixas que você deu.</p>
+
+<p>Agora o contrário: no disco do computador, <strong>cheio é ruim</strong>. Basta mudar o <code>optimum</code> para a faixa baixa:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Disco com 30 GB usados: &lt;meter value="30" max="100" low="60" high="80" optimum="0"&gt;30 de 100 GB&lt;/meter&gt;&lt;/p&gt;
+&lt;p&gt;Disco com 70 GB usados: &lt;meter value="70" max="100" low="60" high="80" optimum="0"&gt;70 de 100 GB&lt;/meter&gt;&lt;/p&gt;
+&lt;p&gt;Disco com 90 GB usados: &lt;meter value="90" max="100" low="60" high="80" optimum="0"&gt;90 de 100 GB&lt;/meter&gt;&lt;/p&gt;
+</pre>
+
+<p>Os números são parecidos com os da bateria, mas agora a barra quase cheia é a vermelha. O mesmo valor pode ser bom ou ruim: depende do que você está medindo, e é isso que o <code>optimum</code> conta ao navegador.</p>
+
+<div class="tip">
+<strong>A cor não basta</strong>
+<p>Nem todo mundo distingue verde de vermelho, e o leitor de tela não fala cores. Escreva também o valor em texto ("90 de 100 GB", "bateria fraca") quando ele for importante.</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:meter[value]=8,attr:meter[min]=0,attr:meter[max]=10,attr:meter[low]=4,attr:meter[high]=7,attr:meter[optimum]=10">
+<p class="try-task"><strong>Missão:</strong> a receita de brigadeiro tirou nota <strong>8</strong> numa escala de <strong>0 a 10</strong>, e a nota ideal é 10. Arrume o <code>&lt;meter&gt;</code>: <code>value</code> 8, <code>min</code> 0 e <code>max</code> 10. Depois crie as faixas: <code>low</code> 4 (até 4 é nota baixa), <code>high</code> 7 (de 7 para cima é nota alta) e <code>optimum</code> 10. Por fim, experimente trocar o <code>value</code> para 2 e para 5 e veja a cor mudar.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;
+  &lt;label for="nota"&gt;Nota do brigadeiro:&lt;/label&gt;
+  &lt;meter id="nota" value="0.8"&gt;8 de 10&lt;/meter&gt;
+  8 de 10
+&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;
+  &lt;label for="nota"&gt;Nota do brigadeiro:&lt;/label&gt;
+  &lt;meter id="nota" value="8" min="0" max="10" low="4" high="7" optimum="10"&gt;8 de 10&lt;/meter&gt;
+  8 de 10
+&lt;/p&gt;
+</pre>
+</div>
+
+<h3><code>progress</code> ou <code>meter</code>?</h3>
+<p>Os dois desenham uma barra, e é fácil trocar um pelo outro. Pergunte: <strong>isso é uma tarefa que vai terminar?</strong></p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th><th>Por quê</th></tr>
+<tr><td>Envio de arquivo, download, instalação</td><td><code>progress</code></td><td>É uma tarefa: anda até 100% e acaba.</td></tr>
+<tr><td>Cadastro em 4 etapas, "etapa 2 de 4"</td><td><code>progress</code></td><td>É uma tarefa do usuário que vai terminar.</td></tr>
+<tr><td>Bateria, espaço em disco, força da senha</td><td><code>meter</code></td><td>É uma medida: pode subir e descer, e tem faixa boa e ruim.</td></tr>
+<tr><td>Nota de 0 a 5, votos de uma enquete</td><td><code>meter</code></td><td>É uma medida dentro de uma escala conhecida.</td></tr>
+<tr><td>Temperatura sem mínimo nem máximo</td><td>nenhum dos dois: texto</td><td>O <code>meter</code> precisa de uma escala com começo e fim.</td></tr>
+</table>
+</div>
+
+<p>O validador não percebe essa troca: um <code>meter</code> no lugar de um <code>progress</code> passa sem erro. Quem percebe é o leitor de tela, que anuncia "barra de progresso" para um e "medidor" para o outro. Escolher certo é o que a aula <a href="semantica.html">HTML Semântico</a> chama de usar o elemento pelo <strong>significado</strong>, e não pela aparência.</p>
+
+<hr>
+
+<h2>3. O resultado de uma conta: <code>&lt;output&gt;</code></h2>
+<p>A Ana vende bolo de pote a 12 reais. Ela quer um campo onde o cliente digita a quantidade e, logo ao lado, o total. O total é um <strong>resultado</strong>: é o lugar do <code>&lt;output&gt;</code>.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form oninput="total.value = Number(qtd.value) * 12"&gt;
+  &lt;label for="qtd"&gt;Bolos de pote (R$ 12 cada):&lt;/label&gt;
+  &lt;input type="number" id="qtd" name="qtd" min="0" value="1"&gt;
+  &lt;p&gt;Total: R$ &lt;output name="total" for="qtd"&gt;12&lt;/output&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Mude a quantidade no Resultado (digite ou use as setinhas do campo) e veja o total mudar. Parte por parte:</p>
+
+<dl class="anatomy">
+  <dt>&lt;output</dt><dd>Abre o elemento. Ele não desenha nada especial: mostra o texto que está dentro, como um <code>&lt;span&gt;</code>. O que muda é o <strong>significado</strong>: "este texto é o resultado de uma conta".</dd>
+  <dt>name="total"</dt><dd>O nome do <code>output</code> dentro do formulário. É por ele que a conta encontra onde escrever.</dd>
+  <dt>for="qtd"</dt><dd>Diz <strong>de quais campos</strong> o resultado depende, pelo <code>id</code> deles. Se forem vários, separe os <code>id</code> com espaço: <code>for="preco qtd"</code>. Atenção: é o mesmo nome de atributo do <code>label</code>, mas aqui ele aceita uma lista.</dd>
+  <dt>12</dt><dd>O conteúdo é o <strong>valor inicial</strong>, que aparece antes de qualquer conta. Ele está certo para a quantidade inicial (1 bolo).</dd>
+  <dt>oninput="…"</dt><dd>Um pedacinho de JavaScript que roda a cada tecla digitada em qualquer campo do formulário (<em>on input</em> = "quando digitarem"). A conta <code>Number(qtd.value) * 12</code> lê o campo <code>qtd</code>, transforma o texto em número, multiplica por 12 e guarda em <code>total.value</code>, o valor do <code>output</code>.</dd>
+</dl>
+
+<div class="note">
+<strong>O output não faz a conta sozinho</strong>
+<p>Quem calcula é o JavaScript do <code>oninput</code>. O <code>&lt;output&gt;</code> só é o lugar <strong>certo</strong> para mostrar o resultado: o leitor de tela sabe que ali muda um valor e pode anunciá-lo. Eventos de formulário são explicados com calma em <a href="script.html">O Elemento script</a>; aqui basta copiar o modelo.</p>
+</div>
+
+<h3>O output não é enviado com o formulário</h3>
+<p>Quando o formulário é enviado (aula <a href="enviar-formulario.html">Enviar</a>), vão para o servidor os campos como <code>&lt;input&gt;</code>, <code>&lt;select&gt;</code> e <code>&lt;textarea&gt;</code>. O <code>&lt;output&gt;</code> fica de fora, mesmo com <code>name</code>. Faz sentido: o servidor deve refazer a conta ele mesmo, e não confiar num total que veio do navegador e que qualquer pessoa pode alterar.</p>
+
+<h3>Duas entradas, um resultado</h3>
+<p>Com dois campos, o <code>for</code> leva os dois <code>id</code>, separados por espaço:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form oninput="total.value = Number(preco.value) * Number(qtd.value)"&gt;
+  &lt;p&gt;
+    &lt;label for="preco"&gt;Preço:&lt;/label&gt;
+    &lt;input type="number" id="preco" name="preco" min="0" value="12"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="qtd"&gt;Quantidade:&lt;/label&gt;
+    &lt;input type="number" id="qtd" name="qtd" min="0" value="2"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;Total: R$ &lt;output name="total" for="preco qtd"&gt;24&lt;/output&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+
+<div class="tryhtml" data-goal="attr:output[for]=preco qtd,attr:output[name]=total">
+<p class="try-task"><strong>Missão:</strong> o total desta calculadora está num <code>&lt;span&gt;</code>. Troque-o por um <code>&lt;output&gt;</code> com <code>name="total"</code> e com o <code>for</code> apontando para os <strong>dois</strong> campos (<code>preco</code> e <code>qtd</code>, nessa ordem). A conta do <code>oninput</code> já escreve em <code>total</code>: depois da troca, mude os campos no resultado e veja o total acompanhar.</p>
+<pre class="script" data-file="index.html">&lt;form oninput="total.value = Number(preco.value) * Number(qtd.value)"&gt;
+  &lt;p&gt;
+    &lt;label for="preco"&gt;Preço:&lt;/label&gt;
+    &lt;input type="number" id="preco" name="preco" min="0" value="12"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="qtd"&gt;Quantidade:&lt;/label&gt;
+    &lt;input type="number" id="qtd" name="qtd" min="0" value="2"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;Total: R$ &lt;span&gt;24&lt;/span&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form oninput="total.value = Number(preco.value) * Number(qtd.value)"&gt;
+  &lt;p&gt;
+    &lt;label for="preco"&gt;Preço:&lt;/label&gt;
+    &lt;input type="number" id="preco" name="preco" min="0" value="12"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="qtd"&gt;Quantidade:&lt;/label&gt;
+    &lt;input type="number" id="qtd" name="qtd" min="0" value="2"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;Total: R$ &lt;output name="total" for="preco qtd"&gt;24&lt;/output&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Formas diferentes: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer mostrar…</th><th>Use</th><th>Exemplo</th></tr>
+<tr><td>Quanto de uma tarefa já foi feito</td><td><code>&lt;progress value max&gt;</code></td><td>Envio de foto: 40 de 100</td></tr>
+<tr><td>Que algo está acontecendo, sem saber quanto falta</td><td><code>&lt;progress&gt;</code> sem <code>value</code></td><td>"Procurando receitas…"</td></tr>
+<tr><td>Uma medida numa escala, com faixa boa e ruim</td><td><code>&lt;meter value min max low high optimum&gt;</code></td><td>Bateria, disco, nota</td></tr>
+<tr><td>O resultado de uma conta com os campos de um formulário</td><td><code>&lt;output for name&gt;</code></td><td>Total do pedido</td></tr>
+<tr><td>Um número que não é medida nem resultado</td><td>texto comum</td><td>"Fundada em 2019"</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os erros abaixo usam todos o mesmo arquivo de 10 linhas; só muda a linha 8, a do elemento. Por isso todas as mensagens apontam a linha 8. O arquivo de cada caso fica assim (aqui, o primeiro):</p>
+
+<pre class="file" data-file="virgula.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Painel da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;progress value="2,5" max="10"&gt;2,5 de 10&lt;/progress&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="cenario">
+<strong>Vírgula no número: <code>value="2,5"</code></strong>
+<p>No Brasil, escrevemos 2,5. O HTML, como quase toda linguagem de computador, usa o <strong>ponto</strong>. E o navegador não avisa: ele lê o número até onde dá (o <code>2</code>), para na vírgula e joga fora o resto. A barra mostra 2 de 10, e não 2,5.</p>
+<pre class="term" data-cwd="~/site">$ vnu virgula.html
+"file:/home/ana/site/virgula.html":8.1-8.31: error: Bad value “2,5” for attribute “value” on element “progress”: Expected a decimal point, “e”, “E” or a digit but saw “,” instead.</pre>
+<dl class="anatomy">
+  <dt>8.1-8.31</dt><dd>Linha 8, da coluna 1 à coluna 31: a tag <code>&lt;progress …&gt;</code> inteira.</dd>
+  <dt>Bad value “2,5” for attribute “value” on element “progress”</dt><dd>"Valor ruim <code>2,5</code> para o atributo <code>value</code> no elemento <code>progress</code>".</dd>
+  <dt>Expected a decimal point, “e”, “E” or a digit but saw “,” instead</dt><dd>"Esperava um ponto decimal, um <code>e</code>, um <code>E</code> ou um algarismo, mas viu uma <code>,</code>". (O <code>e</code> é da notação científica, como <code>2.5e3</code> = 2500; você quase nunca vai precisar.)</dd>
+</dl>
+<p><strong>Como consertar:</strong> <code>value="2.5"</code>. A vírgula pode continuar no <strong>texto</strong> que a pessoa lê ("2,5 de 10"); só o atributo usa ponto.</p>
+</div>
+
+<div class="cenario">
+<strong>Porcentagem no valor: <code>&lt;meter value="50%"&gt;</code></strong>
+<p>Parece natural escrever "50%". O navegador lê o <code>50</code>, ignora o <code>%</code>… e, como não há <code>max</code>, o máximo é 1. Cinquenta é bem mais que 1, então o medidor aparece <strong>cheio</strong>, e não pela metade:</p>
+<pre class="term" data-cwd="~/site">$ vnu porcento.html
+"file:/home/ana/site/porcento.html":8.1-8.19: error: Bad value “50%” for attribute “value” on element “meter”: Expected a decimal point, “e”, “E” or a digit but saw “%” instead.</pre>
+<p><strong>Como consertar:</strong> escreva o número e diga a escala: <code>value="50" max="100"</code>, ou <code>value="0.5"</code> sem <code>max</code>.</p>
+</div>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Veja com seus olhos:</strong> as duas barras de cima estão erradas (vírgula e porcentagem). Compare com as de baixo, consertadas. Esta caixa é livre: mexa à vontade.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Errada, vírgula: &lt;progress value="2,5" max="10"&gt;&lt;/progress&gt;&lt;/p&gt;
+&lt;p&gt;Errada, porcentagem: &lt;meter value="50%"&gt;&lt;/meter&gt;&lt;/p&gt;
+&lt;p&gt;Certa, ponto: &lt;progress value="2.5" max="10"&gt;&lt;/progress&gt;&lt;/p&gt;
+&lt;p&gt;Certa, escala: &lt;meter value="50" max="100"&gt;&lt;/meter&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Valor maior que o máximo: <code>&lt;progress value="15" max="10"&gt;</code></strong>
+<p>O navegador não quebra: ele trata o 15 como 10, e a barra aparece cheia, como se a tarefa tivesse acabado. Repare que a mensagem real tem <strong>dois espaços</strong> entre "the" e “value”; é assim que o validador escreve:</p>
+<pre class="term" data-cwd="~/site">$ vnu passou.html
+"file:/home/ana/site/passou.html":8.1-8.30: error: The value of the  “value” attribute must be less than or equal to the value of the “max” attribute.</pre>
+<p>"O valor do atributo <code>value</code> precisa ser menor ou igual ao valor do atributo <code>max</code>". O <code>meter</code> tem a mesma regra e mais duas: o <code>min</code> não pode passar do <code>value</code> nem do <code>max</code>, e o <code>low</code> não pode passar do <code>high</code> (<code>The value of the “low” attribute must be less than or equal to the value of the “high” attribute.</code>).</p>
+<p><strong>Como consertar:</strong> confira a conta. Quase sempre o <code>max</code> está errado (o livro tinha 15 capítulos, e não 10).</p>
+</div>
+
+<div class="cenario">
+<strong><code>meter</code> sem <code>value</code></strong>
+<p>No <code>progress</code>, tirar o <code>value</code> é permitido (vira a barra "sem fim"). No <code>meter</code>, não: uma medida sem valor não mede nada. O navegador desenha o medidor <strong>vazio</strong>, como se o valor fosse 0:</p>
+<pre class="term" data-cwd="~/site">$ vnu meter-sem-value.html
+"file:/home/ana/site/meter-sem-value.html":8.1-8.25: error: Element “meter” is missing required attribute “value”.</pre>
+<p>"Falta ao elemento <code>meter</code> o atributo obrigatório <code>value</code>". <strong>Como consertar:</strong> <code>&lt;meter value="50" min="0" max="100"&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>min</code> no <code>progress</code></strong>
+<p>Uma tarefa sempre começa do zero, então o <code>progress</code> não tem <code>min</code>. O navegador simplesmente ignora o atributo:</p>
+<pre class="term" data-cwd="~/site">$ vnu progress-min.html
+"file:/home/ana/site/progress-min.html":8.1-8.37: error: Attribute “min” not allowed on element “progress” at this point.</pre>
+<p>"O atributo <code>min</code> não é permitido no elemento <code>progress</code> neste ponto". <strong>Como consertar:</strong> apague o <code>min</code>. Se a sua escala não começa em zero, talvez você queira um <code>meter</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>output for</code> apontando para um <code>id</code> que não existe</strong>
+<p>Neste arquivo, o campo tem <code>id="qtd"</code>, mas o <code>output</code> diz <code>for="quantidade"</code>:</p>
+<pre class="file" data-file="output-for.html">&lt;form&gt;&lt;input id="qtd" type="number"&gt; &lt;output for="quantidade"&gt;0&lt;/output&gt;&lt;/form&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu output-for.html     « nenhuma mensagem: para o validador, está tudo certo</pre>
+<p>O validador <strong>não</strong> confere se os nomes do <code>for</code> do <code>output</code> existem, e a página funciona igual, porque quem faz a conta é o JavaScript. Mas a ligação "este resultado vem daquele campo" se perdeu. <strong>Como consertar:</strong> copie o <code>id</code> do campo e cole no <code>for</code>, letra por letra.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento / atributo</th><th>O que faz</th><th>Se faltar</th></tr>
+<tr><td><code>&lt;progress&gt;</code></td><td>Barra de andamento de uma tarefa</td><td></td></tr>
+<tr><td><code>progress value</code></td><td>Quanto já foi feito (de 0 até o <code>max</code>)</td><td>Barra indeterminada ("sem fim")</td></tr>
+<tr><td><code>progress max</code></td><td>O tamanho da tarefa inteira (maior que 0)</td><td>1</td></tr>
+<tr><td><code>&lt;meter&gt;</code></td><td>Medidor de um valor numa escala</td><td></td></tr>
+<tr><td><code>meter value</code></td><td>A medida (obrigatório)</td><td>Erro no validador; o navegador usa 0</td></tr>
+<tr><td><code>meter min</code> / <code>max</code></td><td>O começo e o fim da escala</td><td>0 / 1</td></tr>
+<tr><td><code>meter low</code> / <code>high</code></td><td>Onde terminam a faixa baixa e começa a alta</td><td>Uma faixa só</td></tr>
+<tr><td><code>meter optimum</code></td><td>O valor ideal: diz qual faixa é a boa</td><td>O meio da escala</td></tr>
+<tr><td><code>&lt;output&gt;</code></td><td>O resultado de uma conta</td><td></td></tr>
+<tr><td><code>output for</code></td><td>Os <code>id</code> dos campos usados na conta, separados por espaço</td><td>Sem ligação declarada</td></tr>
+<tr><td><code>output name</code></td><td>O nome do resultado no formulário (não é enviado)</td><td></td></tr>
+<tr><td><code>&lt;label for&gt;</code></td><td>Dá nome a um <code>progress</code>, <code>meter</code> ou <code>output</code></td><td>Sem nome para o leitor de tela</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Metade da tarefa</h3>
+<p>Complete para a barra mostrar 50 de 100:</p>
+<div class="ex-code">&lt;progress value="50" <input data-answer="max" aria-label="atributo">="100"&gt;&lt;/progress&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Ponto, e não vírgula</h3>
+<p>Escreva o valor "um quarto" (sem <code>max</code>) do jeito que o HTML entende:</p>
+<div class="ex-code">&lt;progress value="<input data-answer="0.25|.25" aria-label="valor">"&gt;&lt;/progress&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. O valor ideal</h3>
+<p>Complete o atributo que diz que, no disco, o ideal é estar vazio:</p>
+<div class="ex-code">&lt;meter value="70" max="100" low="60" high="80" <input data-answer="optimum" aria-label="atributo">="0"&gt;&lt;/meter&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. A Ana quer mostrar quanto do armazenamento do celular está ocupado. Qual elemento?</p>
+<label><input type="radio" name="q4"> <code>&lt;progress&gt;</code>, porque desenha uma barra</label>
+<label><input type="radio" name="q4"> <code>&lt;output&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;meter&gt;</code>, porque é uma medida numa escala, e não uma tarefa</label>
+<label><input type="radio" name="q4"> Nenhum: barras só com CSS</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. O que o navegador desenha para <code>&lt;meter value="50%"&gt;&lt;/meter&gt;</code>?</p>
+<label><input type="radio" name="q5"> Um medidor pela metade</label>
+<label><input type="radio" name="q5"> Um medidor cheio: ele lê 50, e o máximo (sem <code>max</code>) é 1</label>
+<label><input type="radio" name="q5"> Nada: a página dá erro</label>
+<label><input type="radio" name="q5"> Um medidor vazio</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Um formulário tem <code>&lt;output name="total"&gt;</code>. O que acontece com ele quando o formulário é enviado?</p>
+<label><input type="radio" name="q6"> Vai junto, como <code>total=…</code></label>
+<label><input type="radio" name="q6"> Vai só se tiver <code>for</code></label>
+<label><input type="radio" name="q6"> O envio dá erro</label>
+<label><input type="radio" name="q6"> Fica de fora: o <code>output</code> não é enviado</label>
+</div>
+
+<h3>Missão final: o painel da campanha</h3>
+
+<div class="tryhtml" data-goal="attr:progress[value]=300,attr:progress[max]=500,attr:progress[id]=arrecadado,sel:label[for=arrecadado],attr:meter[value]=4.5,attr:meter[max]=5,attr:meter[id]=nota,sel:label[for=nota]">
+<p class="try-task"><strong>Missão:</strong> a Ana faz uma campanha para comprar um forno novo. Ela já juntou <strong>300</strong> dos <strong>500</strong> reais, e os clientes deram nota média <strong>4.5</strong> (de 0 a 5) para os doces. Complete o painel: um <code>&lt;progress&gt;</code> com <code>id="arrecadado"</code> para o dinheiro (é uma tarefa que vai terminar) e um <code>&lt;meter&gt;</code> com <code>id="nota"</code>, <code>min="0"</code> e <code>max="5"</code> para a nota (é uma medida). Ligue cada um ao seu <code>&lt;label&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Campanha do forno novo&lt;/h1&gt;
+&lt;p&gt;
+  &lt;label&gt;Arrecadado:&lt;/label&gt;
+  &lt;!-- o progress vem aqui --&gt;
+  R$ 300 de R$ 500
+&lt;/p&gt;
+&lt;p&gt;
+  &lt;label&gt;Nota dos clientes:&lt;/label&gt;
+  &lt;!-- o meter vem aqui --&gt;
+  4,5 de 5
+&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Campanha do forno novo&lt;/h1&gt;
+&lt;p&gt;
+  &lt;label for="arrecadado"&gt;Arrecadado:&lt;/label&gt;
+  &lt;progress id="arrecadado" value="300" max="500"&gt;R$ 300 de R$ 500&lt;/progress&gt;
+  R$ 300 de R$ 500
+&lt;/p&gt;
+&lt;p&gt;
+  &lt;label for="nota"&gt;Nota dos clientes:&lt;/label&gt;
+  &lt;meter id="nota" value="4.5" min="0" max="5" low="2" high="4" optimum="5"&gt;4,5 de 5&lt;/meter&gt;
+  4,5 de 5
+&lt;/p&gt;
+</pre>
+</div>
+
+<p>Repare na solução: no texto que a pessoa lê, a nota é "4,5", com vírgula, como no Brasil. No atributo <code>value</code>, ela é <code>4.5</code>, com ponto, como o HTML exige.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;progress value max&gt;</code> mostra o andamento de uma <strong>tarefa</strong>. Sem <code>max</code>, o máximo é 1. Sem <code>value</code>, a barra fica indeterminada ("sem fim").</li>
+  <li><code>&lt;meter value min max&gt;</code> mostra uma <strong>medida</strong> numa escala. O <code>value</code> é obrigatório. Com <code>low</code>, <code>high</code> e <code>optimum</code>, o navegador pinta a faixa boa, a média e a ruim.</li>
+  <li>Tarefa que termina: <code>progress</code>. Medida que sobe e desce: <code>meter</code>. O validador não percebe a troca; o leitor de tela, sim.</li>
+  <li><code>&lt;output for name&gt;</code> é o lugar do <strong>resultado</strong> de uma conta. Quem calcula é o JavaScript; o <code>output</code> não é enviado com o formulário.</li>
+  <li>Dê nome aos três com <code>&lt;label for&gt;</code>, e escreva também o valor em texto: a barra não mostra o número, e a cor não basta.</li>
+  <li>Nos atributos, números usam <strong>ponto</strong> e não levam <code>%</code>. O navegador não reclama de <code>2,5</code> nem de <code>50%</code>: lê só o começo do número e mostra a barra errada. O validador avisa: <code>Bad value</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
