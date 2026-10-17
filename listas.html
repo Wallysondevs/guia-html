@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Listas com Marcadores — ul e li | Guia HTML</title>
+<meta name="description" content="Listas com marcadores em HTML para quem nunca fez um site: ul e li, a bolinha e o recuo que o navegador desenha, o que cabe dentro de um item, o fechamento opcional do li, por que não digitar a bolinha à mão e os erros reais do validador W3C (li fora da lista, texto solto no ul), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Listas com Marcadores</span></h1>
+
+<p class="intro">Lista de compras, ingredientes de uma receita, produtos da lojinha, o menu de um site: a internet está cheia de <strong>listas</strong>. Em HTML, a lista mais comum é a de <strong>marcadores</strong>, aquela com uma bolinha na frente de cada item. Ela usa só duas tags: <code>&lt;ul&gt;</code> para a lista inteira e <code>&lt;li&gt;</code> para cada item. Nesta aula a Ana monta a lista de ingredientes do bolo de cenoura e descobre o que o navegador faz quando a lista está montada do jeito errado.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que são <code>ul</code> e <code>li</code> e como montar uma lista de marcadores.</li>
+  <li>O que o navegador desenha sozinho: a bolinha e o recuo.</li>
+  <li>O que pode ir dentro de um item.</li>
+  <li>Por que o <code>&lt;/li&gt;</code> é opcional e por que o guia sempre o escreve.</li>
+  <li>Por que não digitar "•" à mão, e como trocar a bolinha.</li>
+  <li>Os erros reais do validador: <code>li</code> fora da lista, texto ou parágrafo solto dentro do <code>ul</code> e o <code>&lt;/ul&gt;</code> esquecido.</li>
+</ul>
+</div>
+
+<p>Cada exemplo com o quadro <strong>Resultado</strong> é desenhado pelo seu próprio navegador, na hora. As mensagens do validador são reais: saíram do <code>vnu</code> 26.10.12 (o mesmo do validator.w3.org) na máquina fictícia da Ana, na pasta <code>~/site</code>. Como usar o validador está em <a href="validar.html">Validar o HTML</a>.</p>
+
+<hr>
+
+<h2>A ideia: a lista presa na geladeira</h2>
+<p>Pense na lista de compras presa na porta da geladeira. Ela tem duas partes: o <strong>papel</strong>, que junta tudo, e as <strong>linhas</strong>, uma para cada coisa que falta comprar. Tanto faz comprar os ovos antes da farinha: a ordem não importa.</p>
+
+<p>Uma lista HTML é igual. O papel é o <code>ul</code>; cada linha é um <code>li</code>.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tag</th><th>Vem do inglês</th><th>Na geladeira</th></tr>
+<tr><td><code>&lt;ul&gt;</code></td><td><em>unordered list</em>, "lista não ordenada"</td><td>o papel, que junta os itens</td></tr>
+<tr><td><code>&lt;li&gt;</code></td><td><em>list item</em>, "item da lista"</td><td>cada linha do papel</td></tr>
+</table>
+</div>
+
+<p>"Não ordenada" quer dizer que a <strong>ordem dos itens não muda o sentido</strong>. Quando a ordem importa, como nos passos de uma receita, a lista é outra, o <code>ol</code> (aula <a href="listas-ordenadas.html">Listas Numeradas</a>).</p>
+
+<hr>
+
+<h2>1. A primeira lista</h2>
+<p>Escreva a abertura <code>&lt;ul&gt;</code>, um <code>&lt;li&gt;…&lt;/li&gt;</code> para cada item e o fechamento <code>&lt;/ul&gt;</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras médias&lt;/li&gt;
+  &lt;li&gt;4 ovos&lt;/li&gt;
+  &lt;li&gt;1 xícara de óleo&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;ul&gt;</dt><dd>Abre a lista. Tudo até o <code>&lt;/ul&gt;</code> faz parte dela.</dd>
+  <dt>&lt;li&gt;3 cenouras médias&lt;/li&gt;</dt><dd>Um item. O texto do item fica entre a abertura e o fechamento do <code>li</code>.</dd>
+  <dt>os espaços antes de cada &lt;li&gt;</dt><dd>São só para <strong>você</strong> ler melhor o código (o <strong>recuo</strong>, ou indentação). O navegador ignora esses espaços (aula <a href="espacos.html">Espaços e Quebras de Linha</a>).</dd>
+  <dt>&lt;/ul&gt;</dt><dd>Fecha a lista. Depois dele, o texto volta a ser texto comum.</dd>
+</dl>
+
+<p>No resultado, o navegador fez três coisas que <strong>não estão no código</strong>:</p>
+<ol class="passo">
+  <li>Desenhou uma <strong>bolinha</strong> na frente de cada item. Ela se chama <strong>marcador</strong> (em inglês, <em>bullet</em>, "bala").</li>
+  <li>Empurrou a lista para a direita, deixando um <strong>recuo</strong> à esquerda, onde ficam as bolinhas.</li>
+  <li>Pôs cada item numa linha própria e deixou um espaço acima e abaixo da lista, como faz com um parágrafo.</li>
+</ol>
+
+<p>A bolinha não é uma letra do texto: é um enfeite que o navegador desenha. Se você abrir as Ferramentas do Desenvolvedor (F12, aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>) e clicar num item, verá o <code>li</code> com o texto, e nenhuma bolinha digitada.</p>
+
+<div class="tryhtml" data-goal="nsel:ul&gt;li=4,texto:ul&gt;li:last-child=fermento">
+<p class="try-task"><strong>Experimente:</strong> a Ana esqueceu o fermento. Acrescente um quarto item no <strong>fim</strong> da lista: <code>1 colher de fermento</code>. Veja a bolinha nova aparecer sozinha.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras médias&lt;/li&gt;
+  &lt;li&gt;4 ovos&lt;/li&gt;
+  &lt;li&gt;1 xícara de óleo&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras médias&lt;/li&gt;
+  &lt;li&gt;4 ovos&lt;/li&gt;
+  &lt;li&gt;1 xícara de óleo&lt;/li&gt;
+  &lt;li&gt;1 colher de fermento&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. A lista numa página completa</h2>
+<p>Numa página de verdade, a lista fica dentro do <code>&lt;body&gt;</code>, junto dos títulos e parágrafos. Este é o arquivo inteiro da Ana:</p>
+
+<pre class="file" data-file="compras.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Lista de compras&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;h2&gt;Ingredientes&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras médias&lt;/li&gt;
+  &lt;li&gt;4 ovos&lt;/li&gt;
+  &lt;li&gt;1 xícara de óleo&lt;/li&gt;
+  &lt;li&gt;2 xícaras de açúcar&lt;/li&gt;
+  &lt;li&gt;2 xícaras de farinha de trigo&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose compras.html
+compras.html                « só o nome do arquivo: nenhum erro</pre>
+
+<p>O validador não reclamou de nada. Com <code>--verbose</code> ("detalhado"), ele escreve o nome do arquivo para mostrar que conferiu; sem essa opção, uma página certa não gera nenhuma linha.</p>
+
+<h3>Uma regra de família</h3>
+<p>O <code>ul</code> e o <code>li</code> formam uma dupla com uma regra fixa, chamada <strong>modelo de conteúdo</strong> (as regras de quem pode ficar dentro de quem):</p>
+<ul>
+  <li>Os <strong>filhos diretos</strong> de um <code>ul</code> só podem ser <code>li</code>. Nada de texto solto, parágrafo ou título entre um item e outro.</li>
+  <li>Um <code>li</code> só pode morar dentro de uma lista: <code>ul</code>, <code>ol</code> ou <code>menu</code>.</li>
+</ul>
+<p>"Filho direto" é o elemento que está logo dentro do outro, sem nenhum no meio (aula <a href="aninhamento.html">Aninhamento</a>). Quando essa regra é quebrada, o navegador desenha alguma coisa mesmo assim, e o validador acusa. Você vai ver os dois em <a href="#errado">Quando dá errado</a>.</p>
+
+<hr>
+
+<h2>3. O que cabe dentro de um item</h2>
+<p>Por fora, o <code>li</code> é exigente: só aceita morar numa lista. Por dentro, ele é generoso: aceita texto, destaques, links, imagens e até parágrafos inteiros.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Na lojinha da Ana&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Caderno&lt;/strong&gt;: 96 folhas, capa dura&lt;/li&gt;
+  &lt;li&gt;Caneta azul &lt;em&gt;(a mais vendida)&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Estojo grande&lt;/p&gt;
+    &lt;p&gt;Cabe 30 lápis. Tem duas cores: verde e roxo.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;strong&gt; e &lt;em&gt; dentro do li</dt><dd>Destaques no meio do texto do item, como em qualquer parágrafo (aula <a href="negrito-italico.html">Negrito e Itálico</a>).</dd>
+  <dt>&lt;li&gt; com dois &lt;p&gt;</dt><dd>Um item pode ter vários parágrafos. A bolinha aparece uma vez só, na frente do primeiro. Repare que os parágrafos trazem o espaço deles acima e abaixo.</dd>
+</dl>
+
+<p>É por isso que os menus de quase todos os sites são listas: cada item tem um link dentro. Fica assim (o <code>nav</code>, "navegação", tem aula própria em <a href="nav.html">nav</a>):</p>
+
+<pre class="file" data-file="menu.html">&lt;nav&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="receitas.html"&gt;Receitas&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="contato.html"&gt;Contato&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+</pre>
+
+<p>O link é <strong>filho</strong> do <code>li</code>, e o <code>li</code> é filho do <code>ul</code>. O contrário, um <code>&lt;a&gt;</code> em volta do <code>&lt;li&gt;</code>, quebra a regra de família.</p>
+
+<hr>
+
+<h2>4. O <code>&lt;/li&gt;</code> é opcional</h2>
+<p>Este código não tem nenhum <code>&lt;/li&gt;</code>, e mesmo assim é HTML <strong>válido</strong>:</p>
+
+<pre class="file" data-file="sem-li.html" data-resultado>&lt;ul&gt;
+  &lt;li&gt;3 cenouras médias
+  &lt;li&gt;4 ovos
+&lt;/ul&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu sem-li.html
+$ echo $?
+0                           « 0 = nenhum erro (o arquivo completo tem o esqueleto de sempre)</pre>
+
+<p>A especificação do HTML diz que o <code>&lt;/li&gt;</code> pode ser omitido quando o próximo item começa ou quando a lista termina. O navegador fecha o item sozinho nesses pontos, e a página desenhada fica idêntica à versão com <code>&lt;/li&gt;</code>.</p>
+
+<div class="tip">
+<strong>Regra do guia: feche sempre o <code>li</code></strong>
+<p>Omitir é permitido, mas fechar deixa claro onde cada item termina, principalmente quando o item tem uma lista dentro (aula <a href="listas-aninhadas.html">Listas Dentro de Listas</a>). Todos os exemplos do guia fecham o <code>li</code>. O <code>&lt;/ul&gt;</code>, ao contrário, <strong>nunca</strong> é opcional.</p>
+</div>
+
+<hr>
+
+<h2>5. Lista de verdade × lista "desenhada"</h2>
+<p>Dá para fazer algo parecido com uma lista sem usar <code>ul</code>, digitando a bolinha no teclado:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;• 3 cenouras médias&lt;br&gt;
+• 4 ovos&lt;br&gt;
+• 1 xícara de óleo&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras médias&lt;/li&gt;
+  &lt;li&gt;4 ovos&lt;/li&gt;
+  &lt;li&gt;1 xícara de óleo&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<p>As duas parecem listas, e as duas são válidas. A diferença está no que o computador entende:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>Bolinhas digitadas (<code>p</code> + <code>br</code>)</th><th><code>ul</code> + <code>li</code></th></tr>
+<tr><td>O que é, para o navegador</td><td>um parágrafo com três linhas</td><td>uma lista com três itens</td></tr>
+<tr><td>Leitor de tela (programa que lê a página em voz alta para quem não enxerga)</td><td>lê tudo como um texto corrido (alguns leem até a palavra "bolinha")</td><td>avisa que é uma lista com 3 itens e deixa pular de item em item</td></tr>
+<tr><td>Texto que não cabe na linha</td><td>a continuação volta para baixo da bolinha</td><td>a continuação fica alinhada com o texto, depois da bolinha</td></tr>
+<tr><td>Trocar o visual de todas as listas</td><td>editar item por item</td><td>uma regra de CSS para o site inteiro</td></tr>
+</table>
+</div>
+
+<p><strong>Qual usar:</strong> se o conteúdo é uma lista, use <code>ul</code> (ou <code>ol</code>, se a ordem importa). Escolher a tag pelo <strong>significado</strong>, e não pela aparência, é a ideia do <a href="semantica.html">HTML Semântico</a>, e é o que faz o site funcionar bem para todo mundo (aula <a href="acessibilidade.html">Acessibilidade</a>).</p>
+
+<hr>
+
+<h2>6. Trocar a bolinha</h2>
+<p>Antigamente se trocava a bolinha por um quadradinho com o atributo <code>type</code> no <code>ul</code>. O navegador ainda obedece, mas o atributo é <strong>obsoleto</strong> (saiu da especificação):</p>
+
+<pre class="file" data-file="quadrado.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Lista de compras&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;ul type="square"&gt;
+  &lt;li&gt;3 cenouras médias&lt;/li&gt;
+  &lt;li&gt;4 ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu quadrado.html
+"file:/home/ana/site/quadrado.html":8.1-8.18: info warning: The “type” attribute on the “ul” element is obsolete. Use CSS instead.</pre>
+
+<dl class="anatomy">
+  <dt>8.1-8.18</dt><dd>Linha 8, da coluna 1 à 18: a tag <code>&lt;ul type="square"&gt;</code> inteira.</dd>
+  <dt>info warning</dt><dd>"Aviso informativo": não é erro, e o código de saída continua 0. Mas é um recado para mudar.</dd>
+  <dt>The “type” attribute on the “ul” element is obsolete. Use CSS instead.</dt><dd>"O atributo <code>type</code> no elemento <code>ul</code> é obsoleto. Use CSS no lugar."</dd>
+</dl>
+
+<p>O jeito atual é a propriedade de CSS <code>list-style-type</code> ("tipo de estilo da lista"). Aqui ela vai no atributo <code>style</code> (aula <a href="atributo-style.html">O Atributo style</a>); num site de verdade, ela fica num arquivo CSS (quer aprender mais? futuro Guia CSS):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ul style="list-style-type: square"&gt;
+  &lt;li&gt;quadrado: square&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul style="list-style-type: circle"&gt;
+  &lt;li&gt;círculo vazio: circle&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul style="list-style-type: none"&gt;
+  &lt;li&gt;sem marcador: none&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<p>O padrão, quando você não escreve nada, é <code>disc</code> ("disco"), a bolinha cheia. Uma lista com <code>none</code> continua sendo uma lista para o leitor de tela; só a bolinha some. É assim que os menus horizontais dos sites são feitos.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Nos erros abaixo o navegador <strong>não</strong> mostra mensagem nenhuma: ele desenha a página do jeito que consegue. Só o validador conta o que está errado. Todos os arquivos têm as mesmas 7 primeiras linhas do <code>compras.html</code> (do <code>&lt;!DOCTYPE html&gt;</code> ao <code>&lt;body&gt;</code>); o código abaixo começa na linha 8.</p>
+
+<div class="cenario">
+<strong><code>error: Element “li” not allowed as child of element “body” in this context.</code></strong>
+<p>A Ana esqueceu o <code>&lt;ul&gt;</code> e escreveu os itens direto no <code>body</code>:</p>
+<pre class="file" data-file="solto.html" data-resultado>&lt;p&gt;Ingredientes:&lt;/p&gt;
+&lt;li&gt;3 cenouras médias&lt;/li&gt;
+&lt;li&gt;4 ovos&lt;/li&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu solto.html
+"file:/home/ana/site/solto.html":9.1-9.4: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/solto.html":10.1-10.4: error: Element “li” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> "o elemento <code>li</code> não é permitido como filho do elemento <code>body</code> neste contexto". Um erro para cada <code>li</code> solto. O final, <em>Suppressing further errors from this subtree</em>, quer dizer "deixando de mostrar outros erros dentro deste pedaço": o validador não olha o que está dentro desse <code>li</code>.</p>
+<p><strong>O que o navegador faz:</strong> ele não cria nenhum <code>ul</code>. Os dois <code>li</code> ficam soltos no <code>body</code>, e mesmo assim a bolinha aparece, porque todo <code>li</code> é desenhado como item de lista. Compare com a primeira lista da aula: no Chrome, o item solto fica <strong>sem o recuo</strong>, com a bolinha colada na margem; outros navegadores podem pôr a bolinha para fora da margem, meio escondida. Quem decide o recuo é o <code>ul</code>, e aqui ele não existe. Para o leitor de tela, também não existe lista.</p>
+<p><strong>Como consertar:</strong> ponha os itens dentro de um <code>&lt;ul&gt;…&lt;/ul&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Text not allowed in element “ul” in this context.</code></strong>
+<p>A Ana quis dar um título para a lista e escreveu o texto dentro do <code>ul</code>:</p>
+<pre class="file" data-file="texto-ul.html" data-resultado>&lt;ul&gt;Ingredientes:
+  &lt;li&gt;3 cenouras médias&lt;/li&gt;
+  &lt;li&gt;4 ovos&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu texto-ul.html
+"file:/home/ana/site/texto-ul.html":8.5-9.2: error: Text not allowed in element “ul” in this context.</pre>
+<p><strong>O que significa:</strong> "texto não é permitido no elemento <code>ul</code> neste contexto". O trecho <code>8.5-9.2</code> vai da coluna 5 da linha 8 (logo depois do <code>&lt;ul&gt;</code>) até o começo da linha 9: é o texto solto.</p>
+<p><strong>O que o navegador faz:</strong> mostra "Ingredientes:" dentro do recuo da lista, alinhado com os itens, mas sem bolinha. Parece um item quebrado.</p>
+<p><strong>Como consertar:</strong> o título vai <strong>antes</strong> da lista, num título de verdade (<code>&lt;h2&gt;Ingredientes&lt;/h2&gt;</code>) ou num parágrafo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “p” not allowed as child of element “ul” in this context.</code></strong>
+<p>A mesma ideia, agora com o título num parágrafo, mas ainda dentro do <code>ul</code>:</p>
+<pre class="file" data-file="p-no-ul.html">&lt;ul&gt;
+  &lt;p&gt;Ingredientes:&lt;/p&gt;
+  &lt;li&gt;3 cenouras médias&lt;/li&gt;
+  &lt;li&gt;4 ovos&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu p-no-ul.html
+"file:/home/ana/site/p-no-ul.html":9.3-9.5: error: Element “p” not allowed as child of element “ul” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> o <code>p</code> está como filho direto do <code>ul</code>, e ali só cabe <code>li</code>. Um parágrafo <strong>dentro</strong> de um <code>li</code> pode (seção 3); entre os itens, não.</p>
+<p><strong>Como consertar:</strong> tire o <code>&lt;p&gt;</code> de dentro do <code>ul</code> e ponha-o antes do <code>&lt;ul&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Unclosed element “ul”.</code></strong>
+<p>A Ana esqueceu o <code>&lt;/ul&gt;</code>. O parágrafo seguinte foi parar <strong>dentro</strong> da lista:</p>
+<pre class="file" data-file="sem-fechar.html" data-resultado>&lt;ul&gt;
+  &lt;li&gt;3 cenouras médias&lt;/li&gt;
+  &lt;li&gt;4 ovos&lt;/li&gt;
+&lt;p&gt;Bata tudo no liquidificador.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu sem-fechar.html
+"file:/home/ana/site/sem-fechar.html":11.1-11.3: error: Element “p” not allowed as child of element “ul” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/sem-fechar.html":12.1-12.7: error: End tag for  “body” seen, but there were unclosed elements.
+"file:/home/ana/site/sem-fechar.html":8.1-8.4: error: Unclosed element “ul”.</pre>
+<p><strong>O que significa:</strong> três mensagens para um esquecimento só, lidas de baixo para cima:</p>
+<ul>
+  <li><em>Unclosed element “ul”</em>, na linha 8: "elemento <code>ul</code> não fechado". É a <strong>causa</strong>, e a posição aponta onde a lista abriu.</li>
+  <li><em>End tag for “body” seen, but there were unclosed elements</em>: "vi o <code>&lt;/body&gt;</code>, mas ainda havia elementos abertos". (O espaço duplo depois de <em>for</em> está assim mesmo na mensagem.)</li>
+  <li><em>Element “p” not allowed as child of element “ul”</em>: como a lista nunca fechou, o parágrafo virou filho dela.</li>
+</ul>
+<p><strong>O que o navegador faz:</strong> o parágrafo aparece com o recuo da lista, alinhado com os itens. O navegador só fecha o <code>ul</code> no fim da página.</p>
+<p><strong>Como consertar:</strong> escreva o <code>&lt;/ul&gt;</code> logo depois do último <code>&lt;/li&gt;</code>. Uma lista que não precisa de <code>&lt;/ul&gt;</code> não existe.</p>
+</div>
+
+<div class="cenario">
+<strong>Uma lista vazia: <code>&lt;ul&gt;&lt;/ul&gt;</code></strong>
+<p><strong>O que acontece:</strong> nada. Hoje o HTML aceita um <code>ul</code> sem nenhum item, e o validador não reclama. Isso é comum em páginas que preenchem a lista depois, com JavaScript. Num HTML escrito à mão, porém, uma lista vazia quase sempre é um item esquecido.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;ul&gt;…&lt;/ul&gt;</code></td><td>Lista de marcadores (a ordem não importa). O <code>&lt;/ul&gt;</code> é obrigatório.</td></tr>
+<tr><td><code>&lt;li&gt;…&lt;/li&gt;</code></td><td>Um item. Só vive dentro de <code>ul</code>, <code>ol</code> ou <code>menu</code>. O <code>&lt;/li&gt;</code> é opcional, mas o guia sempre fecha.</td></tr>
+<tr><td>Filhos do <code>ul</code></td><td>Só <code>li</code> (e <code>script</code>/<code>template</code>). Sem texto solto, <code>p</code> ou títulos entre os itens.</td></tr>
+<tr><td>Dentro do <code>li</code></td><td>Texto, <code>strong</code>, <code>a</code>, <code>img</code>, <code>p</code>, outras listas…</td></tr>
+<tr><td><code>&lt;ul type="square"&gt;</code></td><td>Obsoleto (<em>info warning</em>). Use CSS: <code>list-style-type</code>.</td></tr>
+<tr><td><code>list-style-type</code> (CSS)</td><td><code>disc</code> (padrão), <code>circle</code>, <code>square</code>, <code>none</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A tag do item</h3>
+<p>Complete o item da lista:</p>
+<div class="ex-code">&lt;ul&gt; &lt;<input data-answer="li" aria-label="tag de abertura">&gt;Farinha&lt;/li&gt; &lt;/ul&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O fechamento obrigatório</h3>
+<p>Qual tag fecha uma lista de marcadores? Escreva a tag inteira:</p>
+<div class="ex-code"><input data-answer="&lt;/ul&gt;" aria-label="tag de fechamento"></div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. O que pode ser filho direto de um <code>ul</code>?</p>
+<label><input type="radio" name="q3"> Qualquer elemento</label>
+<label><input type="radio" name="q3"> <code>li</code> e <code>p</code></label>
+<label><input type="radio" name="q3"> Só <code>li</code> (além de <code>script</code> e <code>template</code>)</label>
+<label><input type="radio" name="q3"> Só texto</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. A Ana escreveu dois <code>&lt;li&gt;</code> direto no <code>body</code>, sem <code>ul</code>. O que acontece?</p>
+<label><input type="radio" name="q4"> O navegador mostra uma mensagem de erro no lugar da lista</label>
+<label><input type="radio" name="q4"> O navegador desenha os itens com bolinha, mas sem o recuo da lista; o validador acusa “li” not allowed as child of element “body”</label>
+<label><input type="radio" name="q4"> O navegador cria um <code>ul</code> sozinho, e o validador não reclama</label>
+<label><input type="radio" name="q4"> Os itens somem da página</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Por que <code>ul</code> + <code>li</code> é melhor do que digitar "•" no começo de cada linha?</p>
+<label><input type="radio" name="q5"> Porque "•" não é um caractere válido em HTML</label>
+<label><input type="radio" name="q5"> Porque o validador dá erro com bolinhas digitadas</label>
+<label><input type="radio" name="q5"> Porque a lista fica mais rápida de carregar</label>
+<label><input type="radio" name="q5"> Porque o navegador e o leitor de tela entendem que é uma lista, com itens</label>
+</div>
+
+<h3>Missão final: os produtos da lojinha</h3>
+
+<div class="tryhtml" data-goal="texto:h2=Produtos,nsel:ul&gt;li=5,nsrc:•,nsrc:&lt;br">
+<p class="try-task"><strong>Missão:</strong> a Ana fez a lista de produtos da lojinha com bolinhas digitadas. Transforme o parágrafo numa <strong>lista de verdade</strong>, com um <code>li</code> para cada um dos 5 produtos. O título continua antes da lista. No fim, não pode sobrar nenhum "•" nem <code>&lt;br&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Produtos&lt;/h2&gt;
+&lt;p&gt;• Caderno&lt;br&gt;
+• Caneta azul&lt;br&gt;
+• Lápis de cor&lt;br&gt;
+• Borracha&lt;br&gt;
+• Estojo&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Produtos&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Caderno&lt;/li&gt;
+  &lt;li&gt;Caneta azul&lt;/li&gt;
+  &lt;li&gt;Lápis de cor&lt;/li&gt;
+  &lt;li&gt;Borracha&lt;/li&gt;
+  &lt;li&gt;Estojo&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<p>Repare que a lista nova tem o recuo e as bolinhas no lugar certo sem você escrever nenhum "•". Se um nome de produto fosse comprido demais para a linha, a continuação ficaria alinhada com o texto, e não embaixo da bolinha.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>ul</code> (<em>unordered list</em>) é a lista de marcadores, para quando a ordem não importa. Cada item é um <code>li</code> (<em>list item</em>).</li>
+  <li>O navegador desenha sozinho a bolinha (o marcador) e o recuo. Nada disso está no texto.</li>
+  <li>Filhos diretos do <code>ul</code>: só <code>li</code>. Dentro do <code>li</code>: quase tudo (texto, links, parágrafos).</li>
+  <li>O <code>&lt;/li&gt;</code> é opcional, mas o guia sempre fecha. O <code>&lt;/ul&gt;</code> é obrigatório; esquecê-lo puxa o resto da página para dentro da lista.</li>
+  <li>Use <code>ul</code> em vez de "•" digitado: o leitor de tela anuncia a lista e os itens.</li>
+  <li><code>type="square"</code> é obsoleto; o visual da bolinha é do CSS (<code>list-style-type</code>).</li>
+  <li>Erros do validador: <em>Element “li” not allowed as child of element “body”</em>, <em>Text not allowed in element “ul”</em>, <em>Element “p” not allowed as child of element “ul”</em> e <em>Unclosed element “ul”</em>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
