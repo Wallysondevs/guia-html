@@ -98,7 +98,7 @@
 <pre class="file" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
 &lt;ul&gt;
   &lt;li&gt;&lt;a href="sobre.html"&gt;Quem é a Ana&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href="receitas/doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </pre>
@@ -116,11 +116,11 @@
 <h2>4. Relativo: subir com <code>../</code></h2>
 <p>Agora o caminho de volta. A página <code>receitas/bolo.html</code> quer um link para o <code>index.html</code> da raiz. Se ela escrever só <code>index.html</code>, o navegador procura <strong>na pasta dela</strong>, a <code>receitas/</code>, e acha o <strong>outro</strong> <code>index.html</code>, o das receitas. Para sair da pasta e subir um nível, existe o <code>../</code>:</p>
 
-<pre class="file" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+<pre class="file" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
 &lt;p&gt;&lt;a href="../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="index.html"&gt;Todas as receitas&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/p&gt;
-&lt;img src="../imagens/bolo.jpg" alt="Bolo de fubá fatiado"&gt;
+&lt;img src="../imagens/bolo.jpg" alt="Bolo de cenoura com cobertura de chocolate"&gt;
 </pre>
 
 <dl class="anatomy">
@@ -134,7 +134,7 @@
 
 <pre class="file" data-file="receitas/doces/brigadeiro.html">&lt;p&gt;&lt;a href="../../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="../index.html"&gt;Todas as receitas&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="../bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="../bolo.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/p&gt;
 </pre>
 
 <p>O terminal entende o <code>../</code> do mesmo jeito. Da pasta do brigadeiro, o <code>ls</code> confirma que os três caminhos existem:</p>
@@ -154,21 +154,21 @@ $ ls ../bolo.html ../../index.html ../../imagens/bolo.jpg
 <pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
 &lt;ul&gt;
   &lt;li&gt;&lt;a href="sobre.html"&gt;Quem é a Ana&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href="receitas/doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </pre>
 <pre class="script" data-file="sobre.html">&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
 &lt;p&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
 </pre>
-<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
 &lt;p&gt;&lt;a href="../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/p&gt;
-&lt;img src="../assets/midia/bolo-400.jpg" alt="Bolo de fubá fatiado" width="200" height="150"&gt;
+&lt;img src="../assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="200" height="150"&gt;
 </pre>
 <pre class="script" data-file="receitas/doces/brigadeiro.html">&lt;h1&gt;Brigadeiro&lt;/h1&gt;
 &lt;p&gt;&lt;a href="../../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="../bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="../bolo.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/p&gt;
 </pre>
 </div>
 
@@ -193,18 +193,18 @@ $ ls ../bolo.html ../../index.html ../../imagens/bolo.jpg
 <p>Repare na segunda linha: copiar um link do <code>index.html</code> para uma página de dentro de <code>receitas/</code> sem ajustar o caminho é o erro mais comum desta aula.</p>
 
 <div class="tryhtml" data-goal="attr:a[href]=receitas/bolo.html,src:href=[&quot;']\.\./index\.html,nsrc:href=[&quot;']index\.html">
-<p class="try-task"><strong>Missão:</strong> esta caixa tem a página inicial e a pasta <code>receitas/</code> com o <code>bolo.html</code>. (1) No <code>index.html</code>, transforme "Bolo de fubá" num link para a receita. (2) Em <code>receitas/bolo.html</code>, o link "Início" está errado: clique nele no resultado e veja o 404. Conserte o caminho para subir até a raiz.</p>
+<p class="try-task"><strong>Missão:</strong> esta caixa tem a página inicial e a pasta <code>receitas/</code> com o <code>bolo.html</code>. (1) No <code>index.html</code>, transforme "Bolo de cenoura" num link para a receita. (2) Em <code>receitas/bolo.html</code>, o link "Início" está errado: clique nele no resultado e veja o 404. Conserte o caminho para subir até a raiz.</p>
 <pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
-&lt;p&gt;Bolo de fubá&lt;/p&gt;
+&lt;p&gt;Bolo de cenoura&lt;/p&gt;
 </pre>
-<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
 &lt;p&gt;Fofinho, com erva-doce.&lt;/p&gt;
 &lt;p&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
 </pre>
 <pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
-&lt;p&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/p&gt;
 </pre>
-<pre class="solucao" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+<pre class="solucao" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
 &lt;p&gt;Fofinho, com erva-doce.&lt;/p&gt;
 &lt;p&gt;&lt;a href="../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
 </pre>
@@ -283,15 +283,15 @@ $ kill %1</pre>
 
 <div class="tryhtml" data-goal="sel:img[src='../assets/midia/bolo-400.jpg'][alt],sel:a[href='../index.html']">
 <p class="try-task"><strong>Missão:</strong> a caixa abre na página <code>receitas/bolo.html</code>, e a foto não aparece. No editor, a pasta <code>assets/midia/</code> fica na raiz, ao lado do <code>index.html</code>. Conserte o <code>src</code> da imagem para subir uma pasta antes de entrar em <code>assets</code>, e o link "Início" para voltar à raiz.</p>
-<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
-&lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de fubá fatiado" width="200" height="150"&gt;
+<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="200" height="150"&gt;
 &lt;p&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
 </pre>
 <pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
-&lt;p&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/p&gt;
 </pre>
-<pre class="solucao" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
-&lt;img src="../assets/midia/bolo-400.jpg" alt="Bolo de fubá fatiado" width="200" height="150"&gt;
+<pre class="solucao" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="../assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="200" height="150"&gt;
 &lt;p&gt;&lt;a href="../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
 </pre>
 </div>
@@ -389,7 +389,7 @@ $ kill %1</pre>
 <div class="exercise">
 <h3>3. Subir duas</h3>
 <p>Na página <code>receitas/doces/brigadeiro.html</code>, complete o caminho até a imagem <code>imagens/bolo.jpg</code> da raiz:</p>
-<div class="ex-code">&lt;img src="<input data-answer="../../imagens/bolo.jpg" aria-label="caminho">" alt="Bolo de fubá"&gt;</div>
+<div class="ex-code">&lt;img src="<input data-answer="../../imagens/bolo.jpg" aria-label="caminho">" alt="Bolo de cenoura com cobertura de chocolate"&gt;</div>
 </div>
 
 <div class="mc" data-answer="2">
@@ -419,13 +419,13 @@ $ kill %1</pre>
 <h3>Missão final: os caminhos do brigadeiro</h3>
 
 <div class="tryhtml" data-goal="sel:a[href='../../index.html'],sel:a[href='../index.html'],sel:a[href='../bolo.html'],sel:img[src='../../assets/midia/bolo-quadrado-400.jpg'][alt]">
-<p class="try-task"><strong>Missão:</strong> a caixa abre na página <code>receitas/doces/brigadeiro.html</code>, dois níveis abaixo da raiz. Todos os caminhos foram copiados do <code>index.html</code> e estão errados. Conserte com caminhos relativos: "Início" vai para o <code>index.html</code> da raiz, "Todas as receitas" para <code>receitas/index.html</code>, "Bolo de fubá" para <code>receitas/bolo.html</code>, e a foto é <code>assets/midia/bolo-quadrado-400.jpg</code>, que fica na raiz. Clique em cada link do resultado para testar.</p>
+<p class="try-task"><strong>Missão:</strong> a caixa abre na página <code>receitas/doces/brigadeiro.html</code>, dois níveis abaixo da raiz. Todos os caminhos foram copiados do <code>index.html</code> e estão errados. Conserte com caminhos relativos: "Início" vai para o <code>index.html</code> da raiz, "Todas as receitas" para <code>receitas/index.html</code>, "Bolo de cenoura" para <code>receitas/bolo.html</code>, e a foto é <code>assets/midia/bolo-quadrado-400.jpg</code>, que fica na raiz. Clique em cada link do resultado para testar.</p>
 <pre class="script" data-file="receitas/doces/brigadeiro.html">&lt;h1&gt;Brigadeiro&lt;/h1&gt;
-&lt;img src="assets/midia/bolo-quadrado-400.jpg" alt="Doces da Ana" width="150" height="150"&gt;
+&lt;img src="assets/midia/bolo-quadrado-400.jpg" alt="Bolo de cenoura com cobertura de chocolate, de perto" width="150" height="150"&gt;
 &lt;ul&gt;
   &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href="receitas/index.html"&gt;Todas as receitas&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </pre>
 <pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
@@ -434,15 +434,15 @@ $ kill %1</pre>
 <pre class="script" data-file="receitas/index.html">&lt;h1&gt;Todas as receitas&lt;/h1&gt;
 &lt;p&gt;&lt;a href="doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/p&gt;
 </pre>
-<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
 &lt;p&gt;&lt;a href="doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/p&gt;
 </pre>
 <pre class="solucao" data-file="receitas/doces/brigadeiro.html">&lt;h1&gt;Brigadeiro&lt;/h1&gt;
-&lt;img src="../../assets/midia/bolo-quadrado-400.jpg" alt="Doces da Ana" width="150" height="150"&gt;
+&lt;img src="../../assets/midia/bolo-quadrado-400.jpg" alt="Bolo de cenoura com cobertura de chocolate, de perto" width="150" height="150"&gt;
 &lt;ul&gt;
   &lt;li&gt;&lt;a href="../../index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href="../index.html"&gt;Todas as receitas&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href="../bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="../bolo.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </pre>
 </div>
