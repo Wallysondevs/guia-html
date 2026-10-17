@@ -1,0 +1,1166 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Projeto Página de Produto — picture, tabela de medidas, details e Open Graph | Guia HTML</title>
+<meta name="description" content="Projeto passo a passo: a página do bolo de cenoura na lojinha da Ana. Foto com picture em AVIF, WebP e JPG (1x e 2x), tabela de tamanhos com caption e scope, perguntas frequentes com details e summary, e meta description e Open Graph para a prévia nas redes sociais. Quatro versões com missões, os erros reais do validador W3C e o que o robô da rede social lê.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>Projeto <span class="hl">Página de Produto</span></h1>
+
+<p class="intro">A lojinha da Ana vende o bolo de cenoura em três tamanhos, e ela quer uma página só para ele: uma foto bonita que carregue rápido no celular, uma tabela com os tamanhos e os preços, as perguntas que todo cliente faz e, quando alguém mandar o link num aplicativo de mensagens, uma <strong>prévia com foto e título</strong> em vez de um endereço pelado. É o último projeto do guia, e junta coisas dos três níveis.</p>
+
+<div class="note">
+<strong>Você vai praticar</strong>
+<ul>
+  <li>Oferecer a mesma foto em vários formatos com <code>picture</code> e <code>source</code>, e em duas resoluções com <code>srcset</code> (<a href="picture.html">O Elemento picture</a>, <a href="imagens-responsivas.html">Imagens Responsivas</a>, <a href="formatos-imagem.html">Formatos</a>).</li>
+  <li>Montar uma tabela de tamanhos acessível (<a href="tabelas-legenda.html">caption e scope</a>) e preços com <code>data</code> (<a href="time.html">time e data</a>).</li>
+  <li>Fazer perguntas que abrem e fecham com <code>details</code> e <code>summary</code> (<a href="details.html">details</a>).</li>
+  <li>Escrever a <code>meta description</code> e as etiquetas Open Graph (<a href="meta.html">title e meta</a>, <a href="open-graph.html">Open Graph</a>, <a href="seo.html">SEO</a>).</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>O que vamos construir</h2>
+<p>A página pronta, desenhada pelo seu navegador. Clique nas perguntas para abri-las e fechá-las. As etiquetas Open Graph não aparecem: elas ficam no <code>head</code>, para os robôs das redes sociais.</p>
+
+<pre class="file" data-file="bolo-de-cenoura.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura caseiro com cobertura de chocolate, feito no dia da entrega. Tamanhos de 8 a 20 fatias, a partir de R$ 45,00."&gt;
+  &lt;meta property="og:type" content="website"&gt;
+  &lt;meta property="og:site_name" content="Lojinha da Ana"&gt;
+  &lt;meta property="og:title" content="Bolo de cenoura com cobertura de chocolate"&gt;
+  &lt;meta property="og:description" content="Feito no dia da entrega, com a receita da família. A partir de R$ 45,00."&gt;
+  &lt;meta property="og:url" content="https://lojinha.example.com/bolo-de-cenoura.html"&gt;
+  &lt;meta property="og:image" content="https://lojinha.example.com/assets/midia/bolo-1200.jpg"&gt;
+  &lt;meta property="og:image:width" content="1200"&gt;
+  &lt;meta property="og:image:height" content="900"&gt;
+  &lt;meta property="og:image:alt" content="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco"&gt;
+  &lt;meta property="og:locale" content="pt_BR"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+
+    &lt;h2&gt;Tamanhos&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Tamanho&lt;/th&gt;
+          &lt;th scope="col"&gt;Diâmetro&lt;/th&gt;
+          &lt;th scope="col"&gt;Serve&lt;/th&gt;
+          &lt;th scope="col"&gt;Preço&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;P&lt;/th&gt;
+          &lt;td&gt;15 cm&lt;/td&gt;
+          &lt;td&gt;8 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;M&lt;/th&gt;
+          &lt;td&gt;20 cm&lt;/td&gt;
+          &lt;td&gt;12 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;G&lt;/th&gt;
+          &lt;td&gt;25 cm&lt;/td&gt;
+          &lt;td&gt;20 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="95.00"&gt;R$ 95,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;h2&gt;Perguntas frequentes&lt;/h2&gt;
+    &lt;details open&gt;
+      &lt;summary&gt;Como conservar?&lt;/summary&gt;
+      &lt;p&gt;Fora da geladeira, bem tampado, por até três dias. Na geladeira, a massa resseca.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Vocês entregam?&lt;/summary&gt;
+      &lt;p&gt;Sim, no bairro e arredores, de terça a sábado. A taxa depende da distância.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Tem versão sem glúten?&lt;/summary&gt;
+      &lt;p&gt;Ainda não. A cozinha usa farinha de trigo, então não é indicada para quem tem doença celíaca.&lt;/p&gt;
+    &lt;/details&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<ol class="passo">
+  <li><a href="#versao1">O produto e a foto em três formatos</a> (<code>picture</code>, <code>source</code>, <code>srcset</code>).</li>
+  <li><a href="#versao2">A tabela de tamanhos</a> (<code>table</code>, <code>caption</code>, <code>scope</code>, <code>data</code>).</li>
+  <li><a href="#versao3">As perguntas frequentes</a> (<code>details</code> e <code>summary</code>).</li>
+  <li><a href="#versao4">A prévia nas redes sociais</a> (<code>meta description</code> e Open Graph).</li>
+</ol>
+
+<h3>Antes de começar</h3>
+<p>Você precisa ter visto <a href="picture.html">O Elemento picture</a>, <a href="tabelas-legenda.html">Legenda e Acessibilidade</a> das tabelas, <a href="details.html">details e summary</a> e <a href="open-graph.html">Open Graph</a>. A página fica numa pasta <code>lojinha</code>, com as imagens em <code>assets/midia</code>:</p>
+
+<pre class="term">$ mkdir -p sites/lojinha/assets/midia
+$ cd sites/lojinha</pre>
+
+<hr>
+
+<h2 id="versao1">Versão 1 · O produto e a foto em três formatos</h2>
+<p>A foto é o que vende o bolo, mas é também o arquivo mais pesado da página. Os formatos novos de imagem, AVIF e WebP, guardam a mesma foto em bem menos bytes que o JPG. Veja os três arquivos da foto de 400 × 300 que a Ana tem:</p>
+
+<pre class="term" data-cwd="~/sites/lojinha">$ wc -c assets/midia/bolo-400.*
+ 3387 assets/midia/bolo-400.avif
+10241 assets/midia/bolo-400.jpg
+ 4988 assets/midia/bolo-400.webp
+18616 total</pre>
+
+<p>O AVIF tem um terço do tamanho do JPG. Mas um navegador antigo pode não saber abrir AVIF. A solução é o <code>picture</code>: como um cardápio com "se tiver, quero o AVIF; senão, o WebP; senão, o JPG", e o navegador escolhe o <strong>primeiro</strong> que sabe abrir.</p>
+
+<pre class="file" data-file="bolo-de-cenoura.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;picture&gt;</dt><dd>Um "porta-retrato" com opções. Não desenha nada sozinho: quem aparece na tela é sempre o <code>img</code> lá de dentro.</dd>
+  <dt>&lt;source … type="image/avif"&gt;</dt><dd>Uma opção. O <code>type</code> diz o formato: o navegador que não conhece AVIF pula esta linha sem baixar nada.</dd>
+  <dt>srcset="…bolo-400.avif 1x, …bolo-800.avif 2x"</dt><dd>Duas resoluções do mesmo formato: a de 400 pixels para telas comuns (<code>1x</code>) e a de 800 para telas de alta densidade, como a de muitos celulares (<code>2x</code>), que têm dois pixels de verdade para cada pixel do CSS.</dd>
+  <dt>&lt;img src="…bolo-400.jpg" … alt="…" width="400" height="300"&gt;</dt><dd>O fim da fila: o JPG, que todo navegador abre. É nele que ficam o <code>alt</code>, o <code>width</code> e o <code>height</code>, valendo para qualquer opção escolhida. O <code>img</code> é obrigatório.</dd>
+  <dt>&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;</dt><dd>O preço para as pessoas ("R$ 45,00") e para os programas (<code>45.00</code>, com ponto).</dd>
+  <dt>mailto:…?subject=Encomenda%20de%20bolo…</dt><dd>Um link de e-mail que já preenche o assunto. <code>%20</code> é o espaço, porque um endereço não pode ter espaço (veja <a href="links-email-tel.html">Links de E-mail</a>).</dd>
+</dl>
+
+<p>Qual dos três o seu navegador escolheu? Clique com o botão direito na foto do resultado e abra a imagem numa aba nova (ou olhe no F12): o nome do arquivo termina em <code>.avif</code> nos navegadores atuais. No Chromium do laboratório, numa tela comum, a escolha foi <code>bolo-400.avif</code>.</p>
+
+<div class="cenario">
+<strong>Um <code>picture</code> sem <code>img</code></strong>
+<p>A Ana achou que o JPG também podia ser um <code>source</code>, e tirou o <code>img</code>:</p>
+<pre class="file" data-file="bolo-de-cenoura.html · erro de propósito" data-resultado>&lt;picture&gt;
+  &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+  &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+  &lt;source srcset="assets/midia/bolo-400.jpg 1x, assets/midia/bolo-800.jpg 2x" type="image/jpeg"&gt;
+&lt;/picture&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> nada. Olhe o resultado: não aparece foto nenhuma, nem o espaço dela. Os <code>source</code> são só opções para o <code>img</code>; sem ele, não há o que desenhar. <strong>O que o validador diz:</strong></p>
+<pre class="term" data-cwd="~/sites/lojinha">$ vnu --verbose bolo-de-cenoura.html
+bolo-de-cenoura.html
+"file:/home/ana/sites/lojinha/bolo-de-cenoura.html":19.5-19.14: error: Element “picture” is missing a required instance of child element “img”.</pre>
+<p>"O elemento <code>picture</code> está sem um filho obrigatório: o <code>img</code>." <strong>Como consertar:</strong> o <code>img</code> sempre por último dentro do <code>picture</code>, com o formato que todo navegador abre.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:picture > source[type='image/avif'],sel:picture > source[type='image/webp'],sel:picture > img[alt]">
+<p class="try-task"><strong>Missão (versão 1):</strong> a foto ainda é um <code>img</code> sozinho, só em JPG. Coloque-o dentro de um <code>&lt;picture&gt;</code> e, antes dele, acrescente dois <code>&lt;source&gt;</code>: um com <code>srcset="assets/midia/bolo-400.avif"</code> e <code>type="image/avif"</code>, e outro com <code>srcset="assets/midia/bolo-400.webp"</code> e <code>type="image/webp"</code>. (O <code>2x</code> é um bônus: experimente acrescentá-lo também.)</p>
+<pre class="script" data-file="bolo-de-cenoura.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="bolo-de-cenoura.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao2">Versão 2 · A tabela de tamanhos</h2>
+<p>"Qual tamanho serve a minha família?" Uma tabela responde de relance: o tamanho, o diâmetro, quantas fatias e o preço. É a mesma receita do <a href="projeto-cardapio.html">projeto do Cardápio</a>: legenda, cabeçalho das colunas e o nome de cada linha como cabeçalho da linha.</p>
+
+<pre class="file" data-file="bolo-de-cenoura.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+
+    &lt;h2&gt;Tamanhos&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Tamanho&lt;/th&gt;
+          &lt;th scope="col"&gt;Diâmetro&lt;/th&gt;
+          &lt;th scope="col"&gt;Serve&lt;/th&gt;
+          &lt;th scope="col"&gt;Preço&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;P&lt;/th&gt;
+          &lt;td&gt;15 cm&lt;/td&gt;
+          &lt;td&gt;8 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;M&lt;/th&gt;
+          &lt;td&gt;20 cm&lt;/td&gt;
+          &lt;td&gt;12 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;G&lt;/th&gt;
+          &lt;td&gt;25 cm&lt;/td&gt;
+          &lt;td&gt;20 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="95.00"&gt;R$ 95,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;</dt><dd>O nome da tabela. O leitor de tela pode anunciá-lo antes das células.</dd>
+  <dt>&lt;th scope="col"&gt;Diâmetro&lt;/th&gt;</dt><dd>Título de uma coluna.</dd>
+  <dt>&lt;th scope="row"&gt;M&lt;/th&gt;</dt><dd>Título da linha: ao chegar em "12 fatias", o leitor de tela pode dizer "M, Serve, 12 fatias".</dd>
+  <dt>&lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;</dt><dd>O preço de cada tamanho, legível para as pessoas e para os programas.</dd>
+</dl>
+
+<div class="warning">
+<strong>Tabela de medidas como imagem: não</strong>
+<p>Muitas lojas põem a tabela de medidas como uma figura. Parece prático, mas ninguém consegue copiar um número, o leitor de tela só lê o <code>alt</code>, os buscadores não leem os preços, e no celular a pessoa precisa dar zoom numa imagem borrada. Uma tabela de verdade se adapta, aumenta junto com a letra e é lida por todos.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:tbody tr=3,texto:tbody tr:last-child th=G,sel:tbody tr:last-child data[value]">
+<p class="try-task"><strong>Missão (versão 2):</strong> falta o tamanho G. No fim do <code>tbody</code>, acrescente uma linha igual às outras: <code>&lt;th scope="row"&gt;G&lt;/th&gt;</code>, <code>25 cm</code>, <code>20 fatias</code> e o preço <code>&lt;data value="95.00"&gt;R$ 95,00&lt;/data&gt;</code>.</p>
+<pre class="script" data-file="bolo-de-cenoura.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+
+    &lt;h2&gt;Tamanhos&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Tamanho&lt;/th&gt;
+          &lt;th scope="col"&gt;Diâmetro&lt;/th&gt;
+          &lt;th scope="col"&gt;Serve&lt;/th&gt;
+          &lt;th scope="col"&gt;Preço&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;P&lt;/th&gt;
+          &lt;td&gt;15 cm&lt;/td&gt;
+          &lt;td&gt;8 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;M&lt;/th&gt;
+          &lt;td&gt;20 cm&lt;/td&gt;
+          &lt;td&gt;12 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="bolo-de-cenoura.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+
+    &lt;h2&gt;Tamanhos&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Tamanho&lt;/th&gt;
+          &lt;th scope="col"&gt;Diâmetro&lt;/th&gt;
+          &lt;th scope="col"&gt;Serve&lt;/th&gt;
+          &lt;th scope="col"&gt;Preço&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;P&lt;/th&gt;
+          &lt;td&gt;15 cm&lt;/td&gt;
+          &lt;td&gt;8 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;M&lt;/th&gt;
+          &lt;td&gt;20 cm&lt;/td&gt;
+          &lt;td&gt;12 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;G&lt;/th&gt;
+          &lt;td&gt;25 cm&lt;/td&gt;
+          &lt;td&gt;20 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="95.00"&gt;R$ 95,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao3">Versão 3 · As perguntas frequentes</h2>
+<p>Toda loja recebe as mesmas perguntas: como conservar, se entrega, se tem versão sem glúten. As respostas precisam estar na página, mas não precisam ocupar a tela inteira. O <code>details</code> é como uma sanfona: fica fechado, mostrando só a pergunta, e abre quando a pessoa clica. E funciona sem uma linha de JavaScript.</p>
+
+<pre class="file" data-file="bolo-de-cenoura.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+
+    &lt;h2&gt;Tamanhos&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Tamanho&lt;/th&gt;
+          &lt;th scope="col"&gt;Diâmetro&lt;/th&gt;
+          &lt;th scope="col"&gt;Serve&lt;/th&gt;
+          &lt;th scope="col"&gt;Preço&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;P&lt;/th&gt;
+          &lt;td&gt;15 cm&lt;/td&gt;
+          &lt;td&gt;8 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;M&lt;/th&gt;
+          &lt;td&gt;20 cm&lt;/td&gt;
+          &lt;td&gt;12 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;G&lt;/th&gt;
+          &lt;td&gt;25 cm&lt;/td&gt;
+          &lt;td&gt;20 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="95.00"&gt;R$ 95,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;h2&gt;Perguntas frequentes&lt;/h2&gt;
+    &lt;details open&gt;
+      &lt;summary&gt;Como conservar?&lt;/summary&gt;
+      &lt;p&gt;Fora da geladeira, bem tampado, por até três dias. Na geladeira, a massa resseca.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Vocês entregam?&lt;/summary&gt;
+      &lt;p&gt;Sim, no bairro e arredores, de terça a sábado. A taxa depende da distância.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Tem versão sem glúten?&lt;/summary&gt;
+      &lt;p&gt;Ainda não. A cozinha usa farinha de trigo, então não é indicada para quem tem doença celíaca.&lt;/p&gt;
+    &lt;/details&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;details&gt;</dt><dd>Uma caixa que abre e fecha. O navegador põe um triângulo na frente da pergunta.</dd>
+  <dt>&lt;summary&gt;Como conservar?&lt;/summary&gt;</dt><dd>O que fica sempre visível: a pergunta. Tem de ser o <strong>primeiro</strong> filho do <code>details</code>. Clicar nele (ou chegar nele com <kbd>Tab</kbd> e apertar <kbd>Enter</kbd>) abre e fecha a resposta.</dd>
+  <dt>&lt;details open&gt;</dt><dd>O <code>open</code> faz a primeira pergunta já começar aberta.</dd>
+  <dt>&lt;p&gt;…&lt;/p&gt;</dt><dd>A resposta: tudo o que vem depois do <code>summary</code>.</dd>
+</dl>
+
+<div class="tip">
+<strong>E o <kbd>Ctrl</kbd>+<kbd>F</kbd>?</strong>
+<p>Em navegadores como o Chrome, a busca da página também encontra o texto de uma resposta fechada e abre o <code>details</code> sozinha para mostrar o resultado. Esconder num <code>details</code> não esconde o texto de quem procura.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>details</code> sem <code>summary</code></strong>
+<p>Na segunda pergunta, a Ana apagou o <code>summary</code> sem querer. Olhe o segundo item no resultado:</p>
+<pre class="file" data-file="bolo-de-cenoura.html · erro de propósito" data-resultado>&lt;h2&gt;Perguntas frequentes&lt;/h2&gt;
+&lt;details open&gt;
+  &lt;summary&gt;Como conservar?&lt;/summary&gt;
+  &lt;p&gt;Fora da geladeira, bem tampado, por até três dias. Na geladeira, a massa resseca.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+  &lt;p&gt;Sim, no bairro e arredores, de terça a sábado. A taxa depende da distância.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+  &lt;summary&gt;Tem versão sem glúten?&lt;/summary&gt;
+  &lt;p&gt;Ainda não. A cozinha usa farinha de trigo, então não é indicada para quem tem doença celíaca.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> o <code>details</code> continua abrindo e fechando, mas, no lugar da pergunta, mostra um título genérico inventado por ele, no idioma do navegador. A pessoa não sabe o que vai encontrar ali dentro. <strong>O que o validador diz:</strong></p>
+<pre class="term" data-cwd="~/sites/lojinha">$ vnu --verbose bolo-de-cenoura.html
+bolo-de-cenoura.html
+"file:/home/ana/sites/lojinha/bolo-de-cenoura.html":63.7-63.9: error: Element “details” is missing a required instance of child element “summary”.</pre>
+<p>"O elemento <code>details</code> está sem um filho obrigatório: o <code>summary</code>." <strong>Como consertar:</strong> todo <code>details</code> começa com o seu <code>summary</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:details > summary=3,nsel:h3=0,sel:details[open]">
+<p class="try-task"><strong>Missão (versão 3):</strong> as perguntas ainda são títulos <code>h3</code> com parágrafos. Transforme cada pergunta num <code>&lt;details&gt;</code>: a pergunta vira o <code>&lt;summary&gt;</code>, e a resposta fica logo depois, dentro do mesmo <code>details</code>. Deixe a primeira aberta, com <code>&lt;details open&gt;</code>.</p>
+<pre class="script" data-file="bolo-de-cenoura.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+
+    &lt;h2&gt;Tamanhos&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Tamanho&lt;/th&gt;
+          &lt;th scope="col"&gt;Diâmetro&lt;/th&gt;
+          &lt;th scope="col"&gt;Serve&lt;/th&gt;
+          &lt;th scope="col"&gt;Preço&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;P&lt;/th&gt;
+          &lt;td&gt;15 cm&lt;/td&gt;
+          &lt;td&gt;8 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;M&lt;/th&gt;
+          &lt;td&gt;20 cm&lt;/td&gt;
+          &lt;td&gt;12 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;G&lt;/th&gt;
+          &lt;td&gt;25 cm&lt;/td&gt;
+          &lt;td&gt;20 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="95.00"&gt;R$ 95,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;h2&gt;Perguntas frequentes&lt;/h2&gt;
+    &lt;h3&gt;Como conservar?&lt;/h3&gt;
+    &lt;p&gt;Fora da geladeira, bem tampado, por até três dias. Na geladeira, a massa resseca.&lt;/p&gt;
+    &lt;h3&gt;Vocês entregam?&lt;/h3&gt;
+    &lt;p&gt;Sim, no bairro e arredores, de terça a sábado. A taxa depende da distância.&lt;/p&gt;
+    &lt;h3&gt;Tem versão sem glúten?&lt;/h3&gt;
+    &lt;p&gt;Ainda não. A cozinha usa farinha de trigo, então não é indicada para quem tem doença celíaca.&lt;/p&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="bolo-de-cenoura.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+
+    &lt;h2&gt;Tamanhos&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Tamanho&lt;/th&gt;
+          &lt;th scope="col"&gt;Diâmetro&lt;/th&gt;
+          &lt;th scope="col"&gt;Serve&lt;/th&gt;
+          &lt;th scope="col"&gt;Preço&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;P&lt;/th&gt;
+          &lt;td&gt;15 cm&lt;/td&gt;
+          &lt;td&gt;8 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;M&lt;/th&gt;
+          &lt;td&gt;20 cm&lt;/td&gt;
+          &lt;td&gt;12 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;G&lt;/th&gt;
+          &lt;td&gt;25 cm&lt;/td&gt;
+          &lt;td&gt;20 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="95.00"&gt;R$ 95,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;h2&gt;Perguntas frequentes&lt;/h2&gt;
+    &lt;details open&gt;
+      &lt;summary&gt;Como conservar?&lt;/summary&gt;
+      &lt;p&gt;Fora da geladeira, bem tampado, por até três dias. Na geladeira, a massa resseca.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Vocês entregam?&lt;/summary&gt;
+      &lt;p&gt;Sim, no bairro e arredores, de terça a sábado. A taxa depende da distância.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Tem versão sem glúten?&lt;/summary&gt;
+      &lt;p&gt;Ainda não. A cozinha usa farinha de trigo, então não é indicada para quem tem doença celíaca.&lt;/p&gt;
+    &lt;/details&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao4">Versão 4 · A prévia nas redes sociais</h2>
+<p>Quando alguém cola um link num aplicativo de mensagens ou numa rede social, aparece um cartãozinho com foto, título e uma frase. Quem monta esse cartão é um <strong>robô</strong> da rede: ele baixa o HTML da página, lê umas etiquetas especiais no <code>head</code> e pronto. Ele não roda JavaScript nem olha o resto da página. Essas etiquetas são o <strong>Open Graph</strong> (as <code>meta property="og:…"</code>). Junto com elas, a <code>meta name="description"</code>, a frase que os buscadores costumam mostrar embaixo do título.</p>
+
+<pre class="file" data-file="bolo-de-cenoura.html (o começo, até o fim do head)">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura caseiro com cobertura de chocolate, feito no dia da entrega. Tamanhos de 8 a 20 fatias, a partir de R$ 45,00."&gt;
+  &lt;meta property="og:type" content="website"&gt;
+  &lt;meta property="og:site_name" content="Lojinha da Ana"&gt;
+  &lt;meta property="og:title" content="Bolo de cenoura com cobertura de chocolate"&gt;
+  &lt;meta property="og:description" content="Feito no dia da entrega, com a receita da família. A partir de R$ 45,00."&gt;
+  &lt;meta property="og:url" content="https://lojinha.example.com/bolo-de-cenoura.html"&gt;
+  &lt;meta property="og:image" content="https://lojinha.example.com/assets/midia/bolo-1200.jpg"&gt;
+  &lt;meta property="og:image:width" content="1200"&gt;
+  &lt;meta property="og:image:height" content="900"&gt;
+  &lt;meta property="og:image:alt" content="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco"&gt;
+  &lt;meta property="og:locale" content="pt_BR"&gt;
+&lt;/head&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Etiqueta</th><th>O que vai no cartão</th></tr>
+<tr><td><code>meta name="description"</code></td><td>Não é do Open Graph: é a descrição para os buscadores (veja <a href="seo.html">SEO</a>). Uma ou duas frases sobre <strong>esta</strong> página.</td></tr>
+<tr><td><code>og:title</code></td><td>O título do cartão. Pode ser mais curto que o <code>title</code> da página (sem o "— Lojinha da Ana", que vai no <code>og:site_name</code>).</td></tr>
+<tr><td><code>og:description</code></td><td>A frase embaixo do título.</td></tr>
+<tr><td><code>og:image</code></td><td>A foto do cartão, com o endereço <strong>completo</strong> (<code>https://…</code>). Usamos a versão grande, de 1200 pixels.</td></tr>
+<tr><td><code>og:image:width</code>, <code>og:image:height</code></td><td>O tamanho da foto, para o robô montar o cartão sem esperar baixá-la.</td></tr>
+<tr><td><code>og:image:alt</code></td><td>O texto alternativo da foto do cartão, como o <code>alt</code> de uma imagem.</td></tr>
+<tr><td><code>og:url</code></td><td>O endereço oficial da página.</td></tr>
+<tr><td><code>og:type</code>, <code>og:site_name</code>, <code>og:locale</code></td><td>O tipo (<code>website</code>), o nome do site e o idioma (<code>pt_BR</code>, com sublinhado).</td></tr>
+</table>
+</div>
+
+<p>Repare que é <code>property</code>, e não <code>name</code>, em todas as <code>og:</code>. E <code>lojinha.example.com</code> é um endereço de exemplo: no site publicado, use o endereço real dele (veja <a href="publicar.html">Publicar</a>).</p>
+
+<p>Para ver o que o robô vê, a Ana ligou o servidor local e baixou a página com o <code>curl</code>, como o robô faz, filtrando as linhas com <code>og:</code>:</p>
+
+<pre class="term" data-cwd="~/sites/lojinha">$ python3 -m http.server &amp;
+[1] 35
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+$ curl -s http://localhost:8000/bolo-de-cenoura.html | grep 'og:'
+127.0.0.1 - - [17/Oct/2026 16:17:28] "GET /bolo-de-cenoura.html HTTP/1.1" 200 -
+  &lt;meta property="og:type" content="website"&gt;
+  &lt;meta property="og:site_name" content="Lojinha da Ana"&gt;
+  &lt;meta property="og:title" content="Bolo de cenoura com cobertura de chocolate"&gt;
+  &lt;meta property="og:description" content="Feito no dia da entrega, com a receita da família. A partir de R$ 45,00."&gt;
+  &lt;meta property="og:url" content="https://lojinha.example.com/bolo-de-cenoura.html"&gt;
+  &lt;meta property="og:image" content="https://lojinha.example.com/assets/midia/bolo-1200.jpg"&gt;
+  &lt;meta property="og:image:width" content="1200"&gt;
+  &lt;meta property="og:image:height" content="900"&gt;
+  &lt;meta property="og:image:alt" content="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco"&gt;
+  &lt;meta property="og:locale" content="pt_BR"&gt;
+$ kill %1</pre>
+
+<p>O cartão de verdade só aparece com a página <strong>publicada</strong>: o robô da rede social está na internet e não alcança o <code>localhost</code> do seu computador. Depois de publicar, cole o link numa conversa com você mesmo para ver a prévia. As redes também costumam ter páginas de teste de compartilhamento, que mostram o que o robô leu.</p>
+
+<div class="cenario">
+<strong>A imagem do cartão com caminho relativo</strong>
+<p>A Ana escreveu <code>&lt;meta property="og:image" content="assets/midia/bolo-1200.jpg"&gt;</code>, como faria num <code>img</code>. O validador não reclama: para ele, é só um texto num <code>content</code>. Mas o protocolo Open Graph pede o endereço completo da imagem, e muitos robôs não completam caminhos relativos: o cartão sai sem foto. <strong>Como consertar:</strong> nas etiquetas <code>og:image</code> e <code>og:url</code>, sempre o endereço inteiro, começando com <code>https://</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:meta[property='og:title'][content]=Bolo de cenoura com cobertura de chocolate,attr:meta[property='og:image'][content]=https://lojinha.example.com/assets/midia/bolo-1200.jpg">
+<p class="try-task"><strong>Missão (versão 4):</strong> o <code>head</code> já tem a descrição e algumas etiquetas, mas faltam as duas mais importantes do cartão. Acrescente <code>&lt;meta property="og:title" content="Bolo de cenoura com cobertura de chocolate"&gt;</code> e <code>&lt;meta property="og:image" content="https://lojinha.example.com/assets/midia/bolo-1200.jpg"&gt;</code>. O resultado não muda na tela: as etiquetas são para o robô.</p>
+<pre class="script" data-file="bolo-de-cenoura.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura caseiro com cobertura de chocolate, feito no dia da entrega. Tamanhos de 8 a 20 fatias, a partir de R$ 45,00."&gt;
+  &lt;meta property="og:type" content="website"&gt;
+  &lt;meta property="og:site_name" content="Lojinha da Ana"&gt;
+  &lt;meta property="og:description" content="Feito no dia da entrega, com a receita da família. A partir de R$ 45,00."&gt;
+  &lt;meta property="og:url" content="https://lojinha.example.com/bolo-de-cenoura.html"&gt;
+  &lt;meta property="og:locale" content="pt_BR"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+
+    &lt;h2&gt;Tamanhos&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Tamanho&lt;/th&gt;
+          &lt;th scope="col"&gt;Diâmetro&lt;/th&gt;
+          &lt;th scope="col"&gt;Serve&lt;/th&gt;
+          &lt;th scope="col"&gt;Preço&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;P&lt;/th&gt;
+          &lt;td&gt;15 cm&lt;/td&gt;
+          &lt;td&gt;8 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;M&lt;/th&gt;
+          &lt;td&gt;20 cm&lt;/td&gt;
+          &lt;td&gt;12 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;G&lt;/th&gt;
+          &lt;td&gt;25 cm&lt;/td&gt;
+          &lt;td&gt;20 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="95.00"&gt;R$ 95,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;h2&gt;Perguntas frequentes&lt;/h2&gt;
+    &lt;details open&gt;
+      &lt;summary&gt;Como conservar?&lt;/summary&gt;
+      &lt;p&gt;Fora da geladeira, bem tampado, por até três dias. Na geladeira, a massa resseca.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Vocês entregam?&lt;/summary&gt;
+      &lt;p&gt;Sim, no bairro e arredores, de terça a sábado. A taxa depende da distância.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Tem versão sem glúten?&lt;/summary&gt;
+      &lt;p&gt;Ainda não. A cozinha usa farinha de trigo, então não é indicada para quem tem doença celíaca.&lt;/p&gt;
+    &lt;/details&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="bolo-de-cenoura.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura caseiro com cobertura de chocolate, feito no dia da entrega. Tamanhos de 8 a 20 fatias, a partir de R$ 45,00."&gt;
+  &lt;meta property="og:type" content="website"&gt;
+  &lt;meta property="og:site_name" content="Lojinha da Ana"&gt;
+  &lt;meta property="og:title" content="Bolo de cenoura com cobertura de chocolate"&gt;
+  &lt;meta property="og:description" content="Feito no dia da entrega, com a receita da família. A partir de R$ 45,00."&gt;
+  &lt;meta property="og:url" content="https://lojinha.example.com/bolo-de-cenoura.html"&gt;
+  &lt;meta property="og:image" content="https://lojinha.example.com/assets/midia/bolo-1200.jpg"&gt;
+  &lt;meta property="og:image:width" content="1200"&gt;
+  &lt;meta property="og:image:height" content="900"&gt;
+  &lt;meta property="og:image:alt" content="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco"&gt;
+  &lt;meta property="og:locale" content="pt_BR"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+
+    &lt;h2&gt;Tamanhos&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Tamanho&lt;/th&gt;
+          &lt;th scope="col"&gt;Diâmetro&lt;/th&gt;
+          &lt;th scope="col"&gt;Serve&lt;/th&gt;
+          &lt;th scope="col"&gt;Preço&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;P&lt;/th&gt;
+          &lt;td&gt;15 cm&lt;/td&gt;
+          &lt;td&gt;8 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;M&lt;/th&gt;
+          &lt;td&gt;20 cm&lt;/td&gt;
+          &lt;td&gt;12 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;G&lt;/th&gt;
+          &lt;td&gt;25 cm&lt;/td&gt;
+          &lt;td&gt;20 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="95.00"&gt;R$ 95,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;h2&gt;Perguntas frequentes&lt;/h2&gt;
+    &lt;details open&gt;
+      &lt;summary&gt;Como conservar?&lt;/summary&gt;
+      &lt;p&gt;Fora da geladeira, bem tampado, por até três dias. Na geladeira, a massa resseca.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Vocês entregam?&lt;/summary&gt;
+      &lt;p&gt;Sim, no bairro e arredores, de terça a sábado. A taxa depende da distância.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Tem versão sem glúten?&lt;/summary&gt;
+      &lt;p&gt;Ainda não. A cozinha usa farinha de trigo, então não é indicada para quem tem doença celíaca.&lt;/p&gt;
+    &lt;/details&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>A página completa</h2>
+<p>A versão final é a versão 4. Salve como <code>bolo-de-cenoura.html</code> na pasta <code>sites/lojinha</code>, com as imagens em <code>assets/midia</code>:</p>
+
+<pre class="file" data-file="bolo-de-cenoura.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de cenoura com cobertura de chocolate — Lojinha da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura caseiro com cobertura de chocolate, feito no dia da entrega. Tamanhos de 8 a 20 fatias, a partir de R$ 45,00."&gt;
+  &lt;meta property="og:type" content="website"&gt;
+  &lt;meta property="og:site_name" content="Lojinha da Ana"&gt;
+  &lt;meta property="og:title" content="Bolo de cenoura com cobertura de chocolate"&gt;
+  &lt;meta property="og:description" content="Feito no dia da entrega, com a receita da família. A partir de R$ 45,00."&gt;
+  &lt;meta property="og:url" content="https://lojinha.example.com/bolo-de-cenoura.html"&gt;
+  &lt;meta property="og:image" content="https://lojinha.example.com/assets/midia/bolo-1200.jpg"&gt;
+  &lt;meta property="og:image:width" content="1200"&gt;
+  &lt;meta property="og:image:height" content="900"&gt;
+  &lt;meta property="og:image:alt" content="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco"&gt;
+  &lt;meta property="og:locale" content="pt_BR"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha-200.png" alt="Lojinha da Ana: página inicial" width="200" height="80"&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Bolo de cenoura com cobertura de chocolate&lt;/h1&gt;
+    &lt;picture&gt;
+      &lt;source srcset="assets/midia/bolo-400.avif 1x, assets/midia/bolo-800.avif 2x" type="image/avif"&gt;
+      &lt;source srcset="assets/midia/bolo-400.webp 1x, assets/midia/bolo-800.webp 2x" type="image/webp"&gt;
+      &lt;img src="assets/midia/bolo-400.jpg" srcset="assets/midia/bolo-800.jpg 2x" alt="Bolo de cenoura com cobertura de chocolate escorrendo pelos lados, enfeitado com cenourinhas, num prato branco" width="400" height="300"&gt;
+    &lt;/picture&gt;
+    &lt;p&gt;A receita da família da Ana: massa fofinha de cenoura e cobertura de chocolate que endurece por cima. Feito no dia da entrega.&lt;/p&gt;
+    &lt;p&gt;A partir de &lt;strong&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/strong&gt; (tamanho P).&lt;/p&gt;
+    &lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda%20de%20bolo%20de%20cenoura"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+
+    &lt;h2&gt;Tamanhos&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;caption&gt;Tamanhos e preços do bolo de cenoura&lt;/caption&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope="col"&gt;Tamanho&lt;/th&gt;
+          &lt;th scope="col"&gt;Diâmetro&lt;/th&gt;
+          &lt;th scope="col"&gt;Serve&lt;/th&gt;
+          &lt;th scope="col"&gt;Preço&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;P&lt;/th&gt;
+          &lt;td&gt;15 cm&lt;/td&gt;
+          &lt;td&gt;8 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="45.00"&gt;R$ 45,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;M&lt;/th&gt;
+          &lt;td&gt;20 cm&lt;/td&gt;
+          &lt;td&gt;12 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="65.00"&gt;R$ 65,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;th scope="row"&gt;G&lt;/th&gt;
+          &lt;td&gt;25 cm&lt;/td&gt;
+          &lt;td&gt;20 fatias&lt;/td&gt;
+          &lt;td&gt;&lt;data value="95.00"&gt;R$ 95,00&lt;/data&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;h2&gt;Perguntas frequentes&lt;/h2&gt;
+    &lt;details open&gt;
+      &lt;summary&gt;Como conservar?&lt;/summary&gt;
+      &lt;p&gt;Fora da geladeira, bem tampado, por até três dias. Na geladeira, a massa resseca.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Vocês entregam?&lt;/summary&gt;
+      &lt;p&gt;Sim, no bairro e arredores, de terça a sábado. A taxa depende da distância.&lt;/p&gt;
+    &lt;/details&gt;
+    &lt;details&gt;
+      &lt;summary&gt;Tem versão sem glúten?&lt;/summary&gt;
+      &lt;p&gt;Ainda não. A cozinha usa farinha de trigo, então não é indicada para quem tem doença celíaca.&lt;/p&gt;
+    &lt;/details&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&lt;small&gt;© 2026 Lojinha da Ana&lt;/small&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O que o projeto juntou: <a href="picture.html">picture</a>, <a href="imagens-responsivas.html">srcset</a> e <a href="formatos-imagem.html">formatos de imagem</a>, <a href="tabelas-legenda.html">tabelas acessíveis</a>, <a href="time.html">data</a>, <a href="details.html">details</a>, <a href="links-email-tel.html">mailto</a>, <a href="meta.html">meta description</a> e <a href="open-graph.html">Open Graph</a>, além da <a href="semantica.html">semântica</a> (<code>header</code>, <code>main</code>, <code>footer</code>).</p>
+
+<h3>Validando no laboratório</h3>
+<pre class="term" data-cwd="~/sites/lojinha">$ vnu --verbose bolo-de-cenoura.html
+bolo-de-cenoura.html
+$ echo $?
+0</pre>
+
+<hr>
+
+<h2>Desafios extras</h2>
+<ol>
+  <li><strong>Direção de arte.</strong> No celular, mostre o recorte quadrado do bolo: um <code>&lt;source media="(max-width: 500px)" srcset="assets/midia/bolo-quadrado-400.webp" type="image/webp"&gt;</code> antes dos outros (veja <a href="picture.html">picture</a>). Estreite a janela do resultado aberto numa aba nova (o botão ↗ do editor) para ver a troca.</li>
+  <li><strong>Imagem que não atrasa a página.</strong> Se houver mais fotos lá embaixo (de outros bolos), use <code>loading="lazy"</code> nelas, mas não na foto principal (veja <a href="lazy-loading.html">Carregamento Preguiçoso</a>).</li>
+  <li><strong>Encomenda por formulário.</strong> Troque o link de e-mail por um formulário com um <code>select</code> de tamanho, a data de entrega (<code>type="date"</code>) e um botão (reveja o <a href="projeto-cadastro.html">projeto do Cadastro</a>).</li>
+  <li><strong>Dados para o buscador.</strong> Descreva o produto, o preço e a disponibilidade num bloco JSON-LD (veja <a href="dados-estruturados.html">Dados Estruturados</a>).</li>
+  <li><strong>Ícone e cor.</strong> Acrescente o <code>favicon.svg</code> e o <code>apple-touch-icon.png</code> de <code>assets/midia</code> (veja <a href="favicon.html">Ícone da Aba</a>).</li>
+</ol>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">1. Num <code>picture</code> com AVIF, WebP e JPG, qual arquivo o navegador mostra?</p>
+<label><input type="radio" name="q1"> Sempre o JPG, que é o <code>img</code>.</label>
+<label><input type="radio" name="q1"> O mais leve dos três, depois de baixar todos.</label>
+<label><input type="radio" name="q1"> O primeiro da lista cujo formato ele sabe abrir.</label>
+<label><input type="radio" name="q1"> Os três, um embaixo do outro.</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">2. Onde ficam o <code>alt</code>, o <code>width</code> e o <code>height</code> de um <code>picture</code>?</p>
+<label><input type="radio" name="q2"> Em cada <code>source</code>.</label>
+<label><input type="radio" name="q2"> No <code>img</code> de dentro, e valem para qualquer formato escolhido.</label>
+<label><input type="radio" name="q2"> No próprio <code>picture</code>.</label>
+<label><input type="radio" name="q2"> Num <code>figcaption</code>.</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">3. O que o <code>summary</code> faz dentro de um <code>details</code>?</p>
+<label><input type="radio" name="q3"> Resume o texto automaticamente.</label>
+<label><input type="radio" name="q3"> Esconde o <code>details</code> do leitor de tela.</label>
+<label><input type="radio" name="q3"> Deixa o <code>details</code> aberto.</label>
+<label><input type="radio" name="q3"> É a parte sempre visível, que abre e fecha o resto quando clicada.</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">4. Por que o cartão da rede social saiu sem foto, se a página tem <code>og:image</code>?</p>
+<label><input type="radio" name="q4"> Porque o <code>og:image</code> estava com caminho relativo, e não com o endereço completo <code>https://…</code>.</label>
+<label><input type="radio" name="q4"> Porque faltou o <code>alt</code> no <code>img</code> da página.</label>
+<label><input type="radio" name="q4"> Porque o validador bloqueou a etiqueta.</label>
+<label><input type="radio" name="q4"> Porque o <code>og:image</code> só aceita PNG.</label>
+</div>
+
+<div class="exercise">
+<p>5. Complete a opção de formato WebP:</p>
+<div class="ex-code">&lt;source srcset="assets/midia/bolo-400.webp" type="<input data-answer="image/webp" aria-label="tipo" size="11">"&gt;</div>
+</div>
+
+<div class="exercise">
+<p>6. Complete a etiqueta do título do cartão:</p>
+<div class="ex-code">&lt;meta <input data-answer="property" aria-label="atributo" size="9">="og:title" content="Bolo de cenoura com cobertura de chocolate"&gt;</div>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>picture</code> oferece a mesma foto em vários formatos (<code>source type</code>) e resoluções (<code>srcset</code> com <code>1x</code>, <code>2x</code>); o navegador escolhe; o <code>img</code> no fim é obrigatório e leva o <code>alt</code>, o <code>width</code> e o <code>height</code>.</li>
+  <li>Tabela de medidas é tabela de verdade, com <code>caption</code> e <code>scope</code>, nunca uma imagem.</li>
+  <li><code>details</code> + <code>summary</code> fazem perguntas que abrem e fecham, sem JavaScript; o <code>summary</code> vem primeiro.</li>
+  <li><code>meta name="description"</code> é para os buscadores; <code>meta property="og:…"</code> monta o cartão das redes sociais, com endereços completos.</li>
+  <li>O validador confere a forma do HTML; o caminho de uma imagem e a prévia nas redes você confere abrindo, clicando e compartilhando.</li>
+</ul>
+<p>Você terminou os projetos do guia. Para continuar, publique um deles (<a href="publicar.html">Publicar no GitHub Pages</a>), revise as <a href="boas-praticas.html">Boas Práticas</a> e teste o que aprendeu no <a href="quiz.html">Quiz</a>.</p>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
