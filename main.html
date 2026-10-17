@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML main — o conteúdo principal da página | Guia HTML</title>
+<meta name="description" content="O elemento main em HTML para quem nunca fez um site: o que é o conteúdo principal, o que fica dentro e fora do main, a regra de um só main visível (o erro real de dois main no validador W3C), main com hidden, onde o main pode ficar (nunca dentro de article, section, aside, header, footer ou nav) e o link Pular para o conteúdo, com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">main</span></h1>
+
+<p class="intro">Em cada página do site da Ana, o topo, o menu e o rodapé são sempre iguais. O que muda de uma página para outra é o <strong>miolo</strong>: a receita do bolo numa, a do pão de queijo na outra. Esse miolo é o <strong>conteúdo principal</strong>, e ele fica num elemento próprio, o <code>main</code>. Nesta aula você vai descobrir o que entra e o que fica fora do <code>main</code>, por que só pode haver <strong>um</strong> visível por página (e o erro real do validador quando há dois) e como criar o link "Pular para o conteúdo".</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <code>main</code> e o que vai dentro dele.</li>
+  <li>O que fica <strong>fora</strong> do <code>main</code>: topo, menu, rodapé, partes repetidas.</li>
+  <li>A regra de um só <code>main</code> visível e a mensagem real do validador quando há dois.</li>
+  <li>O <code>main</code> com o atributo <code>hidden</code>.</li>
+  <li>Onde o <code>main</code> pode ficar e os erros reais quando ele está dentro de <code>article</code> ou <code>section</code>.</li>
+  <li>O link "Pular para o conteúdo", que leva direto ao <code>main</code>.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/receitas</code>. Esta aula usa o <code>header</code>, o <code>nav</code> e o <code>footer</code> das aulas <a href="header-footer.html">header e footer</a> e <a href="nav.html">nav</a>.</p>
+
+<hr>
+
+<h2>A ideia: o recheio do sanduíche</h2>
+<p>Pense num sanduíche. O pão de cima e o pão de baixo são sempre os mesmos; o que dá nome ao sanduíche é o <strong>recheio</strong>: queijo, frango, atum. Ninguém pede "um sanduíche de pão".</p>
+
+<p>Numa página, o <code>header</code> é o pão de cima, o <code>footer</code> é o pão de baixo, e o <code>main</code> é o recheio. O nome vem do inglês <em>main</em>, "principal". O padrão do HTML diz que ele guarda o conteúdo que é <strong>exclusivo</strong> daquela página, ou o assunto principal dela, e não o que se repete em todas as páginas.</p>
+
+<hr>
+
+<h2>1. O primeiro <code>main</code></h2>
+
+<pre class="file" data-file="bolo.html" data-resultado>&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav aria-label="Menu principal"&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+    &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/main&gt;
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;header&gt; … &lt;/header&gt;</dt><dd>O topo, igual em todas as páginas. Fica <strong>antes</strong> e <strong>fora</strong> do <code>main</code>.</dd>
+  <dt>&lt;main&gt;</dt><dd>Começa o conteúdo principal. É um bloco invisível: na tela, nada muda.</dd>
+  <dt>h2, p, ul</dt><dd>A receita do bolo, a razão de esta página existir.</dd>
+  <dt>&lt;/main&gt;</dt><dd>Termina o conteúdo principal.</dd>
+  <dt>&lt;footer&gt; … &lt;/footer&gt;</dt><dd>O rodapé, também repetido. Fica <strong>depois</strong> e <strong>fora</strong> do <code>main</code>.</dd>
+</dl>
+
+<p>Para o leitor de tela, o <code>main</code> vira a região <strong>principal</strong> (papel <code>main</code>). É a região mais usada de todas: muitos leitores de tela têm um atalho só para "ir ao conteúdo principal", e o modo de leitura dos navegadores também procura por ele (aula <a href="semantica.html">HTML Semântico</a>).</p>
+
+<h3>Dentro ou fora?</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Parte da página</th><th>Fica no <code>main</code>?</th></tr>
+<tr><td>A receita, o post, o produto: o assunto da página</td><td><strong>Dentro</strong></td></tr>
+<tr><td>O título do assunto (o <code>h2</code> "Bolo de cenoura")</td><td><strong>Dentro</strong></td></tr>
+<tr><td>Um quadro "Dica da Ana" sobre esta receita</td><td><strong>Dentro</strong> (um <code>aside</code> dentro do <code>main</code>; aula <a href="aside.html">aside</a>)</td></tr>
+<tr><td>O topo com o nome do site e o menu</td><td>Fora</td></tr>
+<tr><td>O rodapé com direitos e contato</td><td>Fora</td></tr>
+<tr><td>Uma barra lateral "Mais vistas", igual em todo o site</td><td>Fora (um <code>aside</code> fora do <code>main</code>)</td></tr>
+</table>
+</div>
+
+<div class="tryhtml" data-goal="nsel:main=1,sel:main h2,sel:main ul li,sel:body &gt; header + main,sel:body &gt; main + footer">
+<p class="try-task"><strong>Missão:</strong> a página do pão de queijo já tem <code>header</code> e <code>footer</code>, mas o conteúdo principal está solto. Coloque o título, o parágrafo e a lista dentro de um <code>&lt;main&gt;</code>, entre o <code>header</code> e o <code>footer</code>.</p>
+<pre class="script" data-file="pao-de-queijo.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+
+&lt;h2&gt;Pão de queijo&lt;/h2&gt;
+&lt;p&gt;Crocante por fora, macio por dentro.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;500 g de polvilho&lt;/li&gt;
+  &lt;li&gt;2 ovos&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+<pre class="solucao" data-file="pao-de-queijo.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+
+&lt;main&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Crocante por fora, macio por dentro.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;500 g de polvilho&lt;/li&gt;
+    &lt;li&gt;2 ovos&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/main&gt;
+
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Um só <code>main</code> visível</h2>
+<p>Esta é a regra mais importante do <code>main</code>: uma página tem <strong>um</strong> conteúdo principal. "Principal" é uma coisa só; se tudo é principal, nada é.</p>
+
+<p>Na página inicial, a Ana mostra duas receitas e pensou: "cada receita é um conteúdo principal". E pôs cada uma num <code>main</code>:</p>
+
+<pre class="file" data-file="dois-main.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+&lt;/main&gt;
+&lt;main&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Crocante por fora.&lt;/p&gt;
+&lt;/main&gt;
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana&lt;/p&gt;
+&lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/receitas">$ vnu dois-main.html
+"file:/home/ana/receitas/dois-main.html":15.1-15.6: error: A document must not include more than one visible “main” element.
+$ echo $?
+1                                 « error: o código de saída é 1</pre>
+
+<dl class="anatomy">
+  <dt>15.1-15.6</dt><dd>Linha 15, colunas 1 a 6: o <code>&lt;main&gt;</code> do pão de queijo. O primeiro <code>main</code> está certo; o problema é o <strong>segundo</strong>.</dd>
+  <dt>A document must not include</dt><dd>"Um documento não pode ter…"</dd>
+  <dt>more than one visible “main” element.</dt><dd>"…mais de um elemento <code>main</code> <strong>visível</strong>". A palavra "visível" é importante; a seção 3 explica.</dd>
+</dl>
+
+<p>E o navegador? Ele desenha as duas receitas normalmente, uma embaixo da outra. Na tela, ninguém percebe nada. Quem percebe é quem usa o atalho "ir ao conteúdo principal" do leitor de tela: agora existem <strong>duas</strong> regiões principais, e o atalho leva só até a primeira, ou obriga a pessoa a escolher entre duas regiões com o mesmo nome.</p>
+
+<p>O conserto é pensar no que a página é: a página inicial tem um conteúdo principal, "a lista de receitas", e cada receita é um <strong>pedaço</strong> desse conteúdo. Um <code>main</code> só, com as duas receitas dentro. Cada receita completa pode ser um <code>article</code> (aula <a href="section-article.html">section e article</a>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+    &lt;p&gt;Crocante por fora.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+
+<div class="tryhtml" data-goal="nsel:main=1,nsel:main article=2,nsel:main article h2=2,sel:body &gt; main + footer">
+<p class="try-task"><strong>Missão:</strong> conserte o erro dos dois <code>main</code>. Deixe <strong>um</strong> <code>main</code> só, com as duas receitas dentro, e transforme cada receita num <code>&lt;article&gt;</code>. O rodapé continua fora, logo depois do <code>main</code>.</p>
+<pre class="script" data-file="index.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+&lt;/main&gt;
+&lt;main&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Crocante por fora.&lt;/p&gt;
+&lt;/main&gt;
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+    &lt;p&gt;Crocante por fora.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;
+&lt;footer&gt;
+  &lt;p&gt;© 2026 Ana&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. "Visível": o <code>main</code> com <code>hidden</code></h2>
+<p>A regra fala em um <code>main</code> <strong>visível</strong>. Isso quer dizer que pode haver outros, desde que estejam escondidos com o atributo <code>hidden</code> ("escondido"):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+&lt;/main&gt;
+&lt;main hidden&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Crocante por fora.&lt;/p&gt;
+&lt;/main&gt;
+</pre>
+
+<pre class="term" data-cwd="~/receitas">$ vnu --verbose main-hidden.html
+main-hidden.html                  « nenhum erro: só um main está visível</pre>
+
+<p>No resultado, o pão de queijo sumiu: o navegador não desenha o que tem <code>hidden</code>, e o leitor de tela também não lê. Para que serve, então? Em sites que trocam de "página" sem recarregar, com JavaScript: cada tela fica num <code>main</code>, só uma aparece de cada vez, e o script tira o <code>hidden</code> de uma e põe na outra. Para uma página comum, como as da Ana, a regra prática é simples: <strong>um <code>main</code> por página</strong>. O atributo <code>hidden</code> tem mais detalhes na aula <a href="atributos-globais.html">Atributos Globais</a>.</p>
+
+<hr>
+
+<h2>4. Onde o <code>main</code> pode ficar</h2>
+<p>O <code>main</code> é o conteúdo principal da <strong>página</strong>, e não de um pedaço dela. Por isso ele não pode ficar dentro de um pedaço. O padrão diz que os únicos elementos que podem estar "acima" dele são o <code>html</code>, o <code>body</code>, o <code>div</code> e o <code>form</code> (sem nome acessível):</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>main</code> dentro de…</th><th>Pode?</th></tr>
+<tr><td><code>body</code></td><td><strong>Sim</strong> (o mais comum)</td></tr>
+<tr><td><code>div</code> (por exemplo, uma caixa da página toda, para o CSS)</td><td><strong>Sim</strong></td></tr>
+<tr><td><code>article</code>, <code>section</code></td><td>Não</td></tr>
+<tr><td><code>aside</code>, <code>nav</code></td><td>Não</td></tr>
+<tr><td><code>header</code>, <code>footer</code></td><td>Não</td></tr>
+</table>
+</div>
+
+<p>O contrário, sim, é comum: <code>article</code>, <code>section</code> e <code>aside</code> <strong>dentro</strong> do <code>main</code>. Um <code>div</code> em volta de tudo também está certo, e passa no validador sem mensagens:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;div class="pagina"&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;/header&gt;
+  &lt;main&gt;
+    &lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+  &lt;/main&gt;
+&lt;/div&gt;
+</pre>
+
+<hr>
+
+<h2>5. O link "Pular para o conteúdo"</h2>
+<p>Quem navega só pelo teclado (sem mouse) anda pela página com a tecla <kbd>Tab</kbd>, de link em link (aula <a href="teclado.html">Teclado e Foco</a>). Num site com um menu de 20 links, são 20 toques de <kbd>Tab</kbd> em <strong>toda</strong> página antes de chegar à receita. A solução clássica é um link logo no começo da página que pula direto para o <code>main</code>:</p>
+
+<pre class="file" data-file="bolo.html" data-resultado>&lt;a href="#conteudo"&gt;Pular para o conteúdo&lt;/a&gt;
+&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav aria-label="Menu principal"&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;main id="conteudo"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+&lt;/main&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;a href="#conteudo"&gt;</dt><dd>Um link para uma <strong>âncora</strong> na mesma página: o <code>#</code> quer dizer "o elemento com este <code>id</code>" (aula <a href="ancoras.html">Âncoras na Mesma Página</a>).</dd>
+  <dt>Pular para o conteúdo</dt><dd>O texto do link. Ele é o primeiro link da página, então é o primeiro que o <kbd>Tab</kbd> alcança.</dd>
+  <dt>&lt;main id="conteudo"&gt;</dt><dd>O destino do link: o <code>id</code> dá um nome único ao <code>main</code> (aula <a href="class-id.html">class e id</a>).</dd>
+</dl>
+
+<p>Muitos sites escondem esse link com CSS e só o mostram quando ele recebe o foco do teclado. Assim ele não atrapalha quem usa mouse e está lá para quem precisa. Experimente no seu navegador: entre num site grande e aperte <kbd>Tab</kbd> uma vez logo que a página abrir; em muitos deles aparece um "Pular para o conteúdo" no canto.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: A document must not include more than one visible “main” element.</code></strong>
+<p><strong>O que significa:</strong> há dois (ou mais) <code>main</code> sem <code>hidden</code> na página. O validador aponta o <strong>segundo</strong>. O navegador desenha todos, e o erro só aparece no validador e para quem usa leitor de tela (seção 2).</p>
+<p><strong>Como consertar:</strong> deixe um <code>main</code> só, com todo o conteúdo principal dentro. Se cada parte é um conteúdo completo, use <code>article</code>; se é uma parte com título, <code>section</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: The “main” element must not appear as a descendant of the “article” element.</code></strong>
+<p>A Ana pôs o <code>main</code> dentro da receita, achando que "o principal da receita" era o modo de preparo:</p>
+<pre class="file" data-file="main-no-article.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;main&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+  &lt;/main&gt;
+&lt;/article&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu main-no-article.html
+"file:/home/ana/receitas/main-no-article.html":10.3-10.8: error: The “main” element must not appear as a descendant of the “article” element.</pre>
+<p>"O elemento <code>main</code> não pode aparecer como descendente do elemento <code>article</code>." A mesma mensagem aparece, trocando só o último nome, para <code>section</code>, <code>aside</code>, <code>nav</code>, <code>header</code> e <code>footer</code>. Com uma <code>section</code>, por exemplo, o validador escreveu: <code>The “main” element must not appear as a descendant of the “section” element.</code></p>
+<p><strong>Como consertar:</strong> inverta: o <code>main</code> fica por fora, e o <code>article</code> por dentro: <code>&lt;main&gt;&lt;article&gt;…&lt;/article&gt;&lt;/main&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: The “main” role is unnecessary for element “main”.</code></strong>
+<p><strong>O que significa:</strong> o <code>&lt;main role="main"&gt;</code> repete um papel que o <code>main</code> já tem. Era um costume de quando alguns navegadores antigos ainda não conheciam o <code>main</code>; hoje não é mais preciso (aula <a href="semantica.html">HTML Semântico</a>).</p>
+<p><strong>Como consertar:</strong> apague o <code>role="main"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Nenhum erro, mas um problema: o <code>main</code> engolindo a página toda</strong>
+<p>Um <code>main</code> que começa antes do <code>header</code> e termina depois do <code>footer</code> passa no validador sem nenhuma mensagem: <code>header</code> e <code>footer</code> podem ficar dentro de um <code>main</code>. Mas lá dentro eles deixam de ser as regiões "topo do site" e "rodapé" (aula <a href="header-footer.html">header e footer</a>), e o atalho "ir ao conteúdo principal" deixa a pessoa no nome do site e no menu, e não na receita.</p>
+<p><strong>Como consertar:</strong> o <code>main</code> começa onde começa o assunto da página e termina onde ele termina.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;main&gt;…&lt;/main&gt;</code></td><td>O conteúdo principal da página (região <code>main</code>)</td></tr>
+<tr><td><code>&lt;header&gt;…&lt;/header&gt;&lt;main&gt;…&lt;/main&gt;&lt;footer&gt;…&lt;/footer&gt;</code></td><td>A ordem mais comum: topo, miolo, rodapé</td></tr>
+<tr><td><code>&lt;main&gt;&lt;article&gt;…&lt;/article&gt;&lt;article&gt;…&lt;/article&gt;&lt;/main&gt;</code></td><td>Várias receitas num só conteúdo principal</td></tr>
+<tr><td><code>&lt;main hidden&gt;</code></td><td>Um <code>main</code> escondido (não conta na regra do "um visível")</td></tr>
+<tr><td><code>&lt;a href="#conteudo"&gt;</code> + <code>&lt;main id="conteudo"&gt;</code></td><td>O link "Pular para o conteúdo"</td></tr>
+<tr><td>Pode ficar dentro de</td><td><code>body</code>, <code>div</code>, <code>form</code> (sem nome)</td></tr>
+<tr><td>Não pode ficar dentro de</td><td><code>article</code>, <code>section</code>, <code>aside</code>, <code>nav</code>, <code>header</code>, <code>footer</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Quantos?</h3>
+<p>Quantos <code>main</code> visíveis uma página pode ter? (escreva o número)</p>
+<div class="ex-code">no máximo <input data-answer="1|um" aria-label="quantidade"> main visível</div>
+</div>
+
+<div class="exercise">
+<h3>2. O destino do atalho</h3>
+<p>Complete para o link levar até o <code>main</code>:</p>
+<div class="ex-code">&lt;a href="#conteudo"&gt;Pular para o conteúdo&lt;/a&gt; … &lt;main <input data-answer="id" aria-label="atributo">="conteudo"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. A página inicial mostra três receitas. Qual é a estrutura certa?</p>
+<label><input type="radio" name="q3"> Três <code>main</code>, um para cada receita</label>
+<label><input type="radio" name="q3"> Um <code>article</code> com três <code>main</code> dentro</label>
+<label><input type="radio" name="q3"> Um <code>main</code> com três <code>article</code> dentro</label>
+<label><input type="radio" name="q3"> Nenhum <code>main</code>: ele é só para páginas com uma receita</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que acontece na <strong>tela</strong> quando uma página tem dois <code>main</code> visíveis?</p>
+<label><input type="radio" name="q4"> O navegador mostra só o primeiro</label>
+<label><input type="radio" name="q4"> Nada de diferente: o navegador desenha os dois; só o validador acusa</label>
+<label><input type="radio" name="q4"> Aparece uma mensagem de erro em vermelho</label>
+<label><input type="radio" name="q4"> O segundo fica escondido</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Qual destas posições do <code>main</code> o validador <strong>aceita</strong>?</p>
+<label><input type="radio" name="q5"> Dentro do <code>header</code></label>
+<label><input type="radio" name="q5"> Dentro de um <code>article</code></label>
+<label><input type="radio" name="q5"> Dentro de uma <code>section</code></label>
+<label><input type="radio" name="q5"> Dentro de um <code>div</code> que envolve a página toda</label>
+</div>
+
+<h3>Missão final: o atalho para a receita</h3>
+
+<div class="tryhtml" data-goal="sel:main#conteudo h2,attr:body &gt; a:first-child[href]=#conteudo,texto:body &gt; a:first-child=Pular para o conteúdo,nsel:main=1,nsel:header main=0">
+<p class="try-task"><strong>Missão:</strong> nesta página, o <code>main</code> foi parar dentro do <code>header</code>, e não há atalho. (1) Tire o <code>main</code> de dentro do <code>header</code>: ele deve vir logo depois. (2) Dê a ele o <code>id="conteudo"</code>. (3) Crie, como <strong>primeira</strong> coisa da página, antes do <code>header</code>, o link <code>&lt;a href="#conteudo"&gt;Pular para o conteúdo&lt;/a&gt;</code>.</p>
+<pre class="script" data-file="bolo.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav aria-label="Menu principal"&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+  &lt;main&gt;
+    &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+    &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+  &lt;/main&gt;
+&lt;/header&gt;
+</pre>
+<pre class="solucao" data-file="bolo.html">&lt;a href="#conteudo"&gt;Pular para o conteúdo&lt;/a&gt;
+&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav aria-label="Menu principal"&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;main id="conteudo"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+&lt;/main&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <code>main</code> guarda o <strong>conteúdo principal</strong> da página: o que é exclusivo dela, e não o que se repete em todas (topo, menu, rodapé).</li>
+  <li>Ele vira a região "principal" do leitor de tela, a mais usada para pular direto ao assunto.</li>
+  <li>Só <strong>um</strong> <code>main</code> visível por página. Com dois, o navegador desenha os dois e o validador diz <code>A document must not include more than one visible “main” element.</code> Várias receitas = um <code>main</code> com vários <code>article</code>.</li>
+  <li>Um <code>main hidden</code> não conta na regra, mas, numa página comum, use um só.</li>
+  <li>O <code>main</code> fica no <code>body</code> (ou num <code>div</code>), nunca dentro de <code>article</code>, <code>section</code>, <code>aside</code>, <code>nav</code>, <code>header</code> ou <code>footer</code> (<code>must not appear as a descendant of</code>).</li>
+  <li>O link "Pular para o conteúdo" (<code>href="#conteudo"</code> + <code>&lt;main id="conteudo"&gt;</code>) poupa quem usa teclado de passar pelo menu inteiro.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
