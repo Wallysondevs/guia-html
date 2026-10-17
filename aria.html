@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML ARIA — role, aria-label e a primeira regra do ARIA | Guia HTML</title>
+<meta name="description" content="ARIA para quem nunca fez um site: o que são role e os atributos aria-*, a primeira regra do ARIA (não use se um elemento nativo resolve), por que div role=&quot;button&quot; não vira botão (a árvore de acessibilidade e a ordem do Tab reais do Chrome), os avisos reais do validador W3C sobre role redundante, e quando o ARIA ajuda de verdade: aria-label, aria-describedby, aria-expanded, aria-current, aria-live e aria-hidden.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">ARIA</span></h1>
+
+<p class="intro">Na aula <a href="acessibilidade.html">Acessibilidade</a>, você viu que o leitor de tela recebe do navegador a <strong>árvore de acessibilidade</strong>: o papel e o nome de cada coisa da página. O <strong>ARIA</strong> é um conjunto de atributos que mexe direto nessa árvore: com ele, você pode dizer que um <code>&lt;div&gt;</code> "é um botão" ou dar um nome a um botão que só tem um ícone. Parece um superpoder, e por isso mesmo é perigoso: a regra número um do ARIA é <strong>não usar ARIA</strong> quando o HTML já tem um elemento que resolve. Nesta aula você vai ver por quê, com a árvore e o <kbd>Tab</kbd> de verdade do Chrome, os avisos reais do validador, e os casos em que o ARIA ajuda de verdade.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que são o atributo <code>role</code> e os atributos <code>aria-*</code>.</li>
+  <li>A primeira regra do ARIA, e as outras quatro.</li>
+  <li>Por que <code>&lt;div role="button"&gt;</code> não é um botão (o teclado não chega nele).</li>
+  <li>Os avisos do validador sobre <code>role</code> redundante (<code>The “button” role is unnecessary for element “button”</code>).</li>
+  <li>Quando o ARIA é a resposta certa: <code>aria-label</code>, <code>aria-describedby</code>, <code>aria-expanded</code>, <code>aria-current</code>, <code>aria-live</code> e <code>aria-hidden</code>.</li>
+  <li>O ARIA que atrapalha, e o que o validador pega e não pega.</li>
+</ul>
+</div>
+
+<p>As páginas desta aula estão na pasta <code>~/site</code> da máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>) e foram conferidas com o validador W3C (<code>vnu</code>). As árvores de acessibilidade e a ordem do <kbd>Tab</kbd> foram tiradas do Chrome.</p>
+
+<hr>
+
+<h2>A ideia: a etiqueta não muda o que está na caixa</h2>
+<p>Imagine uma caixa de sapatos com uma etiqueta escrita "geladeira". Quem lê a etiqueta acredita que ali tem uma geladeira. Mas a caixa não gela nada. O ARIA é a etiqueta: ele muda o que o leitor de tela <strong>fala</strong> sobre o elemento, e mais nada. Não muda a aparência, não faz o elemento receber o foco do teclado, não faz ele reagir ao <kbd>Enter</kbd>.</p>
+
+<p>Já um <code>&lt;button&gt;</code> é uma geladeira de verdade, que vem com a etiqueta certa de fábrica: o papel de botão, o foco do <kbd>Tab</kbd>, o <kbd>Enter</kbd> e o <kbd>Espaço</kbd>, tudo pronto.</p>
+
+<p>O nome: <strong>ARIA</strong> = <em>Accessible Rich Internet Applications</em>, "aplicações ricas de internet acessíveis". É uma especificação do W3C, feita para os casos em que o HTML não tinha um elemento para o que os sites queriam fazer.</p>
+
+<hr>
+
+<h2>1. As duas partes do ARIA: <code>role</code> e <code>aria-*</code></h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>O que muda na árvore</th><th>Exemplo</th></tr>
+<tr><td><code>role</code></td><td>O <strong>papel</strong>: o que a coisa é</td><td><code>role="button"</code>, <code>role="navigation"</code>, <code>role="status"</code></td></tr>
+<tr><td><code>aria-label</code>, <code>aria-labelledby</code></td><td>O <strong>nome</strong>: o que o leitor de tela fala</td><td><code>aria-label="Buscar"</code></td></tr>
+<tr><td><code>aria-describedby</code></td><td>Uma <strong>descrição</strong>, falada depois do nome</td><td><code>aria-describedby="dica-senha"</code></td></tr>
+<tr><td><code>aria-expanded</code>, <code>aria-pressed</code>, <code>aria-current</code>…</td><td>O <strong>estado</strong>: aberto ou fechado, apertado ou não, atual</td><td><code>aria-expanded="false"</code></td></tr>
+<tr><td><code>aria-hidden</code></td><td>Tira o elemento da árvore</td><td><code>aria-hidden="true"</code></td></tr>
+<tr><td><code>aria-live</code></td><td>Avisa que aquela região muda, para o leitor de tela anunciar a mudança</td><td><code>aria-live="polite"</code></td></tr>
+</table>
+</div>
+
+<p>Os valores são sempre em inglês e de uma lista fechada: <code>aria-expanded</code> aceita <code>true</code> ou <code>false</code>, e não <code>sim</code>.</p>
+
+<hr>
+
+<h2>2. A primeira regra do ARIA</h2>
+<p>O W3C publicou um guia chamado <em>Using ARIA</em> ("Usando o ARIA"), com cinco regras. A primeira diz, em tradução livre:</p>
+
+<blockquote>
+<p>Se você pode usar um elemento ou atributo nativo do HTML que já tem o significado e o comportamento de que você precisa, use-o, em vez de pegar outro elemento e acrescentar um papel, estado ou propriedade do ARIA para torná-lo acessível.</p>
+</blockquote>
+
+<p>Em outras palavras: <strong>se o HTML tem, use o HTML</strong>. As cinco regras, resumidas:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>#</th><th>Regra</th><th>Na prática</th></tr>
+<tr><td>1</td><td>Use o elemento nativo, se ele existir</td><td><code>&lt;button&gt;</code>, e não <code>&lt;div role="button"&gt;</code></td></tr>
+<tr><td>2</td><td>Não mude o significado de um elemento nativo, a não ser que seja preciso</td><td>Não ponha <code>role="button"</code> num <code>&lt;h2&gt;</code>; ponha um <code>&lt;button&gt;</code> dentro do <code>&lt;h2&gt;</code></td></tr>
+<tr><td>3</td><td>Todo controle ARIA tem de funcionar pelo teclado</td><td>Se você criou um <code>role="button"</code>, ele tem de receber o foco e reagir ao <kbd>Enter</kbd> e ao <kbd>Espaço</kbd></td></tr>
+<tr><td>4</td><td>Não esconda da árvore (<code>aria-hidden="true"</code>, <code>role="presentation"</code>) algo que recebe o foco</td><td>Senão o <kbd>Tab</kbd> para num lugar "invisível" para o leitor de tela</td></tr>
+<tr><td>5</td><td>Todo elemento interativo precisa de um nome acessível</td><td>Um botão só com ícone precisa de <code>aria-label</code> (ou de texto)</td></tr>
+</table>
+</div>
+
+<p>E um aviso do próprio W3C, no guia de práticas do ARIA (<em>ARIA Authoring Practices</em>): <strong>"nenhum ARIA é melhor do que ARIA ruim"</strong>. Uma etiqueta errada engana mais que nenhuma etiqueta.</p>
+
+<h3>O <code>&lt;div role="button"&gt;</code> na prática</h3>
+<p>A Ana fez quatro versões do botão "Fazer pedido" e abriu no Chrome:</p>
+
+<pre class="file" data-file="a1.html (dentro do body)">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;div onclick="pedir()"&gt;Fazer pedido&lt;/div&gt;
+&lt;div role="button" onclick="pedir()"&gt;Fazer pedido&lt;/div&gt;
+&lt;div role="button" tabindex="0" onclick="pedir()"&gt;Fazer pedido&lt;/div&gt;
+&lt;button type="button" onclick="pedir()"&gt;Fazer pedido&lt;/button&gt;
+</pre>
+
+<p>A árvore de acessibilidade, e para onde o foco foi a cada <kbd>Tab</kbd>, a partir do começo da página:</p>
+
+<pre class="file" data-file="árvore de acessibilidade e Tab (Chrome)">RootWebArea "Doces da Ana"
+  heading "Doces da Ana" level=1
+  StaticText "Fazer pedido"
+  button "Fazer pedido"
+  button "Fazer pedido"
+  button "Fazer pedido"
+Tab: div[role=button] "Fazer pedido" → button "Fazer pedido" → (fim da página)
+</pre>
+
+<dl class="anatomy">
+  <dt>StaticText "Fazer pedido"</dt><dd>A 1ª versão, o <code>&lt;div&gt;</code> puro: só texto. Nem o leitor de tela nem o teclado sabem que ali tem uma ação.</dd>
+  <dt>button "Fazer pedido" (2ª)</dt><dd>O <code>role="button"</code> trocou a etiqueta: o leitor de tela diz "botão". Mas o <kbd>Tab</kbd> <strong>pulou</strong> esse elemento: ele não recebe foco. A pessoa ouve que existe um botão e não consegue chegar nele com o teclado. É a caixa de sapatos escrita "geladeira".</dd>
+  <dt>button "Fazer pedido" (3ª)</dt><dd>Com <code>tabindex="0"</code> (aula <a href="teclado.html">Teclado e Foco</a>), o <kbd>Tab</kbd> chega. Mas ainda falta: o <code>onclick</code> de um <code>&lt;div&gt;</code> não roda com <kbd>Enter</kbd> nem com <kbd>Espaço</kbd>. Seria preciso mais JavaScript para isso.</dd>
+  <dt>button "Fazer pedido" (4ª)</dt><dd>O <code>&lt;button&gt;</code>: papel, foco, <kbd>Enter</kbd> e <kbd>Espaço</kbd>, sem nenhum atributo a mais. Na árvore, ele é idêntico às versões 2 e 3; a diferença está no que a árvore não mostra, o comportamento.</dd>
+</dl>
+
+<p>O validador aceita as quatro versões sem nenhuma mensagem. Ele não tem como saber que o seu <code>&lt;div role="button"&gt;</code> não responde ao teclado.</p>
+
+<div class="tryhtml" data-goal="sel:button,nsel:[role=button]=0,nsel:[tabindex]=0">
+<p class="try-task"><strong>Missão:</strong> clique no resultado e aperte <kbd>Tab</kbd> até o "Fazer pedido"; depois aperte <kbd>Enter</kbd>: nada acontece (com o mouse, funciona). Siga a primeira regra: troque o <code>&lt;div&gt;</code> com <code>role</code> e <code>tabindex</code> por um <code>&lt;button type="button"&gt;</code> com o mesmo <code>onclick</code>, e teste o <kbd>Enter</kbd> de novo.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;div role="button" tabindex="0" onclick="alert('Pedido feito!')"&gt;Fazer pedido&lt;/div&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;button type="button" onclick="alert('Pedido feito!')"&gt;Fazer pedido&lt;/button&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Role redundante: o que o validador avisa</h2>
+<p>Muitos tutoriais antigos ensinavam a pôr <code>role</code> em tudo, "por garantia": <code>&lt;nav role="navigation"&gt;</code>, <code>&lt;main role="main"&gt;</code>. Isso vem da época em que alguns leitores de tela ainda não conheciam os elementos novos do HTML5. Hoje, cada elemento já vem com o seu papel de fábrica (o <strong>papel implícito</strong>), e repetir é redundante. A Ana pegou um desses modelos:</p>
+
+<pre class="file" data-file="r-redundante.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Doces da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header role="banner"&gt;&lt;h1 role="heading"&gt;Doces da Ana&lt;/h1&gt;&lt;/header&gt;
+&lt;nav role="navigation"&gt;&lt;ul role="list"&gt;&lt;li&gt;&lt;a href="cardapio.html" role="link"&gt;Cardápio&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/nav&gt;
+&lt;main role="main"&gt;&lt;button type="button" role="button"&gt;Fazer pedido&lt;/button&gt;&lt;/main&gt;
+&lt;footer role="contentinfo"&gt;&lt;p&gt;Rua das Flores, 10&lt;/p&gt;&lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu r-redundante.html
+"file:/home/ana/site/r-redundante.html":8.1-8.22: info warning: The “banner” role is unnecessary for element “header”.
+"file:/home/ana/site/r-redundante.html":8.23-8.41: error: Element “h1” is missing required attribute “aria-level”.
+"file:/home/ana/site/r-redundante.html":8.23-8.41: info warning: The “heading” role is unnecessary for element “h1”.
+"file:/home/ana/site/r-redundante.html":9.1-9.23: info warning: The “navigation” role is unnecessary for element “nav”.
+"file:/home/ana/site/r-redundante.html":9.24-9.39: info warning: The “list” role is unnecessary for element “ul”.
+"file:/home/ana/site/r-redundante.html":9.44-9.79: info warning: The “link” role is unnecessary for element “a” with attribute “href”.
+"file:/home/ana/site/r-redundante.html":10.1-10.18: info warning: The “main” role is unnecessary for element “main”.
+"file:/home/ana/site/r-redundante.html":10.19-10.54: info warning: The “button” role is unnecessary for element “button”.
+"file:/home/ana/site/r-redundante.html":11.1-11.27: info warning: The “contentinfo” role is unnecessary for element “footer”.</pre>
+
+<dl class="anatomy">
+  <dt>info warning</dt><dd>"Aviso informativo": não é erro, a página funciona. É o validador dizendo "isso não faz nada, pode tirar".</dd>
+  <dt>The “banner” role is unnecessary for element “header”</dt><dd>"O papel <code>banner</code> é desnecessário para o elemento <code>header</code>": o <code>&lt;header&gt;</code> do topo da página já é o <code>banner</code> (a "faixa" de cima). O mesmo para <code>navigation</code> no <code>&lt;nav&gt;</code>, <code>main</code> no <code>&lt;main&gt;</code>, <code>contentinfo</code> ("informações do conteúdo") no <code>&lt;footer&gt;</code>, <code>list</code> no <code>&lt;ul&gt;</code> e <code>button</code> no <code>&lt;button&gt;</code>.</dd>
+  <dt>…for element “a” with attribute “href”</dt><dd>Repare no detalhe: um <code>&lt;a&gt;</code> só é link quando tem <code>href</code>. É o <code>href</code> que dá o papel <code>link</code>.</dd>
+  <dt>error: Element “h1” is missing required attribute “aria-level”</dt><dd>O único <strong>erro</strong>, e o mais curioso: "falta ao <code>h1</code> o atributo obrigatório <code>aria-level</code>". Quando você escreve <code>role="heading"</code>, passa a valer a regra do ARIA para títulos, que pede o nível em <code>aria-level</code>. O <code>&lt;h1&gt;</code> já dizia o nível sozinho; com o <code>role</code>, você criou um problema que não existia. A primeira regra em ação.</dd>
+</dl>
+
+<div class="tryhtml" data-goal="nsel:[role]=0,sel:header h1,sel:nav ul li a[href],sel:main button,sel:footer">
+<p class="try-task"><strong>Missão:</strong> limpe o modelo da Ana: apague <strong>todos</strong> os atributos <code>role</code>. Os elementos ficam; só os <code>role</code> saem. Na árvore de acessibilidade, nada muda: cada elemento já tinha o seu papel.</p>
+<pre class="script" data-file="index.html">&lt;header role="banner"&gt;&lt;h1 role="heading"&gt;Doces da Ana&lt;/h1&gt;&lt;/header&gt;
+&lt;nav role="navigation"&gt;&lt;ul role="list"&gt;&lt;li&gt;&lt;a href="cardapio.html" role="link"&gt;Cardápio&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/nav&gt;
+&lt;main role="main"&gt;&lt;button type="button" role="button"&gt;Fazer pedido&lt;/button&gt;&lt;/main&gt;
+&lt;footer role="contentinfo"&gt;&lt;p&gt;Rua das Flores, 10&lt;/p&gt;&lt;/footer&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;header&gt;&lt;h1&gt;Doces da Ana&lt;/h1&gt;&lt;/header&gt;
+&lt;nav&gt;&lt;ul&gt;&lt;li&gt;&lt;a href="cardapio.html"&gt;Cardápio&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/nav&gt;
+&lt;main&gt;&lt;button type="button"&gt;Fazer pedido&lt;/button&gt;&lt;/main&gt;
+&lt;footer&gt;&lt;p&gt;Rua das Flores, 10&lt;/p&gt;&lt;/footer&gt;
+</pre>
+</div>
+
+<h3>Os papéis que os elementos já têm</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Papel implícito</th></tr>
+<tr><td><code>&lt;button&gt;</code></td><td><code>button</code></td></tr>
+<tr><td><code>&lt;a href&gt;</code></td><td><code>link</code></td></tr>
+<tr><td><code>&lt;h1&gt;</code>…<code>&lt;h6&gt;</code></td><td><code>heading</code>, com o nível</td></tr>
+<tr><td><code>&lt;nav&gt;</code></td><td><code>navigation</code></td></tr>
+<tr><td><code>&lt;main&gt;</code></td><td><code>main</code></td></tr>
+<tr><td><code>&lt;header&gt;</code> do topo da página</td><td><code>banner</code></td></tr>
+<tr><td><code>&lt;footer&gt;</code> do fim da página</td><td><code>contentinfo</code></td></tr>
+<tr><td><code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code></td><td><code>list</code></td></tr>
+<tr><td><code>&lt;img alt="…"&gt;</code></td><td><code>img</code> (com <code>alt=""</code>, nenhum: a imagem some da árvore)</td></tr>
+<tr><td><code>&lt;input type="checkbox"&gt;</code></td><td><code>checkbox</code></td></tr>
+<tr><td><code>&lt;progress&gt;</code></td><td><code>progressbar</code> (aula <a href="output-progress.html">output, progress e meter</a>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>4. Quando o ARIA ajuda de verdade</h2>
+<p>A primeira regra não diz "nunca use ARIA". Diz "use quando o HTML não tem". Estes são os casos mais comuns.</p>
+
+<h3><code>aria-label</code>: nome para um botão só com ícone</h3>
+<p>Um botão de busca com uma lupa e nenhum texto é comum. Veja três versões e a árvore de cada uma:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;button type="button"&gt;🔍&lt;/button&gt;
+&lt;button type="button" aria-label="Buscar"&gt;🔍&lt;/button&gt;
+&lt;button type="button"&gt;&lt;span aria-hidden="true"&gt;🔍&lt;/span&gt; Buscar&lt;/button&gt;
+</pre>
+
+<pre class="file" data-file="árvore de acessibilidade (Chrome, só os botões)">button "🔍"
+button "Buscar"
+button " Buscar"
+</pre>
+
+<ul>
+  <li><strong>Sem nada:</strong> o nome é o próprio emoji. Cada leitor de tela fala um emoji de um jeito ("lupa inclinada para a esquerda", ou nada), e um ícone em SVG ou em fonte pode não ter nome nenhum.</li>
+  <li><strong>Com <code>aria-label="Buscar"</code>:</strong> o nome passa a ser "Buscar". O <code>aria-label</code> <strong>substitui</strong> o texto de dentro na árvore. Na tela, nada muda.</li>
+  <li><strong>Com texto visível e o ícone em <code>aria-hidden="true"</code>:</strong> o nome é o texto "Buscar", e o ícone sai da árvore. É a melhor das três: quem enxerga também lê "Buscar", e quem usa controle por voz pode dizer "clique em Buscar".</li>
+</ul>
+
+<div class="tryhtml" data-goal="attr:button[aria-label]=Buscar">
+<p class="try-task"><strong>Missão:</strong> o botão de busca da Ana tem só a lupa. Dê a ele o nome "Buscar" com <code>aria-label</code> (na tela, nada vai mudar: a mudança é só na árvore de acessibilidade).</p>
+<pre class="script" data-file="index.html">&lt;form action="busca.html"&gt;
+  &lt;label for="q"&gt;Procurar um doce&lt;/label&gt;
+  &lt;input type="search" id="q" name="q"&gt;
+  &lt;button type="submit"&gt;🔍&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="busca.html"&gt;
+  &lt;label for="q"&gt;Procurar um doce&lt;/label&gt;
+  &lt;input type="search" id="q" name="q"&gt;
+  &lt;button type="submit" aria-label="Buscar"&gt;🔍&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<h3><code>aria-label</code> para diferenciar regiões e <code>aria-describedby</code> para uma dica</h3>
+<pre class="file" data-file="a4.html (dentro do body)">&lt;nav aria-label="Principal"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="index.html" aria-current="page"&gt;Início&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="cardapio.html"&gt;Cardápio&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;button type="button" aria-expanded="false" aria-controls="menu"&gt;Menu&lt;/button&gt;
+&lt;label for="senha"&gt;Senha&lt;/label&gt; &lt;input type="password" id="senha" aria-describedby="dica-senha"&gt;
+&lt;p id="dica-senha"&gt;Pelo menos 8 letras ou números.&lt;/p&gt;
+</pre>
+
+<pre class="file" data-file="árvore de acessibilidade (Chrome, resumida: só as partes que interessam)">navigation "Principal"
+  list
+    listitem
+      link "Início"
+    listitem
+      link "Cardápio"
+button "Menu" expanded=false
+textbox "Senha" descrição="Pelo menos 8 letras ou números."
+</pre>
+
+<dl class="anatomy">
+  <dt>aria-label="Principal"</dt><dd>Uma página pode ter vários <code>&lt;nav&gt;</code> (o menu do topo, o do rodapé, o "você está em"). O leitor de tela lista as regiões; com o nome, a pessoa ouve "navegação Principal" e sabe qual é qual. Este guia faz o mesmo: o menu lateral é um <code>&lt;nav aria-label="Tópicos"&gt;</code>.</dd>
+  <dt>aria-current="page"</dt><dd>"Atual: página": marca o link da página em que a pessoa está. O leitor de tela acrescenta algo como "página atual" ao ler o link. O menu lateral deste guia usa exatamente isso no link da aula aberta.</dd>
+  <dt>aria-expanded="false"</dt><dd>O <strong>estado</strong> do botão que abre e fecha um menu: <code>false</code> = fechado. Na árvore, <code>expanded=false</code>. Quem tem de trocar para <code>true</code> quando o menu abre é o seu JavaScript: o ARIA não faz nada sozinho. (Se puder, use o <code>&lt;details&gt;</code>, que abre e fecha sem script e já informa o estado: aula <a href="details.html">details e summary</a>. Primeira regra, de novo.)</dd>
+  <dt>aria-controls="menu"</dt><dd>Diz qual elemento o botão controla, pelo <code>id</code>.</dd>
+  <dt>aria-describedby="dica-senha"</dt><dd>Liga o campo a um texto de ajuda, pelo <code>id</code>. Na árvore, ele virou a <strong>descrição</strong> do campo: o leitor de tela fala "Senha, campo de senha" e, depois, a dica. Mais em <a href="formularios-acessiveis.html">Formulários Acessíveis</a>.</dd>
+</dl>
+
+<h3><code>aria-live</code>: avisar o que mudou</h3>
+<p>Quando um script escreve uma mensagem na página ("Pedido enviado!", "3 itens no carrinho"), quem enxerga vê. O leitor de tela, não: ele está lendo outra parte. Uma região com <code>aria-live="polite"</code> (ou o papel <code>role="status"</code>, que já vem com ela) é anunciada quando o seu conteúdo muda, assim que o leitor de tela terminar a frase que está falando ("polite" = "educado"):</p>
+
+<pre class="file" data-file="index.html">&lt;button type="button" onclick="document.getElementById('aviso').textContent = 'Pedido enviado!'"&gt;Fazer pedido&lt;/button&gt;
+&lt;p id="aviso" role="status"&gt;&lt;/p&gt;
+</pre>
+
+<p>Os exercícios deste guia usam isso: a mensagem "Correto!" de cada exercício fica num elemento com <code>aria-live="polite"</code>. A região tem de existir na página <strong>antes</strong> da mensagem; só o texto dela muda.</p>
+
+<h3><code>aria-hidden="true"</code>: esconder o que é só enfeite</h3>
+<p>Ícones decorativos ao lado de um texto (o 🔍 antes de "Buscar", uma estrelinha antes do título) só atrapalham quando lidos em voz alta. O <code>aria-hidden="true"</code> os tira da árvore, sem tirar da tela. Use <strong>só</strong> em coisas que não recebem foco (veja o próximo cenário).</p>
+
+<hr>
+
+<h2>Formas diferentes: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você precisa de…</th><th>Primeiro, o HTML</th><th>ARIA, só se não der</th></tr>
+<tr><td>Um botão</td><td><code>&lt;button&gt;</code></td><td><code>role="button" tabindex="0"</code> + script de teclado</td></tr>
+<tr><td>Um título</td><td><code>&lt;h2&gt;</code></td><td><code>role="heading" aria-level="2"</code></td></tr>
+<tr><td>O nome de um campo</td><td><code>&lt;label for&gt;</code></td><td><code>aria-label</code> / <code>aria-labelledby</code></td></tr>
+<tr><td>O nome de um botão só com ícone</td><td>Texto visível (com o ícone em <code>aria-hidden</code>)</td><td><code>aria-label</code></td></tr>
+<tr><td>Uma região de navegação</td><td><code>&lt;nav&gt;</code></td><td><code>role="navigation"</code></td></tr>
+<tr><td>Abrir e fechar um conteúdo</td><td><code>&lt;details&gt;</code> e <code>&lt;summary&gt;</code></td><td><code>&lt;button aria-expanded aria-controls&gt;</code> + script</td></tr>
+<tr><td>Uma caixa de diálogo</td><td><code>&lt;dialog&gt;</code> (aula <a href="dialog.html">dialog</a>)</td><td><code>role="dialog" aria-modal="true"</code> + script</td></tr>
+<tr><td>Marcar a página atual no menu</td><td>(não existe em HTML)</td><td><code>aria-current="page"</code></td></tr>
+<tr><td>Anunciar uma mensagem que aparece</td><td><code>&lt;output&gt;</code>, em formulários</td><td><code>role="status"</code> / <code>aria-live="polite"</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos usam o esqueleto de sempre: o conteúdo começa na linha 8, e o elemento com problema está na linha 9 (depois do <code>&lt;h1&gt;</code>), a não ser quando a mensagem diz outra linha.</p>
+
+<div class="cenario">
+<strong><code>aria-hidden="true"</code> em algo que recebe o foco</strong>
+<pre class="file" data-file="a3.html (dentro do body)">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;a href="cardapio.html" aria-hidden="true"&gt;Cardápio&lt;/a&gt;
+&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;
+</pre>
+<pre class="file" data-file="árvore de acessibilidade e Tab (Chrome, resumida)">RootWebArea "Doces da Ana"
+  heading "Doces da Ana" level=1
+  link "Sobre"
+Tab: a "Cardápio" → a "Sobre" → (fim da página)
+</pre>
+<p>O link "Cardápio" sumiu da árvore, mas o <kbd>Tab</kbd> continua parando nele. Quem usa leitor de tela aperta <kbd>Tab</kbd> e cai num lugar sobre o qual o leitor não sabe dizer nada. É a regra 4. E o validador não reclama:</p>
+<pre class="term" data-cwd="~/site">$ vnu --verbose r-hidden.html
+r-hidden.html</pre>
+<p><strong>Como consertar:</strong> se o link deve existir, tire o <code>aria-hidden</code>. Se não deve, tire o link.</p>
+</div>
+
+<div class="cenario">
+<strong>Valores inventados ou traduzidos</strong>
+<pre class="term" data-cwd="~/site">$ vnu r-invalido.html
+"file:/home/ana/site/r-invalido.html":8.1-8.18: error: Bad value “botao” for attribute “role” on element “div”.
+$ vnu r-expanded.html
+"file:/home/ana/site/r-expanded.html":9.1-9.42: error: Bad value “sim” for attribute “aria-expanded” on element “button”.
+$ vnu r-current.html
+"file:/home/ana/site/r-current.html":9.1-9.43: error: Bad value “sim” for attribute “aria-current” on element “a”.</pre>
+<p>"Valor ruim". Os papéis e os valores do ARIA são palavras fixas, em inglês: <code>role="button"</code>, <code>aria-expanded="true"</code> ou <code>"false"</code>, <code>aria-current="page"</code>. O navegador ignora um valor que não conhece, e a etiqueta simplesmente não aparece na árvore.</p>
+</div>
+
+<div class="cenario">
+<strong>ARIA onde o HTML já decide</strong>
+<pre class="term" data-cwd="~/site">$ vnu r-checked.html
+"file:/home/ana/site/r-checked.html":9.1-9.58: error: The “aria-checked” attribute must not be used on an “input” element which has a “type” attribute whose value is “checkbox”.
+$ vnu r-required.html
+"file:/home/ana/site/r-required.html":9.32-9.90: info warning: Attribute “aria-required” is unnecessary for elements that have attribute “required”.
+$ vnu r-imgnone.html
+"file:/home/ana/site/r-imgnone.html":9.1-9.66: error: Bad value “presentation” for attribute “role” on element “img”</pre>
+<ul>
+  <li><em>The “aria-checked” attribute must not be used on an “input” element which has a “type” attribute whose value is “checkbox”</em> = "o <code>aria-checked</code> não pode ser usado num <code>input</code> do tipo <code>checkbox</code>". Um checkbox de verdade já informa se está marcado (pelo <code>checked</code> e pelo clique). Um <code>aria-checked</code> fixo poderia mentir depois do primeiro clique.</li>
+  <li><em>Attribute “aria-required” is unnecessary for elements that have attribute “required”</em> = "o <code>aria-required</code> é desnecessário quando o campo tem <code>required</code>" (aula <a href="validacao.html">Validação</a>).</li>
+  <li><em>Bad value “presentation” for attribute “role” on element “img”</em>: a mensagem real termina assim, sem ponto final. Uma imagem com <code>alt="Bolo de cenoura"</code> não pode ser declarada "só decoração" (<code>presentation</code>): as duas coisas se contradizem. Se a imagem é decoração, o certo é <code>alt=""</code>.</li>
+</ul>
+</div>
+
+<div class="cenario">
+<strong><code>aria-label</code> num <code>&lt;div&gt;</code> comum</strong>
+<pre class="term" data-cwd="~/site">$ vnu r-labeldiv.html
+"file:/home/ana/site/r-labeldiv.html":9.1-9.33: error: The “aria-label” attribute must not be specified on any “div” element unless the element has a “role” value other than “caption”, “code”, “deletion”, “emphasis”, “generic”, “insertion”, “paragraph”, “presentation”, “strong”, “subscript”, or “superscript”.</pre>
+<p>"O <code>aria-label</code> não pode ser usado num <code>div</code>, a não ser que ele tenha um <code>role</code> diferente de…" (e a lista). Um <code>&lt;div&gt;</code> não tem papel (é <code>generic</code>, "genérico"), e coisas genéricas não têm nome: os leitores de tela ignorariam esse <code>aria-label</code>. <strong>Como consertar:</strong> use um elemento com papel. Para uma região com nome, <code>&lt;section aria-labelledby="…"&gt;</code> com um título dentro.</p>
+</div>
+
+<div class="cenario">
+<strong>O que o validador não pega</strong>
+<p>Todos estes passam sem mensagem nenhuma (<code>vnu</code> não disse nada para <code>r-divbutton.html</code>, <code>r-hidden.html</code>, <code>r-hidbtn.html</code>, <code>r-buttonlink.html</code> e <code>r-labelledby.html</code>):</p>
+<ul>
+  <li><code>&lt;div role="button"&gt;</code> sem <code>tabindex</code> e sem teclado (seção 2);</li>
+  <li><code>aria-hidden="true"</code> num link ou num botão (o primeiro cenário);</li>
+  <li><code>&lt;a href="cardapio.html" role="button"&gt;</code>: um link que se anuncia como botão, mas leva a outra página e não reage ao <kbd>Espaço</kbd>;</li>
+  <li><code>aria-labelledby="titulo-bolos"</code> apontando para um <code>id</code> que não existe (o nome some, em silêncio);</li>
+  <li>um <code>aria-label</code> que contradiz o texto visível (o botão mostra "Enviar" e o leitor diz "Cancelar").</li>
+</ul>
+<p>O validador confere se o ARIA está <strong>escrito</strong> certo, e não se ele está <strong>dizendo a verdade</strong>. Para isso, a árvore de acessibilidade do F12 e um teste com o teclado (aula <a href="acessibilidade.html">Acessibilidade</a>).</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>Para quê</th><th>Valores</th></tr>
+<tr><td><code>role</code></td><td>Dar um papel (só quando o HTML não tem o elemento)</td><td><code>button</code>, <code>navigation</code>, <code>status</code>, <code>dialog</code>…</td></tr>
+<tr><td><code>aria-label</code></td><td>Nome, quando não há texto visível</td><td>texto</td></tr>
+<tr><td><code>aria-labelledby</code></td><td>Nome tirado de outro elemento</td><td><code>id</code>(s)</td></tr>
+<tr><td><code>aria-describedby</code></td><td>Descrição tirada de outro elemento</td><td><code>id</code>(s)</td></tr>
+<tr><td><code>aria-expanded</code></td><td>Aberto ou fechado (o script atualiza)</td><td><code>true</code>, <code>false</code></td></tr>
+<tr><td><code>aria-controls</code></td><td>Qual elemento este controla</td><td><code>id</code></td></tr>
+<tr><td><code>aria-current</code></td><td>O item atual numa lista ou menu</td><td><code>page</code>, <code>step</code>, <code>location</code>, <code>date</code>, <code>time</code>, <code>true</code>, <code>false</code></td></tr>
+<tr><td><code>aria-pressed</code></td><td>Botão de liga/desliga apertado ou não</td><td><code>true</code>, <code>false</code>, <code>mixed</code></td></tr>
+<tr><td><code>aria-live</code></td><td>Anunciar mudanças na região</td><td><code>polite</code>, <code>assertive</code>, <code>off</code></td></tr>
+<tr><td><code>aria-hidden</code></td><td>Tirar da árvore (nunca em algo com foco)</td><td><code>true</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O nome do ícone</h3>
+<p>Complete o atributo que dá o nome "Fechar" a um botão que só tem um ×:</p>
+<div class="ex-code">&lt;button type="button" <input data-answer="aria-label" aria-label="atributo">="Fechar"&gt;×&lt;/button&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A página atual</h3>
+<p>Complete o valor que marca o link da página aberta no menu:</p>
+<div class="ex-code">&lt;a href="cardapio.html" aria-current="<input data-answer="page" aria-label="valor">"&gt;Cardápio&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Menu fechado</h3>
+<p>Complete o estado do botão de um menu que está fechado:</p>
+<div class="ex-code">&lt;button type="button" aria-expanded="<input data-answer="false" aria-label="valor">" aria-controls="menu"&gt;Menu&lt;/button&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que diz a primeira regra do ARIA?</p>
+<label><input type="radio" name="q4"> Ponha <code>role</code> em todos os elementos, por garantia</label>
+<label><input type="radio" name="q4"> Se existe um elemento HTML nativo que faz o que você precisa, use-o em vez de ARIA</label>
+<label><input type="radio" name="q4"> Nunca use ARIA</label>
+<label><input type="radio" name="q4"> Use ARIA só em <code>&lt;div&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. A Ana escreveu <code>&lt;div role="button" onclick="pedir()"&gt;Fazer pedido&lt;/div&gt;</code>. O que acontece com quem usa só o teclado?</p>
+<label><input type="radio" name="q5"> Funciona igual a um <code>&lt;button&gt;</code></label>
+<label><input type="radio" name="q5"> O validador avisa e o navegador conserta</label>
+<label><input type="radio" name="q5"> O botão aparece duas vezes</label>
+<label><input type="radio" name="q5"> O <kbd>Tab</kbd> pula o elemento: o leitor de tela diz "botão", mas não dá para chegar nele</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. O que o validador diz de <code>&lt;nav role="navigation"&gt;</code>?</p>
+<label><input type="radio" name="q6"> Um <code>info warning</code>: o papel <code>navigation</code> é desnecessário no <code>nav</code></label>
+<label><input type="radio" name="q6"> Um erro: o <code>role</code> é proibido</label>
+<label><input type="radio" name="q6"> Nada</label>
+<label><input type="radio" name="q6"> Que falta <code>aria-label</code></label>
+</div>
+
+<h3>Missão final: o topo da lojinha</h3>
+
+<div class="tryhtml" data-goal="nsel:[role]=0,attr:nav[aria-label]=Principal,attr:nav a[href='cardapio.html'][aria-current]=page,nsel:[aria-current]=1,attr:button[aria-label]=Buscar">
+<p class="try-task"><strong>Missão:</strong> esta é a página do cardápio. Arrume o ARIA do topo: tire os <code>role</code> redundantes; dê ao <code>&lt;nav&gt;</code> o nome <code>Principal</code>; marque com <code>aria-current="page"</code> só o link da página atual (o Cardápio); e dê ao botão da lupa o nome <code>Buscar</code>.</p>
+<pre class="script" data-file="index.html">&lt;header role="banner"&gt;
+  &lt;h1&gt;Doces da Ana&lt;/h1&gt;
+  &lt;nav role="navigation"&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="cardapio.html"&gt;Cardápio&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+  &lt;button type="button" role="button"&gt;🔍&lt;/button&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;h2&gt;Cardápio&lt;/h2&gt;
+  &lt;p&gt;Bolo de cenoura, brigadeiro e bolo de pote.&lt;/p&gt;
+&lt;/main&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;header&gt;
+  &lt;h1&gt;Doces da Ana&lt;/h1&gt;
+  &lt;nav aria-label="Principal"&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="cardapio.html" aria-current="page"&gt;Cardápio&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+  &lt;button type="button" aria-label="Buscar"&gt;🔍&lt;/button&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;h2&gt;Cardápio&lt;/h2&gt;
+  &lt;p&gt;Bolo de cenoura, brigadeiro e bolo de pote.&lt;/p&gt;
+&lt;/main&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>ARIA = atributos <code>role</code> e <code>aria-*</code> que mudam a árvore de acessibilidade: papel, nome, descrição e estado. Eles <strong>não</strong> mudam a aparência nem o comportamento.</li>
+  <li><strong>Primeira regra:</strong> se existe um elemento HTML que faz o que você precisa, use-o. <code>&lt;div role="button"&gt;</code> se anuncia como botão, mas o <kbd>Tab</kbd> o pula; <code>&lt;button&gt;</code> vem completo.</li>
+  <li>Role redundante (<code>&lt;nav role="navigation"&gt;</code>, <code>&lt;button role="button"&gt;</code>) dá <code>info warning: The “…” role is unnecessary for element “…”</code>; no <code>&lt;h1 role="heading"&gt;</code>, vira até erro (<code>missing required attribute “aria-level”</code>).</li>
+  <li>ARIA ajuda onde o HTML não alcança: <code>aria-label</code> em botão só com ícone, <code>aria-label</code> para diferenciar <code>&lt;nav&gt;</code>s, <code>aria-describedby</code> para dicas, <code>aria-expanded</code> (o script atualiza), <code>aria-current="page"</code>, <code>aria-live</code>/<code>role="status"</code> para mensagens e <code>aria-hidden</code> para enfeites.</li>
+  <li>Nunca <code>aria-hidden</code> em algo que recebe foco. Valores são fixos e em inglês.</li>
+  <li>O validador confere se o ARIA está bem escrito, não se está dizendo a verdade: teste com o teclado e veja a árvore no F12. Nenhum ARIA é melhor do que ARIA ruim.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
