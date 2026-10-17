@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Versões — do HTML 2.0 ao HTML5 e ao Living Standard | Guia HTML</title>
+<meta name="description" content="As versões do HTML para quem está começando: HTML 2.0, 3.2, 4.01, XHTML, HTML5 e o HTML Living Standard, com as datas oficiais, quem cuida da linguagem (W3C e WHATWG), por que não existe HTML6, como reconhecer código antigo pelo DOCTYPE e os elementos obsoletos, com as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Versões</span></h1>
+
+<p class="intro">Procurando HTML na internet, você vai esbarrar em "HTML 4.01", "XHTML", "HTML5"… e talvez fique em dúvida sobre qual aprender. A resposta curta: o HTML de hoje <strong>não tem número</strong>. Ele se chama <strong>HTML Living Standard</strong> ("padrão vivo"), é atualizado o tempo todo e é o que este guia ensina. Nesta aula você conhece a história da linguagem, entende por que ela parou de ter versões e aprende a reconhecer um código antigo pela primeira linha, para não copiar coisas que já saíram de moda.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>A linha do tempo do HTML, com as datas oficiais: 2.0, 3.2, 4.01, XHTML, HTML5 e o Living Standard.</li>
+  <li>Quem cuida do HTML: o <strong>W3C</strong> e o <strong>WHATWG</strong>.</li>
+  <li>O que quer dizer "padrão vivo" e por que não existe HTML6.</li>
+  <li>Como reconhecer a época de uma página pelo <code>&lt;!DOCTYPE&gt;</code>.</li>
+  <li>Os elementos <strong>obsoletos</strong> (<code>&lt;font&gt;</code>, <code>&lt;center&gt;</code>, <code>&lt;marquee&gt;</code>…) e o que usar no lugar.</li>
+  <li>O estilo do XHTML (<code>&lt;br /&gt;</code>) e o que o validador diz dele.</li>
+</ul>
+</div>
+
+<p>As datas desta aula foram conferidas nos documentos oficiais: as próprias especificações publicadas pelo W3C, a RFC 1866 da IETF e a seção de história da especificação do WHATWG. As mensagens do validador vieram do <code>vnu</code> na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: o dicionário impresso e o dicionário on-line</h2>
+<p>Antigamente, quem queria saber o significado de uma palavra comprava um dicionário impresso, de uma certa <strong>edição</strong>. Palavras novas só entravam na edição seguinte, anos depois. Hoje, os dicionários on-line são atualizados o tempo todo: uma palavra nova aparece assim que vira uso comum, sem esperar a "próxima edição".</p>
+
+<p>O HTML passou pela mesma mudança. Até 2014 ele tinha edições numeradas (HTML 2.0, 3.2, 4.01, 5). Hoje ele é como o dicionário on-line: um documento único, o <strong>Living Standard</strong>, corrigido e ampliado continuamente. E, como num idioma, as palavras antigas continuam sendo entendidas: uma página escrita em 1997 ainda abre num navegador de hoje.</p>
+
+<hr>
+
+<h2>Quem cuida do HTML</h2>
+<p>Uma linguagem que todos os navegadores do mundo precisam entender do mesmo jeito precisa de um "dono" que escreva as regras. Ao longo da história, foram três:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Organização</th><th>O que é</th><th>Papel no HTML</th></tr>
+<tr><td><strong>IETF</strong> (<em>Internet Engineering Task Force</em>)</td><td>O grupo que escreve os padrões da internet, como o e-mail e o próprio HTTP</td><td>Publicou o HTML 2.0, em 1995</td></tr>
+<tr><td><strong>W3C</strong> (<em>World Wide Web Consortium</em>, "consórcio da Web")</td><td>Fundado em 1994 por Tim Berners-Lee, o criador da Web, para cuidar dos padrões dela</td><td>Publicou o HTML 3.2, o 4.01, o XHTML e as versões 5.x. Hoje cuida do validador e de outros padrões, como o CSS</td></tr>
+<tr><td><strong>WHATWG</strong> (<em>Web Hypertext Application Technology Working Group</em>)</td><td>Criado em 2004 por pessoas da Apple, da Mozilla e da Opera, as empresas de navegadores da época</td><td>Escreve o <strong>HTML Living Standard</strong>, a especificação oficial de hoje</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>A linha do tempo</h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Quando</th><th>Versão</th><th>O que aconteceu</th></tr>
+<tr><td>1989–1991</td><td>As origens</td><td>No CERN, Tim Berners-Lee cria a Web: o HTML, o HTTP e o primeiro navegador (pronto em 1990). A primeira descrição pública, "HTML Tags", era uma lista curta de marcações.</td></tr>
+<tr><td>novembro de 1995</td><td><strong>HTML 2.0</strong></td><td>A primeira versão oficial, a RFC 1866 da IETF. Juntou o que os navegadores já faziam: títulos, parágrafos, listas, links, imagens e formulários.</td></tr>
+<tr><td>14 de janeiro de 1997</td><td><strong>HTML 3.2</strong></td><td>A primeira versão do W3C. Trouxe as tabelas e também coisas de aparência, como <code>&lt;font&gt;</code> e <code>&lt;center&gt;</code>, que depois seriam abandonadas.</td></tr>
+<tr><td>18 de dezembro de 1997</td><td><strong>HTML 4.0</strong></td><td>Separou o conteúdo da aparência: a aparência deveria ir para o CSS. Criou três "sabores": <em>Strict</em> (rigoroso), <em>Transitional</em> (de transição, ainda aceitando <code>&lt;font&gt;</code>) e <em>Frameset</em> (para páginas divididas em quadros).</td></tr>
+<tr><td>24 de dezembro de 1999</td><td><strong>HTML 4.01</strong></td><td>Uma revisão do 4.0, com correções. Foi a versão "oficial" por mais de dez anos.</td></tr>
+<tr><td>26 de janeiro de 2000</td><td><strong>XHTML 1.0</strong></td><td>O HTML 4.01 reescrito com as regras rígidas do XML: tudo em minúsculas, toda tag fechada, <code>&lt;br /&gt;</code> com barra. O W3C planejava trocar o HTML pelo XHTML.</td></tr>
+<tr><td>2004</td><td>Nasce o WHATWG</td><td>Depois de um encontro do W3C em que a proposta de continuar evoluindo o HTML foi recusada, Apple, Mozilla e Opera criam o WHATWG e começam o trabalho que viraria o HTML5.</td></tr>
+<tr><td>2007</td><td>O W3C entra</td><td>O W3C forma um grupo para trabalhar no HTML5 junto com o WHATWG.</td></tr>
+<tr><td>22 de janeiro de 2008</td><td>Rascunho do HTML5</td><td>O W3C publica o primeiro rascunho público (<em>First Public Working Draft</em>) do HTML5.</td></tr>
+<tr><td>19 de janeiro de 2011</td><td>"Living Standard"</td><td>O WHATWG anuncia que a especificação dele passa a ser um "padrão vivo", sem número de versão.</td></tr>
+<tr><td>28 de outubro de 2014</td><td><strong>HTML5</strong></td><td>O W3C publica o HTML5 como Recomendação (a palavra do W3C para "versão oficial").</td></tr>
+<tr><td>1º de novembro de 2016<br>14 de dezembro de 2017</td><td><strong>HTML 5.1</strong><br><strong>HTML 5.2</strong></td><td>Novas versões numeradas do W3C, enquanto o WHATWG continuava com o padrão vivo. Por alguns anos existiram duas especificações de HTML ao mesmo tempo.</td></tr>
+<tr><td>28 de maio de 2019</td><td>O acordo</td><td>W3C e WHATWG assinam um acordo: o HTML passa a ser escrito <strong>só</strong> no WHATWG, como Living Standard.</td></tr>
+<tr><td>28 de janeiro de 2021</td><td>A recomendação do W3C</td><td>O W3C publica como Recomendação uma "fotografia" do Living Standard, mostrando que os dois agora falam do mesmo HTML.</td></tr>
+<tr><td>hoje</td><td><strong>HTML Living Standard</strong></td><td>Um documento só, em html.spec.whatwg.org, atualizado quase toda semana. Quando esta aula foi escrita, o alto da especificação dizia "Living Standard — Last Updated 16 October 2026".</td></tr>
+</table>
+</div>
+
+<h3>O que o HTML5 mudou</h3>
+<p>O HTML5 foi a maior mudança da história da linguagem, e quase tudo do que você vai aprender no Nível 2 nasceu com ele:</p>
+<ul>
+  <li><strong>Elementos com significado</strong> para as partes da página: <code>header</code>, <code>nav</code>, <code>main</code>, <code>article</code>, <code>section</code>, <code>aside</code>, <code>footer</code> (seção <a href="semantica.html">Semântica</a>).</li>
+  <li><strong>Áudio e vídeo</strong> sem plugin, com <code>&lt;audio&gt;</code> e <code>&lt;video&gt;</code> (aulas <a href="audio.html">Áudio</a> e <a href="video.html">Vídeo</a>). Antes, era preciso o Flash.</li>
+  <li><strong>Novos tipos de campo</strong> de formulário (e-mail, data, número…) e validação no próprio navegador (<a href="tipos-input.html">Tipos de input</a>).</li>
+  <li>O <strong><code>canvas</code></strong>, para desenhar com JavaScript (<a href="canvas.html">canvas</a>).</li>
+  <li>Um <strong>DOCTYPE curto</strong>: <code>&lt;!DOCTYPE html&gt;</code>, em vez das linhas enormes de antes.</li>
+  <li>As <strong>regras de leitura</strong> que dizem exatamente o que fazer com HTML errado, as mesmas em todos os navegadores (aula <a href="como-funciona.html">Como o Navegador Lê HTML</a>).</li>
+</ul>
+
+<p>E o Living Standard continua crescendo. O atributo <code>popover</code> (balões que abrem por cima da página), por exemplo, chegou aos navegadores principais entre 2023 e 2024, sem nenhum "HTML 6". A aula <a href="novidades.html">Novidades do HTML</a> acompanha essas chegadas.</p>
+
+<hr>
+
+<h2>Por que não existe HTML6</h2>
+<p>Porque não precisa. No modelo do padrão vivo, um recurso novo entra na especificação quando os navegadores se comprometem a implementá-lo, e não quando chega "a próxima versão". Cada recurso tem a sua própria história: alguns já funcionam em todos os navegadores, outros só nos mais novos.</p>
+
+<p>Então, em vez de perguntar "o meu navegador suporta HTML5?", a pergunta certa é "o meu navegador suporta o elemento <code>&lt;dialog&gt;</code>?". Dois sites respondem isso, com tabelas por navegador e por versão:</p>
+<ul>
+  <li><strong>MDN Web Docs</strong> (developer.mozilla.org), a documentação da Mozilla, com uma tabela de compatibilidade no fim da página de cada elemento;</li>
+  <li><strong>Can I use</strong> (caniuse.com), feito só para essa pergunta.</li>
+</ul>
+
+<div class="note">
+<strong>E a palavra "HTML5"?</strong>
+<p>Ela ficou famosa, e muita gente ainda diz "HTML5" querendo dizer "HTML moderno". Tudo bem: quando você vê "curso de HTML5", entenda "HTML de hoje". Mas, tecnicamente, o HTML5 do W3C de 2014 já foi substituído. O que vale é o Living Standard, e é ele que o validador confere.</p>
+</div>
+
+<hr>
+
+<h2>Reconhecer a época pelo DOCTYPE</h2>
+<p>A primeira linha de uma página, o <code>&lt;!DOCTYPE&gt;</code>, é como a data na capa de um livro: ela conta de que época é o código. Cada versão tinha o seu:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Versão</th><th>DOCTYPE</th></tr>
+<tr><td>HTML 4.01 Strict</td><td><code>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;</code></td></tr>
+<tr><td>HTML 4.01 Transitional</td><td><code>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;</code></td></tr>
+<tr><td>XHTML 1.0 Strict</td><td><code>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;</code></td></tr>
+<tr><td><strong>HTML5 e Living Standard</strong></td><td><code>&lt;!DOCTYPE html&gt;</code></td></tr>
+</table>
+</div>
+
+<p>Se um tutorial começa com uma daquelas linhas compridas, ele é anterior a 2010, mais ou menos, e provavelmente ensina coisas que hoje são erro. O DOCTYPE tem aula própria (<a href="doctype.html">O DOCTYPE</a>); aqui, veja o que o validador diz de uma página antiga, um HTML 4.01 Transitional típico dos anos 2000:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;font color="red" size="6"&gt;Receitas da Ana&lt;/font&gt;&lt;/center&gt;
+&lt;p&gt;Bolo de cenoura&lt;br&gt;com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O seu navegador desenhou o título vermelho e centralizado: ele ainda entende <code>&lt;font&gt;</code> e <code>&lt;center&gt;</code>, para não quebrar as páginas antigas da internet. Mas o validador confere as regras de <strong>hoje</strong>:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":1.1-1.102: error: Almost standards mode doctype. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/index.html":8.1-8.8: error: The “center” element is obsolete. Use CSS instead.
+"file:/home/ana/site/index.html":8.9-8.35: error: The “font” element is obsolete. Use CSS instead.</pre>
+
+<dl class="anatomy">
+  <dt>Almost standards mode doctype.</dt><dd>"DOCTYPE do modo 'quase padrão'". Esse DOCTYPE antigo faz o navegador ligar um modo de compatibilidade com pequenas diferenças de desenho. <em>Expected “&lt;!DOCTYPE html&gt;”</em> = "esperava <code>&lt;!DOCTYPE html&gt;</code>".</dd>
+  <dt>The “center” element is obsolete.</dt><dd>"O elemento <code>center</code> é obsoleto": não faz mais parte do HTML. <em>Use CSS instead</em> = "use CSS no lugar".</dd>
+  <dt>The “font” element is obsolete.</dt><dd>O mesmo para o <code>font</code>. Cor e tamanho de letra são trabalho do CSS.</dd>
+</dl>
+
+<p>Repare no que o validador <strong>não</strong> reclamou: o <code>&lt;meta http-equiv="Content-Type" …&gt;</code> ainda é aceito (hoje se escreve mais curto, <code>&lt;meta charset="utf-8"&gt;</code>), e o <code>&lt;br&gt;</code> continua valendo. Atualizar uma página antiga quase sempre é trocar o DOCTYPE e tirar os elementos de aparência.</p>
+
+<div class="tryhtml" data-goal="src:^&lt;!DOCTYPE html&gt;,nsrc:DTD,sel:meta[charset]">
+<p class="try-task"><strong>Experimente:</strong> esta página foi escrita em HTML 4.01. Atualize a moldura: troque a primeira linha inteira por <code>&lt;!DOCTYPE html&gt;</code> e troque o <code>&lt;meta http-equiv=…&gt;</code> pela forma curta, <code>&lt;meta charset="utf-8"&gt;</code>. O resultado na tela não muda, mas agora o validador aceita a página.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<h3>O estilo do XHTML: <code>&lt;br /&gt;</code></h3>
+<p>Na época do XHTML, todo elemento tinha de ser fechado, até os que não têm conteúdo. Por isso se escrevia <code>&lt;br /&gt;</code> (com barra) em vez de <code>&lt;br&gt;</code>. Você ainda vê isso em muito código, inclusive em código novo. Veja uma página XHTML 1.0 no validador de hoje:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Bolo de cenoura&lt;br /&gt;com cobertura.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":1.1-1.109: error: Obsolete doctype. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/index.html":4.1-4.69: info: Trailing slash on void elements has no effect and interacts badly with unquoted attribute values.
+"file:/home/ana/site/index.html":8.19-8.24: info: Trailing slash on void elements has no effect and interacts badly with unquoted attribute values.</pre>
+
+<p>O único <strong>erro</strong> é o DOCTYPE (<em>Obsolete doctype</em>, "DOCTYPE obsoleto"). As barras ganharam só um <code>info</code>, uma informação: "a barra no fim de elementos vazios não tem efeito e se dá mal com valores de atributo sem aspas". Ou seja: <code>&lt;br /&gt;</code> não está errado, mas a barra não faz nada. O guia escreve <code>&lt;br&gt;</code>, sem barra, que é a forma do HTML. Os elementos "vazios" (<em>void elements</em>, como <code>br</code>, <code>img</code> e <code>meta</code>) são explicados em <a href="elementos.html">Elementos e Tags</a>.</p>
+
+<hr>
+
+<h2>Elementos obsoletos</h2>
+<p>Vários elementos foram retirados do HTML ao longo das versões, quase sempre porque cuidavam da aparência (que agora é trabalho do CSS) ou porque atrapalhavam a acessibilidade. Os navegadores ainda desenham a maioria deles, para as páginas velhas não quebrarem, mas o validador acusa erro. Veja alguns no seu navegador:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;marquee&gt;Promoção de bolo!&lt;/marquee&gt;
+&lt;p&gt;&lt;big&gt;Grande&lt;/big&gt; &lt;tt&gt;fixo&lt;/tt&gt; &lt;strike&gt;riscado&lt;/strike&gt; &lt;acronym title="Hypertext Markup Language"&gt;HTML&lt;/acronym&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Centro&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O <code>&lt;marquee&gt;</code> faz o texto correr pela tela (um clássico dos sites dos anos 1990), e os outros mudam a letra. Tudo "funciona". Agora o validador:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.9: error: The “marquee” element is obsolete. Use CSS instead.
+"file:/home/ana/site/index.html":9.4-9.8: error: The “big” element is obsolete. Use CSS instead.
+"file:/home/ana/site/index.html":9.22-9.25: error: The “tt” element is obsolete. Use CSS instead.
+"file:/home/ana/site/index.html":9.36-9.43: error: The “strike” element is obsolete. Use “del” or “s” element instead.
+"file:/home/ana/site/index.html":9.61-9.103: error: The “acronym” element is obsolete. Use the “abbr” element instead.
+"file:/home/ana/site/index.html":10.1-10.18: info warning: The “align” attribute on the “p” element is obsolete. Use CSS instead.</pre>
+
+<p>Repare que o validador nem sempre manda "use CSS": para o <code>strike</code>, ele indica os elementos <code>del</code> ou <code>s</code>; para o <code>acronym</code>, o <code>abbr</code>. E o atributo <code>align</code>, também obsoleto, ganhou um aviso (<code>info warning</code>). A tabela resume as trocas:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Obsoleto</th><th>Fazia</th><th>Use no lugar</th></tr>
+<tr><td><code>&lt;font&gt;</code></td><td>Cor, tamanho e fonte da letra</td><td>CSS (<code>color</code>, <code>font-size</code>, <code>font-family</code>)</td></tr>
+<tr><td><code>&lt;center&gt;</code>, <code>align="center"</code></td><td>Centralizar</td><td>CSS (<code>text-align: center</code>)</td></tr>
+<tr><td><code>&lt;big&gt;</code></td><td>Letra maior</td><td>CSS (<code>font-size</code>); se for um título, <code>h1</code>…<code>h6</code></td></tr>
+<tr><td><code>&lt;tt&gt;</code></td><td>Letra de máquina de escrever</td><td><code>&lt;code&gt;</code>, <code>&lt;kbd&gt;</code> ou <code>&lt;samp&gt;</code>, conforme o significado (aula <a href="codigo.html">Código</a>)</td></tr>
+<tr><td><code>&lt;strike&gt;</code></td><td>Riscar o texto</td><td><code>&lt;del&gt;</code> (texto apagado) ou <code>&lt;s&gt;</code> (não vale mais) (aula <a href="formatacao.html">Formatação</a>)</td></tr>
+<tr><td><code>&lt;acronym&gt;</code></td><td>Sigla</td><td><code>&lt;abbr&gt;</code> (aula <a href="abreviacoes.html">Abreviações</a>)</td></tr>
+<tr><td><code>&lt;marquee&gt;</code></td><td>Texto correndo</td><td>Nada, de preferência: texto que se mexe sozinho é difícil de ler. Se precisar mesmo, CSS</td></tr>
+<tr><td><code>&lt;frameset&gt;</code>, <code>&lt;frame&gt;</code></td><td>Dividir a janela em várias páginas</td><td>Uma página só, bem organizada; para incorporar outra página, <code>&lt;iframe&gt;</code> (aula <a href="iframes.html">iframe</a>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Qual versão usar?</h2>
+<p>Sempre o <strong>HTML Living Standard</strong>, e você não precisa fazer nada de especial para isso. Na prática, "usar o HTML de hoje" quer dizer:</p>
+<ol class="passo">
+  <li>Começar toda página com <code>&lt;!DOCTYPE html&gt;</code>.</li>
+  <li>Usar <code>&lt;meta charset="utf-8"&gt;</code>.</li>
+  <li>Não usar elementos obsoletos: o validador avisa quando escapa algum.</li>
+  <li>Desconfiar de tutoriais com DOCTYPE comprido, <code>&lt;font&gt;</code>, <code>&lt;center&gt;</code> ou tabelas usadas para montar o layout da página.</li>
+  <li>Antes de usar um recurso muito novo, conferir na MDN ou no Can I use se os navegadores do seu público já o suportam.</li>
+</ol>
+
+<hr>
+
+<h2>Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: Obsolete doctype. Expected “&lt;!DOCTYPE html&gt;”.</code> / <code>Almost standards mode doctype</code></strong>
+<p><strong>O que significa:</strong> a página começa com um DOCTYPE de uma versão antiga (HTML 4, XHTML). O navegador desenha a página, às vezes num modo de compatibilidade, e o validador recusa.</p>
+<p><strong>Como consertar:</strong> troque a primeira linha inteira por <code>&lt;!DOCTYPE html&gt;</code>. Não precisa mexer no resto para isso.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Start tag seen without seeing a doctype first.</code></strong>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":1.1-1.19: error: Start tag seen without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.</pre>
+<p><strong>O que significa:</strong> "vi uma tag antes de ver um DOCTYPE". A página não tem DOCTYPE nenhum. Sem ele, o navegador liga o <strong>modo quirks</strong> ("modo das manias"): ele imita os erros dos navegadores dos anos 1990, e várias coisas do CSS passam a se comportar de um jeito diferente. Você pode ver o modo em que o navegador está pelo JavaScript, com <code>document.compatMode</code>: <code>BackCompat</code> = quirks; <code>CSS1Compat</code> = padrão. Rode a caixa abaixo e depois acrescente <code>&lt;!DOCTYPE html&gt;</code> na primeira linha:</p>
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;script&gt;console.log("Modo do navegador:", document.compatMode);&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+<p><strong>Como consertar:</strong> <code>&lt;!DOCTYPE html&gt;</code> na primeira linha, sempre. O console deve passar a mostrar <code>CSS1Compat</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: The “font” element is obsolete. Use CSS instead.</code></strong>
+<p><strong>O que significa:</strong> você usou um elemento que saiu do HTML (o mesmo vale para <code>center</code>, <code>big</code>, <code>tt</code>, <code>marquee</code>…). Quase sempre ele veio de um tutorial antigo ou de um código copiado.</p>
+<p><strong>Como consertar:</strong> veja a tabela de trocas acima. Se o elemento só mudava a aparência, tire-o e deixe a aparência para o CSS (quer aprender mais? futuro Guia CSS). Se ele tinha um significado (um título, um texto apagado), use o elemento certo para esse significado.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info: Trailing slash on void elements has no effect…</code></strong>
+<p><strong>O que significa:</strong> você escreveu <code>&lt;br /&gt;</code>, <code>&lt;img … /&gt;</code> ou <code>&lt;meta … /&gt;</code>, no estilo do XHTML. Não é erro: é só uma informação de que a barra não faz nada.</p>
+<p><strong>Como consertar:</strong> não é obrigatório, mas o guia recomenda tirar a barra (<code>&lt;br&gt;</code>). Ela engana: quem lê acha que fecha alguma coisa, e não fecha.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Versão</th><th>Ano</th><th>Por quem</th><th>Hoje</th></tr>
+<tr><td>HTML 2.0</td><td>1995</td><td>IETF (RFC 1866)</td><td>Histórica</td></tr>
+<tr><td>HTML 3.2</td><td>1997</td><td>W3C</td><td>Histórica</td></tr>
+<tr><td>HTML 4.0 / 4.01</td><td>1997 / 1999</td><td>W3C</td><td>Substituída; DOCTYPE dá erro no validador</td></tr>
+<tr><td>XHTML 1.0</td><td>2000</td><td>W3C</td><td>Substituída; o estilo <code>&lt;br /&gt;</code> ainda é aceito</td></tr>
+<tr><td>HTML5 / 5.1 / 5.2</td><td>2014 / 2016 / 2017</td><td>W3C</td><td>Substituídas pelo Living Standard</td></tr>
+<tr><td><strong>HTML Living Standard</strong></td><td>desde 2011 (o único desde 2019)</td><td>WHATWG</td><td><strong>A versão atual</strong>, a deste guia</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O DOCTYPE de hoje</h3>
+<p>Complete a primeira linha de uma página moderna:</p>
+<div class="ex-code">&lt;!DOCTYPE <input data-answer="html" aria-label="palavra do doctype">&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O nome do HTML atual</h3>
+<p>Complete o nome da especificação que o guia ensina:</p>
+<div class="ex-code">HTML <input data-answer="Living Standard|living standard" aria-label="nome"></div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Quem escreve hoje a especificação do HTML?</p>
+<label><input type="radio" name="q3"> A IETF</label>
+<label><input type="radio" name="q3"> O Google, sozinho</label>
+<label><input type="radio" name="q3"> O WHATWG</label>
+<label><input type="radio" name="q3"> Ninguém: o HTML parou em 2014</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Um tutorial começa com <code>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" …&gt;</code>. O que isso indica?</p>
+<label><input type="radio" name="q4"> Que é um tutorial de HTML6</label>
+<label><input type="radio" name="q4"> Que é um código antigo, que pode ensinar coisas hoje consideradas erro</label>
+<label><input type="radio" name="q4"> Que a página não abre nos navegadores de hoje</label>
+<label><input type="radio" name="q4"> Nada: todo DOCTYPE é igual</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O que o validador diz de <code>&lt;br /&gt;</code>, com barra?</p>
+<label><input type="radio" name="q5"> <code>error</code>: a barra é proibida</label>
+<label><input type="radio" name="q5"> Nada, nunca</label>
+<label><input type="radio" name="q5"> Que o <code>br</code> é obsoleto</label>
+<label><input type="radio" name="q5"> Só um <code>info</code>: a barra não tem efeito</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. O <code>&lt;center&gt;</code> ainda centraliza o texto no navegador. Por que não usar?</p>
+<label><input type="radio" name="q6"> Porque é obsoleto: o validador acusa erro, e centralizar é trabalho do CSS</label>
+<label><input type="radio" name="q6"> Porque ele trava o navegador</label>
+<label><input type="radio" name="q6"> Porque ele só funciona no Internet Explorer</label>
+<label><input type="radio" name="q6"> Porque ele apaga o texto</label>
+</div>
+
+<h3>Missão final: tirar o pó de uma página antiga</h3>
+
+<div class="tryhtml" data-goal="src:^&lt;!DOCTYPE html&gt;,nsrc:&lt;(center|font),texto:h1=Receitas da Ana,sel:meta[charset],nsrc:DTD">
+<p class="try-task"><strong>Missão:</strong> esta é a página da Ana como ela teria sido feita nos anos 2000. Modernize: DOCTYPE de hoje, <code>&lt;meta charset="utf-8"&gt;</code>, e troque o <code>&lt;center&gt;&lt;font …&gt;</code> por um título de verdade, <code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code>. O título vai perder a cor vermelha e a centralização; isso é trabalho do CSS, que fica para depois.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;font color="red" size="6"&gt;Receitas da Ana&lt;/font&gt;&lt;/center&gt;
+&lt;p&gt;Bolo de cenoura&lt;br&gt;com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura&lt;br&gt;com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O HTML teve versões numeradas: 2.0 (1995, IETF), 3.2 e 4.0 (1997), 4.01 (1999), XHTML 1.0 (2000), HTML5 (2014), 5.1 e 5.2.</li>
+  <li>Desde 2019, o HTML é escrito só pelo <strong>WHATWG</strong>, como <strong>HTML Living Standard</strong>: um padrão vivo, sem número, atualizado continuamente. É o que o guia ensina e o que o validador confere.</li>
+  <li>Não existe HTML6: cada recurso novo entra quando os navegadores o implementam. Para saber se um recurso funciona, consulte a MDN ou o Can I use.</li>
+  <li>O DOCTYPE revela a época da página. O de hoje é <code>&lt;!DOCTYPE html&gt;</code>; os antigos dão erro, e sem DOCTYPE o navegador entra no modo quirks.</li>
+  <li>Elementos de aparência como <code>&lt;font&gt;</code> e <code>&lt;center&gt;</code> são obsoletos: o navegador ainda desenha, o validador recusa. A aparência é trabalho do CSS.</li>
+  <li><code>&lt;br /&gt;</code> (estilo XHTML) não é erro, mas a barra não faz nada; o guia escreve <code>&lt;br&gt;</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
