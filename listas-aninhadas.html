@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Listas Dentro de Listas — listas aninhadas | Guia HTML</title>
+<meta name="description" content="Listas aninhadas em HTML para quem nunca fez um site: uma lista dentro do li de outra, os marcadores que mudam a cada nível, ol dentro de ol, misturar ol e ul, o recuo no código e os erros reais do validador W3C (ul direto dentro de ul, ul interno sem fechar), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Listas Dentro de Listas</span></h1>
+
+<p class="intro">A lista de compras da Ana cresceu. Agora ela separa o que comprar na <strong>feira</strong> e o que comprar no <strong>mercado</strong>, e embaixo de cada lugar vêm os produtos. Isso é uma <strong>lista dentro de outra lista</strong>, ou <strong>lista aninhada</strong>: como os ninhos de passarinho, uma coisa dentro da outra. Sumários de livros, menus com submenus e receitas com várias partes são todos assim. Nesta aula você aprende o único lugar certo para pôr a lista de dentro e vê o que acontece quando ela vai parar no lugar errado.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Onde a lista de dentro fica: <strong>dentro do <code>li</code></strong>, antes do <code>&lt;/li&gt;</code>.</li>
+  <li>Como o navegador troca o marcador a cada nível (bolinha cheia, bolinha vazia, quadradinho).</li>
+  <li>Como fica um <code>ol</code> dentro de outro <code>ol</code>, e por que ele não vira "1.1".</li>
+  <li>Como misturar <code>ol</code> e <code>ul</code>.</li>
+  <li>Como o recuo no código ajuda a não se perder.</li>
+  <li>Os erros reais do validador: <code>ul</code> direto dentro de <code>ul</code> e a lista de dentro sem <code>&lt;/ul&gt;</code>.</li>
+</ul>
+</div>
+
+<p>Antes, veja as aulas <a href="listas.html">Listas com Marcadores</a>, <a href="listas-ordenadas.html">Listas Numeradas</a> e <a href="aninhamento.html">Aninhamento</a>. Os quadros <strong>Resultado</strong> são desenhados pelo seu navegador; as mensagens do validador saíram do <code>vnu</code> 26.10.12 na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: o sumário do livro</h2>
+<p>Abra o sumário de um livro de receitas. Os capítulos são uma lista: Bolos, Pães, Doces. Dentro de cada capítulo há outra lista, a das receitas. A lista das receitas de bolo <strong>pertence</strong> ao capítulo Bolos: ela faz parte desse item.</p>
+
+<p>Essa frase é a regra inteira da aula: a lista de dentro faz parte de um item da lista de fora. Em HTML, "faz parte do item" quer dizer "fica <strong>dentro do <code>li</code></strong>".</p>
+
+<hr>
+
+<h2>1. A primeira lista aninhada</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ul&gt;
+  &lt;li&gt;Feira
+    &lt;ul&gt;
+      &lt;li&gt;Cenoura&lt;/li&gt;
+      &lt;li&gt;Laranja&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Mercado&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;li&gt;Feira</dt><dd>Abre o item da lista de fora e escreve o texto dele. O <code>li</code> <strong>ainda não fecha</strong>.</dd>
+  <dt>&lt;ul&gt; … &lt;/ul&gt; (a de dentro)</dt><dd>A lista da feira, inteira, com abertura, itens e fechamento. Ela está dentro do <code>li</code> "Feira".</dd>
+  <dt>&lt;/li&gt; (o da Feira)</dt><dd>Só agora o item "Feira" fecha, <strong>depois</strong> da lista de dentro.</dd>
+  <dt>&lt;li&gt;Mercado&lt;/li&gt;</dt><dd>O segundo item da lista de fora, no mesmo nível de "Feira".</dd>
+</dl>
+
+<p>Para montar sem errar, siga sempre a mesma ordem:</p>
+<ol class="passo">
+  <li>Escreva o <code>&lt;li&gt;</code> e o texto do item de fora.</li>
+  <li><strong>Antes</strong> de fechar esse item, abra a lista de dentro (<code>&lt;ul&gt;</code>), escreva os itens dela e feche-a (<code>&lt;/ul&gt;</code>).</li>
+  <li>Feche o item de fora (<code>&lt;/li&gt;</code>).</li>
+</ol>
+
+<p>No resultado, a lista de dentro ganhou um recuo a mais e um marcador diferente: uma <strong>bolinha vazia</strong>. Quem decide isso é o navegador, olhando quantas listas há em volta.</p>
+
+<p>A página completa, com as duas sublistas, passa no validador:</p>
+
+<pre class="file" data-file="compras.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Compras&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Compras da semana&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;Feira
+    &lt;ul&gt;
+      &lt;li&gt;Cenoura&lt;/li&gt;
+      &lt;li&gt;Laranja&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Mercado
+    &lt;ul&gt;
+      &lt;li&gt;Farinha&lt;/li&gt;
+      &lt;li&gt;Açúcar&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose compras.html
+compras.html                « só o nome: nenhum erro</pre>
+
+<div class="tryhtml" data-goal="nsel:li&gt;ul=2,nsel:li li=4,nsel:li=6">
+<p class="try-task"><strong>Experimente:</strong> o item "Mercado" ainda não tem sublista. Dê a ele uma lista de dentro com <code>Farinha</code> e <code>Açúcar</code>, seguindo os três passos: o <code>&lt;ul&gt;</code> novo vai <strong>antes</strong> do <code>&lt;/li&gt;</code> do Mercado.</p>
+<pre class="script" data-file="index.html">&lt;ul&gt;
+  &lt;li&gt;Feira
+    &lt;ul&gt;
+      &lt;li&gt;Cenoura&lt;/li&gt;
+      &lt;li&gt;Laranja&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Mercado&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;ul&gt;
+  &lt;li&gt;Feira
+    &lt;ul&gt;
+      &lt;li&gt;Cenoura&lt;/li&gt;
+      &lt;li&gt;Laranja&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Mercado
+    &lt;ul&gt;
+      &lt;li&gt;Farinha&lt;/li&gt;
+      &lt;li&gt;Açúcar&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Um marcador para cada nível</h2>
+<p>Cada lista nova dentro de outra é um <strong>nível</strong> a mais. O navegador troca o marcador do <code>ul</code> conforme o nível, para o olho perceber onde está:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ul&gt;
+  &lt;li&gt;Nível 1
+    &lt;ul&gt;
+      &lt;li&gt;Nível 2
+        &lt;ul&gt;
+          &lt;li&gt;Nível 3
+            &lt;ul&gt;
+              &lt;li&gt;Nível 4&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Nível</th><th>Marcador padrão nos navegadores</th><th>Nome no CSS</th></tr>
+<tr><td>1</td><td>bolinha cheia</td><td><code>disc</code></td></tr>
+<tr><td>2</td><td>bolinha vazia</td><td><code>circle</code></td></tr>
+<tr><td>3 em diante</td><td>quadradinho</td><td><code>square</code></td></tr>
+</table>
+</div>
+
+<p>Do terceiro nível em diante, o marcador fica sempre o quadradinho. O recuo, ao contrário, continua crescendo: cada lista empurra a de dentro mais um pouco para a direita. Com quatro ou cinco níveis, o texto vai ficando espremido do lado direito, principalmente no celular. Se o seu conteúdo precisa de tantos níveis, vale pensar em dividir em títulos e seções.</p>
+
+<hr>
+
+<h2>3. <code>ol</code> dentro de <code>ol</code></h2>
+<p>Um <code>ol</code> aninhado <strong>recomeça do 1</strong>. Cada lista conta os seus próprios itens:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ol&gt;
+  &lt;li&gt;Prepare a massa
+    &lt;ol&gt;
+      &lt;li&gt;Bata as cenouras com os ovos.&lt;/li&gt;
+      &lt;li&gt;Misture a farinha.&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Prepare a cobertura
+    &lt;ol&gt;
+      &lt;li&gt;Derreta o chocolate.&lt;/li&gt;
+      &lt;li&gt;Espalhe sobre o bolo.&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+
+<p>Muita gente espera ver "1.1, 1.2, 2.1, 2.2", como num documento de escritório. O HTML não faz isso sozinho: cada <code>ol</code> mostra só o número dele. O formato "1.1" é possível com CSS, usando contadores (quer aprender mais? futuro Guia CSS). Uma ideia simples que já ajuda: <code>type</code> diferente no nível de dentro, como <code>&lt;ol type="a"&gt;</code>, que dá 1, a, b, 2, a, b.</p>
+
+<hr>
+
+<h2>4. Misturando <code>ol</code> e <code>ul</code></h2>
+<p>A lista de dentro não precisa ser do mesmo tipo da de fora. Escolha cada uma pelo sentido: os <strong>passos</strong> da receita têm ordem (<code>ol</code>); os <strong>ingredientes</strong> de um passo, não (<code>ul</code>).</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ol&gt;
+  &lt;li&gt;Bata no liquidificador:
+    &lt;ul&gt;
+      &lt;li&gt;3 cenouras&lt;/li&gt;
+      &lt;li&gt;4 ovos&lt;/li&gt;
+      &lt;li&gt;1 xícara de óleo&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Despeje numa tigela com:
+    &lt;ul&gt;
+      &lt;li&gt;2 xícaras de açúcar&lt;/li&gt;
+      &lt;li&gt;2 xícaras de farinha&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Asse por 40 minutos.&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+
+<p>Os passos ficaram numerados (1, 2, 3) e os ingredientes com bolinha. A sublista não atrapalha a contagem: o passo "Asse" continua sendo o 3. Um <code>ul</code> dentro de um <code>ol</code> conta como segundo nível, por isso a bolinha costuma sair vazia.</p>
+
+<hr>
+
+<h2>5. O recuo no código</h2>
+<p>O navegador não liga para os espaços no começo das linhas. Este código desenha exatamente a mesma lista da seção 1:</p>
+
+<pre class="file" data-file="index.html">&lt;ul&gt;&lt;li&gt;Feira&lt;ul&gt;&lt;li&gt;Cenoura&lt;/li&gt;
+&lt;li&gt;Laranja&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Mercado&lt;/li&gt;&lt;/ul&gt;
+</pre>
+
+<p>Mas tente descobrir, só olhando, qual <code>&lt;/li&gt;</code> fecha qual item. Com o recuo (dois espaços a mais por nível), cada fechamento fica na mesma coluna da sua abertura, e um esquecimento salta aos olhos. Os editores de código, como o VS Code, fazem esse recuo sozinhos (aula <a href="editores.html">Editores</a>).</p>
+
+<div class="tip">
+<strong>Dica: feche antes de encher</strong>
+<p>Ao criar uma sublista, escreva primeiro <code>&lt;ul&gt;</code> e <code>&lt;/ul&gt;</code>, um embaixo do outro, e só depois os itens no meio. Assim o fechamento nunca é esquecido.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos completos têm as mesmas 7 primeiras linhas do <code>compras.html</code>; o código mostrado começa na linha 8.</p>
+
+<div class="cenario">
+<strong><code>error: Element “ul” not allowed as child of element “ul” in this context.</code></strong>
+<p>O erro mais comum desta aula. A Ana fechou o item "Feira" e <strong>depois</strong> abriu a sublista:</p>
+<pre class="file" data-file="ul-no-ul.html" data-resultado>&lt;ul&gt;
+  &lt;li&gt;Feira&lt;/li&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Cenoura&lt;/li&gt;
+    &lt;li&gt;Laranja&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;li&gt;Mercado&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu ul-no-ul.html
+"file:/home/ana/site/ul-no-ul.html":10.3-10.6: error: Element “ul” not allowed as child of element “ul” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> "o elemento <code>ul</code> não é permitido como filho do elemento <code>ul</code>". Lembre a regra de família: os filhos diretos de um <code>ul</code> só podem ser <code>li</code>. A lista de dentro ficou <strong>entre</strong> dois itens, e não <strong>dentro</strong> de um.</p>
+<p><strong>O que o navegador faz:</strong> compare com o primeiro exemplo da aula. O desenho é praticamente <strong>igual</strong>: o mesmo recuo, a mesma bolinha vazia. Por isso esse erro passa despercebido. A diferença está na estrutura: a lista da feira não pertence ao item "Feira". Para um leitor de tela, ela é uma lista solta no meio de outra, sem dono.</p>
+<p><strong>Como consertar:</strong> apague o <code>&lt;/li&gt;</code> depois de "Feira" e escreva-o depois do <code>&lt;/ul&gt;</code> da sublista.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: No “li” element in scope but a “li” end tag seen.</code></strong>
+<p>Agora a sublista está no lugar certo, mas a Ana esqueceu o <code>&lt;/ul&gt;</code> dela:</p>
+<pre class="file" data-file="esqueceu.html" data-resultado>&lt;ul&gt;
+  &lt;li&gt;Feira
+    &lt;ul&gt;
+      &lt;li&gt;Cenoura&lt;/li&gt;
+      &lt;li&gt;Laranja&lt;/li&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Mercado&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu esqueceu.html
+"file:/home/ana/site/esqueceu.html":13.3-13.7: error: No “li” element in scope but a “li” end tag seen.
+"file:/home/ana/site/esqueceu.html":16.1-16.7: error: End tag for  “body” seen, but there were unclosed elements.
+"file:/home/ana/site/esqueceu.html":8.1-8.4: error: Unclosed element “ul”.</pre>
+<dl class="anatomy">
+  <dt>No “li” element in scope but a “li” end tag seen</dt><dd>"Não há elemento <code>li</code> ao alcance, mas vi um <code>&lt;/li&gt;</code>". Na linha 13, o <code>&lt;/li&gt;</code> queria fechar o item "Feira", mas a sublista ainda estava aberta, e um <code>&lt;/li&gt;</code> não consegue fechar nada <strong>através</strong> de uma lista aberta. O navegador simplesmente ignora essa tag.</dd>
+  <dt>End tag for “body” seen, but there were unclosed elements</dt><dd>Quando a página acabou, ainda havia elementos abertos.</dd>
+  <dt>Unclosed element “ul”</dt><dd>E o que ficou aberto foi a lista da linha 8, a de fora. O único <code>&lt;/ul&gt;</code> que existe fechou a de dentro.</dd>
+</dl>
+<p><strong>O que o navegador faz:</strong> como o <code>&lt;/li&gt;</code> foi ignorado, "Mercado" entra na lista de <strong>dentro</strong>, com bolinha vazia, como se fosse um produto da feira. Tudo o que vier depois na página também fica dentro da lista de fora.</p>
+<p><strong>Como consertar:</strong> escreva o <code>&lt;/ul&gt;</code> da sublista antes do <code>&lt;/li&gt;</code> da Feira. Repare que o validador não aponta a linha do esquecimento (a 12): ele aponta onde percebeu o problema. Nesses casos, o recuo do código é o que ajuda a achar o lugar.</p>
+</div>
+
+<div class="cenario">
+<strong>Texto do item depois da sublista (sem erro)</strong>
+<p><code>&lt;li&gt;&lt;ul&gt;…&lt;/ul&gt;Feira&lt;/li&gt;</code> é válido, mas desenha a sublista <strong>antes</strong> do nome do item, e, no Chrome, a bolinha de fora fica sozinha numa linha, com "Feira" lá embaixo. O texto do item vem primeiro; a sublista, logo antes do <code>&lt;/li&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;li&gt;Texto &lt;ul&gt;…&lt;/ul&gt;&lt;/li&gt;</code></td><td>Sublista: sempre <strong>dentro</strong> do <code>li</code>, depois do texto, antes do <code>&lt;/li&gt;</code>.</td></tr>
+<tr><td>Marcadores do <code>ul</code> por nível</td><td><code>disc</code> (1), <code>circle</code> (2), <code>square</code> (3 em diante).</td></tr>
+<tr><td><code>ol</code> dentro de <code>ol</code></td><td>Recomeça do 1; não vira "1.1" (só com CSS).</td></tr>
+<tr><td><code>ul</code> dentro de <code>ol</code> (e o contrário)</td><td>Permitido: escolha cada lista pelo sentido.</td></tr>
+<tr><td><code>&lt;ul&gt;&lt;li&gt;…&lt;/li&gt;&lt;ul&gt;</code></td><td>Erro: <em>Element “ul” not allowed as child of element “ul”</em>.</td></tr>
+<tr><td>Sublista sem <code>&lt;/ul&gt;</code></td><td>Erro: <em>No “li” element in scope but a “li” end tag seen</em> e <em>Unclosed element “ul”</em>.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O fechamento que vem por último</h3>
+<p>Complete com a tag que fecha o item "Feira":</p>
+<div class="ex-code">&lt;ul&gt; &lt;li&gt;Feira &lt;ul&gt; &lt;li&gt;Cenoura&lt;/li&gt; &lt;/ul&gt; <input data-answer="&lt;/li&gt;" aria-label="tag de fechamento"> &lt;/ul&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">2. Onde fica a lista de dentro?</p>
+<label><input type="radio" name="q2"> Entre dois <code>li</code>, direto dentro do <code>ul</code> de fora</label>
+<label><input type="radio" name="q2"> Depois do <code>&lt;/ul&gt;</code> da lista de fora</label>
+<label><input type="radio" name="q2"> Dentro de um <code>li</code>, antes do <code>&lt;/li&gt;</code></label>
+<label><input type="radio" name="q2"> Dentro do <code>&lt;head&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Num <code>ol</code> dentro de outro <code>ol</code>, como o navegador numera o primeiro item de dentro do item 2?</p>
+<label><input type="radio" name="q3"> 2.1</label>
+<label><input type="radio" name="q3"> 1</label>
+<label><input type="radio" name="q3"> 3</label>
+<label><input type="radio" name="q3"> a</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. A Ana pôs o <code>ul</code> da sublista entre dois <code>li</code>. O que é verdade?</p>
+<label><input type="radio" name="q4"> O navegador apaga a sublista</label>
+<label><input type="radio" name="q4"> O validador aceita, porque o desenho fica igual</label>
+<label><input type="radio" name="q4"> O navegador mostra uma mensagem de erro</label>
+<label><input type="radio" name="q4"> O desenho fica quase igual, mas o validador acusa <em>Element “ul” not allowed as child of element “ul”</em></label>
+</div>
+
+<h3>Missão final: o sumário do livro</h3>
+
+<div class="tryhtml" data-goal="nsel:ol&gt;li=2,nsel:ol&gt;li&gt;ul=2,nsel:ol&gt;li&gt;ul&gt;li=5,texto:ol&gt;li:last-child&gt;ul&gt;li:last-child=Pão de mel">
+<p class="try-task"><strong>Missão:</strong> o sumário da Ana ficou com tudo no mesmo nível. Só os <strong>capítulos</strong> (Bolos e Pães) devem ser numerados. As receitas de cada capítulo vão numa <strong>sublista com marcadores</strong> (<code>ul</code>) dentro do capítulo, na mesma ordem.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Sumário&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;Bolos&lt;/li&gt;
+  &lt;li&gt;Bolo de cenoura&lt;/li&gt;
+  &lt;li&gt;Bolo de fubá&lt;/li&gt;
+  &lt;li&gt;Pães&lt;/li&gt;
+  &lt;li&gt;Pão de queijo&lt;/li&gt;
+  &lt;li&gt;Pão caseiro&lt;/li&gt;
+  &lt;li&gt;Pão de mel&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Sumário&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;Bolos
+    &lt;ul&gt;
+      &lt;li&gt;Bolo de cenoura&lt;/li&gt;
+      &lt;li&gt;Bolo de fubá&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Pães
+    &lt;ul&gt;
+      &lt;li&gt;Pão de queijo&lt;/li&gt;
+      &lt;li&gt;Pão caseiro&lt;/li&gt;
+      &lt;li&gt;Pão de mel&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+</div>
+
+<p>Com a estrutura certa, o "Pães" voltou a ser o capítulo 2, e não o 4: a numeração conta só os itens da lista de fora.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Uma lista aninhada é uma lista que <strong>faz parte de um item</strong> de outra. Por isso ela fica dentro do <code>li</code>: texto do item, sublista, <code>&lt;/li&gt;</code>.</li>
+  <li>O navegador muda o marcador do <code>ul</code> a cada nível (<code>disc</code>, <code>circle</code>, <code>square</code>) e aumenta o recuo.</li>
+  <li>Um <code>ol</code> dentro de outro recomeça do 1. "1.1" só com CSS.</li>
+  <li><code>ol</code> e <code>ul</code> podem se misturar; escolha cada uma pelo sentido.</li>
+  <li>Recue o código (dois espaços por nível) e escreva o fechamento logo depois da abertura.</li>
+  <li>Erros: <em>Element “ul” not allowed as child of element “ul”</em> (sublista entre dois itens, quase invisível na tela) e <em>No “li” element in scope but a “li” end tag seen</em> (sublista sem <code>&lt;/ul&gt;</code>, que engole os itens seguintes).</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
