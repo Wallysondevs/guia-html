@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML figure e figcaption — imagem com legenda | Guia HTML</title>
+<meta name="description" content="Os elementos figure e figcaption do HTML para quem nunca fez um site: imagem com legenda, a diferença entre legenda e alt, figure com várias imagens, com código e com citação, quando não usar figure e os erros reais do validador W3C, como figcaption fora do lugar e figure dentro de um parágrafo.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">figure e figcaption</span></h1>
+
+<p class="intro">Abra um jornal: embaixo de cada foto há uma linha pequena explicando quem está ali, onde e quando, e às vezes quem tirou a foto. Essa linha é a <strong>legenda</strong>. Em HTML, a foto e a legenda andam juntas dentro do elemento <code>&lt;figure&gt;</code> ("figura"), e a legenda vai no <code>&lt;figcaption&gt;</code> (<em>figure caption</em>, "legenda da figura"). Assim o navegador, os leitores de tela e o Google sabem que aquela frase fala daquela imagem.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como juntar uma imagem e a legenda dela com <code>&lt;figure&gt;</code> e <code>&lt;figcaption&gt;</code>.</li>
+  <li>Onde a legenda pode ficar (primeira ou última) e como o navegador desenha uma figura.</li>
+  <li>A diferença entre a <strong>legenda</strong> e o <code>alt</code>, e como não repetir um no outro.</li>
+  <li>Figuras com várias imagens, com um trecho de código e com uma citação.</li>
+  <li>Quando <strong>não</strong> usar <code>&lt;figure&gt;</code>.</li>
+  <li>Os erros reais do validador, e o conserto estranho que o navegador faz com uma figura dentro de um parágrafo.</li>
+</ul>
+</div>
+
+<p>Antes, veja <a href="imagens.html">Imagens</a> e <a href="imagens-alt.html">Texto Alternativo</a>. As mensagens do validador saíram do <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/figure</code>.</p>
+
+<hr>
+
+<h2>A ideia: a etiqueta do museu</h2>
+<p>Num museu, ao lado de cada quadro há uma etiqueta: "Abaporu, Tarsila do Amaral, 1928". A etiqueta não está pintada no quadro, mas pertence a ele: se o quadro for emprestado para outro museu, a etiqueta vai junto.</p>
+
+<p>O <code>&lt;figure&gt;</code> é a moldura que prende os dois: o conteúdo (uma foto, um desenho, um trecho de código) e a etiqueta (o <code>&lt;figcaption&gt;</code>). A regra do HTML para saber se algo é uma figura é parecida com a do museu: <strong>dá para tirar o bloco do meio do texto e pô-lo noutro lugar (num anexo, numa página ao lado) sem estragar a leitura?</strong> Se sim, é uma figura. Por isso os livros escrevem "veja a Figura 3", em vez de "veja a foto abaixo".</p>
+
+<hr>
+
+<h2>1. A primeira figura</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;A receita é da família da Ana há três gerações.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura de duas camadas com cobertura de chocolate escorrendo" width="400" height="300"&gt;
+  &lt;figcaption&gt;O bolo de cenoura da vó Lúcia, feito para o aniversário da Ana.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;p&gt;Fica pronto em 50 minutos.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;figure&gt;</dt><dd>Abre a figura: tudo até o <code>&lt;/figure&gt;</code> é um bloco só.</dd>
+  <dt>&lt;img … alt="…"&gt;</dt><dd>O conteúdo da figura, com o <code>alt</code> de sempre. (O recuo de dois espaços antes dele é só para quem lê o código: o navegador ignora.)</dd>
+  <dt>&lt;figcaption&gt;…&lt;/figcaption&gt;</dt><dd>A legenda. Aparece na tela, para todo mundo.</dd>
+  <dt>&lt;/figure&gt;</dt><dd>Fecha a figura.</dd>
+</dl>
+
+<p>Repare como o navegador desenhou: a figura é um <strong>bloco</strong>, com espaço em cima e embaixo, como um parágrafo, e com um <strong>recuo</strong> dos dois lados (os navegadores dão uma margem de uns 40 pixels à esquerda e à direita de toda <code>&lt;figure&gt;</code>). A legenda aparece embaixo da foto, com letra normal. Para mudar o visual (legenda em itálico, centralizada, menor), usa-se CSS (futuro Guia CSS).</p>
+
+<p>Para quem usa leitor de tela, a legenda vira o <strong>nome</strong> da figura: ao chegar nela, o programa anuncia algo como "figura, O bolo de cenoura da vó Lúcia…". A legenda e a imagem ficam ligadas.</p>
+
+<div class="tryhtml" data-goal="sel:figure > img[src=&quot;assets/midia/bolo-800.jpg&quot;],sel:figure > figcaption,texto:figure > figcaption=Primeiro bolo que a Ana vendeu,nsel:p=0">
+<p class="try-task"><strong>Missão:</strong> a legenda está num <code>&lt;p&gt;</code> solto, sem ligação com a foto. Coloque a foto e a legenda dentro de um <code>&lt;figure&gt;</code> e troque o <code>&lt;p&gt;</code> por um <code>&lt;figcaption&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+&lt;p&gt;Primeiro bolo que a Ana vendeu, em março de 2020.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;figure&gt;
+  &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+  &lt;figcaption&gt;Primeiro bolo que a Ana vendeu, em março de 2020.&lt;/figcaption&gt;
+&lt;/figure&gt;
+</pre>
+</div>
+
+<h3>A legenda em cima</h3>
+<p>O <code>&lt;figcaption&gt;</code> pode ser o <strong>primeiro</strong> ou o <strong>último</strong> filho do <code>&lt;figure&gt;</code>. Primeiro, a legenda aparece em cima; último, embaixo. No meio, não pode (veja em "Quando dá errado").</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;figure&gt;
+  &lt;figcaption&gt;Figura 1: o mapa até a lojinha.&lt;/figcaption&gt;
+  &lt;img src="assets/midia/mapa-400.png" alt="Mapa: a Lojinha da Ana fica na esquina da Rua das Flores com a Avenida Central, em frente à Praça da Árvore" width="400" height="250"&gt;
+&lt;/figure&gt;
+</pre>
+
+<hr>
+
+<h2>2. Legenda × <code>alt</code></h2>
+<p>A figura tem dois textos, e eles têm papéis diferentes:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>alt</code></th><th><code>&lt;figcaption&gt;</code></th></tr>
+<tr><td>Quem vê</td><td>Só quem <strong>não</strong> vê a imagem (leitor de tela, imagem quebrada)</td><td><strong>Todo mundo</strong>, na tela</td></tr>
+<tr><td>O papel</td><td><strong>Substitui</strong> a imagem: conta o que ela mostra</td><td><strong>Comenta</strong> a imagem: diz algo a mais (quem, onde, quando, de onde veio)</td></tr>
+<tr><td>Exemplo</td><td>"Bolo de cenoura de duas camadas com cobertura de chocolate escorrendo"</td><td>"O bolo da vó Lúcia, feito para o aniversário da Ana."</td></tr>
+</table>
+</div>
+
+<p>Quem usa leitor de tela ouve os dois. Por isso, <strong>não repita</strong>: se o <code>alt</code> e a legenda forem a mesma frase, a pessoa ouve tudo duas vezes. Uma boa divisão é o <code>alt</code> descrever o que se vê e a legenda contar o que não se vê (a história, a data, o crédito).</p>
+
+<div class="note">
+<strong>E a figura sem <code>alt</code>?</strong>
+<p>A aula <a href="imagens-alt.html">Texto Alternativo</a> mostrou que o validador aceita um <code>&lt;img&gt;</code> sem <code>alt</code> dentro de um <code>&lt;figure&gt;</code> com <code>&lt;figcaption&gt;</code>: a legenda serve de descrição. Isso existe para sites onde ninguém escreveu descrições (um álbum de fotos enviadas por visitantes, por exemplo). No seu site, escreva o <code>alt</code>: a legenda comenta, e o <code>alt</code> descreve.</p>
+</div>
+
+<h3>Crédito da foto</h3>
+<p>A legenda é o lugar do crédito: quem fez a foto e, se for o caso, a licença. O <code>&lt;small&gt;</code>, da aula <a href="formatacao.html">Formatação</a>, é próprio para esse tipo de "letra miúda":</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;figure&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate e cenourinhas de enfeite" width="400" height="300"&gt;
+  &lt;figcaption&gt;
+    Bolo de cenoura da Lojinha da Ana.
+    &lt;small&gt;Ilustração: Ana, 2026.&lt;/small&gt;
+  &lt;/figcaption&gt;
+&lt;/figure&gt;
+</pre>
+
+<p>Dentro do <code>&lt;figcaption&gt;</code> cabe texto com formatação (<code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;small&gt;</code>, links) e até parágrafos inteiros.</p>
+
+<hr>
+
+<h2>3. Não é só para fotos</h2>
+<p>A figura é qualquer bloco que ilustra o texto e que poderia ir para outro lugar. Um <code>&lt;figure&gt;</code> tem <strong>um</strong> <code>&lt;figcaption&gt;</code> no máximo, mas o conteúdo pode ser grande.</p>
+
+<h3>Várias imagens, uma legenda</h3>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;figure&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo inteiro, visto de longe, num prato branco" width="200" height="150"&gt;
+  &lt;img src="assets/midia/bolo-quadrado-400.jpg" alt="O mesmo bolo, de perto, mostrando as duas camadas e o recheio" width="150" height="150"&gt;
+  &lt;figcaption&gt;O bolo de longe e de perto: duas camadas de massa com recheio de creme.&lt;/figcaption&gt;
+&lt;/figure&gt;
+</pre>
+
+<p>As duas imagens ficaram lado a lado (o <code>&lt;img&gt;</code> é em linha, lembra?) e a legenda fala das duas.</p>
+
+<h3>Um trecho de código</h3>
+<p>Livros de programação numeram os exemplos: "Listagem 2". Num site, é uma figura com um <code>&lt;pre&gt;</code> (aula <a href="codigo.html">Código</a>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;figure&gt;
+  &lt;pre&gt;&lt;code&gt;&amp;lt;img src="bolo.jpg" alt="Bolo de cenoura"&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+  &lt;figcaption&gt;Listagem 1: uma imagem com texto alternativo.&lt;/figcaption&gt;
+&lt;/figure&gt;
+</pre>
+
+<p>(O <code>&amp;lt;</code> e o <code>&amp;gt;</code> são as entidades que fazem o navegador <strong>mostrar</strong> os sinais <code>&lt;</code> e <code>&gt;</code> em vez de criar uma imagem de verdade: aula <a href="entidades.html">Entidades</a>.)</p>
+
+<h3>Uma citação com o autor</h3>
+<p>Uma citação longa (<code>&lt;blockquote&gt;</code>, aula <a href="citacoes.html">Citações</a>) com o nome de quem disse na legenda:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;figure&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;O segredo do bolo é bater a cenoura com o óleo até virar um creme liso.&lt;/p&gt;
+  &lt;/blockquote&gt;
+  &lt;figcaption&gt;Vó Lúcia, na cozinha, em 1998.&lt;/figcaption&gt;
+&lt;/figure&gt;
+</pre>
+
+<p>E tabelas? Uma tabela tem a legenda própria, o <code>&lt;caption&gt;</code> (aula <a href="tabelas-legenda.html">Legenda e Acessibilidade</a>), e não precisa de <code>&lt;figure&gt;</code>.</p>
+
+<hr>
+
+<h2>4. Quando <strong>não</strong> usar <code>&lt;figure&gt;</code></h2>
+<p>Nem toda imagem é uma figura:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Imagem</th><th>É figura?</th><th>Por quê</th></tr>
+<tr><td>Foto do bolo, com legenda, num post do blog</td><td>sim</td><td>ilustra o texto e poderia ir para outro lugar com a legenda</td></tr>
+<tr><td>Diagrama, gráfico, mapa citado no texto ("veja a Figura 2")</td><td>sim</td><td>é o caso clássico</td></tr>
+<tr><td>Logotipo no topo do site</td><td>não</td><td>faz parte do visual da página, não ilustra um texto</td></tr>
+<tr><td>Bolinho de enfeite ao lado de um título</td><td>não</td><td>é enfeite (<code>alt=""</code>)</td></tr>
+<tr><td>Ícone dentro de um botão ou link</td><td>não</td><td>faz parte do botão</td></tr>
+<tr><td>Foto principal da receita, sem nenhuma legenda</td><td>pode ser só um <code>&lt;img&gt;</code></td><td>sem legenda, o <code>&lt;figure&gt;</code> só acrescenta o recuo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: No “p” element in scope but a “p” end tag seen.</code></strong>
+<p><strong>O que aconteceu:</strong> a Ana pôs a figura <strong>dentro</strong> de um parágrafo:</p>
+<pre class="file" data-file="index.html · erro de propósito">&lt;p&gt;Olha o bolo:
+&lt;figure&gt;
+&lt;img src="bolo.jpg" alt="Bolo de cenoura" width="400" height="300"&gt;
+&lt;figcaption&gt;O bolo de cenoura.&lt;/figcaption&gt;
+&lt;/figure&gt;
+que delícia.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/figure">$ vnu dentro-p.html
+"file:/home/ana/figure/dentro-p.html":13.13-13.16: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p>"Não há nenhum <code>p</code> aberto, mas apareceu um <code>&lt;/p&gt;</code>." Um parágrafo não pode conter blocos como o <code>&lt;figure&gt;</code>. Quando o navegador encontra o <code>&lt;figure&gt;</code>, ele <strong>fecha o parágrafo sozinho</strong>. Depois, o <code>&lt;/p&gt;</code> do fim fica sobrando, e o navegador faz um conserto esquisito: cria um <strong>parágrafo vazio novo</strong>. O DOM que o Chromium montou:</p>
+<pre class="file" data-file="o DOM, como o navegador montou">&lt;p&gt;Olha o bolo:
+&lt;/p&gt;&lt;figure&gt;
+&lt;img src="bolo.jpg" alt="Bolo de cenoura" width="400" height="300"&gt;
+&lt;figcaption&gt;O bolo de cenoura.&lt;/figcaption&gt;
+&lt;/figure&gt;
+que delícia.&lt;p&gt;&lt;/p&gt;
+</pre>
+<p>O "que delícia." ficou solto, fora de qualquer parágrafo, e apareceu um <code>&lt;p&gt;&lt;/p&gt;</code> que ninguém escreveu. Você vê isso no F12 (aba de elementos), e nas metas do editor.</p>
+<p><strong>Como consertar:</strong> feche o parágrafo antes da figura e abra outro depois.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:figure > figcaption,nsel:p:empty=0,nsel:body &gt; p=2,texto:figure + p=Que delícia">
+<p class="try-task"><strong>Missão:</strong> conserte a figura que está dentro do parágrafo: o texto de antes fica num <code>&lt;p&gt;</code>, a figura vem depois, e "Que delícia." vai num segundo <code>&lt;p&gt;</code>, logo depois da figura. Sem parágrafo vazio.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Olha o bolo:
+&lt;figure&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+  &lt;figcaption&gt;O bolo de cenoura da semana.&lt;/figcaption&gt;
+&lt;/figure&gt;
+Que delícia.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Olha o bolo:&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+  &lt;figcaption&gt;O bolo de cenoura da semana.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;p&gt;Que delícia.&lt;/p&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “p” not allowed as child of element “figure” in this context.</code></strong>
+<p><strong>O que aconteceu:</strong> a legenda ficou no <strong>meio</strong> da figura, com mais conteúdo depois dela:</p>
+<pre class="file" data-file="index.html · erro de propósito">&lt;figure&gt;
+&lt;img src="bolo.jpg" alt="Bolo de cenoura" width="400" height="300"&gt;
+&lt;figcaption&gt;O bolo de cenoura.&lt;/figcaption&gt;
+&lt;p&gt;Rende 12 fatias.&lt;/p&gt;
+&lt;/figure&gt;
+</pre>
+<pre class="term" data-cwd="~/figure">$ vnu meio.html
+"file:/home/ana/figure/meio.html":11.1-11.3: error: Element “p” not allowed as child of element “figure” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>"O elemento <code>p</code> não é permitido como filho de <code>figure</code> neste contexto." O validador reclama do <code>&lt;p&gt;</code>, e não da legenda, porque depois de uma legenda no fim não pode vir mais nada. (O "<em>Suppressing further errors from this subtree</em>" quer dizer "não vou mostrar outros erros deste trecho".) Na tela, nada de estranho: o navegador desenha tudo na ordem.</p>
+<p><strong>Como consertar:</strong> legenda em primeiro ou em último. O "Rende 12 fatias." é texto da página, e vai num <code>&lt;p&gt;</code> fora da figura (ou dentro da legenda, se for parte dela).</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “figcaption” not allowed as child of element “figure” in this context.</code></strong>
+<p><strong>O que aconteceu:</strong> duas legendas na mesma figura, uma para a descrição e outra para o crédito:</p>
+<pre class="term" data-cwd="~/figure">$ vnu duas.html
+"file:/home/ana/figure/duas.html":11.1-11.12: error: Element “figcaption” not allowed as child of element “figure” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>O navegador mostra as duas, uma embaixo da outra, mas uma figura tem <strong>uma</strong> legenda.</p>
+<p><strong>Como consertar:</strong> junte tudo num <code>&lt;figcaption&gt;</code> só: <code>&lt;figcaption&gt;O bolo de cenoura. &lt;small&gt;Foto: Ana.&lt;/small&gt;&lt;/figcaption&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “figcaption” not allowed as child of element “body” in this context.</code></strong>
+<p><strong>O que aconteceu:</strong> a Ana escreveu o <code>&lt;figcaption&gt;</code> depois da imagem, mas esqueceu o <code>&lt;figure&gt;</code> em volta.</p>
+<pre class="term" data-cwd="~/figure">$ vnu solta.html
+"file:/home/ana/figure/solta.html":9.1-9.12: error: Element “figcaption” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>Uma legenda só existe dentro de uma figura. Solta, o navegador a mostra como um bloco de texto qualquer, sem ligação com a foto.</p>
+<p><strong>Como consertar:</strong> <code>&lt;figure&gt;</code> em volta da imagem e da legenda.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Stray start tag “caption”.</code></strong>
+<p><strong>O que aconteceu:</strong> a Ana usou o <code>&lt;caption&gt;</code> das tabelas como legenda da figura.</p>
+<pre class="term" data-cwd="~/figure">$ vnu caption.html
+"file:/home/ana/figure/caption.html":10.1-10.9: error: Stray start tag “caption”.
+"file:/home/ana/figure/caption.html":10.28-10.37: error: Stray end tag “caption”.</pre>
+<p>"Tag de abertura <code>caption</code> perdida" e "tag de fechamento perdida". Fora de uma tabela, o navegador simplesmente <strong>apaga</strong> as tags <code>&lt;caption&gt;</code> e deixa só o texto, solto dentro da figura. A legenda continua aparecendo, mas não é uma legenda: é texto sem elemento.</p>
+<p><strong>Como consertar:</strong> <code>&lt;figcaption&gt;</code> na figura; <code>&lt;caption&gt;</code> só em tabelas.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;figure&gt;…&lt;/figure&gt;</code></td><td>Um bloco que ilustra o texto e poderia ir para outro lugar (foto, diagrama, código, citação)</td></tr>
+<tr><td><code>&lt;figcaption&gt;…&lt;/figcaption&gt;</code></td><td>A legenda da figura: só dentro de <code>&lt;figure&gt;</code>, como primeiro ou último filho, uma por figura</td></tr>
+<tr><td>Legenda × <code>alt</code></td><td>O <code>alt</code> descreve o que se vê; a legenda comenta (quem, quando, crédito). Não repita</td></tr>
+<tr><td><code>&lt;small&gt;Foto: …&lt;/small&gt;</code> na legenda</td><td>O crédito da imagem</td></tr>
+<tr><td>Várias imagens num <code>&lt;figure&gt;</code></td><td>Uma legenda para o conjunto</td></tr>
+<tr><td><code>&lt;figure&gt;</code> dentro de <code>&lt;p&gt;</code></td><td>Errado: o navegador fecha o <code>&lt;p&gt;</code> e cria um <code>&lt;p&gt;&lt;/p&gt;</code> vazio</td></tr>
+<tr><td>Visual padrão</td><td>Bloco com espaço em cima e embaixo e recuo dos dois lados</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O nome da legenda</h3>
+<p>Complete com o elemento da legenda:</p>
+<div class="ex-code">&lt;figure&gt;&lt;img src="torta.jpg" alt="Torta de limão"&gt;&lt;<input data-answer="figcaption" aria-label="elemento">&gt;A torta do Natal.&lt;/figcaption&gt;&lt;/figure&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">2. Onde o <code>&lt;figcaption&gt;</code> pode ficar?</p>
+<label><input type="radio" name="q2"> Em qualquer lugar da página</label>
+<label><input type="radio" name="q2"> Em qualquer posição dentro do <code>&lt;figure&gt;</code></label>
+<label><input type="radio" name="q2"> Como primeiro ou último filho do <code>&lt;figure&gt;</code></label>
+<label><input type="radio" name="q2"> Só dentro de um <code>&lt;p&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. A foto mostra um bolo de chocolate. Qual é a melhor dupla de <code>alt</code> e legenda?</p>
+<label><input type="radio" name="q3"> <code>alt="Bolo de chocolate"</code> e legenda "Bolo de chocolate"</label>
+<label><input type="radio" name="q3"> <code>alt="Bolo de chocolate com morangos em cima"</code> e legenda "O bolo que a Ana fez para o casamento da prima, em maio."</label>
+<label><input type="radio" name="q3"> <code>alt=""</code> e legenda "foto.jpg"</label>
+<label><input type="radio" name="q3"> Sem <code>alt</code> e sem legenda</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. Qual destas imagens <strong>não</strong> deveria estar num <code>&lt;figure&gt;</code>?</p>
+<label><input type="radio" name="q4"> Um gráfico citado no texto como "Figura 2"</label>
+<label><input type="radio" name="q4"> A foto de um post de blog, com legenda e crédito</label>
+<label><input type="radio" name="q4"> Um trecho de código numerado como "Listagem 1"</label>
+<label><input type="radio" name="q4"> O logotipo no topo do site</label>
+</div>
+
+<h3>Missão final: antes e depois</h3>
+
+<div class="tryhtml" data-goal="nsel:figure=1,nsel:figure &gt; img=2,sel:figure &gt; img[alt]:not([alt=&quot;&quot;]) ~ img[alt]:not([alt=&quot;&quot;]),sel:figure &gt; figcaption:last-child,texto:figure &gt; figcaption=Ilustração: Ana,sel:figcaption small">
+<p class="try-task"><strong>Missão:</strong> monte uma figura só com as duas imagens (<code>assets/midia/bolo-400.jpg</code> e <code>assets/midia/bolo-quadrado-400.jpg</code>), cada uma com o seu <code>alt</code> descrevendo o que mostra, e <strong>uma</strong> legenda no fim que fale das duas e termine com o crédito <code>&lt;small&gt;Ilustração: Ana.&lt;/small&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-400.jpg" alt="" width="200" height="150"&gt;
+&lt;img src="assets/midia/bolo-quadrado-400.jpg" alt="" width="150" height="150"&gt;
+&lt;p&gt;Ilustração: Ana.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;figure&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo inteiro num prato branco, sobre a mesa de madeira" width="200" height="150"&gt;
+  &lt;img src="assets/midia/bolo-quadrado-400.jpg" alt="O mesmo bolo de perto, com a cobertura de chocolate escorrendo" width="150" height="150"&gt;
+  &lt;figcaption&gt;O bolo de cenoura de longe e de perto. &lt;small&gt;Ilustração: Ana.&lt;/small&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;figure&gt;</code> junta um conteúdo que ilustra o texto (foto, diagrama, código, citação) e a legenda dele, num bloco que poderia ir para outro lugar.</li>
+  <li><code>&lt;figcaption&gt;</code> é a legenda: só dentro do <code>&lt;figure&gt;</code>, como primeiro ou último filho, uma por figura. Ela dá o nome da figura para os leitores de tela.</li>
+  <li>O navegador desenha a figura como bloco, com recuo dos lados; o visual muda com CSS.</li>
+  <li>O <code>alt</code> descreve; a legenda comenta (quem, quando, crédito com <code>&lt;small&gt;</code>). Não repita um no outro, e escreva o <code>alt</code> mesmo com legenda.</li>
+  <li>Logotipos, enfeites e ícones de botão não são figuras.</li>
+  <li>Figura dentro de <code>&lt;p&gt;</code> faz o navegador fechar o parágrafo e criar um <code>&lt;p&gt;&lt;/p&gt;</code> vazio; legenda no meio, duas legendas, legenda solta e <code>&lt;caption&gt;</code> no lugar de <code>&lt;figcaption&gt;</code> são erros do validador.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
