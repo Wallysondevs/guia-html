@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML datalist — sugestões para um campo | Guia HTML</title>
+<meta name="description" content="datalist em HTML para quem nunca fez um site: sugestões para um campo de texto que continua livre, o atributo list, value e texto da option, datalist com number, range e outros tipos, datalist × select, com o resultado real no seu navegador, as mensagens reais do validador W3C e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">datalist</span></h1>
+
+<p class="intro">A Ana faz bolo de qualquer sabor, mas quase todo mundo pede cenoura, chocolate ou laranja. Um <code>&lt;select&gt;</code> obrigaria a escolher entre esses três, e a cliente que quer bolo de abacaxi ficaria sem opção. Um campo de texto livre aceita abacaxi, mas não ajuda quem só quer o de sempre. O <code>&lt;datalist&gt;</code> ("lista de dados") junta as duas coisas: o campo continua <strong>livre</strong>, e o navegador mostra <strong>sugestões</strong> enquanto a pessoa digita. Nesta aula você vai ligar uma lista de sugestões a um campo, ver o que é enviado e onde o datalist funciona (e onde não).</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como criar uma lista de sugestões com <code>&lt;datalist&gt;</code> e ligá-la a um campo com o atributo <code>list</code>.</li>
+  <li>Por que o campo continua aceitando qualquer texto, e o que é enviado.</li>
+  <li>A diferença entre o <code>value</code> e o texto de uma sugestão.</li>
+  <li>Como usar sugestões em outros tipos de campo, como <code>number</code> e <code>range</code>.</li>
+  <li>Quando usar <code>&lt;datalist&gt;</code> e quando usar <code>&lt;select&gt;</code>.</li>
+  <li>Os erros mais comuns e as mensagens reais do validador W3C.</li>
+</ul>
+</div>
+
+<p>Você vai precisar de <a href="input.html">O Elemento input</a>, <a href="tipos-input.html">Tipos de input</a> e <a href="select.html">select e option</a>. Os exemplos com o resultado embaixo são desenhados pelo <strong>seu</strong> navegador. Os comportamentos foram conferidos no <strong>Chromium 155</strong>, e as validações com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: "os mais pedidos são…"</h2>
+<p>Você chega na sorveteria e pergunta: "que sabor você recomenda?". O atendente responde: "os mais pedidos são morango, chocolate e flocos". Você pode escolher um deles, ou pedir pistache, que não estava na fala dele. Ele <strong>sugeriu</strong>, mas não <strong>limitou</strong>.</p>
+<p>É isso que o <code>&lt;datalist&gt;</code> faz. Você já viu algo parecido na caixa de busca de muitos sites: enquanto você digita, aparece uma listinha de sugestões embaixo, e você pode clicar numa ou continuar digitando a sua.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>&lt;select&gt;</code></th><th><code>&lt;input&gt;</code> + <code>&lt;datalist&gt;</code></th></tr>
+<tr><td>Na sorveteria</td><td>"Só temos estes três"</td><td>"Os mais pedidos são estes três"</td></tr>
+<tr><td>A pessoa pode escrever outra coisa?</td><td>Não</td><td>Sim</td></tr>
+<tr><td>O que aparece na tela</td><td>Uma lista suspensa</td><td>Um campo de texto (as sugestões aparecem ao digitar ou clicar)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O primeiro datalist</h2>
+<p>São duas peças: o <strong>campo</strong> (um <code>&lt;input&gt;</code> comum) e a <strong>lista</strong> (o <code>&lt;datalist&gt;</code>). Quem liga uma à outra é o atributo <code>list</code> do campo, que repete o <code>id</code> da lista:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="sabor"&gt;Sabor do bolo:&lt;/label&gt;
+&lt;input type="text" id="sabor" name="sabor" list="sabores"&gt;
+
+&lt;datalist id="sabores"&gt;
+  &lt;option value="Cenoura"&gt;&lt;/option&gt;
+  &lt;option value="Chocolate"&gt;&lt;/option&gt;
+  &lt;option value="Laranja"&gt;&lt;/option&gt;
+&lt;/datalist&gt;
+</pre>
+
+<p>No resultado aparece só o campo: o <code>&lt;datalist&gt;</code> é <strong>invisível</strong> (no Chromium 155, o estilo dele é <code>display: none</code>). Clique no campo e digite <code>c</code>: a lista de sugestões aparece embaixo, já filtrada pelo que você digitou. Clique numa sugestão e ela vai para o campo. Agora apague e escreva <code>Abacaxi</code>: o campo aceita normalmente.</p>
+
+<p>Em muitos navegadores, as sugestões também aparecem com um clique no campo vazio, ou com a seta <kbd>↓</kbd> do teclado, e alguns desenham uma setinha no canto do campo. Os detalhes de aparência mudam de navegador para navegador, e no celular a lista costuma aparecer em cima do teclado.</p>
+
+<dl class="anatomy">
+  <dt>list="sabores"</dt><dd>No campo: "minhas sugestões estão no <code>datalist</code> de <code>id</code> <code>sabores</code>". É parecido com o <code>for</code> do <code>&lt;label&gt;</code>: um atributo que aponta para um <code>id</code>.</dd>
+  <dt>&lt;datalist id="sabores"&gt;</dt><dd>A lista de sugestões. O <code>id</code> é o que o <code>list</code> procura. O <code>&lt;datalist&gt;</code> pode ficar em qualquer lugar da página, mas o costume é logo depois do campo.</dd>
+  <dt>&lt;option value="Cenoura"&gt;&lt;/option&gt;</dt><dd>Uma sugestão. O <code>value</code> é o texto que vai para o campo quando a pessoa clica nela. A tag <code>&lt;/option&gt;</code> pode ser omitida (<code>&lt;option value="Cenoura"&gt;</code> sozinho é válido), e você vai ver muito código assim.</dd>
+</dl>
+
+<h3>O que é enviado</h3>
+<p>O <code>&lt;datalist&gt;</code> não tem <code>name</code> e não é enviado. Quem é enviado é o <strong>campo</strong>, com o que estiver escrito nele, tenha vindo de uma sugestão ou não: <code>sabor=Chocolate</code> ou <code>sabor=Abacaxi</code>. Para quem recebe, não há diferença.</p>
+
+<div class="tryhtml" data-goal="attr:input#bairro[list]=bairros,sel:datalist#bairros option[value='Santa Rita'],nsel:datalist#bairros option=4">
+<p class="try-task"><strong>Missão:</strong> a lista de bairros está pronta, mas o campo não mostra nenhuma sugestão. Ligue o campo à lista com o atributo certo. Depois acrescente a sugestão <code>Santa Rita</code>. Teste digitando <code>s</code> no campo.</p>
+<pre class="script" data-file="index.html">&lt;label for="bairro"&gt;Bairro:&lt;/label&gt;
+&lt;input type="text" id="bairro" name="bairro"&gt;
+
+&lt;datalist id="bairros"&gt;
+  &lt;option value="Centro"&gt;&lt;/option&gt;
+  &lt;option value="Vila Nova"&gt;&lt;/option&gt;
+  &lt;option value="Jardim das Flores"&gt;&lt;/option&gt;
+&lt;/datalist&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;label for="bairro"&gt;Bairro:&lt;/label&gt;
+&lt;input type="text" id="bairro" name="bairro" list="bairros"&gt;
+
+&lt;datalist id="bairros"&gt;
+  &lt;option value="Centro"&gt;&lt;/option&gt;
+  &lt;option value="Vila Nova"&gt;&lt;/option&gt;
+  &lt;option value="Jardim das Flores"&gt;&lt;/option&gt;
+  &lt;option value="Santa Rita"&gt;&lt;/option&gt;
+&lt;/datalist&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O <code>value</code> e o texto da sugestão</h2>
+<p>Uma <code>&lt;option&gt;</code> do datalist pode ter, além do <code>value</code>, um texto entre as tags. Os dois têm papéis diferentes:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="tamanho"&gt;Fatias:&lt;/label&gt;
+&lt;input type="text" id="tamanho" name="tamanho" list="tamanhos"&gt;
+
+&lt;datalist id="tamanhos"&gt;
+  &lt;option value="10"&gt;Pequeno&lt;/option&gt;
+  &lt;option value="20"&gt;Médio&lt;/option&gt;
+  &lt;option value="30"&gt;Grande&lt;/option&gt;
+&lt;/datalist&gt;
+</pre>
+
+<ul>
+  <li>O <code>value</code> é o que <strong>entra no campo</strong> (e depois é enviado): <code>20</code>.</li>
+  <li>O texto ("Médio") é uma <strong>explicação</strong> mostrada na lista. Cada navegador a mostra do seu jeito: ao lado do valor, embaixo dele, ou só ela.</li>
+</ul>
+
+<p>Abra a lista no resultado e veja como o <strong>seu</strong> navegador mostrou. Escolha "Médio": o que aparece no campo é o número <code>20</code>. Sem o <code>value</code>, o texto vira o valor (<code>&lt;option&gt;Chocolate&lt;/option&gt;</code> sugere "Chocolate"), como no <code>select</code>.</p>
+
+<hr>
+
+<h2>3. Sugestões em outros tipos de campo</h2>
+<p>O <code>list</code> funciona em vários tipos de <code>&lt;input&gt;</code> (aula <a href="tipos-input.html">Tipos de input</a>): <code>text</code>, <code>search</code>, <code>email</code>, <code>url</code>, <code>tel</code>, <code>number</code>, <code>range</code>, <code>color</code>, <code>date</code>, <code>time</code>, <code>datetime-local</code>, <code>month</code> e <code>week</code>. O validador traz essa lista completa na mensagem de erro, que você vai ver adiante. O efeito muda com o tipo.</p>
+
+<h3>Num <code>range</code>: marquinhas na régua</h3>
+<p>Num controle deslizante (<code>type="range"</code>), as sugestões viram <strong>marcas</strong> na régua:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="fatias"&gt;Fatias:&lt;/label&gt;
+&lt;input type="range" id="fatias" name="fatias" min="10" max="30" step="5" list="marcas"&gt;
+
+&lt;datalist id="marcas"&gt;
+  &lt;option value="10"&gt;&lt;/option&gt;
+  &lt;option value="20"&gt;&lt;/option&gt;
+  &lt;option value="30"&gt;&lt;/option&gt;
+&lt;/datalist&gt;
+</pre>
+
+<p>No Chromium 155, o controle ganhou três tracinhos embaixo da régua, no 10, no 20 e no 30. Nem todo navegador desenha as marcas; quando não desenha, o controle funciona igual, só sem os tracinhos.</p>
+
+<h3>Num <code>email</code>: os domínios mais comuns</h3>
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="email"&gt;E-mail:&lt;/label&gt;
+&lt;input type="email" id="email" name="email" list="emails"&gt;
+
+&lt;datalist id="emails"&gt;
+  &lt;option value="ana@example.com"&gt;&lt;/option&gt;
+  &lt;option value="ana.padaria@example.com"&gt;&lt;/option&gt;
+&lt;/datalist&gt;
+</pre>
+
+<p>Repare que, no <code>email</code>, as sugestões são endereços <strong>inteiros</strong>. O datalist sugere o valor do campo todo, e não um pedaço dele.</p>
+
+<div class="note">
+<strong>O navegador também sugere sozinho</strong>
+<p>Os navegadores guardam o que você já digitou em campos parecidos e oferecem de novo: é o preenchimento automático, controlado pelo atributo <code>autocomplete</code> (aula <a href="atributos-input.html">placeholder, value, autocomplete…</a>). Num campo com <code>list</code>, as sugestões do navegador e as do datalist podem aparecer juntas na mesma lista.</p>
+</div>
+
+<hr>
+
+<h2>4. O que o datalist <strong>não</strong> faz</h2>
+<ul>
+  <li><strong>Não obriga</strong> a escolher uma sugestão. Se a resposta tem de ser uma das opções, use <code>&lt;select&gt;</code> ou rádios (aulas <a href="select.html">select e option</a> e <a href="checkbox-radio.html">checkbox e radio</a>). Para regras do tipo "tem de ser um número de 10 a 30", use a validação (aula <a href="validacao.html">Validação</a>).</li>
+  <li><strong>Não muda de aparência</strong> com CSS: a lista de sugestões é desenhada pelo navegador.</li>
+  <li><strong>Não é igual em todo lugar</strong>: o jeito de filtrar, a forma de abrir a lista e o que é anunciado pelo leitor de tela mudam de um navegador para outro. Por isso, o campo tem de funcionar bem mesmo para quem nunca vê as sugestões: um bom <code>&lt;label&gt;</code> e, se ajudar, um exemplo no texto.</li>
+</ul>
+
+<hr>
+
+<h2>Formas diferentes: qual usar?</h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>A resposta <strong>tem</strong> de ser uma de poucas opções</td><td>rádios (<a href="checkbox-radio.html">checkbox e radio</a>)</td></tr>
+<tr><td>A resposta <strong>tem</strong> de ser uma de muitas opções</td><td><code>&lt;select&gt;</code></td></tr>
+<tr><td>Quase todo mundo responde uma de algumas opções, mas outras respostas valem</td><td><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code></td></tr>
+<tr><td>Cada pessoa responde uma coisa diferente (nome, rua)</td><td><code>&lt;input&gt;</code> sem lista</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos desta seção são páginas completas com o mesmo começo de 7 linhas (<code>&lt;!DOCTYPE html&gt;</code> até <code>&lt;body&gt;</code>, como em <a href="estrutura.html">Estrutura de uma Página</a>). O código mostrado começa na <strong>linha 8</strong>.</p>
+
+<div class="cenario">
+<strong>O <code>list</code> não bate com o <code>id</code></strong>
+<pre class="file" data-file="lista.html">&lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+&lt;input type="text" id="sabor" name="sabor" list="sabores-lista"&gt;
+&lt;datalist id="sabores"&gt;
+  &lt;option value="Cenoura"&gt;&lt;/option&gt;
+&lt;/datalist&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu lista.html
+"file:/home/ana/site/lista.html":9.1-9.64: error: The “list” attribute of the “input” element must refer to a “datalist” element.</pre>
+<p><strong>O que significa:</strong> "o atributo <code>list</code> do elemento <code>input</code> precisa apontar para um elemento <code>datalist</code>". Não existe nenhum <code>id="sabores-lista"</code>.</p>
+<p><strong>O que o navegador faz:</strong> nada de errado aparece. O campo funciona, só que <strong>sem sugestões</strong>. É um erro silencioso: só o validador (ou um teste com atenção) mostra.</p>
+<p><strong>Como consertar:</strong> o <code>list</code> e o <code>id</code> com o mesmo texto, letra por letra.</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>list</code> apontando para um <code>select</code></strong>
+<pre class="file" data-file="lista-select.html">&lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+&lt;input type="text" id="sabor" name="sabor" list="sabores"&gt;
+&lt;select id="sabores"&gt;&lt;option&gt;Cenoura&lt;/option&gt;&lt;/select&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu lista-select.html
+"file:/home/ana/site/lista-select.html":9.1-9.58: error: The “list” attribute of the “input” element must refer to a “datalist” element.</pre>
+<p><strong>O que significa:</strong> a mesma mensagem: o <code>id</code> existe, mas é de um <code>&lt;select&gt;</code>. O <code>list</code> só aceita um <code>&lt;datalist&gt;</code>. Na tela aparecem um campo sem sugestões <strong>e</strong> uma lista suspensa, as duas coisas soltas.</p>
+<p><strong>Como consertar:</strong> troque <code>&lt;select&gt;</code> por <code>&lt;datalist&gt;</code> (e as opções viram <code>&lt;option value="…"&gt;</code>). Ou, se a resposta tem de ser uma das opções, apague o campo e fique só com o <code>select</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>list</code> num tipo que não aceita sugestões</strong>
+<pre class="file" data-file="tipo.html">&lt;label for="s"&gt;Senha:&lt;/label&gt;
+&lt;input type="password" id="s" name="s" list="l"&gt;
+&lt;datalist id="l"&gt;&lt;option value="a"&gt;&lt;/option&gt;&lt;/datalist&gt;
+&lt;label&gt;&lt;input type="checkbox" name="c" list="l"&gt; c&lt;/label&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu tipo.html
+"file:/home/ana/site/tipo.html":9.1-9.48: error: Attribute “list” is only allowed when the input type is “color”, “date”, “datetime-local”, “email”, “month”, “number”, “range”, “search”, “tel”, “text”, “time”, “url”, or “week”.
+"file:/home/ana/site/tipo.html":11.8-11.48: error: Attribute “list” is only allowed when the input type is “color”, “date”, “datetime-local”, “email”, “month”, “number”, “range”, “search”, “tel”, “text”, “time”, “url”, or “week”.</pre>
+<p><strong>O que significa:</strong> "o atributo <code>list</code> só é permitido quando o tipo do <code>input</code> é …", e vem a lista dos tipos. Sugerir senhas não faria sentido (seria mostrar senhas na tela), e uma caixa de marcar não tem texto para sugerir.</p>
+<p><strong>Como consertar:</strong> tire o <code>list</code> desses campos.</p>
+</div>
+
+<div class="cenario">
+<strong><code>list</code> num <code>textarea</code> ou num <code>select</code></strong>
+<pre class="file" data-file="outros.html">&lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+&lt;input type="text" id="sabor" name="sabor" list="sabores"&gt;
+&lt;datalist id="sabores"&gt;
+  &lt;option value="Cenoura"&gt;&lt;/option&gt;
+  &lt;option value="Chocolate"&gt;&lt;/option&gt;
+&lt;/datalist&gt;
+&lt;textarea name="t" list="sabores"&gt;&lt;/textarea&gt;
+&lt;select name="s" list="sabores"&gt;&lt;option&gt;a&lt;/option&gt;&lt;/select&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu outros.html
+"file:/home/ana/site/outros.html":14.1-14.34: error: Attribute “list” not allowed on element “textarea” at this point.
+"file:/home/ana/site/outros.html":15.1-15.32: error: Attribute “list” not allowed on element “select” at this point.</pre>
+<p><strong>O que significa:</strong> "o atributo <code>list</code> não é permitido no elemento <code>textarea</code>" (e no <code>select</code>). O <code>list</code> é um atributo só do <code>&lt;input&gt;</code>. (Esses dois campos também estão sem rótulo, mas isso o validador não acusa.)</p>
+<p><strong>Como consertar:</strong> para sugestões, use um <code>&lt;input&gt;</code>. Um <code>&lt;textarea&gt;</code> é para textos longos, que ninguém consegue sugerir inteiros.</p>
+</div>
+
+<div class="cenario">
+<strong>Outra coisa dentro do <code>datalist</code></strong>
+<pre class="file" data-file="dentro.html">&lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+&lt;input type="text" id="sabor" name="sabor" list="sabores"&gt;
+&lt;datalist id="sabores"&gt;
+  &lt;option value="Cenoura"&gt;&lt;/option&gt;
+  &lt;option value="Chocolate"&gt;&lt;/option&gt;
+  &lt;p&gt;Ou escreva outro sabor&lt;/p&gt;
+&lt;/datalist&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dentro.html
+"file:/home/ana/site/dentro.html":13.3-13.5: error: Element “p” not allowed as child of element “datalist” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> "o elemento <code>p</code> não é permitido como filho de <code>datalist</code>". Dentro dele vão só <code>&lt;option&gt;</code>. E, como o datalist é invisível, o parágrafo também não apareceria.</p>
+<p><strong>Como consertar:</strong> a instrução vai fora da lista, perto do campo: no <code>&lt;label&gt;</code> ou num parágrafo ao lado.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;input list="x"&gt;</code></td><td>Liga o campo à lista de sugestões de <code>id</code> <code>x</code></td></tr>
+<tr><td><code>&lt;datalist id="x"&gt;…&lt;/datalist&gt;</code></td><td>A lista de sugestões; invisível, não é enviada</td></tr>
+<tr><td><code>&lt;option value="Cenoura"&gt;&lt;/option&gt;</code></td><td>Uma sugestão: o <code>value</code> vai para o campo</td></tr>
+<tr><td><code>&lt;option value="20"&gt;Médio&lt;/option&gt;</code></td><td>Sugestão com explicação: entra <code>20</code>, a lista mostra "Médio" (cada navegador do seu jeito)</td></tr>
+<tr><td><code>&lt;input type="range" list="x"&gt;</code></td><td>As sugestões viram marcas na régua (em navegadores como o Chromium)</td></tr>
+<tr><td>Tipos que aceitam <code>list</code></td><td><code>text</code>, <code>search</code>, <code>email</code>, <code>url</code>, <code>tel</code>, <code>number</code>, <code>range</code>, <code>color</code>, <code>date</code>, <code>time</code>, <code>datetime-local</code>, <code>month</code>, <code>week</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Ligar o campo</h3>
+<p>Complete o atributo que liga o campo à lista:</p>
+<div class="ex-code">&lt;input type="text" name="sabor" <input data-answer="list" aria-label="atributo">="sabores"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A lista</h3>
+<p>Complete o elemento da lista de sugestões:</p>
+<div class="ex-code">&lt;<input data-answer="datalist" aria-label="elemento"> id="sabores"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Um campo tem as sugestões Cenoura e Chocolate. A cliente escreve <code>Abacaxi</code> e envia. O que acontece?</p>
+<label><input type="radio" name="q3"> O navegador não deixa enviar</label>
+<label><input type="radio" name="q3"> O campo troca para Cenoura, a sugestão mais parecida</label>
+<label><input type="radio" name="q3"> É enviado <code>sabor=Abacaxi</code></label>
+<label><input type="radio" name="q3"> O campo é enviado vazio</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Com <code>&lt;option value="30"&gt;Grande&lt;/option&gt;</code> numa datalist, o que vai para o campo quando a pessoa escolhe essa sugestão?</p>
+<label><input type="radio" name="q4"> Grande</label>
+<label><input type="radio" name="q4"> 30</label>
+<label><input type="radio" name="q4"> 30 Grande</label>
+<label><input type="radio" name="q4"> Nada: a option precisa de texto vazio</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O tamanho do bolo <strong>tem</strong> de ser P, M ou G. O que usar?</p>
+<label><input type="radio" name="q5"> <code>&lt;input list&gt;</code> com uma datalist de P, M e G</label>
+<label><input type="radio" name="q5"> <code>&lt;textarea&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;input type="password"&gt;</code></label>
+<label><input type="radio" name="q5"> Rádios (ou um <code>&lt;select&gt;</code>), porque a resposta tem de ser uma das opções</label>
+</div>
+
+<h3>Missão final: recheio e fatias</h3>
+
+<div class="tryhtml" data-goal="sel:label[for=recheio],attr:input#recheio[type]=text,attr:input#recheio[name]=recheio,attr:input#recheio[list]=recheios,nsel:datalist#recheios option[value]=4,attr:input#fatias[list]=marcas,nsel:datalist#marcas option[value]=3">
+<p class="try-task"><strong>Missão:</strong> complete a ficha:</p>
+<ul class="try-task">
+  <li>um campo de texto <code>recheio</code> (com <code>id</code> e <code>name</code> iguais a <code>recheio</code> e o seu <code>&lt;label&gt;</code>), com uma lista de sugestões de <code>id</code> <code>recheios</code> e quatro opções: Brigadeiro, Doce de leite, Morango e Coco;</li>
+  <li>ligue o controle de fatias a uma lista de <code>id</code> <code>marcas</code> com os valores 10, 20 e 30.</li>
+</ul>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;!-- o campo do recheio e a lista dele aqui --&gt;
+
+  &lt;p&gt;
+    &lt;label for="fatias"&gt;Fatias:&lt;/label&gt;
+    &lt;input type="range" id="fatias" name="fatias" min="10" max="30" step="5"&gt;
+  &lt;/p&gt;
+  &lt;!-- a lista das marcas aqui --&gt;
+
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;
+    &lt;label for="recheio"&gt;Recheio:&lt;/label&gt;
+    &lt;input type="text" id="recheio" name="recheio" list="recheios"&gt;
+  &lt;/p&gt;
+  &lt;datalist id="recheios"&gt;
+    &lt;option value="Brigadeiro"&gt;&lt;/option&gt;
+    &lt;option value="Doce de leite"&gt;&lt;/option&gt;
+    &lt;option value="Morango"&gt;&lt;/option&gt;
+    &lt;option value="Coco"&gt;&lt;/option&gt;
+  &lt;/datalist&gt;
+
+  &lt;p&gt;
+    &lt;label for="fatias"&gt;Fatias:&lt;/label&gt;
+    &lt;input type="range" id="fatias" name="fatias" min="10" max="30" step="5" list="marcas"&gt;
+  &lt;/p&gt;
+  &lt;datalist id="marcas"&gt;
+    &lt;option value="10"&gt;&lt;/option&gt;
+    &lt;option value="20"&gt;&lt;/option&gt;
+    &lt;option value="30"&gt;&lt;/option&gt;
+  &lt;/datalist&gt;
+
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;datalist id="x"&gt;</code> guarda sugestões; o campo <code>&lt;input list="x"&gt;</code> as mostra enquanto a pessoa digita.</li>
+  <li>O campo continua <strong>livre</strong>: qualquer texto é aceito e enviado. Para limitar às opções, use <code>select</code> ou rádios.</li>
+  <li>O <code>value</code> da <code>option</code> é o que entra no campo; o texto dela é uma explicação, mostrada de um jeito diferente em cada navegador.</li>
+  <li>O datalist é invisível e não é enviado; só o campo tem <code>name</code>.</li>
+  <li><code>list</code> funciona em <code>text</code>, <code>search</code>, <code>email</code>, <code>url</code>, <code>tel</code>, <code>number</code>, <code>range</code> (marcas na régua), <code>color</code> e nos de data e hora; não em <code>password</code>, <code>checkbox</code>, <code>textarea</code> ou <code>select</code>.</li>
+  <li>Um <code>list</code> que não aponta para um <code>datalist</code> não dá sinal na tela: o campo só fica sem sugestões. O validador pega.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
