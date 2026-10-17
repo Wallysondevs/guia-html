@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Tabelas — table, tr e td | Guia HTML</title>
+<meta name="description" content="Tabelas em HTML para quem nunca fez um site: table, tr e td, por que a tabela nasce sem linhas e as duas regras de CSS que as desenham, a montagem linha por linha, o tbody que o navegador cria sozinho, quando usar (e não usar) tabela e os erros reais do validador W3C (texto solto na tabela, td fora da tabela, border obsoleto), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Tabelas</span></h1>
+
+<p class="intro">Boletim da escola, tabela de preços, horário do ônibus, tabela do campeonato: quando as informações se cruzam em <strong>linhas e colunas</strong>, o lugar delas é uma <strong>tabela</strong>. Nesta aula a Ana monta a tabela de preços da lojinha com três tags, <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code> e <code>&lt;td&gt;</code>, e descobre duas surpresas: a tabela nasce sem nenhuma linha desenhada, e o navegador acrescenta uma tag que ela não escreveu.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que são <code>table</code>, <code>tr</code> e <code>td</code>, e como montar uma tabela.</li>
+  <li>Por que a tabela aparece sem bordas, e as duas regras de CSS que as desenham.</li>
+  <li>Por que a tabela é montada <strong>linha por linha</strong>, e como acrescentar uma linha ou uma coluna.</li>
+  <li>O que é o <code>tbody</code> que o navegador cria sozinho.</li>
+  <li>O que cabe numa célula, e quando usar (e não usar) uma tabela.</li>
+  <li>Os erros reais do validador: texto solto dentro da tabela, <code>td</code> fora da tabela, <code>td</code> sem <code>tr</code> e o <code>border</code> obsoleto.</li>
+</ul>
+</div>
+
+<p>Os quadros <strong>Resultado</strong> são desenhados pelo seu navegador. As mensagens do validador saíram do <code>vnu</code> 26.10.12 na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: a planilha</h2>
+<p>Pense numa planilha, ou na grade de um caderno quadriculado. Cada informação mora numa <strong>célula</strong>, no cruzamento de uma <strong>linha</strong> (deitada) com uma <strong>coluna</strong> (em pé). Na tabela de preços da Ana, cada linha é um produto, e cada coluna é um tipo de informação: o nome, o preço, o estoque.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tag</th><th>Vem do inglês</th><th>Na planilha</th></tr>
+<tr><td><code>&lt;table&gt;</code></td><td><em>table</em>, "tabela"</td><td>a planilha inteira</td></tr>
+<tr><td><code>&lt;tr&gt;</code></td><td><em>table row</em>, "linha da tabela"</td><td>uma linha</td></tr>
+<tr><td><code>&lt;td&gt;</code></td><td><em>table data</em>, "dado da tabela"</td><td>uma célula</td></tr>
+</table>
+</div>
+
+<p>Repare que não existe uma tag para "coluna". Em HTML, a tabela é escrita <strong>uma linha de cada vez</strong>, e as colunas aparecem sozinhas: a primeira célula de cada linha forma a primeira coluna, a segunda célula forma a segunda coluna, e assim por diante.</p>
+
+<hr>
+
+<h2>1. A primeira tabela</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caderno&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caneta azul&lt;/td&gt;
+    &lt;td&gt;R$ 3,50&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;table&gt; … &lt;/table&gt;</dt><dd>A tabela inteira. Tudo o que é da tabela fica aqui dentro.</dd>
+  <dt>&lt;tr&gt; … &lt;/tr&gt;</dt><dd>Uma linha. Esta tabela tem duas: a do caderno e a da caneta.</dd>
+  <dt>&lt;td&gt;Caderno&lt;/td&gt;</dt><dd>Uma célula com o seu conteúdo. Cada linha tem duas: o nome e o preço.</dd>
+  <dt>o recuo</dt><dd>Os <code>td</code> recuados dentro do <code>tr</code>, e o <code>tr</code> dentro do <code>table</code>, são só para você ler. O navegador ignora esses espaços.</dd>
+</dl>
+
+<p>Olhe o resultado: os dados estão alinhados em duas colunas, mas <strong>não há linha nenhuma</strong> separando as células. Isso não é defeito: o HTML diz o que é tabela, linha e célula; <strong>desenhar</strong> as bordas é trabalho do CSS. Sem CSS, o navegador só alinha o conteúdo.</p>
+
+<p>Repare também que o navegador alarga cada coluna o suficiente para o maior conteúdo dela, e não mais que isso. "Caneta azul" é mais comprido que "Caderno", então a primeira coluna tem a largura de "Caneta azul".</p>
+
+<hr>
+
+<h2>2. Desenhar as linhas com CSS</h2>
+<p>Para enxergar a grade, a Ana põe duas regras de CSS dentro de um <code>&lt;style&gt;</code>, no <code>&lt;head&gt;</code>. Esta é a página completa:</p>
+
+<pre class="file" data-file="precos.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Preços&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Preços da lojinha&lt;/h1&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caderno&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+    &lt;td&gt;12 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caneta azul&lt;/td&gt;
+    &lt;td&gt;R$ 3,50&lt;/td&gt;
+    &lt;td&gt;40 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Estojo&lt;/td&gt;
+    &lt;td&gt;R$ 18,00&lt;/td&gt;
+    &lt;td&gt;5 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;style&gt; … &lt;/style&gt;</dt><dd>Um bloco de CSS dentro da página (aula <a href="ligar-css.html">Ligar CSS</a>). O assunto aqui é o HTML; o CSS é só o mínimo para ver a grade (quer aprender mais? futuro Guia CSS).</dd>
+  <dt>th, td { border: 1px solid #999; }</dt><dd>"Em cada célula, uma borda (<em>border</em>) de 1 pixel, contínua (<em>solid</em>), cinza (<code>#999</code>)." O <code>th</code> é a célula de cabeçalho, da próxima aula.</dd>
+  <dt>padding: 6px 10px</dt><dd>"Enchimento": um respiro entre a borda e o texto, de 6 pixels em cima e embaixo e 10 dos lados.</dd>
+  <dt>table { border-collapse: collapse; }</dt><dd>"Juntar as bordas": sem isso, cada célula teria a sua própria borda, e entre duas células apareceriam <strong>duas</strong> linhas paralelas.</dd>
+</dl>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose precos.html
+precos.html                 « só o nome: nenhum erro</pre>
+
+<p>Todos os exemplos com bordas das aulas de tabela usam este mesmo <code>&lt;head&gt;</code>, com estas duas regras.</p>
+
+<hr>
+
+<h2>3. Montada linha por linha</h2>
+<p>Como não existe tag de coluna, cada mudança na tabela segue a regra das linhas:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Para…</th><th>Faça</th></tr>
+<tr><td>acrescentar um produto (uma <strong>linha</strong>)</td><td>um <code>&lt;tr&gt;</code> novo, com o mesmo número de <code>td</code> das outras linhas</td></tr>
+<tr><td>acrescentar uma informação (uma <strong>coluna</strong>)</td><td>um <code>&lt;td&gt;</code> novo <strong>em cada</strong> <code>tr</code>, sempre na mesma posição</td></tr>
+<tr><td>trocar duas colunas de lugar</td><td>trocar a ordem dos <code>td</code> em <strong>todas</strong> as linhas</td></tr>
+</table>
+</div>
+
+<p>Se uma linha ficar com menos células que as outras, o navegador deixa um buraco no fim dela; se ficar com mais, a célula a mais fica sobrando para fora, numa coluna que só ela tem. O validador avisa nos dois casos. Isso é o assunto de <a href="tabelas-mesclar.html">Mesclar Células</a>, onde as células de tamanhos diferentes aparecem de propósito.</p>
+
+<hr>
+
+<h2>4. O <code>tbody</code> que aparece sozinho</h2>
+<p>Abra as Ferramentas do Desenvolvedor (F12, aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>) numa página com a tabela de preços e olhe a árvore de elementos. Entre o <code>table</code> e os <code>tr</code> há um elemento que a Ana não escreveu:</p>
+
+<pre class="file" data-file="o que o navegador montou">&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Caderno&lt;/td&gt;
+      …
+    &lt;/tr&gt;
+    …
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</pre>
+
+<p>O <code>tbody</code> (<em>table body</em>, "corpo da tabela") é o grupo das linhas de dados. As regras do HTML dizem que as linhas de uma tabela moram sempre dentro de um grupo; quando você escreve os <code>tr</code> direto no <code>table</code>, o navegador cria o <code>tbody</code> por conta própria, enquanto lê o código. O seu arquivo continua igual; o que muda é a <strong>árvore</strong> que o navegador monta (o DOM, aula <a href="como-funciona.html">Como o Navegador Lê HTML</a>).</p>
+
+<p>Isso é válido, e o validador não reclama. Mas tem uma consequência prática: um seletor de CSS como <code>table &gt; tr</code> ("<code>tr</code> filho direto de <code>table</code>") <strong>não encontra nada</strong>, porque no DOM os <code>tr</code> são filhos do <code>tbody</code>. As metas do editor do guia olham o DOM, por isso a próxima missão conta <code>tbody tr</code>, mesmo sem nenhum <code>tbody</code> no código. Na aula <a href="tabelas-cabecalho.html">Cabeçalhos</a>, você vai escrever o <code>tbody</code> você mesmo, junto com o <code>thead</code> e o <code>tfoot</code>.</p>
+
+<div class="tryhtml" data-goal="nsel:tbody tr=4,nsel:tbody td=12,texto:tr:last-child td=Borracha">
+<p class="try-task"><strong>Experimente:</strong> a Ana começou a vender borracha. Acrescente uma <strong>quarta linha</strong>, no fim da tabela, com <code>Borracha</code>, <code>R$ 2,00</code> e <code>30 unidades</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Preços&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caderno&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+    &lt;td&gt;12 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caneta azul&lt;/td&gt;
+    &lt;td&gt;R$ 3,50&lt;/td&gt;
+    &lt;td&gt;40 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Estojo&lt;/td&gt;
+    &lt;td&gt;R$ 18,00&lt;/td&gt;
+    &lt;td&gt;5 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Preços&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caderno&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+    &lt;td&gt;12 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caneta azul&lt;/td&gt;
+    &lt;td&gt;R$ 3,50&lt;/td&gt;
+    &lt;td&gt;40 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Estojo&lt;/td&gt;
+    &lt;td&gt;R$ 18,00&lt;/td&gt;
+    &lt;td&gt;5 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Borracha&lt;/td&gt;
+    &lt;td&gt;R$ 2,00&lt;/td&gt;
+    &lt;td&gt;30 unidades&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. O que cabe numa célula</h2>
+<p>Um <code>td</code> aceita quase tudo o que um <code>li</code> aceita: texto, destaques, links, imagens, listas, até outra tabela (o que raramente é boa ideia). Uma célula também pode ficar <strong>vazia</strong>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;strong&gt;Caderno&lt;/strong&gt;&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+    &lt;td&gt;&lt;em&gt;novo!&lt;/em&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caneta azul&lt;/td&gt;
+    &lt;td&gt;R$ 3,50&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+
+<p>A célula vazia continua ocupando o lugar dela, e a linha continua com 3 células. Apagar o <code>&lt;td&gt;&lt;/td&gt;</code>, em vez de deixá-lo vazio, encurtaria a linha. O conteúdo de uma célula alinha, por padrão, à esquerda e no meio da altura da linha.</p>
+
+<hr>
+
+<h2>6. Quando usar uma tabela</h2>
+<p><strong>Use</strong> tabela quando a informação tem duas direções: cada linha é uma coisa (um produto, um aluno, um dia) e cada coluna é uma característica (preço, nota, horário). A pergunta-teste: <em>faz sentido ler esta informação cruzando uma linha com uma coluna?</em> "Qual é o preço do estojo?" — linha do estojo, coluna do preço.</p>
+
+<p><strong>Não use</strong> tabela para posicionar coisas na tela: duas colunas de texto, um menu do lado, uma foto ao lado de um parágrafo. Nos anos 1990 os sites inteiros eram montados assim, porque não havia outro jeito. Hoje o CSS faz o layout, e a tabela de enfeite atrapalha:</p>
+<ul>
+  <li>o leitor de tela anuncia "tabela com 2 colunas e 1 linha" e lê o conteúdo célula por célula, como se fossem dados;</li>
+  <li>no celular, a tabela não se rearruma: ela fica larga demais e a página ganha barra de rolagem para o lado.</li>
+</ul>
+<p>Para uma lista simples, use <code>ul</code>; para pares nome → valor, <code>dl</code> (aula <a href="listas-descricao.html">Listas de Descrição</a>).</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Nos arquivos com erro, as linhas 1 a 11 são o mesmo cabeçalho do <code>precos.html</code> (com o <code>&lt;style&gt;</code>); o código mostrado começa na linha 12. Os quadros Resultado mostram só o trecho, sem as bordas.</p>
+
+<div class="cenario">
+<strong><code>error: Misplaced non-space characters inside a table.</code></strong>
+<p>A Ana quis pôr um título na tabela e escreveu o texto direto dentro do <code>&lt;table&gt;</code>:</p>
+<pre class="file" data-file="texto-solto.html" data-resultado>&lt;table&gt;
+  Preços de outubro
+  &lt;tr&gt;
+    &lt;td&gt;Caderno&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu texto-solto.html
+"file:/home/ana/site/texto-solto.html":12.8-14.6: error: Misplaced non-space characters inside a table.
+"file:/home/ana/site/texto-solto.html":12.8-14.6: error fatal: Cannot recover after last error. Any further errors will be ignored.</pre>
+<dl class="anatomy">
+  <dt>Misplaced non-space characters inside a table</dt><dd>"Caracteres que não são espaço, fora do lugar, dentro de uma tabela". Entre as tags da tabela só podem existir espaços e quebras de linha; texto, só dentro das células.</dd>
+  <dt>error fatal: Cannot recover after last error</dt><dd>"Erro fatal: não consigo me recuperar depois do último erro. Os próximos erros serão ignorados." O validador para de procurar aqui. Conserte este e rode de novo: pode haver outros mais abaixo.</dd>
+</dl>
+<p><strong>O que o navegador faz:</strong> algo estranho. Ele <strong>tira o texto de dentro da tabela</strong> e o coloca <strong>antes</strong> dela. No resultado, "Preços de outubro" aparece acima da tabela, como se você o tivesse escrito antes do <code>&lt;table&gt;</code>. Esse "despejo" para fora tem até nome na especificação do HTML: <em>foster parenting</em> ("adoção"), porque o conteúdo é adotado pelo elemento de fora. O mesmo acontece com um <code>&lt;p&gt;</code> ou um <code>&lt;strong&gt;</code> perdidos entre as linhas.</p>
+<p><strong>Como consertar:</strong> o título de uma tabela tem lugar próprio, a tag <code>&lt;caption&gt;</code> (aula <a href="tabelas-legenda.html">Legenda e Acessibilidade</a>). Por enquanto, ponha o texto num parágrafo ou título <strong>antes</strong> do <code>&lt;table&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Stray start tag “td”.</code></strong>
+<p>A Ana esqueceu o <code>&lt;table&gt;</code> e o <code>&lt;tr&gt;</code>, e escreveu só as células:</p>
+<pre class="file" data-file="sem-table.html" data-resultado>&lt;p&gt;Preços:&lt;/p&gt;
+&lt;td&gt;Caderno&lt;/td&gt;
+&lt;td&gt;R$ 25,00&lt;/td&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu sem-table.html
+"file:/home/ana/site/sem-table.html":13.1-13.4: error: Stray start tag “td”.
+"file:/home/ana/site/sem-table.html":13.12-13.16: error: Stray end tag “td”.
+"file:/home/ana/site/sem-table.html":14.1-14.4: error: Stray start tag “td”.
+"file:/home/ana/site/sem-table.html":14.13-14.17: error: Stray end tag “td”.</pre>
+<p><strong>O que significa:</strong> <em>stray</em> quer dizer "perdida", "desgarrada": uma tag de abertura (<em>start tag</em>) e uma de fechamento (<em>end tag</em>) de <code>td</code> num lugar onde não pode haver célula.</p>
+<p><strong>O que o navegador faz:</strong> <strong>apaga as tags</strong> e deixa só o texto. Não sobra célula nenhuma: "Caderno" e "R$ 25,00" aparecem grudados na mesma linha, como texto comum. É diferente do <code>li</code> solto da aula de <a href="listas.html">Listas</a>, que continuava sendo um <code>li</code>.</p>
+<p><strong>Como consertar:</strong> toda célula mora num <code>tr</code>, e todo <code>tr</code> mora num <code>table</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: “td” start tag in table body.</code></strong>
+<p>Agora o <code>table</code> existe, mas falta o <code>tr</code>:</p>
+<pre class="file" data-file="sem-tr.html">&lt;table&gt;
+  &lt;td&gt;Caderno&lt;/td&gt;
+  &lt;td&gt;R$ 25,00&lt;/td&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu sem-tr.html
+"file:/home/ana/site/sem-tr.html":12.8-13.6: error: “td” start tag in table body.</pre>
+<p><strong>O que significa:</strong> "tag de abertura de <code>td</code> no corpo da tabela", ou seja, num lugar onde só pode haver linhas.</p>
+<p><strong>O que o navegador faz:</strong> conserta sozinho, criando o <code>tbody</code> e um <code>tr</code> em volta das células. A tabela aparece certinha, com uma linha e duas células, e por isso o erro passa despercebido. Mas o validador acusa, e com mais linhas o conserto automático não adivinha onde cada linha termina: todas as células vão para a mesma linha.</p>
+<p><strong>Como consertar:</strong> escreva o <code>&lt;tr&gt;</code> e o <code>&lt;/tr&gt;</code> em volta das células de cada linha.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: The “border” attribute on the “table” element is obsolete.</code></strong>
+<p>Em sites antigos e em muitos tutoriais, a borda vem do atributo <code>border</code>:</p>
+<pre class="file" data-file="border.html" data-resultado>&lt;table border="1"&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Caderno&lt;/td&gt;
+    &lt;td&gt;R$ 25,00&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu border.html
+"file:/home/ana/site/border.html":12.1-12.18: info warning: The “border” attribute on the “table” element is obsolete. Consider specifying “img { border: 0; }” in CSS instead.</pre>
+<p><strong>O que significa:</strong> "o atributo <code>border</code> no elemento <code>table</code> é obsoleto". É só um aviso (<em>info warning</em>), e o navegador ainda desenha as bordas, duplas, como você vê no resultado. A segunda frase da mensagem é curiosa: "considere usar <code>img { border: 0; }</code> no CSS". Ela fala de <strong>imagens</strong>, e não de tabelas: é um texto do validador pensado para outro caso antigo, que aparece aqui também. Não leve a sugestão ao pé da letra.</p>
+<p><strong>Como consertar:</strong> apague o <code>border="1"</code> e use as duas regras de CSS da seção 2.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;table&gt;…&lt;/table&gt;</code></td><td>A tabela inteira.</td></tr>
+<tr><td><code>&lt;tr&gt;…&lt;/tr&gt;</code></td><td>Uma linha (<em>table row</em>). Só dentro de <code>table</code> (ou de <code>thead</code>, <code>tbody</code>, <code>tfoot</code>).</td></tr>
+<tr><td><code>&lt;td&gt;…&lt;/td&gt;</code></td><td>Uma célula de dados (<em>table data</em>). Só dentro de <code>tr</code>. Pode ficar vazia.</td></tr>
+<tr><td><code>tbody</code></td><td>Criado pelo navegador quando os <code>tr</code> estão direto no <code>table</code>. Seletores de CSS e metas enxergam o <code>tbody</code>.</td></tr>
+<tr><td><code>border-collapse: collapse</code></td><td>CSS: junta as bordas vizinhas numa linha só.</td></tr>
+<tr><td><code>border: 1px solid #999</code></td><td>CSS: desenha a borda das células.</td></tr>
+<tr><td><code>&lt;table border="1"&gt;</code></td><td>Obsoleto (<em>info warning</em>). Use CSS.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A tag da linha</h3>
+<p>Complete:</p>
+<div class="ex-code">&lt;table&gt; &lt;<input data-answer="tr" aria-label="tag da linha">&gt; &lt;td&gt;Caderno&lt;/td&gt; &lt;/tr&gt; &lt;/table&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Quantas células?</h3>
+<p>Uma tabela tem 4 produtos (linhas) e 3 informações sobre cada um (colunas). Quantos <code>td</code> ela tem?</p>
+<div class="ex-code"><input data-answer="12" aria-label="número de células"> células</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Por que a primeira tabela da aula apareceu sem linhas?</p>
+<label><input type="radio" name="q3"> Porque faltou o atributo <code>border</code></label>
+<label><input type="radio" name="q3"> Porque desenhar bordas é trabalho do CSS; o HTML só diz o que é tabela, linha e célula</label>
+<label><input type="radio" name="q3"> Porque faltou o <code>tbody</code></label>
+<label><input type="radio" name="q3"> Porque o navegador só desenha linhas em tabelas com mais de 3 linhas</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. A Ana escreveu "Preços de outubro" direto dentro do <code>&lt;table&gt;</code>, antes do primeiro <code>&lt;tr&gt;</code>. O que o navegador faz?</p>
+<label><input type="radio" name="q4"> Mostra o texto numa célula nova</label>
+<label><input type="radio" name="q4"> Apaga o texto</label>
+<label><input type="radio" name="q4"> Mostra uma mensagem de erro</label>
+<label><input type="radio" name="q4"> Tira o texto da tabela e o mostra antes dela</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Para acrescentar uma coluna "Cor" na tabela de preços, a Ana precisa…</p>
+<label><input type="radio" name="q5"> escrever uma tag <code>&lt;tc&gt;</code> de coluna</label>
+<label><input type="radio" name="q5"> acrescentar um <code>&lt;tr&gt;</code> no fim</label>
+<label><input type="radio" name="q5"> acrescentar um <code>&lt;td&gt;</code> em cada <code>&lt;tr&gt;</code>, na mesma posição</label>
+<label><input type="radio" name="q5"> acrescentar um <code>&lt;td&gt;</code> só no primeiro <code>&lt;tr&gt;</code></label>
+</div>
+
+<h3>Missão final: o horário da lojinha</h3>
+
+<div class="tryhtml" data-goal="nsel:table=1,nsel:tbody tr=3,nsel:tbody tr&gt;td=6,texto:tr:first-child td=Segunda a sexta,texto:tr:last-child td:last-child=Fechado,nsrc:&lt;br">
+<p class="try-task"><strong>Missão:</strong> a Ana escreveu o horário da lojinha num parágrafo. Transforme em uma <strong>tabela</strong> com 3 linhas e 2 colunas: na primeira coluna, os dias; na segunda, o horário. Mantenha a ordem do texto. Não deixe nenhum <code>&lt;br&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Horário&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Horário da lojinha&lt;/h1&gt;
+&lt;p&gt;Segunda a sexta: 9h às 18h&lt;br&gt;
+Sábado: 9h às 13h&lt;br&gt;
+Domingo: Fechado&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Horário&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Horário da lojinha&lt;/h1&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Segunda a sexta&lt;/td&gt;
+    &lt;td&gt;9h às 18h&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Sábado&lt;/td&gt;
+    &lt;td&gt;9h às 13h&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Domingo&lt;/td&gt;
+    &lt;td&gt;Fechado&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Os dois-pontos sumiram, como na ficha da aula de <a href="listas-descricao.html">Listas de Descrição</a>: quem diz que "9h às 18h" é o horário de "Segunda a sexta" agora é a posição na tabela. Falta uma coisa: uma linha de cabeçalho dizendo "Dia" e "Horário". Ela é o assunto da próxima aula.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Tabela = <code>table</code> (a tabela), <code>tr</code> (cada linha) e <code>td</code> (cada célula). Não existe tag de coluna: as colunas nascem da posição dos <code>td</code>.</li>
+  <li>Sem CSS, a tabela não tem bordas. <code>border-collapse: collapse</code> e <code>border: 1px solid</code> nas células desenham a grade.</li>
+  <li>Cada linha deve ter o mesmo número de células. Nova coluna = um <code>td</code> em cada <code>tr</code>.</li>
+  <li>O navegador cria um <code>tbody</code> em volta dos <code>tr</code> soltos. O DOM tem <code>tbody</code> mesmo que o código não tenha.</li>
+  <li>Tabela é para dados em linhas e colunas, nunca para montar o layout da página.</li>
+  <li>Erros: <em>Misplaced non-space characters inside a table</em> (o texto é jogado para antes da tabela), <em>Stray start tag “td”</em> (a célula vira texto comum), <em>“td” start tag in table body</em> (faltou o <code>tr</code>) e o <code>border</code> obsoleto.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
