@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Incorporar Vídeos e Mapas — YouTube e OpenStreetMap | Guia HTML</title>
+<meta name="description" content="Como incorporar um vídeo do YouTube e um mapa do OpenStreetMap numa página HTML, para quem nunca fez um site: o código de incorporar explicado atributo por atributo (src com /embed/, allow, referrerpolicy, allowfullscreen, bbox e marker), por que o endereço normal do vídeo não funciona num iframe, como melhorar o código copiado (title, loading=&quot;lazy&quot;, sem frameborder, youtube-nocookie) e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Incorporar Vídeos e Mapas</span></h1>
+
+<p class="intro">Hospedar um vídeo longo no próprio site é caro e trabalhoso, e desenhar um mapa do zero é impossível. Por isso, quase todo site mostra vídeos do YouTube e mapas de um serviço de mapas. Esses serviços oferecem um <strong>código de incorporar</strong>: um <code>&lt;iframe&gt;</code> pronto, que você copia e cola na sua página. Nesta aula você vai entender, parte por parte, o código que o YouTube e o OpenStreetMap entregam, e vai aprender a <strong>melhorá-lo</strong> antes de colar: quase sempre ele vem com um atributo velho e sem um bom <code>title</code>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Onde achar o código de incorporar no YouTube e no OpenStreetMap.</li>
+  <li>O que cada parte do código faz: o endereço <code>/embed/</code>, o <code>allow</code>, o <code>referrerpolicy</code>, o <code>allowfullscreen</code>, o <code>bbox</code> e o <code>marker</code>.</li>
+  <li>Por que o endereço normal de um vídeo (<code>watch?v=</code>) não funciona num iframe.</li>
+  <li>Como melhorar o código copiado: <code>title</code> em português, <code>loading="lazy"</code>, sem <code>frameborder</code>.</li>
+  <li>Privacidade: o modo <code>youtube-nocookie</code>.</li>
+  <li>O que o validador diz do código copiado, e o que ele não vê.</li>
+</ul>
+</div>
+
+<p>Antes, veja a aula <a href="iframes.html">iframe</a>: tudo aqui é um iframe. Os arquivos estão na pasta <code>~/site</code> da máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>) e foram conferidos com o validador W3C (<code>vnu</code>). Os quadros desta página carregam o YouTube e o OpenStreetMap de verdade: <strong>sem internet, eles aparecem vazios ou com uma mensagem de erro</strong>, e o resto da aula continua valendo. As missões conferem só o seu código, e não o que o YouTube responde.</p>
+
+<hr>
+
+<h2>A ideia: a TV a cabo da página</h2>
+<p>Quando você assina uma TV a cabo, os programas não ficam guardados na sua casa: eles chegam pelo fio, da emissora. A sua TV só mostra. Um vídeo incorporado é assim: o arquivo fica no YouTube, que paga a internet, converte o vídeo para cada aparelho e desenha o tocador. A sua página só abre uma janela (o iframe) para ele.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>Vídeo no seu site (<code>&lt;video&gt;</code>)</th><th>Vídeo incorporado (<code>&lt;iframe&gt;</code>)</th></tr>
+<tr><td>Onde fica o arquivo</td><td>No seu servidor</td><td>No YouTube</td></tr>
+<tr><td>Quem paga a internet de quem assiste</td><td>Você</td><td>O YouTube</td></tr>
+<tr><td>Qualidade automática para celular e TV</td><td>Você prepara cada versão</td><td>Automática</td></tr>
+<tr><td>Controle sobre o tocador, os anúncios e os dados de quem assiste</td><td>Total</td><td>Do YouTube</td></tr>
+<tr><td>Bom para</td><td>Vídeos curtos (como o da aula <a href="video.html">Vídeo</a>)</td><td>Vídeos longos, muito assistidos</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O vídeo do YouTube</h2>
+
+<h3>Onde está o código</h3>
+<ol class="passo">
+  <li>Abra o vídeo no YouTube, no computador.</li>
+  <li>Clique em <strong>Compartilhar</strong>, embaixo do vídeo.</li>
+  <li>Na janela que abre, clique em <strong>Incorporar</strong> (o ícone com <code>&lt;&gt;</code>).</li>
+  <li>Copie o código que aparece.</li>
+</ol>
+<p>Os nomes dos botões mudam de vez em quando, mas a ideia é sempre essa: <em>Compartilhar → Incorporar</em>. A Ana ainda não tem canal; para testar, ela usou o <strong>Big Buck Bunny</strong>, um curta-metragem de animação livre, da Blender Foundation. O código que o YouTube entrega hoje é parecido com este:</p>
+
+<pre class="file" data-file="e-youtube.html">&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/aqz-KE-bpKQ?si=Xy12AbCdEfGh3456" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen&gt;&lt;/iframe&gt;
+</pre>
+
+<p>Tudo numa linha só, e com muita coisa. Parte por parte:</p>
+
+<dl class="anatomy">
+  <dt>width="560" height="315"</dt><dd>O tamanho, em pixels: proporção 16:9, a dos vídeos do YouTube.</dd>
+  <dt>src="https://www.youtube.com/embed/aqz-KE-bpKQ…"</dt><dd>O endereço do <strong>tocador</strong>, e não da página do vídeo. Repare no <code>/embed/</code> ("incorporar"). O <code>aqz-KE-bpKQ</code> é o <strong>código do vídeo</strong>: o mesmo que aparece no endereço normal, depois do <code>watch?v=</code>.</dd>
+  <dt>?si=Xy12AbCdEfGh3456</dt><dd>Um identificador de compartilhamento (<em>share identifier</em>): diz ao YouTube quem copiou o código. Não é necessário para o vídeo tocar; você pode apagar tudo do <code>?si=</code> em diante.</dd>
+  <dt>title="YouTube video player"</dt><dd>O nome do quadro para leitores de tela… em inglês e igual para todos os vídeos do mundo. Troque por um que diga <strong>qual</strong> vídeo é.</dd>
+  <dt>frameborder="0"</dt><dd>"Sem moldura". É um atributo <strong>obsoleto</strong> (veja abaixo o que o validador diz). Apague e, se quiser, use CSS.</dd>
+  <dt>allow="accelerometer; autoplay; …"</dt><dd>A lista de <strong>permissões</strong> que o quadro recebe, separadas por ponto e vírgula. A tabela abaixo explica cada uma.</dd>
+  <dt>referrerpolicy="strict-origin-when-cross-origin"</dt><dd>Quanto do endereço da <strong>sua</strong> página o YouTube fica sabendo. Com este valor, ele recebe só o nome do site (<code>https://ana.example</code>), e não o caminho da página.</dd>
+  <dt>allowfullscreen</dt><dd>"Permitir tela cheia": o botão de tela cheia do tocador funciona. Atributo booleano.</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Permissão no <code>allow</code></th><th>Libera para o quadro…</th></tr>
+<tr><td><code>accelerometer</code>, <code>gyroscope</code></td><td>Os sensores de movimento do celular (para vídeos em 360°, que mudam quando você gira o aparelho)</td></tr>
+<tr><td><code>autoplay</code></td><td>Começar a tocar sozinho, se a página pedir (e com as regras do <a href="video.html">vídeo</a>: só sem som)</td></tr>
+<tr><td><code>clipboard-write</code></td><td>Escrever na área de transferência (o "copiar link" do tocador)</td></tr>
+<tr><td><code>encrypted-media</code></td><td>Tocar vídeos protegidos contra cópia (filmes alugados, por exemplo)</td></tr>
+<tr><td><code>picture-in-picture</code></td><td>A "janelinha flutuante", que continua tocando enquanto você usa outra coisa</td></tr>
+<tr><td><code>web-share</code></td><td>Abrir o menu de compartilhar do sistema (no celular)</td></tr>
+</table>
+</div>
+
+<h3>Por que o endereço normal não funciona</h3>
+<p>A primeira ideia de todo mundo é copiar o endereço da barra do navegador, <code>https://www.youtube.com/watch?v=aqz-KE-bpKQ</code>, e colocar no <code>src</code>. O quadro aparece com uma mensagem de recusa. Lembra do cabeçalho <code>x-frame-options</code> da aula <a href="iframes.html">iframe</a>? A página de <strong>assistir</strong> (<code>watch</code>) manda esse cabeçalho; a página do <strong>tocador</strong> (<code>embed</code>), não:</p>
+
+<pre class="term" data-cwd="~/site">$ curl -sI 'https://www.youtube.com/watch?v=aqz-KE-bpKQ' | grep -i x-frame-options
+x-frame-options: SAMEORIGIN
+$ curl -sI 'https://www.youtube.com/embed/aqz-KE-bpKQ' | grep -i x-frame-options      « nada: o tocador aceita quadros</pre>
+
+<p>A página <code>watch</code> só aceita aparecer em quadros do próprio YouTube (<code>SAMEORIGIN</code>, "mesma origem"). O <code>/embed/</code> foi feito para isso. A regra para montar o endereço à mão:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Endereço que você tem</th><th>Endereço para o iframe</th></tr>
+<tr><td><code>https://www.youtube.com/watch?v=<strong>aqz-KE-bpKQ</strong></code></td><td rowspan="2"><code>https://www.youtube.com/embed/<strong>aqz-KE-bpKQ</strong></code></td></tr>
+<tr><td><code>https://youtu.be/<strong>aqz-KE-bpKQ</strong></code></td></tr>
+</table>
+</div>
+
+<div class="tryhtml" data-goal="src:youtube(-nocookie)?\.com/embed/aqz-KE-bpKQ,nsrc:watch\?v=,sel:iframe[title]">
+<p class="try-task"><strong>Missão:</strong> a Ana colou o endereço de assistir no <code>src</code>, e o quadro mostra uma recusa (se você estiver sem internet, ele aparece vazio de qualquer jeito). Troque o endereço pelo do tocador, com <code>/embed/</code> e o mesmo código de vídeo.</p>
+<pre class="script" data-file="index.html">&lt;iframe width="560" height="315"
+        src="https://www.youtube.com/watch?v=aqz-KE-bpKQ"
+        title="Vídeo: Big Buck Bunny"&gt;&lt;/iframe&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;iframe width="560" height="315"
+        src="https://www.youtube.com/embed/aqz-KE-bpKQ"
+        title="Vídeo: Big Buck Bunny"&gt;&lt;/iframe&gt;
+</pre>
+</div>
+
+<h3>O que o validador diz do código do YouTube</h3>
+<p>O código copiado do YouTube, dentro de uma página completa, tem um aviso:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu e-youtube.html
+"file:/home/ana/site/e-youtube.html":8.1-8.319: info warning: The “frameborder” attribute on the “iframe” element is obsolete. Use CSS instead.</pre>
+
+<p>"O atributo <code>frameborder</code> é obsoleto. Use CSS". A tag ocupa as colunas 1 a 319 da linha 8: é aquela linha comprida. O validador <strong>não</strong> reclama do <code>title</code> genérico (ele não entende inglês nem sabe qual é o vídeo) e não confere as palavras do <code>allow</code>: um <code>allow="tela-cheia"</code> passa sem mensagem, e simplesmente não funciona.</p>
+
+<hr>
+
+<h2>2. Melhorando o código copiado</h2>
+<p>O código de incorporar é um ponto de partida. A versão da Ana, arrumada:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;iframe width="560" height="315"
+        src="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ"
+        title="Vídeo: Big Buck Bunny, curta-metragem de animação"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+        loading="lazy"
+        style="border: none;"&gt;&lt;/iframe&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>uma linha por atributo</dt><dd>Quebrar a tag em várias linhas não muda nada para o navegador (aula <a href="espacos.html">Espaços e Quebras de Linha</a>) e deixa o código legível.</dd>
+  <dt>youtube-nocookie.com</dt><dd>O "modo de privacidade aprimorada" do YouTube: o mesmo tocador, mas o YouTube promete não guardar informações de quem visita a sua página até a pessoa dar play. É só trocar o endereço.</dd>
+  <dt>sem ?si=…</dt><dd>O identificador de compartilhamento saiu: o vídeo toca igual.</dd>
+  <dt>title="Vídeo: Big Buck Bunny…"</dt><dd>Um nome em português, que diz qual é o vídeo.</dd>
+  <dt>sem frameborder, com style="border: none"</dt><dd>O atributo obsoleto saiu. Sem ele, o quadro ganharia a moldura padrão de todo iframe (2 pixels, no Chrome); o CSS <code>border: none</code> a tira, do jeito de hoje.</dd>
+  <dt>loading="lazy"</dt><dd>Um tocador do YouTube baixa muita coisa (scripts, imagens, fontes). Se o vídeo não está no topo da página, deixe-o para depois (aula <a href="iframes.html">iframe</a>).</dd>
+</dl>
+
+<div class="tip">
+<strong>Opções no endereço</strong>
+<p>O endereço do tocador aceita opções depois de um <code>?</code>, separadas por <code>&amp;</code>. As mais úteis: <code>?start=30</code> (começar no segundo 30) e <code>?cc_load_policy=1</code> (legendas ligadas). Para mais de uma, <code>?start=30&amp;cc_load_policy=1</code>. Dentro de um atributo HTML, o <code>&amp;</code> pode ser escrito como <code>&amp;amp;</code> (aula <a href="entidades.html">Entidades</a>); os dois funcionam.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsrc:frameborder,nsrc:\?si=,attr:iframe[loading]=lazy,sel:iframe[title],nsel:iframe[title='YouTube video player']=0">
+<p class="try-task"><strong>Missão:</strong> este é o código como veio do YouTube. Melhore-o: apague o <code>frameborder</code> e o <code>?si=…</code> do endereço, troque o <code>title</code> por um nome em português que diga qual é o vídeo e acrescente o carregamento preguiçoso.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Vídeo da semana&lt;/h2&gt;
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/aqz-KE-bpKQ?si=Xy12AbCdEfGh3456" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen&gt;&lt;/iframe&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Vídeo da semana&lt;/h2&gt;
+&lt;iframe width="560" height="315"
+        src="https://www.youtube.com/embed/aqz-KE-bpKQ"
+        title="Vídeo: Big Buck Bunny, curta-metragem de animação"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+        loading="lazy"
+        style="border: none;"&gt;&lt;/iframe&gt;
+</pre>
+</div>
+
+<h3>No celular: um quadro que encolhe</h3>
+<p>Um quadro de 560 pixels não cabe numa tela de celular. Com um pouco de CSS, ele ocupa a largura disponível e mantém a proporção 16:9 (o CSS em si é assunto do futuro Guia CSS; veja <a href="atributo-style.html">O Atributo style</a>):</p>
+
+<pre class="file" data-file="index.html">&lt;iframe src="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ"
+        title="Vídeo: Big Buck Bunny, curta-metragem de animação"
+        allowfullscreen loading="lazy"
+        style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: none;"&gt;&lt;/iframe&gt;
+</pre>
+
+<p><code>aspect-ratio: 16 / 9</code> diz "a altura acompanha a largura, na proporção 16 por 9". E <code>border: none</code> faz, do jeito certo, o que o <code>frameborder="0"</code> fazia.</p>
+
+<hr>
+
+<h2>3. O mapa do OpenStreetMap</h2>
+<p>O <strong>OpenStreetMap</strong> é um mapa do mundo feito por voluntários, livre como a Wikipédia. Para incorporar:</p>
+<ol class="passo">
+  <li>Abra <code>openstreetmap.org</code> e ajuste o mapa na região que você quer mostrar (o que aparece na tela é o que vai para o quadro).</li>
+  <li>Clique no botão <strong>Compartilhar</strong>, na barra da direita.</li>
+  <li>Marque "Incluir marcador", se quiser um alfinete no ponto.</li>
+  <li>Escolha a opção <strong>HTML</strong> e copie o código.</li>
+</ol>
+
+<p>Para este exemplo, a Ana escolheu o centro de São Paulo, com um alfinete na Praça da Sé. O código gerado é parecido com este:</p>
+
+<pre class="file" data-file="e-osm.html">&lt;iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed.html?bbox=-46.6370%2C-23.5530%2C-46.6310%2C-23.5480&amp;amp;layer=mapnik&amp;amp;marker=-23.5505%2C-46.6340" style="border: 1px solid black"&gt;&lt;/iframe&gt;&lt;br/&gt;&lt;small&gt;&lt;a href="https://www.openstreetmap.org/?mlat=-23.5505&amp;amp;mlon=-46.6340#map=17/-23.5505/-46.6340"&gt;Ver mapa maior&lt;/a&gt;&lt;/small&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>…/export/embed.html</dt><dd>A página feita para quadros, como o <code>/embed/</code> do YouTube. A página normal do OpenStreetMap recusa quadros (<code>x-frame-options: SAMEORIGIN</code>, como você viu em <a href="iframes.html">iframe</a>).</dd>
+  <dt>bbox=-46.6370%2C-23.5530%2C-46.6310%2C-23.5480</dt><dd>A "caixa" do mapa (<em>bounding box</em>): os limites da área mostrada, na ordem <strong>oeste, sul, leste, norte</strong> (longitude, latitude, longitude, latitude). O <code>%2C</code> é uma <strong>vírgula</strong> escrita do jeito seguro para endereços.</dd>
+  <dt>&amp;amp;layer=mapnik</dt><dd>O estilo de desenho do mapa (<code>mapnik</code> é o estilo padrão). O <code>&amp;amp;</code> é o <code>&amp;</code> que separa as opções, escrito como entidade porque está dentro de um atributo HTML.</dd>
+  <dt>&amp;amp;marker=-23.5505%2C-46.6340</dt><dd>O alfinete, na ordem <strong>latitude, longitude</strong> (repare: ao contrário do <code>bbox</code>).</dd>
+  <dt>style="border: 1px solid black"</dt><dd>Uma moldura preta de 1 pixel, em CSS.</dd>
+  <dt>&lt;br/&gt;&lt;small&gt;&lt;a …&gt;Ver mapa maior&lt;/a&gt;&lt;/small&gt;</dt><dd>Um link, <strong>fora</strong> do quadro, para abrir o mapa completo no site do OpenStreetMap. É o caminho para quem não consegue usar o quadro, e quem gerou o código já o colocou.</dd>
+</dl>
+
+<p>O validador aceita o código, com uma observação sobre a barra do <code>&lt;br/&gt;</code>:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu e-osm.html
+"file:/home/ana/site/e-osm.html":8.224-8.228: info: Trailing slash on void elements has no effect and interacts badly with unquoted attribute values.</pre>
+
+<p>"A barra no fim de um elemento vazio não tem efeito, e se dá mal com atributos sem aspas". É só uma <code>info</code> (informação), nem aviso nem erro: <code>&lt;br/&gt;</code> e <code>&lt;br&gt;</code> são a mesma coisa (aula <a href="quebras.html">Quebras</a>). E, de novo, falta o que o validador não cobra: o <code>title</code>.</p>
+
+<p>A versão arrumada, com <code>title</code>, <code>loading="lazy"</code> e o link num parágrafo:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;iframe width="425" height="350"
+        src="https://www.openstreetmap.org/export/embed.html?bbox=-46.6370%2C-23.5530%2C-46.6310%2C-23.5480&amp;amp;layer=mapnik&amp;amp;marker=-23.5505%2C-46.6340"
+        title="Mapa: Praça da Sé, no centro de São Paulo"
+        loading="lazy"
+        style="border: 1px solid black"&gt;&lt;/iframe&gt;
+&lt;p&gt;&lt;a href="https://www.openstreetmap.org/?mlat=-23.5505&amp;amp;mlon=-46.6340#map=17/-23.5505/-46.6340"&gt;Ver mapa maior&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<div class="note">
+<strong>E o Google Maps?</strong>
+<p>Funciona do mesmo jeito: no Google Maps, <em>Compartilhar → Incorporar um mapa → Copiar HTML</em>. O código também é um iframe, com <code>src</code> começando por <code>https://www.google.com/maps/embed?pb=…</code>, e costuma vir com <code>style="border:0;"</code>, <code>allowfullscreen</code>, <code>loading="lazy"</code> e <code>referrerpolicy</code>, mas sem <code>title</code>. As mesmas melhorias valem.</p>
+</div>
+
+<hr>
+
+<h2>4. Privacidade e peso: pense antes de incorporar</h2>
+<p>Um iframe de outro site é uma <strong>porta aberta</strong> para esse site na sua página. Quando alguém abre a página da Ana, o navegador dessa pessoa conversa com o YouTube (ou com o serviço de mapas), mesmo que ela nunca dê play: o serviço fica sabendo que ela visitou a página, pode guardar cookies e baixa muita coisa.</p>
+<ul>
+  <li>Use <code>loading="lazy"</code>: o quadro só carrega quando a pessoa chega perto dele.</li>
+  <li>No YouTube, use o endereço <code>youtube-nocookie.com</code>.</li>
+  <li>Se a página tem só um vídeo pequeno, considere um <strong>link com uma imagem</strong>: a pessoa clica e vai assistir no YouTube. É a forma mais leve e mais privada.</li>
+  <li>Se o seu site tem política de privacidade, cite os serviços incorporados nela.</li>
+</ul>
+
+<hr>
+
+<h2>Formas diferentes: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th></tr>
+<tr><td>Um vídeo curto, seu, sem anúncios</td><td><code>&lt;video&gt;</code> com o arquivo no seu site (<a href="video.html">Vídeo</a>)</td></tr>
+<tr><td>Um vídeo longo ou muito assistido</td><td>O código de incorporar do YouTube (ou de outro serviço), arrumado</td></tr>
+<tr><td>Um vídeo, com o máximo de privacidade e leveza</td><td>Um link com imagem para o vídeo no YouTube</td></tr>
+<tr><td>Um mapa que a pessoa pode arrastar e aproximar</td><td>O código de incorporar do OpenStreetMap (ou do Google Maps)</td></tr>
+<tr><td>Só mostrar onde fica a lojinha</td><td>Uma imagem do mapa com um bom <code>alt</code> (aula <a href="imagens-alt.html">Texto Alternativo</a>) e o endereço em texto, com <code>&lt;address&gt;</code> (aula <a href="endereco.html">Endereço</a>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>O quadro mostra uma recusa</strong>
+<p><strong>Causa:</strong> o <code>src</code> tem o endereço de assistir (<code>youtube.com/watch?v=…</code>) ou a página normal do mapa (<code>openstreetmap.org/#map=…</code>). Essas páginas mandam <code>x-frame-options: SAMEORIGIN</code>. <strong>Como consertar:</strong> use o código de incorporar do serviço, ou monte o endereço com <code>/embed/</code>. O validador não percebe esse erro: para ele, qualquer endereço é um endereço.</p>
+</div>
+
+<div class="cenario">
+<strong>O quadro aparece vazio ou com "vídeo indisponível"</strong>
+<p><strong>Causas:</strong> sem internet (o quadro depende do serviço, sempre); o código do vídeo copiado pela metade (são 11 caracteres, como <code>aqz-KE-bpKQ</code>); o vídeo é privado ou foi apagado; ou o dono do vídeo <strong>desativou</strong> a incorporação nas configurações dele. Neste último caso, o tocador avisa que o vídeo só pode ser assistido no YouTube, e não há o que fazer: use um link. Abra o endereço do <code>src</code> numa aba sozinha para descobrir qual é o caso.</p>
+</div>
+
+<div class="cenario">
+<strong>Copiar e colar só um pedaço</strong>
+<p>O código vem numa linha só, e é fácil deixar o <code>&lt;/iframe&gt;</code> para trás. Sem ele, como você viu em <a href="iframes.html#errado">iframe: Quando dá errado</a>, todo o resto da página vira texto escondido dentro do quadro, e o validador mostra uma avalanche de <code>Text not allowed in element “iframe”</code>. Depois de colar, confira o fim: <code>…allowfullscreen&gt;&lt;/iframe&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Atributos obsoletos e <code>title</code> genérico</strong>
+<p>O <code>frameborder</code> dá o <code>info warning</code> que você viu na seção 1; códigos mais antigos trazem também <code>scrolling</code>, <code>marginheight</code> e <code>marginwidth</code>, todos obsoletos. O <code>title="YouTube video player"</code> passa no validador, mas não ajuda ninguém. <strong>Como consertar:</strong> apague os obsoletos e escreva um <code>title</code> que diga o que tem no quadro.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Parte</th><th>O que é</th></tr>
+<tr><td><code>youtube.com/embed/CÓDIGO</code></td><td>O tocador do YouTube para quadros</td></tr>
+<tr><td><code>youtube-nocookie.com/embed/CÓDIGO</code></td><td>O mesmo, no modo de privacidade aprimorada</td></tr>
+<tr><td><code>?start=30</code></td><td>Começa no segundo 30</td></tr>
+<tr><td><code>allow="…"</code></td><td>Permissões do quadro, separadas por <code>;</code></td></tr>
+<tr><td><code>allowfullscreen</code></td><td>Libera o botão de tela cheia</td></tr>
+<tr><td><code>referrerpolicy="strict-origin-when-cross-origin"</code></td><td>O serviço vê só o nome do seu site</td></tr>
+<tr><td><code>openstreetmap.org/export/embed.html</code></td><td>O mapa do OpenStreetMap para quadros</td></tr>
+<tr><td><code>bbox=oeste,sul,leste,norte</code></td><td>A área do mapa (longitudes e latitudes)</td></tr>
+<tr><td><code>marker=latitude,longitude</code></td><td>O alfinete</td></tr>
+<tr><td><code>%2C</code></td><td>Uma vírgula, codificada para endereço</td></tr>
+<tr><td>Sempre acrescente</td><td><code>title</code> descritivo e <code>loading="lazy"</code></td></tr>
+<tr><td>Sempre tire</td><td><code>frameborder</code>, <code>scrolling</code> (use CSS)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O endereço do tocador</h3>
+<p>Complete o endereço do tocador para o vídeo <code>https://youtu.be/aqz-KE-bpKQ</code>:</p>
+<div class="ex-code">https://www.youtube.com/<input data-answer="embed" aria-label="caminho">/aqz-KE-bpKQ</div>
+</div>
+
+<div class="exercise">
+<h3>2. Tela cheia</h3>
+<p>Complete o atributo booleano que libera o botão de tela cheia:</p>
+<div class="ex-code">&lt;iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ" title="Vídeo" <input data-answer="allowfullscreen" aria-label="atributo">&gt;&lt;/iframe&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. A vírgula no endereço</h3>
+<p>Como se escreve uma vírgula codificada num endereço, como no <code>bbox</code>?</p>
+<div class="ex-code"><input data-answer="%2C|%2c" aria-label="vírgula codificada"></div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Por que <code>src="https://www.youtube.com/watch?v=aqz-KE-bpKQ"</code> não funciona num iframe?</p>
+<label><input type="radio" name="q4"> Porque falta o <code>allow</code></label>
+<label><input type="radio" name="q4"> Porque o código do vídeo está errado</label>
+<label><input type="radio" name="q4"> Porque a página <code>watch</code> manda <code>x-frame-options: SAMEORIGIN</code>; para quadros, existe o <code>/embed/</code></label>
+<label><input type="radio" name="q4"> Porque o validador bloqueia</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. O que o validador diz do <code>frameborder="0"</code> do código do YouTube?</p>
+<label><input type="radio" name="q5"> Um <code>info warning</code>: o atributo é obsoleto, use CSS</label>
+<label><input type="radio" name="q5"> Um erro que impede o vídeo de tocar</label>
+<label><input type="radio" name="q5"> Nada</label>
+<label><input type="radio" name="q5"> Que falta o <code>title</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. No <code>marker=-23.5505%2C-46.6340</code> do OpenStreetMap, em que ordem estão os números?</p>
+<label><input type="radio" name="q6"> Oeste, sul</label>
+<label><input type="radio" name="q6"> Longitude, latitude</label>
+<label><input type="radio" name="q6"> Altura, largura</label>
+<label><input type="radio" name="q6"> Latitude, longitude</label>
+</div>
+
+<h3>Missão final: o mapa arrumado</h3>
+
+<div class="tryhtml" data-goal="src:openstreetmap\.org/export/embed\.html,sel:iframe[title],attr:iframe[loading]=lazy,nsrc:&lt;br\s*/?&gt;,sel:p a[href*='openstreetmap.org']">
+<p class="try-task"><strong>Missão:</strong> a Ana colou o código do OpenStreetMap como veio. Arrume-o: acrescente um <code>title</code> que diga o que o mapa mostra e o <code>loading="lazy"</code>, apague o <code>&lt;br/&gt;</code> e o <code>&lt;small&gt;</code> e ponha o link "Ver mapa maior" dentro de um parágrafo, embaixo do quadro.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Onde fica&lt;/h2&gt;
+&lt;iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed.html?bbox=-46.6370%2C-23.5530%2C-46.6310%2C-23.5480&amp;amp;layer=mapnik&amp;amp;marker=-23.5505%2C-46.6340" style="border: 1px solid black"&gt;&lt;/iframe&gt;&lt;br/&gt;&lt;small&gt;&lt;a href="https://www.openstreetmap.org/?mlat=-23.5505&amp;amp;mlon=-46.6340#map=17/-23.5505/-46.6340"&gt;Ver mapa maior&lt;/a&gt;&lt;/small&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Onde fica&lt;/h2&gt;
+&lt;iframe width="425" height="350"
+        src="https://www.openstreetmap.org/export/embed.html?bbox=-46.6370%2C-23.5530%2C-46.6310%2C-23.5480&amp;amp;layer=mapnik&amp;amp;marker=-23.5505%2C-46.6340"
+        title="Mapa: Praça da Sé, no centro de São Paulo"
+        loading="lazy"
+        style="border: 1px solid black"&gt;&lt;/iframe&gt;
+&lt;p&gt;&lt;a href="https://www.openstreetmap.org/?mlat=-23.5505&amp;amp;mlon=-46.6340#map=17/-23.5505/-46.6340"&gt;Ver mapa maior&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Serviços como o YouTube e o OpenStreetMap dão um <strong>código de incorporar</strong>: um <code>&lt;iframe&gt;</code> pronto, em <em>Compartilhar → Incorporar</em> (ou <em>HTML</em>).</li>
+  <li>O endereço do quadro é o do <strong>tocador</strong> (<code>/embed/</code>) ou do mapa para quadros (<code>/export/embed.html</code>); as páginas normais mandam <code>x-frame-options</code> e recusam quadros.</li>
+  <li>No código do YouTube: <code>allow</code> lista permissões, <code>referrerpolicy</code> limita o que o serviço sabe da sua página, <code>allowfullscreen</code> libera a tela cheia. No do mapa: <code>bbox</code> é a área, <code>marker</code> é o alfinete, <code>%2C</code> é uma vírgula.</li>
+  <li>Arrume antes de colar: <code>title</code> descritivo, <code>loading="lazy"</code>, sem <code>frameborder</code> e sem <code>?si=</code>. Para privacidade, <code>youtube-nocookie.com</code>.</li>
+  <li>O validador avisa do <code>frameborder</code> obsoleto, mas não do <code>title</code> genérico, nem de um endereço que recusa quadros.</li>
+  <li>Todo incorporado depende da internet e do serviço; ofereça também um link para o conteúdo.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
