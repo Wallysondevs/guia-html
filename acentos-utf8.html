@@ -105,6 +105,7 @@ $ printf '🎂' | xxd
 
 <pre class="term" data-cwd="~/site">$ python3 -m http.server &gt; /dev/null 2&gt;&amp;1 &amp;
 [1] 127
+$ sleep 1                          « dá tempo para o servidor ligar
 $ curl -sI http://localhost:8000/index.html | grep -i content-type
 Content-type: text/html            « diz que é HTML, mas não diz a codificação
 $ kill %1</pre>
