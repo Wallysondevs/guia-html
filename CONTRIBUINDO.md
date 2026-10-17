@@ -69,7 +69,7 @@ As metas olham a **página já desenhada pelo navegador** (o DOM), e não o text
 | --- | --- |
 | `sel:SELETOR` | existe pelo menos um elemento que casa com o seletor CSS (`sel:img[alt]`, `sel:nav ul li a`) |
 | `nsel:SELETOR=N` | existem exatamente N elementos (`nsel:li=3`) |
-| `texto:SELETOR=TEXTO` | o texto do **primeiro** elemento que casa (espaços juntados, sem as pontas) **contém** TEXTO |
+| `texto:SELETOR=TEXTO` | o texto do **primeiro** elemento que casa (espaços juntados, sem as pontas) **contém** TEXTO, diferenciando maiúsculas de minúsculas |
 | `attr:SELETOR[ATRIBUTO]=VALOR` | o atributo do primeiro elemento é **igual** a VALOR; sem `=VALOR`, basta o atributo existir. **O último `[…]` é sempre o atributo** e o resto é o seletor: `attr:nav a[aria-current]=page` lê o `aria-current` do **primeiro** `nav a`. Para escolher o link que tem o atributo, filtre no seletor: `attr:nav a[aria-current][aria-current]=page` |
 | `css:SELETOR{propriedade}=VALOR` | o estilo **calculado** (`getComputedStyle`) do primeiro elemento é igual a VALOR (`css:h1{color}=rgb(255, 0, 0)`) |
 | `console:TEXTO` | a saída do console (log e erros) contém TEXTO |
