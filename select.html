@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML select e option — listas de escolha | Guia HTML</title>
+<meta name="description" content="select e option em HTML para quem nunca fez um site: a lista de escolha, o value que é enviado, a opção já escolhida com selected, a opção vazia &quot;Escolha…&quot;, grupos com optgroup, disabled, multiple e size, com o resultado real no seu navegador, as mensagens reais do validador W3C e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">select e option</span></h1>
+
+<p class="intro">No formulário de encomendas da Ana, a cliente precisa dizer o sabor do bolo. Se for um campo de texto livre, vão chegar "chocolate", "Chocolate", "choc." e "aquele marrom". Quando as respostas possíveis já são conhecidas, o melhor é <strong>mostrar a lista</strong> e deixar a pessoa escolher. Em HTML, essa lista é o <code>&lt;select&gt;</code>, e cada item dela é um <code>&lt;option&gt;</code>. Nesta aula você vai montar listas de escolha, decidir o que é mostrado e o que é enviado, agrupar opções e conhecer as mensagens que o validador dá quando algo sai do lugar.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como criar uma lista de escolha com <code>&lt;select&gt;</code> e <code>&lt;option&gt;</code>, ligada a um <code>&lt;label&gt;</code>.</li>
+  <li>A diferença entre o <strong>texto</strong> que a pessoa vê e o <strong>valor</strong> (<code>value</code>) que é enviado.</li>
+  <li>Como deixar uma opção já escolhida (<code>selected</code>) e como fazer a opção vazia "Escolha…".</li>
+  <li>Como agrupar opções com <code>&lt;optgroup&gt;</code> e desligar opções com <code>disabled</code>.</li>
+  <li>Como deixar escolher várias opções (<code>multiple</code>) e mostrar a lista aberta (<code>size</code>).</li>
+  <li>Os erros mais comuns e as mensagens reais do validador W3C.</li>
+</ul>
+</div>
+
+<p>Você vai precisar de <a href="formularios.html">Formulários</a> e <a href="label.html">label</a>. Os exemplos com o resultado embaixo são desenhados pelo <strong>seu</strong> navegador, na hora: abra a lista e escolha. As validações foram feitas com o <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do <a href="validar.html">validator.w3.org</a>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: o cardápio da padaria</h2>
+<p>Na padaria, você não inventa o nome do pão: olha o cardápio na parede e aponta. "Quero esse aqui." O atendente sabe exatamente do que você está falando, porque só existem aqueles itens.</p>
+<p>O <code>&lt;select&gt;</code> é o cardápio do formulário. Ele aparece fechado, ocupando uma linha só (por isso também é chamado de <strong>lista suspensa</strong>, ou <em>dropdown</em>, "cair para baixo"). Quando a pessoa clica, a lista abre e mostra as opções. Ela escolhe uma, e a lista fecha mostrando a escolha.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No cardápio</th><th>No HTML</th></tr>
+<tr><td>O cardápio inteiro</td><td><code>&lt;select&gt;</code> (de <em>select</em>, "selecionar", "escolher")</td></tr>
+<tr><td>Cada item do cardápio</td><td><code>&lt;option&gt;</code> ("opção")</td></tr>
+<tr><td>A placa "Escolha seu bolo:"</td><td><code>&lt;label&gt;</code> (o rótulo do campo)</td></tr>
+<tr><td>As seções "Bolos", "Tortas"</td><td><code>&lt;optgroup&gt;</code> ("grupo de opções")</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. A primeira lista</h2>
+<p>Um <code>&lt;select&gt;</code> tem dentro dele um <code>&lt;option&gt;</code> para cada escolha possível. O texto entre <code>&lt;option&gt;</code> e <code>&lt;/option&gt;</code> é o que aparece na lista:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="sabor"&gt;Sabor do bolo:&lt;/label&gt;
+&lt;select id="sabor" name="sabor"&gt;
+  &lt;option&gt;Cenoura&lt;/option&gt;
+  &lt;option&gt;Chocolate&lt;/option&gt;
+  &lt;option&gt;Laranja&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<p>Clique na lista do resultado: ela abre, mostra os três sabores e fecha quando você escolhe um. Repare que, sem você fazer nada, ela já mostra <strong>Cenoura</strong>: num <code>&lt;select&gt;</code> comum, a <strong>primeira</strong> opção já vem escolhida.</p>
+
+<dl class="anatomy">
+  <dt>&lt;label for="sabor"&gt;</dt><dd>O rótulo do campo. O <code>for</code> ("para") aponta para o <code>id</code> do select. Assim, clicar no texto "Sabor do bolo:" põe o foco na lista, e o leitor de tela anuncia "Sabor do bolo" quando a pessoa chega nela. Todo campo precisa de um rótulo (aula <a href="label.html">label</a>).</dd>
+  <dt>&lt;select id="sabor" name="sabor"&gt;</dt><dd>Começa a lista. O <code>id</code> é a identificação usada pelo <code>label</code>. O <code>name</code> ("nome") é o nome com que a resposta vai ser <strong>enviada</strong>. São coisas diferentes, que muitas vezes têm o mesmo texto.</dd>
+  <dt>&lt;option&gt;Cenoura&lt;/option&gt;</dt><dd>Uma opção. Dentro dela vai só texto: nada de <code>&lt;strong&gt;</code>, imagens ou parágrafos.</dd>
+  <dt>&lt;/select&gt;</dt><dd>Fecha a lista. O <code>&lt;/option&gt;</code> até pode ser omitido (o navegador fecha uma opção quando a próxima começa), mas o guia sempre escreve: fica mais fácil de ler.</dd>
+</dl>
+
+<div class="tip">
+<strong>Um select sozinho, fora de um <code>&lt;form&gt;</code>?</strong>
+<p>Para aprender, os exemplos desta aula mostram só o campo. Num site de verdade, ele fica dentro de um <code>&lt;form&gt;</code>, com um botão de enviar, como você viu em <a href="formularios.html">Formulários</a>. O envio em si é a aula <a href="enviar-formulario.html">Enviar (action, method, GET e POST)</a>.</p>
+</div>
+
+<hr>
+
+<h2>2. O texto que aparece e o <code>value</code> que é enviado</h2>
+<p>Quando o formulário é enviado, o navegador manda um par <strong>nome=valor</strong>: o <code>name</code> do select e o valor da opção escolhida. Sem nenhum atributo, o valor é o próprio <strong>texto</strong> da opção:</p>
+
+<pre class="file" data-file="index.html">&lt;select id="sabor" name="sabor"&gt;
+  &lt;option&gt;Cenoura&lt;/option&gt;
+  &lt;option&gt;Chocolate&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+<p>Escolhendo Chocolate, o navegador envia <code>sabor=Chocolate</code>.</p>
+
+<p>Só que o texto é feito para <strong>pessoas</strong>: tem acento, maiúscula, pode mudar amanhã ("Chocolate" vira "Chocolate belga"). Quem recebe a encomenda (um programa no servidor, uma planilha) prefere um código fixo. Para isso existe o atributo <code>value</code> ("valor"):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="sabor"&gt;Sabor do bolo:&lt;/label&gt;
+&lt;select id="sabor" name="sabor"&gt;
+  &lt;option value="cenoura"&gt;Cenoura com cobertura&lt;/option&gt;
+  &lt;option value="chocolate"&gt;Chocolate belga&lt;/option&gt;
+  &lt;option value="laranja"&gt;Laranja com calda&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<p>Na tela não mudou nada de importante: a cliente continua vendo os nomes bonitos. Mas agora, escolhendo "Chocolate belga", o que é enviado é <code>sabor=chocolate</code>.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>A opção</th><th>A pessoa vê</th><th>O navegador envia</th></tr>
+<tr><td><code>&lt;option&gt;Chocolate&lt;/option&gt;</code></td><td>Chocolate</td><td><code>sabor=Chocolate</code></td></tr>
+<tr><td><code>&lt;option value="chocolate"&gt;Chocolate belga&lt;/option&gt;</code></td><td>Chocolate belga</td><td><code>sabor=chocolate</code></td></tr>
+<tr><td><code>&lt;option value=""&gt;Escolha&lt;/option&gt;</code></td><td>Escolha</td><td><code>sabor=</code> (valor vazio)</td></tr>
+</table>
+</div>
+
+<p>Se o select <strong>não tem</strong> <code>name</code>, nada dele é enviado, nem o nome nem o valor. Esse é um esquecimento comum, e o validador não avisa (o select sem <code>name</code> é válido, porque um script pode usá-lo sem enviar nada). Você vai ver o envio de verdade, com cada par aparecendo no endereço, em <a href="enviar-formulario.html">Enviar</a>.</p>
+
+<div class="note">
+<strong>Espaços no texto</strong>
+<p>Quando o valor vem do texto, o navegador junta os espaços repetidos e tira os das pontas. Testamos <code>&lt;option&gt;  Cenoura   com  mel &lt;/option&gt;</code> no Chromium 155: o valor enviado foi <code>Cenoura com mel</code>. Com <code>value</code>, nada disso importa: vai exatamente o que está entre as aspas.</p>
+</div>
+
+<hr>
+
+<h2>3. Uma opção já escolhida: <code>selected</code></h2>
+<p>Se quase todo mundo pede chocolate, a Ana pode deixar chocolate já escolhido. O atributo <code>selected</code> ("selecionado") na opção faz isso. Ele é um <strong>atributo booleano</strong>: não leva valor, basta estar lá (aula <a href="atributos.html">Atributos</a>).</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="sabor"&gt;Sabor do bolo:&lt;/label&gt;
+&lt;select id="sabor" name="sabor"&gt;
+  &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+  &lt;option value="chocolate" selected&gt;Chocolate&lt;/option&gt;
+  &lt;option value="laranja"&gt;Laranja&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<p>A lista já começa em <strong>Chocolate</strong>, mesmo sendo a segunda opção. A pessoa continua podendo trocar. O <code>selected</code> só decide o <strong>ponto de partida</strong>.</p>
+
+<h3>A opção vazia: "Escolha um sabor"</h3>
+<p>Deixar uma opção já escolhida tem um risco: a cliente com pressa nem olha a lista e envia o padrão, sem querer. Quando você precisa de uma escolha <strong>de verdade</strong>, comece a lista com uma opção que não é resposta, com o <code>value</code> vazio, e marque o select como obrigatório com <code>required</code> ("obrigatório"):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="tamanho"&gt;Tamanho:&lt;/label&gt;
+&lt;select id="tamanho" name="tamanho" required&gt;
+  &lt;option value=""&gt;Escolha um tamanho&lt;/option&gt;
+  &lt;option value="p"&gt;Pequeno (10 fatias)&lt;/option&gt;
+  &lt;option value="m"&gt;Médio (20 fatias)&lt;/option&gt;
+  &lt;option value="g"&gt;Grande (30 fatias)&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>required</dt><dd>O campo é obrigatório. Se o formulário for enviado com o valor vazio, o navegador <strong>não envia</strong>: ele para, põe o foco na lista e mostra um balãozinho pedindo para escolher um item. O texto desse balão é do navegador (muda de um navegador para outro e com o idioma dele). A aula <a href="validacao.html">Validação</a> mostra tudo sobre isso.</dd>
+  <dt>&lt;option value=""&gt;Escolha um tamanho&lt;/option&gt;</dt><dd>A opção "de mentira", chamada de <strong>rótulo de espera</strong> (<em>placeholder</em>). Ela é a primeira, então vem escolhida, e o valor dela é vazio. Com o <code>required</code>, valor vazio conta como "não respondeu".</dd>
+</dl>
+
+<p>O validador conhece essa combinação e cobra a regra: num select com <code>required</code> (e sem <code>multiple</code> nem <code>size</code> maior que 1), a primeira opção <strong>tem de</strong> ser a de espera, com <code>value=""</code>. Você vai ver a mensagem em <a href="#errado">Quando dá errado</a>.</p>
+
+<div class="tryhtml" data-goal="nsel:#sabor option=4,sel:#sabor option[value=limao],texto:#sabor option[selected]=Chocolate">
+<p class="try-task"><strong>Missão:</strong> a Ana começou a fazer bolo de limão. Acrescente uma quarta opção, com o texto <code>Limão</code> e o valor <code>limao</code> (sem acento, que é mais seguro para códigos). Depois deixe <strong>Chocolate</strong> já escolhido quando a página abre.</p>
+<pre class="script" data-file="index.html">&lt;label for="sabor"&gt;Sabor do bolo:&lt;/label&gt;
+&lt;select id="sabor" name="sabor"&gt;
+  &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+  &lt;option value="chocolate"&gt;Chocolate&lt;/option&gt;
+  &lt;option value="laranja"&gt;Laranja&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;label for="sabor"&gt;Sabor do bolo:&lt;/label&gt;
+&lt;select id="sabor" name="sabor"&gt;
+  &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+  &lt;option value="chocolate" selected&gt;Chocolate&lt;/option&gt;
+  &lt;option value="laranja"&gt;Laranja&lt;/option&gt;
+  &lt;option value="limao"&gt;Limão&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Grupos de opções: <code>&lt;optgroup&gt;</code></h2>
+<p>A lista da Ana cresceu: tem bolos, tortas e doces. Com 12 opções soltas, a cliente se perde. O <code>&lt;optgroup&gt;</code> ("grupo de opções") separa a lista em seções, como os títulos do cardápio:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="produto"&gt;Produto:&lt;/label&gt;
+&lt;select id="produto" name="produto"&gt;
+  &lt;optgroup label="Bolos"&gt;
+    &lt;option value="bolo-cenoura"&gt;Cenoura&lt;/option&gt;
+    &lt;option value="bolo-chocolate"&gt;Chocolate&lt;/option&gt;
+  &lt;/optgroup&gt;
+  &lt;optgroup label="Tortas"&gt;
+    &lt;option value="torta-limao"&gt;Limão&lt;/option&gt;
+    &lt;option value="torta-morango"&gt;Morango&lt;/option&gt;
+  &lt;/optgroup&gt;
+&lt;/select&gt;
+</pre>
+
+<p>Abra a lista: os nomes <strong>Bolos</strong> e <strong>Tortas</strong> aparecem como títulos (em geral em negrito), e as opções ficam embaixo de cada um, um pouco para dentro. Tente clicar num título: não dá. O grupo <strong>não é uma opção</strong>, só um título.</p>
+
+<dl class="anatomy">
+  <dt>&lt;optgroup label="Bolos"&gt;</dt><dd>Começa um grupo. O <code>label</code> é o título do grupo e é <strong>obrigatório</strong>. (É outro <code>label</code>: aqui é um atributo, e não o elemento <code>&lt;label&gt;</code> do rótulo do campo.)</dd>
+  <dt>&lt;/optgroup&gt;</dt><dd>Fecha o grupo. Um grupo não pode ter outro grupo dentro: são só dois níveis, título e opções.</dd>
+  <dt>value="bolo-cenoura"</dt><dd>O grupo não é enviado. Por isso, se "Limão" existe como bolo e como torta, o <code>value</code> precisa dizer qual é qual.</dd>
+</dl>
+
+<div class="tryhtml" data-goal="nsel:#produto optgroup=2,nsel:optgroup[label=Bolos] option=2,nsel:optgroup[label=Tortas] option=2">
+<p class="try-task"><strong>Missão:</strong> separe a lista em dois grupos: <code>Bolos</code> (Cenoura e Chocolate) e <code>Tortas</code> (Limão e Morango). Use <code>&lt;optgroup label="…"&gt;</code> em volta de cada par de opções.</p>
+<pre class="script" data-file="index.html">&lt;label for="produto"&gt;Produto:&lt;/label&gt;
+&lt;select id="produto" name="produto"&gt;
+  &lt;option value="bolo-cenoura"&gt;Cenoura&lt;/option&gt;
+  &lt;option value="bolo-chocolate"&gt;Chocolate&lt;/option&gt;
+  &lt;option value="torta-limao"&gt;Limão&lt;/option&gt;
+  &lt;option value="torta-morango"&gt;Morango&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;label for="produto"&gt;Produto:&lt;/label&gt;
+&lt;select id="produto" name="produto"&gt;
+  &lt;optgroup label="Bolos"&gt;
+    &lt;option value="bolo-cenoura"&gt;Cenoura&lt;/option&gt;
+    &lt;option value="bolo-chocolate"&gt;Chocolate&lt;/option&gt;
+  &lt;/optgroup&gt;
+  &lt;optgroup label="Tortas"&gt;
+    &lt;option value="torta-limao"&gt;Limão&lt;/option&gt;
+    &lt;option value="torta-morango"&gt;Morango&lt;/option&gt;
+  &lt;/optgroup&gt;
+&lt;/select&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. Opções desligadas: <code>disabled</code></h2>
+<p>Acabou o morango? Em vez de apagar a opção (e a cliente achar que a Ana nunca faz torta de morango), ela pode <strong>desligar</strong> a opção com <code>disabled</code> ("desabilitado"), outro atributo booleano. A opção continua aparecendo, mas apagadinha, e não dá para escolher:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="torta"&gt;Torta:&lt;/label&gt;
+&lt;select id="torta" name="torta"&gt;
+  &lt;option value="limao"&gt;Limão&lt;/option&gt;
+  &lt;option value="morango" disabled&gt;Morango (esgotado)&lt;/option&gt;
+  &lt;option value="maracuja"&gt;Maracujá&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<p>O <code>disabled</code> também funciona num <code>&lt;optgroup&gt;</code> (desliga o grupo inteiro) e no próprio <code>&lt;select&gt;</code> (desliga a lista toda). Um select desligado <strong>não é enviado</strong>, como se não existisse no formulário. Testamos no Chromium 155: num formulário com um select desligado, ele simplesmente não apareceu entre os dados enviados. O <code>disabled</code> dos outros campos é assunto de <a href="atributos-input.html">placeholder, value, autocomplete…</a>.</p>
+
+<div class="note">
+<strong>E se a primeira opção estiver desligada?</strong>
+<p>A lista começa na primeira opção que <strong>pode</strong> ser escolhida. Com <code>&lt;option disabled&gt;X&lt;/option&gt;&lt;option&gt;Y&lt;/option&gt;</code>, ela começou em <strong>Y</strong> no Chromium 155. Para um rótulo de espera, use o <code>value=""</code> da seção 3, e não o <code>disabled</code>.</p>
+</div>
+
+<hr>
+
+<h2>6. Várias escolhas (<code>multiple</code>) e a lista aberta (<code>size</code>)</h2>
+<p>Até aqui, a pessoa escolhe <strong>uma</strong> opção. Com o atributo booleano <code>multiple</code> ("múltiplo"), ela pode escolher várias. O select deixa de ser suspenso e vira uma <strong>caixa de lista</strong>, já aberta, com várias linhas à vista:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="adicionais"&gt;Adicionais:&lt;/label&gt;
+&lt;select id="adicionais" name="adicionais" multiple&gt;
+  &lt;option value="granulado"&gt;Granulado&lt;/option&gt;
+  &lt;option value="morango"&gt;Morangos&lt;/option&gt;
+  &lt;option value="vela"&gt;Vela de aniversário&lt;/option&gt;
+  &lt;option value="cartao"&gt;Cartão&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<p>Clique numa opção: ela fica marcada. Para marcar mais de uma, segure <kbd>Ctrl</kbd> (no Mac, <kbd>Cmd</kbd>) enquanto clica. Para marcar uma sequência, clique na primeira e, segurando <kbd>Shift</kbd>, na última. No celular, a lista costuma abrir um quadro com caixinhas de marcar.</p>
+
+<p>No envio, cada opção marcada vira <strong>um par</strong>, todos com o mesmo nome. Testamos com duas opções marcadas no Chromium 155: o formulário enviou <code>adicionais=granulado&amp;adicionais=vela</code>. (O <code>&amp;</code> separa os pares; a aula <a href="enviar-formulario.html">Enviar</a> mostra isso no servidor.)</p>
+
+<p>O atributo <code>size</code> ("tamanho") diz <strong>quantas linhas</strong> ficam à vista. Ele funciona com ou sem <code>multiple</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="dia"&gt;Dia da entrega:&lt;/label&gt;
+&lt;select id="dia" name="dia" size="3"&gt;
+  &lt;option&gt;Segunda&lt;/option&gt;
+  &lt;option&gt;Terça&lt;/option&gt;
+  &lt;option&gt;Quarta&lt;/option&gt;
+  &lt;option&gt;Quinta&lt;/option&gt;
+  &lt;option&gt;Sexta&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<p>Agora a lista aparece aberta, com três linhas e uma barra de rolagem para o resto. Repare numa diferença importante: com <code>size</code> maior que 1, <strong>nenhuma</strong> opção vem escolhida. No Chromium 155, o valor desse select ao abrir a página era vazio. Se a pessoa não clicar em nada, o campo não é enviado.</p>
+
+<div class="warning">
+<strong><code>multiple</code> é difícil de usar</strong>
+<p>Muita gente não sabe do <kbd>Ctrl</kbd>+clique e, ao clicar na segunda opção, desmarca a primeira sem perceber. Para poucas opções (até umas 8), caixinhas de marcar são muito mais claras: veja <a href="checkbox-radio.html">checkbox e radio</a>.</p>
+</div>
+
+<hr>
+
+<h2>Formas diferentes: qual usar?</h2>
+<p>O <code>&lt;select&gt;</code> não é a única forma de oferecer escolhas. Cada uma tem a sua hora:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th><th>Por quê</th></tr>
+<tr><td>Uma escolha entre 2 a 5 opções</td><td><a href="checkbox-radio.html">radio</a></td><td>Todas as opções ficam à vista; a pessoa compara sem abrir nada.</td></tr>
+<tr><td>Uma escolha entre muitas opções (estado, mês, sabor)</td><td><code>&lt;select&gt;</code></td><td>Ocupa uma linha só; a lista aparece quando a pessoa precisa.</td></tr>
+<tr><td>Várias escolhas entre poucas opções</td><td><a href="checkbox-radio.html">checkbox</a></td><td>Mais fácil que o <kbd>Ctrl</kbd>+clique do <code>multiple</code>.</td></tr>
+<tr><td>Várias escolhas entre muitas opções</td><td><code>&lt;select multiple&gt;</code></td><td>Uma caixa com rolagem no lugar de dezenas de caixinhas. Avise sobre o <kbd>Ctrl</kbd>.</td></tr>
+<tr><td>Sugestões, mas a pessoa pode escrever outra coisa</td><td><a href="datalist.html">datalist</a></td><td>O select só aceita o que está na lista; o datalist aceita qualquer texto.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Todos os arquivos desta seção são páginas completas com o mesmo começo de 7 linhas (<code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html lang="pt-BR"&gt;</code>, o <code>&lt;head&gt;</code> com <code>charset</code> e <code>title</code>, e <code>&lt;body&gt;</code>; veja <a href="estrutura.html">Estrutura de uma Página</a>). O código mostrado começa na <strong>linha 8</strong>, e é por isso que as linhas das mensagens começam em 8.</p>
+
+<div class="cenario">
+<strong>Duas opções com <code>selected</code></strong>
+<pre class="file" data-file="dois.html">&lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+&lt;select id="sabor" name="sabor"&gt;
+  &lt;option selected&gt;Cenoura&lt;/option&gt;
+  &lt;option selected&gt;Chocolate&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dois.html
+"file:/home/ana/site/dois.html":11.3-11.19: error: The “select” element cannot have more than one selected “option” descendant unless the “multiple” attribute is specified.</pre>
+<p><strong>O que significa:</strong> "o elemento <code>select</code> não pode ter mais de um <code>option</code> selecionado, a não ser que o atributo <code>multiple</code> esteja presente". Numa lista de uma escolha só, só uma opção pode vir marcada. O <code>11.3-11.19</code> é a linha 11, da coluna 3 à 19: a tag <code>&lt;option selected&gt;</code> da segunda opção.</p>
+<p><strong>O que o navegador faz:</strong> não reclama e fica com a <strong>última</strong>. No Chromium 155, a lista abriu em Chocolate e enviou <code>sabor=Chocolate</code>.</p>
+<p><strong>Como consertar:</strong> deixe o <code>selected</code> numa opção só. Se a ideia era escolher várias, acrescente <code>multiple</code> ao select.</p>
+</div>
+
+<div class="cenario">
+<strong><code>required</code> sem a opção vazia no começo</strong>
+<pre class="file" data-file="obrigatorio.html">&lt;label for="tamanho"&gt;Tamanho:&lt;/label&gt;
+&lt;select id="tamanho" name="tamanho" required&gt;
+  &lt;option value="p"&gt;Pequeno&lt;/option&gt;
+  &lt;option value="g"&gt;Grande&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu obrigatorio.html
+"file:/home/ana/site/obrigatorio.html":10.3-10.20: error: The first “option” element in a “select” element with a “required” attribute, and without a “multiple” attribute, and without a “size” attribute whose value is greater than “1”, must have either an empty “value” attribute, or must have no text content. Consider either adding a placeholder option label, or adding a “size” attribute with a value equal to the number of “option” elements.</pre>
+<p><strong>O que significa:</strong> "o primeiro <code>option</code> de um <code>select</code> com <code>required</code> (sem <code>multiple</code> e sem <code>size</code> maior que 1) precisa ter o <code>value</code> vazio ou não ter texto. Considere acrescentar uma opção de espera, ou um <code>size</code> igual ao número de opções."</p>
+<p>O motivo: aqui a primeira opção, Pequeno, já vem escolhida e tem valor. O campo <strong>nunca</strong> fica vazio, então o <code>required</code> não serve para nada. Quem não mexer na lista encomenda um bolo pequeno sem saber.</p>
+<p><strong>Como consertar:</strong> comece com <code>&lt;option value=""&gt;Escolha um tamanho&lt;/option&gt;</code>, como na seção 3.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;optgroup&gt;</code> sem <code>label</code></strong>
+<pre class="file" data-file="grupo.html">&lt;label for="doce"&gt;Doce:&lt;/label&gt;
+&lt;select id="doce" name="doce"&gt;
+  &lt;optgroup&gt;
+    &lt;option&gt;Brigadeiro&lt;/option&gt;
+    &lt;option&gt;Beijinho&lt;/option&gt;
+  &lt;/optgroup&gt;
+&lt;/select&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu grupo.html
+"file:/home/ana/site/grupo.html":13.3-13.13: error: An “optgroup” element with no child “legend” element must have a “label” attribute.</pre>
+<p><strong>O que significa:</strong> "um <code>optgroup</code> sem um <code>legend</code> dentro precisa ter o atributo <code>label</code>". O validador aponta o <code>&lt;/optgroup&gt;</code> (linha 13), o lugar onde ele terminou de ler o grupo e viu que faltava o título. O <code>legend</code> da mensagem é uma novidade recente do HTML, o <strong>select personalizável</strong>, em que o título do grupo pode ser um elemento; ele depende de CSS e ainda não funciona em todos os navegadores. Por enquanto, use o <code>label</code>.</p>
+<p><strong>O que o navegador faz:</strong> mostra um grupo com o título vazio, um espaço em branco estranho no meio da lista.</p>
+<p><strong>Como consertar:</strong> <code>&lt;optgroup label="Doces"&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Uma opção vazia</strong>
+<pre class="file" data-file="vazia.html">&lt;label for="cor"&gt;Cor da vela:&lt;/label&gt;
+&lt;select id="cor" name="cor"&gt;
+  &lt;option&gt;&lt;/option&gt;
+  &lt;option&gt;Azul&lt;/option&gt;
+  &lt;option&gt;Rosa&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu vazia.html
+"file:/home/ana/site/vazia.html":10.11-10.19: error: Element “option” without attribute “label” must not be empty.</pre>
+<p><strong>O que significa:</strong> "um <code>option</code> sem o atributo <code>label</code> não pode ser vazio". Uma linha em branco na lista não diz nada a ninguém, e o leitor de tela anuncia uma opção sem nome. (O atributo <code>label</code> de um <code>option</code> é um texto alternativo para mostrar na lista; quase ninguém usa.)</p>
+<p><strong>Como consertar:</strong> escreva um texto: <code>&lt;option value=""&gt;Sem vela&lt;/option&gt;</code> ou <code>&lt;option value=""&gt;Escolha uma cor&lt;/option&gt;</code>. Repare que a regra do <code>required</code> aceita a opção vazia, mas esta regra não: a saída é sempre dar um texto e deixar só o <code>value</code> vazio.</p>
+</div>
+
+<div class="cenario">
+<strong>Outra coisa dentro do select</strong>
+<pre class="file" data-file="dentro.html">&lt;label for="doce"&gt;Doce:&lt;/label&gt;
+&lt;select id="doce" name="doce"&gt;
+  &lt;p&gt;Escolha um doce&lt;/p&gt;
+  &lt;option&gt;Brigadeiro&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dentro.html
+"file:/home/ana/site/dentro.html":10.3-10.5: error: Element “p” not allowed as child of element “select” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> "o elemento <code>p</code> não é permitido como filho de <code>select</code> neste contexto (os próximos erros dentro dele não serão mostrados)". Dentro de um select comum vão só <code>&lt;option&gt;</code>, <code>&lt;optgroup&gt;</code> e <code>&lt;hr&gt;</code> (uma linha separadora).</p>
+<p><strong>O que o navegador faz:</strong> depende da idade dele. Os navegadores antigos jogavam fora a tag <code>&lt;p&gt;</code>. O Chromium 155 que usamos guardou o <code>&lt;p&gt;</code> dentro do select (dá para ver no F12, aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>), por causa do select personalizável. Em nenhum caso o texto vira uma opção que se possa escolher.</p>
+<p><strong>Como consertar:</strong> o texto de instrução vai no <code>&lt;label&gt;</code> ("Doce:") ou numa opção de espera (<code>&lt;option value=""&gt;Escolha um doce&lt;/option&gt;</code>).</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>for</code> do label não bate com o <code>id</code></strong>
+<pre class="file" data-file="rotulo.html">&lt;label for="sabores"&gt;Sabor:&lt;/label&gt;
+&lt;select id="sabor" name="sabor"&gt;
+  &lt;option&gt;Cenoura&lt;/option&gt;
+  &lt;option&gt;Chocolate&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu rotulo.html
+"file:/home/ana/site/rotulo.html":8.1-8.21: error: The value of the “for” attribute of the “label” element must be the ID of a non-hidden form control.</pre>
+<p><strong>O que significa:</strong> "o valor do <code>for</code> do <code>label</code> precisa ser o <code>id</code> de um campo de formulário visível". Não existe nenhum <code>id="sabores"</code>: o rótulo aponta para o nada.</p>
+<p><strong>O que o navegador faz:</strong> mostra tudo normalmente. Mas clicar em "Sabor:" não faz nada, e o leitor de tela anuncia a lista sem nome. É um erro que só aparece para quem depende do rótulo.</p>
+<p><strong>Como consertar:</strong> copie o <code>id</code> exato do select para o <code>for</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>A escolha não chega: select sem <code>name</code></strong>
+<p>Um <code>&lt;select id="sabor"&gt;</code> sem <code>name</code> é HTML <strong>válido</strong>: o <code>vnu</code> não dá nenhum erro. Mas, no envio, ele fica de fora. A encomenda chega sem o sabor, e ninguém percebe até o dia da festa.</p>
+<p><strong>Como consertar:</strong> todo campo que precisa ser enviado leva um <code>name</code>: <code>&lt;select id="sabor" name="sabor"&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento ou atributo</th><th>Onde</th><th>O que faz</th></tr>
+<tr><td><code>&lt;select&gt;</code></td><td>no formulário</td><td>A lista de escolha.</td></tr>
+<tr><td><code>name="…"</code></td><td><code>select</code></td><td>O nome com que a escolha é enviada. Sem ele, nada é enviado.</td></tr>
+<tr><td><code>id="…"</code></td><td><code>select</code></td><td>A identificação usada pelo <code>&lt;label for="…"&gt;</code>.</td></tr>
+<tr><td><code>required</code></td><td><code>select</code></td><td>Obrigatório: não deixa enviar com valor vazio. A primeira opção tem de ter <code>value=""</code>.</td></tr>
+<tr><td><code>multiple</code></td><td><code>select</code></td><td>Permite várias escolhas; cada uma é enviada como um par.</td></tr>
+<tr><td><code>size="N"</code></td><td><code>select</code></td><td>Mostra a lista aberta, com N linhas. Com N &gt; 1, nada vem escolhido.</td></tr>
+<tr><td><code>disabled</code></td><td><code>select</code>, <code>optgroup</code>, <code>option</code></td><td>Desliga: não dá para escolher. Um select desligado não é enviado.</td></tr>
+<tr><td><code>&lt;option&gt;</code></td><td>dentro do <code>select</code> ou do <code>optgroup</code></td><td>Uma opção. O texto é o que aparece.</td></tr>
+<tr><td><code>value="…"</code></td><td><code>option</code></td><td>O valor enviado. Sem ele, vai o texto da opção.</td></tr>
+<tr><td><code>selected</code></td><td><code>option</code></td><td>A opção que vem escolhida. Sem nenhuma, vale a primeira (em lista suspensa).</td></tr>
+<tr><td><code>&lt;optgroup label="…"&gt;</code></td><td>dentro do <code>select</code></td><td>Um grupo com título. O <code>label</code> é obrigatório; o grupo não é enviado.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A opção</h3>
+<p>Complete para criar uma opção que mostra "Morango" e envia <code>morango</code>:</p>
+<div class="ex-code">&lt;option <input data-answer="value" aria-label="atributo">="morango"&gt;Morango&lt;/option&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Já escolhida</h3>
+<p>Complete para a opção Chocolate vir escolhida quando a página abre:</p>
+<div class="ex-code">&lt;option value="chocolate" <input data-answer="selected" aria-label="atributo">&gt;Chocolate&lt;/option&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. O grupo</h3>
+<p>Complete o atributo que dá o título do grupo:</p>
+<div class="ex-code">&lt;optgroup <input data-answer="label" aria-label="atributo">="Tortas"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Com <code>&lt;select name="sabor"&gt;&lt;option value="choc"&gt;Chocolate&lt;/option&gt;&lt;/select&gt;</code>, o que é enviado?</p>
+<label><input type="radio" name="q4"> <code>sabor=Chocolate</code></label>
+<label><input type="radio" name="q4"> <code>sabor=choc</code></label>
+<label><input type="radio" name="q4"> <code>choc=Chocolate</code></label>
+<label><input type="radio" name="q4"> Nada, falta o <code>id</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Um <code>&lt;select&gt;</code> sem nenhum <code>selected</code> e sem <code>size</code>. Qual opção aparece escolhida quando a página abre?</p>
+<label><input type="radio" name="q5"> Nenhuma: a lista aparece em branco</label>
+<label><input type="radio" name="q5"> A última</label>
+<label><input type="radio" name="q5"> A primeira que pode ser escolhida</label>
+<label><input type="radio" name="q5"> Uma qualquer, a cada vez</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. O validador diz <code>must have either an empty “value” attribute, or must have no text content</code>. O que falta?</p>
+<label><input type="radio" name="q6"> Uma primeira opção de espera, como <code>&lt;option value=""&gt;Escolha&lt;/option&gt;</code>, num select com <code>required</code></label>
+<label><input type="radio" name="q6"> O <code>name</code> do select</label>
+<label><input type="radio" name="q6"> O <code>label</code> do <code>optgroup</code></label>
+<label><input type="radio" name="q6"> O atributo <code>multiple</code></label>
+</div>
+
+<h3>Missão final: o bairro da entrega</h3>
+
+<div class="tryhtml" data-goal="sel:label[for=bairro],sel:select#bairro[name=bairro][required],sel:#bairro &gt; option:first-child[value=''],nsel:#bairro optgroup[label]=2,nsel:#bairro optgroup option=4">
+<p class="try-task"><strong>Missão:</strong> a Ana só entrega em quatro bairros. Monte o campo do bairro:</p>
+<ul class="try-task">
+  <li>um <code>&lt;label&gt;</code> "Bairro:" ligado a um <code>&lt;select&gt;</code> com <code>id</code> e <code>name</code> iguais a <code>bairro</code>, obrigatório (<code>required</code>);</li>
+  <li>a primeira opção é a de espera: "Escolha o bairro", com o valor vazio;</li>
+  <li>depois, dois grupos: <code>Zona Norte</code> (Centro e Vila Nova) e <code>Zona Sul</code> (Jardim das Flores e Santa Rita).</li>
+</ul>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;!-- o label e o select do bairro aqui --&gt;
+
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;label for="bairro"&gt;Bairro:&lt;/label&gt;
+  &lt;select id="bairro" name="bairro" required&gt;
+    &lt;option value=""&gt;Escolha o bairro&lt;/option&gt;
+    &lt;optgroup label="Zona Norte"&gt;
+      &lt;option value="centro"&gt;Centro&lt;/option&gt;
+      &lt;option value="vila-nova"&gt;Vila Nova&lt;/option&gt;
+    &lt;/optgroup&gt;
+    &lt;optgroup label="Zona Sul"&gt;
+      &lt;option value="jardim-das-flores"&gt;Jardim das Flores&lt;/option&gt;
+      &lt;option value="santa-rita"&gt;Santa Rita&lt;/option&gt;
+    &lt;/optgroup&gt;
+  &lt;/select&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>Repare que a opção de espera fica <strong>fora</strong> dos grupos: ela não é um bairro de nenhuma zona. E confira o resultado: abra a lista e veja os dois títulos.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;select&gt;</code> é a lista de escolha; cada <code>&lt;option&gt;</code> é uma opção. Ligue a lista a um <code>&lt;label for="…"&gt;</code> pelo <code>id</code>.</li>
+  <li>O envio é <code>name=valor</code>. O valor é o <code>value</code> da opção escolhida ou, sem ele, o texto dela. Sem <code>name</code>, nada é enviado (e o validador não avisa).</li>
+  <li><code>selected</code> escolhe o ponto de partida; sem ele, vale a primeira opção. Só uma opção pode ter <code>selected</code> numa lista de uma escolha.</li>
+  <li>Para obrigar uma escolha: <code>required</code> no select e uma primeira opção de espera com <code>value=""</code> e um texto.</li>
+  <li><code>&lt;optgroup label="…"&gt;</code> agrupa opções com um título, que não é enviado. <code>disabled</code> desliga uma opção, um grupo ou a lista inteira.</li>
+  <li><code>multiple</code> permite várias escolhas (com <kbd>Ctrl</kbd>+clique) e envia um par para cada uma; <code>size</code> mostra a lista aberta. Para poucas opções, prefira radio e checkbox.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
