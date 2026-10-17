@@ -146,7 +146,9 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
   - um link para outro site abre numa **aba nova** do navegador (com aviso no console);
   - `target="_top"`/`"_parent"` abre no próprio quadro (com aviso);
   - um link para uma página que não é aba mostra uma página **404** do editor, com a lista das abas;
-  - `download` baixa de verdade.
+  - `download` baixa de verdade, nos dois modos (conferido no Chromium): uma aba (`receita.txt`) é baixada com o conteúdo da aba, e um arquivo do site (`assets/midia/receita-bolo.pdf`) com o nome do atributo (`download="receita.pdf"`).
+    - O editor faz o download pela página do guia, porque o Chromium busca o `<a download>` sem passar pelo service worker (daria o 404 do servidor).
+    - Sem `download`, o link para uma aba que não é página (`.txt`, `.json`, `.vtt`…) mostra o conteúdo dela no quadro.
 - **Formulários (decisão):** o editor não tem servidor. No envio (depois da validação do navegador: `required`, `pattern`… funcionam de verdade):
   - o console mostra `[editor] Formulário enviado: GET obrigado.html?nome=Ana`, ou `POST … corpo: nome=Ana&sabor=Cenoura`;
   - os dados são codificados como no navegador de verdade (`application/x-www-form-urlencoded`): espaço vira `+`, e a quebra de linha de um `<textarea>` vira `%0D%0A` (CRLF, conferido no Chromium);
@@ -194,7 +196,7 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
   - **`srcdoc`** (modo simples): em qualquer outro caso (arquivo aberto do disco com `file://`, `http://` sem ser localhost, janela anônima do Firefox, service worker bloqueado) ou com `?htmlsim=simples` no endereço (para conferir). O console do F12 mostra `htmlsim: sem service worker (…); usando o modo simples` quando a tentativa falha.
 - **Modo simples**, conferido no Chromium:
   - o CSS e o JS das abas entram embutidos: o `href` do `<link>` muda, e as metas `attr:` em `link`/`script` podem falhar;
-  - os links entre as abas e os formulários continuam funcionando;
+  - os links entre as abas e os formulários continuam funcionando, inclusive `bolo.html#modo-de-preparo` (abre a aba, rola e liga o `:target`) e o link para uma aba que não é página (`receita.txt`), que mostra ou baixa o conteúdo da aba;
   - um `href="#x"` navega de verdade para o fragmento do próprio quadro, como no modo completo: rola, liga o `:target` e move o ponto de partida do foco (o próximo <kbd>Tab</kbd> parte dali);
   - `href="#"` e `href="#top"` (sem elemento com esse id) voltam ao topo, como no navegador; o foco fica no link clicado;
   - um link para uma página que não existe só dá um aviso no console;

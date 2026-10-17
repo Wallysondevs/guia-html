@@ -450,6 +450,7 @@
     f.__htmlsim = this.ponte(f, ger);
     this.consoleTexto = "";
     this.autofoco = !!extra.autofoco;
+    this.hashPendente = md !== "sw" && extra.hash ? extra.hash : null; // no srcdoc o #fragmento vem depois do load
     this.atual = extra.html ? null : nome;
     this.endereco = extra.endereco || (nome + (extra.busca || "") + (extra.hash || ""));
     if (antigo) { f.style.height = antigo.style.height; f.classList.add("hs-novo"); }
@@ -556,10 +557,16 @@
       return;
     }
     if (url.protocol === "javascript:") return;
-    if (a.hasAttribute("download")) {
-      if (this.modoAtual === "sw" || url.origin === location.origin) return; // o navegador baixa
-    }
     var r = this.nomeDe(url.href);
+    if (a.hasAttribute("download") && this.modoAtual === "sw" && r) {
+      // o Chromium busca o <a download> sem passar pelo service worker (daria o 404 do servidor):
+      // o editor baixa ele mesmo — a aba (blob) ou o arquivo do site (assets/midia/…)
+      e.preventDefault();
+      var abaD = this.arquivo(r.nome);
+      if (abaD) this.baixar(URL.createObjectURL(new Blob([abaD.codigo], { type: tipoDe(r.nome) + ";charset=utf-8" })), a.getAttribute("download") || r.nome.replace(/^.*\//, ""), true);
+      else this.baixar(new URL(r.nome, BASE_ABS + "../").href + r.busca, a.getAttribute("download") || r.nome.replace(/^.*\//, ""), false);
+      return;
+    }
     if (this.modoAtual !== "sw") {
       // srcdoc: os endereços relativos apontam para a página do guia; refaz com as abas
       var rel = new URL(location.href);
@@ -581,6 +588,16 @@
       }
       var nomeRel = url.origin === location.origin ? decodeURIComponent(url.pathname.slice(new URL("./", location.href).pathname.length)) : null;
       if (nomeRel && this.arquivo(nomeRel) && ehHtml(nomeRel)) { e.preventDefault(); this.antes = this.atual; this.mostrar(nomeRel, { busca: url.search, hash: url.hash }); return; }
+      if (nomeRel && this.arquivo(nomeRel)) {
+        // aba que não é página (receita.txt, dados.json, legenda.vtt…): serve o conteúdo da aba, como o
+        // modo completo faz; com download, baixa o arquivo; sem, mostra-o no quadro
+        e.preventDefault();
+        var arqAba = this.arquivo(nomeRel), blob = URL.createObjectURL(new Blob([arqAba.codigo], { type: tipoDe(nomeRel) + ";charset=utf-8" }));
+        if (a.hasAttribute("download")) { this.baixar(blob, a.getAttribute("download") || nomeRel.replace(/^.*\//, ""), true); return; }
+        this.atual = nomeRel; this.endereco = nomeRel; if (this.opts.aoEndereco) this.opts.aoEndereco(nomeRel);
+        win.location.href = blob;
+        return;
+      }
       if (url.origin === location.origin && !/\.html?$|\/$/i.test(url.pathname)) return; // arquivo do site (assets/midia/…)
     } else if (r) {
       if (alvo === "_top" || alvo === "_parent") { e.preventDefault(); this.registrar("info", "[editor] target=\"" + alvo + "\" abriria o link na janela inteira; no editor ele abre aqui no quadro."); this.mostrar(r.nome, { busca: r.busca, hash: r.hash }); }
@@ -594,6 +611,13 @@
     }
     e.preventDefault();
     this.registrar("warn", "[editor] O link \"" + href + "\" leva para fora dos arquivos desta caixa" + (this.modoAtual === "sw" ? "" : " (ou para uma aba que não existe)") + ".");
+  };
+  // baixa um arquivo pela página do guia (o clique do leitor no quadro vale como gesto do usuário)
+  Quadro.prototype.baixar = function (href, nome, ehBlob) {
+    var l = document.createElement("a");
+    l.href = href; l.download = nome; l.style.display = "none";
+    document.body.appendChild(l); l.click(); l.remove();
+    if (ehBlob) setTimeout(function () { URL.revokeObjectURL(href); }, 60000);
   };
   Quadro.prototype.envio = function (e, win) {
     if (e.defaultPrevented) return;
@@ -633,6 +657,11 @@
     try { win = f.contentWindow; doc = f.contentDocument; } catch (e) {}
     if (!doc) return;
     try { if (!win.__htmlsimOk) f.__htmlsim.iniciar(win); } catch (e) {}
+    if (this.hashPendente) {
+      // modo srcdoc: navega para o fragmento depois que a página carregou (rola e liga o :target)
+      var h = this.hashPendente; this.hashPendente = null;
+      try { win.location.hash = h; } catch (e) {}
+    }
     this.atualizarEndereco(win);
     var volta = doc.getElementById("htmlsim-voltar");
     if (volta && this.atual === null) volta.addEventListener("click", function () { self.mostrar(self.antes || self.entrada()); });
