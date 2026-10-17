@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Dados Estruturados — JSON-LD de uma receita | Guia HTML</title>
+<meta name="description" content="Dados estruturados para quem nunca fez um site: o que é o schema.org, o bloco script type=application/ld+json, o JSON-LD completo de uma receita (Recipe) com ingredientes, modo de preparo e tempos PT40M, as regras do JSON, o python3 -m json.tool no terminal, o validador do schema.org e o teste de resultados do Google, e o que o validador W3C não confere.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Dados Estruturados (JSON-LD)</span></h1>
+
+<p class="intro">Uma pessoa que lê a página da Ana entende na hora: é uma receita de bolo, leva 1 hora, rende 12 fatias, precisa de 3 cenouras. Um programa não entende tão fácil: para ele, é tudo texto. Os <strong>dados estruturados</strong> são uma ficha escondida na página que diz isso de um jeito que o programa entende. Com ela, um buscador pode mostrar a receita da Ana com foto, tempo de preparo e rendimento direto na lista de resultados. Nesta aula você vai escrever a ficha de uma receita em <strong>JSON-LD</strong>, conferir no terminal e nos validadores.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que são dados estruturados e o vocabulário <strong>schema.org</strong>.</li>
+  <li>O bloco <code>&lt;script type="application/ld+json"&gt;</code>, que o navegador guarda sem mostrar nem rodar.</li>
+  <li>As regras do <strong>JSON</strong>: chaves, aspas duplas, vírgulas, listas.</li>
+  <li>A ficha completa de uma receita (<code>Recipe</code>), com ingredientes, modo de preparo e tempos como <code>PT40M</code>.</li>
+  <li>Como conferir o JSON com <code>python3 -m json.tool</code> no terminal.</li>
+  <li>O validador do schema.org e o teste de resultados do Google.</li>
+  <li>Por que o validador W3C não pega erro nenhum dentro do JSON.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram conferidos na máquina fictícia da Ana, na pasta <code>~/site</code>, com o <strong>validador W3C</strong> (<code>vnu</code>, versão 26.10.12) e o <strong>Python 3.14</strong>. O endereço <code>https://ana.exemplo.com/</code> é fictício.</p>
+
+<hr>
+
+<h2>A ideia: a ficha da biblioteca</h2>
+<p>Na aula <a href="seo.html">HTML e SEO</a>, o buscador era um bibliotecário que lê cada livro e escreve uma ficha. Ler e adivinhar dá trabalho, e ele pode errar: "50 minutos" é o tempo de preparo ou de forno? "12" são fatias ou ovos?</p>
+
+<p>Os dados estruturados são a ficha <strong>já preenchida</strong> pelo autor, com campos de nome fixo: "tipo: receita", "rendimento: 12 fatias", "tempo de forno: 40 minutos". Os nomes dos campos vêm de um dicionário comum, o <strong>schema.org</strong>, criado em 2011 pelo Google, pela Microsoft, pelo Yahoo e pelo Yandex e usado por todos os buscadores grandes. Ele tem tipos para quase tudo: <code>Recipe</code> (receita), <code>Product</code> (produto), <code>Event</code> (evento), <code>Person</code> (pessoa), <code>Organization</code>, <code>Article</code>…</p>
+
+<p>Existem três formas de escrever essa ficha no HTML. A mais usada, e a recomendada pelo Google, é o <strong>JSON-LD</strong> (<em>JavaScript Object Notation for Linked Data</em>, "notação de objetos do JavaScript para dados ligados"): a ficha inteira num bloco só, separado do texto da página.</p>
+
+<hr>
+
+<h2>1. O bloco <code>&lt;script type="application/ld+json"&gt;</code></h2>
+<p>A ficha vai dentro de um <code>&lt;script&gt;</code>, com um <code>type</code> especial. Esta é a menor ficha que faz sentido:</p>
+
+<pre class="file" data-file="pequena.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;O bolo que a minha avó fazia todo domingo.&lt;/p&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Bolo de cenoura"
+}
+&lt;/script&gt;
+</pre>
+
+<p>No Resultado, só o título e o parágrafo. O bloco não aparece, e o navegador também não o roda: com um <code>type</code> que não é de JavaScript, o <code>&lt;script&gt;</code> vira um <strong>bloco de dados</strong>, guardado na página para quem quiser ler. Quem lê são os robôs dos buscadores.</p>
+
+<dl class="anatomy">
+  <dt>type="application/ld+json"</dt><dd>"Isto é JSON-LD." Escreva exatamente assim. Pode ficar no <code>&lt;head&gt;</code> ou no <code>&lt;body&gt;</code>.</dd>
+  <dt>{ … }</dt><dd>As chaves abrem e fecham um <strong>objeto</strong>: uma ficha com campos.</dd>
+  <dt>"@context": "https://schema.org"</dt><dd>"Os nomes desta ficha vêm do dicionário schema.org." O <code>@</code> marca as palavras do próprio JSON-LD.</dd>
+  <dt>"@type": "Recipe"</dt><dd>O tipo da ficha: uma receita. O nome do tipo começa com maiúscula, como no schema.org.</dd>
+  <dt>"name": "Bolo de cenoura"</dt><dd>Um campo: o nome da receita. Os nomes dos campos são em inglês e começam com minúscula.</dd>
+</dl>
+
+<hr>
+
+<h2>2. As regras do JSON</h2>
+<p>O JSON é exigente: um erro de uma vírgula estraga a ficha inteira, e o robô a joga fora. As regras são poucas:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Regra</th><th>Certo</th><th>Errado</th></tr>
+<tr><td>Nomes e textos entre aspas <strong>duplas</strong></td><td><code>"name": "Bolo"</code></td><td><code>'name': 'Bolo'</code>, <code>name: "Bolo"</code></td></tr>
+<tr><td>Dois-pontos entre o nome e o valor</td><td><code>"name": "Bolo"</code></td><td><code>"name" = "Bolo"</code></td></tr>
+<tr><td>Vírgula <strong>entre</strong> os campos</td><td><code>"a": 1, "b": 2</code></td><td><code>"a": 1 "b": 2</code></td></tr>
+<tr><td>Nada de vírgula depois do <strong>último</strong></td><td><code>{"a": 1, "b": 2}</code></td><td><code>{"a": 1, "b": 2,}</code></td></tr>
+<tr><td>Números sem aspas</td><td><code>"porcoes": 12</code></td><td>(com aspas vira texto)</td></tr>
+<tr><td>Listas entre colchetes</td><td><code>["3 ovos", "3 cenouras"]</code></td><td><code>("3 ovos", "3 cenouras")</code></td></tr>
+<tr><td>Sem comentários</td><td>—</td><td><code>// tempo do forno</code></td></tr>
+</table>
+</div>
+
+<p>Um valor pode ser outro objeto: o autor da receita é uma pessoa, com <code>@type</code> e <code>name</code> próprios: <code>"author": {"@type": "Person", "name": "Ana"}</code>. E uma lista pode ter objetos dentro, como os passos do modo de preparo (seção 3).</p>
+
+<p>Neste editor, o <code>script.js</code> lê o bloco de dados com o JavaScript (<code>JSON.parse</code>, "analisar o JSON") e diz no console se o JSON está certo. A mensagem de erro é do seu navegador e muda de um navegador para outro.</p>
+
+<div class="tryhtml" data-goal="console:JSON válido,nsrc:'name'">
+<p class="try-task"><strong>Missão:</strong> o console mostra um erro. Esta ficha tem <strong>dois</strong> problemas: um nome com aspas simples e uma vírgula sobrando. Conserte os dois até o console dizer <code>JSON válido</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  'name': "Bolo de cenoura",
+  "recipeYield": "12 fatias",
+}
+&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const bloco = document.querySelector('script[type="application/ld+json"]');
+try {
+  const ficha = JSON.parse(bloco.textContent);
+  console.log("JSON válido. Tipo: " + ficha["@type"] + ". Nome: " + ficha.name);
+} catch (erro) {
+  console.log("JSON com erro: " + erro.message);
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Bolo de cenoura",
+  "recipeYield": "12 fatias"
+}
+&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. A ficha completa de uma receita</h2>
+<p>Esta é a página do bolo da Ana com a ficha completa. Repare que tudo o que está na ficha também está no texto da página: a ficha <strong>descreve</strong> a página, não acrescenta nada escondido.</p>
+
+<pre class="file" data-file="bolo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura fofinho | Receitas da Ana&lt;/title&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Bolo de cenoura fofinho",
+  "image": "https://ana.exemplo.com/fotos/bolo-de-cenoura.jpg",
+  "author": {
+    "@type": "Person",
+    "name": "Ana"
+  },
+  "datePublished": "2026-10-17",
+  "description": "Bolo de cenoura de liquidificador com cobertura de chocolate.",
+  "recipeCategory": "Sobremesa",
+  "recipeCuisine": "Brasileira",
+  "prepTime": "PT20M",
+  "cookTime": "PT40M",
+  "totalTime": "PT1H",
+  "recipeYield": "12 fatias",
+  "recipeIngredient": [
+    "3 cenouras médias",
+    "3 ovos",
+    "1 xícara de óleo",
+    "2 xícaras de açúcar",
+    "2 xícaras de farinha de trigo",
+    "1 colher de sopa de fermento"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "text": "Bata no liquidificador a cenoura, os ovos e o óleo."
+    },
+    {
+      "@type": "HowToStep",
+      "text": "Misture o açúcar, a farinha e o fermento."
+    },
+    {
+      "@type": "HowToStep",
+      "text": "Asse por 40 minutos em forno médio, a 180 °C."
+    }
+  ]
+}
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura fofinho&lt;/h1&gt;
+&lt;p&gt;Por Ana. Rende 12 fatias. Preparo: 20 minutos; forno: 40 minutos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Campo</th><th>O que é</th><th>Formato</th></tr>
+<tr><td><code>name</code></td><td>Nome da receita</td><td>texto</td></tr>
+<tr><td><code>image</code></td><td>Foto do prato</td><td>endereço completo (ou uma lista de endereços)</td></tr>
+<tr><td><code>author</code></td><td>Quem escreveu</td><td>objeto <code>Person</code> (ou <code>Organization</code>)</td></tr>
+<tr><td><code>datePublished</code></td><td>Data de publicação</td><td><code>AAAA-MM-DD</code>, como no <code>&lt;time&gt;</code> (aula <a href="time.html">time</a>)</td></tr>
+<tr><td><code>description</code></td><td>Resumo</td><td>texto</td></tr>
+<tr><td><code>recipeCategory</code> / <code>recipeCuisine</code></td><td>Tipo de prato / cozinha</td><td>texto</td></tr>
+<tr><td><code>prepTime</code>, <code>cookTime</code>, <code>totalTime</code></td><td>Tempo de preparo, de forno e total</td><td>duração ISO 8601: <code>PT20M</code></td></tr>
+<tr><td><code>recipeYield</code></td><td>Rendimento</td><td>texto ("12 fatias") ou número</td></tr>
+<tr><td><code>recipeIngredient</code></td><td>Ingredientes</td><td>lista de textos, um por ingrediente</td></tr>
+<tr><td><code>recipeInstructions</code></td><td>Modo de preparo</td><td>lista de objetos <code>HowToStep</code> ("passo de como fazer"), cada um com <code>text</code></td></tr>
+</table>
+</div>
+
+<h3>Os tempos: <code>PT40M</code></h3>
+<p>Os tempos usam o formato de <strong>duração</strong> da norma ISO 8601, o mesmo do atributo <code>datetime</code> do <code>&lt;time&gt;</code>. Parece código secreto, mas é só uma regra:</p>
+<dl class="anatomy">
+  <dt>P</dt><dd>De <em>period</em>, "período". Toda duração começa com P.</dd>
+  <dt>T</dt><dd>De <em>time</em>, "tempo": daqui em diante vêm horas, minutos e segundos.</dd>
+  <dt>1H, 40M, 30S</dt><dd>O número seguido da unidade: <code>H</code> horas, <code>M</code> minutos, <code>S</code> segundos.</dd>
+</dl>
+<p>Então <code>PT40M</code> = 40 minutos, <code>PT1H</code> = 1 hora, <code>PT1H30M</code> = 1 hora e meia. Um erro comum é esquecer o <code>T</code>: <code>P40M</code> quer dizer <strong>40 meses</strong>.</p>
+
+<div class="tryhtml" data-goal="console:JSON válido,src:&quot;prepTime&quot;\s*:\s*&quot;PT15M&quot;,src:&quot;cookTime&quot;\s*:\s*&quot;PT30M&quot;,src:&quot;totalTime&quot;\s*:\s*&quot;PT45M&quot;">
+<p class="try-task"><strong>Missão:</strong> o pão de queijo leva 15 minutos de preparo e 30 de forno. Acrescente <code>prepTime</code>, <code>cookTime</code> e <code>totalTime</code> no formato ISO 8601, sem quebrar o JSON (cuidado com as vírgulas). O console mostra os tempos.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Pão de queijo&lt;/h1&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Pão de queijo",
+  "recipeYield": "30 unidades"
+}
+&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const bloco = document.querySelector('script[type="application/ld+json"]');
+try {
+  const ficha = JSON.parse(bloco.textContent);
+  console.log("JSON válido. Preparo: " + ficha.prepTime + ", forno: " + ficha.cookTime + ", total: " + ficha.totalTime);
+} catch (erro) {
+  console.log("JSON com erro: " + erro.message);
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Pão de queijo&lt;/h1&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Pão de queijo",
+  "recipeYield": "30 unidades",
+  "prepTime": "PT15M",
+  "cookTime": "PT30M",
+  "totalTime": "PT45M"
+}
+&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Conferir o JSON no terminal: <code>python3 -m json.tool</code></h2>
+<p>O Python, que já vem no Ubuntu, tem uma ferramenta que lê um arquivo JSON e o mostra arrumado, ou diz onde está o erro: <code>python3 -m json.tool</code> (o <code>-m</code> roda um módulo do Python como programa). Ela lê JSON puro, então primeiro a Ana copia a ficha para um arquivo à parte. Com o <code>sed</code>, dá para tirar a ficha de dentro do HTML sem copiar à mão:</p>
+
+<pre class="term" data-cwd="~/site">$ sed -n '/ld+json/,/&lt;\/script&gt;/p' bolo.html | sed '1d;$d' &gt; receita.json
+$ head -4 receita.json
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Bolo de cenoura fofinho",</pre>
+
+<dl class="anatomy">
+  <dt>sed -n '/ld+json/,/&lt;\/script&gt;/p' bolo.html</dt><dd>Mostra as linhas da que tem <code>ld+json</code> até a que tem <code>&lt;/script&gt;</code> (aula de <code>sed</code> no Guia Bash).</dd>
+  <dt>sed '1d;$d'</dt><dd>Apaga a primeira e a última dessas linhas: as tags <code>&lt;script&gt;</code> e <code>&lt;/script&gt;</code>. Sobra o JSON puro.</dd>
+  <dt>&gt; receita.json</dt><dd>Grava o resultado no arquivo <code>receita.json</code>.</dd>
+</dl>
+
+<p>Agora a conferência:</p>
+
+<pre class="term" data-cwd="~/site">$ python3 -m json.tool receita.json | head -9
+{
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    "name": "Bolo de cenoura fofinho",
+    "image": "https://ana.exemplo.com/fotos/bolo-de-cenoura.jpg",
+    "author": {
+        "@type": "Person",
+        "name": "Ana"
+    },
+$ python3 -m json.tool receita.json &gt; /dev/null     « só o código de saída
+$ echo $?
+0</pre>
+
+<p>Quando o JSON está certo, a ferramenta o mostra de volta, arrumado, e termina com código de saída 0. Repare num detalhe: por padrão ela troca as letras acentuadas por códigos como <code>&#92;u00ed</code> (o <code>í</code>). Isso também é JSON válido, mas é difícil de ler. A opção <code>--no-ensure-ascii</code> ("não force o ASCII") mantém os acentos:</p>
+
+<pre class="term" data-cwd="~/site">$ python3 -m json.tool receita.json | grep farinha
+        "2 x\u00edcaras de farinha de trigo",
+            "text": "Misture o a\u00e7\u00facar, a farinha e o fermento."
+$ python3 -m json.tool --no-ensure-ascii receita.json | grep farinha
+        "2 xícaras de farinha de trigo",
+            "text": "Misture o açúcar, a farinha e o fermento."</pre>
+
+<h3>Os erros, com linha e coluna</h3>
+<p>A Ana escreveu três fichas com erros. A ferramenta para no <strong>primeiro</strong> erro de cada arquivo e diz a linha e a coluna:</p>
+
+<pre class="term" data-cwd="~/site">$ cat -n virgula.json
+     1	{
+     2	  "name": "Bolo",
+     3	  "recipeYield": "12 fatias",
+     4	}
+$ python3 -m json.tool virgula.json
+Illegal trailing comma before end of object: line 3 column 29 (char 48)
+$ echo $?
+1
+$ cat -n aspas.json
+     1	{
+     2	  'name': 'Bolo'
+     3	}
+$ python3 -m json.tool aspas.json
+Expecting property name enclosed in double quotes: line 2 column 3 (char 4)
+$ cat -n falta.json
+     1	{
+     2	  "name": "Bolo"
+     3	  "recipeYield": "12 fatias"
+     4	}
+$ python3 -m json.tool falta.json
+Expecting ',' delimiter: line 3 column 3 (char 21)</pre>
+
+<dl class="anatomy">
+  <dt>Illegal trailing comma before end of object</dt><dd>"Vírgula sobrando antes do fim do objeto": a vírgula depois do último campo. A linha 3, coluna 29, é a posição da vírgula.</dd>
+  <dt>Expecting property name enclosed in double quotes</dt><dd>"Esperava um nome de campo entre aspas duplas": as aspas simples.</dd>
+  <dt>Expecting ',' delimiter</dt><dd>"Esperava o separador <code>,</code>": faltou a vírgula no fim da linha 2, e o erro aparece no começo da linha 3, onde o Python percebeu.</dd>
+  <dt>(char 48)</dt><dd>A posição contada desde o começo do arquivo, em caracteres.</dd>
+</dl>
+
+<div class="tip">
+<strong>O erro costuma estar antes</strong>
+<p>Como no HTML, a linha que o programa aponta é onde ele <strong>percebeu</strong> o problema. Uma vírgula esquecida no fim de uma linha é acusada no começo da linha seguinte.</p>
+</div>
+
+<hr>
+
+<h2>5. Os validadores de dados estruturados</h2>
+<p>O <code>json.tool</code> confere se o JSON está bem escrito, mas não sabe nada de receitas. Um <code>"recipeIngrediente"</code> (com um "e" a mais) passa nele sem problema. Para conferir os <strong>nomes</strong> e os <strong>tipos</strong>, existem dois validadores gratuitos na internet:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Validador</th><th>Endereço</th><th>O que confere</th></tr>
+<tr><td><strong>Schema Markup Validator</strong> (do próprio schema.org)</td><td><code>validator.schema.org</code></td><td>Se os tipos e os campos existem no schema.org e se o JSON-LD está bem formado. Mostra a ficha como uma árvore, com cada campo e valor.</td></tr>
+<tr><td><strong>Teste de pesquisa aprimorada</strong> do Google (<em>Rich Results Test</em>)</td><td><code>search.google.com/test/rich-results</code></td><td>Se a página pode ganhar um resultado aprimorado no Google, e quais campos obrigatórios ou recomendados faltam.</td></tr>
+</table>
+</div>
+
+<p>Os dois aceitam o <strong>endereço</strong> de uma página publicada ou o <strong>código</strong> colado direto. Cole o HTML inteiro do <code>bolo.html</code>: o validador do schema.org encontra uma ficha do tipo <code>Recipe</code> e lista os campos; o do Google diz se a receita pode aparecer com o visual especial e avisa o que está faltando ou o que é só recomendado. Os textos exatos dos avisos mudam com o tempo; leia com calma e conserte um por vez.</p>
+
+<div class="warning">
+<strong>Nada garantido, e nada de inventar</strong>
+<ul>
+  <li>Os dados estruturados <strong>permitem</strong> um resultado aprimorado, mas o buscador decide se mostra.</li>
+  <li>A ficha tem de descrever o que está <strong>na página</strong>. Avaliações (<code>aggregateRating</code>, as estrelinhas) só podem ser marcadas se a página tiver avaliações de verdade, de visitantes de verdade. Inventar estrelas vai contra as regras dos buscadores, e o Google pode punir o site.</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>Outras formas: microdados</h2>
+<p>O JSON-LD não é o único jeito. Os <strong>microdados</strong> (<em>microdata</em>) são atributos do próprio HTML, colados no texto que aparece:</p>
+
+<pre class="file" data-file="microdados.html" data-resultado>&lt;div itemscope itemtype="https://schema.org/Recipe"&gt;
+  &lt;h1 itemprop="name"&gt;Bolo de cenoura&lt;/h1&gt;
+  &lt;p&gt;Rende &lt;span itemprop="recipeYield"&gt;12 fatias&lt;/span&gt;.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li itemprop="recipeIngredient"&gt;3 cenouras&lt;/li&gt;
+    &lt;li itemprop="recipeIngredient"&gt;3 ovos&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>itemscope</dt><dd>"Aqui começa uma ficha." Tudo o que está dentro pertence a ela.</dd>
+  <dt>itemtype="https://schema.org/Recipe"</dt><dd>O tipo da ficha, com o endereço completo do schema.org.</dd>
+  <dt>itemprop="name"</dt><dd>"O texto deste elemento é o campo <code>name</code>."</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>JSON-LD</th><th>Microdados</th></tr>
+<tr><td>Onde fica</td><td>Um bloco separado</td><td>Atributos espalhados no texto</td></tr>
+<tr><td>Mexer no visual mexe na ficha?</td><td>Não</td><td>Sim: é fácil quebrar a ficha mudando o HTML</td></tr>
+<tr><td>Repete o texto da página?</td><td>Sim (fica duas vezes no arquivo)</td><td>Não</td></tr>
+<tr><td>Recomendado pelo Google</td><td>Sim</td><td>Aceito</td></tr>
+</table>
+</div>
+
+<p><strong>Qual usar:</strong> o JSON-LD. É mais fácil de escrever, de conferir com o <code>json.tool</code> e de manter. Existe ainda uma terceira forma, o <strong>RDFa</strong> (atributos <code>vocab</code>, <code>typeof</code>, <code>property</code>), parente do Open Graph da aula <a href="open-graph.html">Open Graph</a>; ela é pouco usada para receitas.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<h3>O validador W3C não lê o JSON</h3>
+<p>Esta página tem uma vírgula sobrando dentro da ficha. O navegador mostra a página normalmente, o robô do buscador joga a ficha fora, e o validador W3C…</p>
+
+<pre class="file" data-file="virgula.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura | Receitas da Ana&lt;/title&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Bolo de cenoura",
+}
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose virgula.html
+virgula.html             « nenhuma mensagem</pre>
+
+<div class="cenario">
+<strong>Nenhuma mensagem: o vnu não confere o conteúdo da ficha</strong>
+<p>Para o validador W3C, o conteúdo de um bloco de dados é texto qualquer. Ele não confere o JSON nem os nomes do schema.org. <strong>Como achar:</strong> <code>python3 -m json.tool</code> para o JSON e o validador do schema.org para os nomes. São três conferências diferentes, uma para cada camada: o HTML, o JSON e o schema.org.</p>
+</div>
+
+<div class="cenario">
+<strong><code>A “script” element with a “type” attribute whose value is neither a JavaScript MIME type, “module”, “importmap”, nor “speculationrules” (i.e., a data block) must not have a “src” attribute.</code></strong>
+<p>A Ana guardou a ficha num arquivo <code>receita.json</code> e tentou ligá-lo com <code>src</code>, como um script comum:</p>
+<pre class="file" data-file="src.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura | Receitas da Ana&lt;/title&gt;
+&lt;script type="application/ld+json" src="receita.json"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu src.html
+"file:/home/ana/site/src.html":6.1-6.54: error: A “script” element with a “type” attribute whose value is neither a JavaScript MIME type, “module”, “importmap”, nor “speculationrules” (i.e., a data block) must not have a “src” attribute.</pre>
+<p><strong>O que o validador diz:</strong> "um <code>script</code> cujo <code>type</code> não é JavaScript, <code>module</code>, <code>importmap</code> nem <code>speculationrules</code> (ou seja, um bloco de dados) não pode ter <code>src</code>". <strong>O que o navegador faz:</strong> não baixa o arquivo, e o robô não acha a ficha. <strong>Como consertar:</strong> o JSON-LD vai sempre <strong>dentro</strong> do <code>&lt;script&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Outros enganos que nenhum validador de HTML vê</strong>
+<ul>
+  <li><code>"@type": "recipe"</code>, com minúscula: o tipo é <code>Recipe</code>. O validador do schema.org acusa.</li>
+  <li><code>"cookTime": "40 minutos"</code> ou <code>"P40M"</code>: o primeiro não é ISO 8601; o segundo é 40 meses.</li>
+  <li><code>"image": "fotos/bolo.jpg"</code>: use o endereço completo, como no Open Graph.</li>
+  <li><code>type="application/json+ld"</code> (invertido): o navegador aceita como bloco de dados, o vnu também, mas nenhum robô procura esse tipo. É <code>application/ld+json</code>.</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que é</th></tr>
+<tr><td><code>&lt;script type="application/ld+json"&gt;{…}&lt;/script&gt;</code></td><td>O bloco da ficha (no <code>&lt;head&gt;</code> ou no <code>&lt;body&gt;</code>)</td></tr>
+<tr><td><code>"@context": "https://schema.org"</code></td><td>O dicionário dos nomes</td></tr>
+<tr><td><code>"@type": "Recipe"</code></td><td>O tipo da ficha</td></tr>
+<tr><td><code>"author": {"@type": "Person", "name": "Ana"}</code></td><td>Um objeto dentro de outro</td></tr>
+<tr><td><code>"recipeIngredient": ["…", "…"]</code></td><td>Uma lista</td></tr>
+<tr><td><code>{"@type": "HowToStep", "text": "…"}</code></td><td>Um passo do modo de preparo</td></tr>
+<tr><td><code>PT20M</code>, <code>PT1H</code>, <code>PT1H30M</code></td><td>20 minutos, 1 hora, 1 hora e meia</td></tr>
+<tr><td><code>python3 -m json.tool arquivo.json</code></td><td>Confere e arruma um JSON</td></tr>
+<tr><td><code>--no-ensure-ascii</code></td><td>Mantém os acentos na saída</td></tr>
+<tr><td><code>itemscope</code>, <code>itemtype</code>, <code>itemprop</code></td><td>Microdados (a outra forma)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O tipo do bloco</h3>
+<p>Complete o <code>type</code> do bloco de JSON-LD:</p>
+<div class="ex-code">&lt;script type="<input data-answer="application/ld+json" aria-label="tipo">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Uma hora e meia</h3>
+<p>Escreva a duração de 1 hora e 30 minutos no formato ISO 8601:</p>
+<div class="ex-code">"totalTime": "<input data-answer="PT1H30M|PT90M" aria-label="duração">"</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Qual destas linhas é JSON válido?</p>
+<label><input type="radio" name="q3"> <code>{'name': 'Bolo'}</code></label>
+<label><input type="radio" name="q3"> <code>{"name": "Bolo",}</code></label>
+<label><input type="radio" name="q3"> <code>{"name": "Bolo", "recipeYield": "12 fatias"}</code></label>
+<label><input type="radio" name="q3"> <code>{name: "Bolo"}</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. A ficha tem uma vírgula sobrando. O que o <code>vnu</code> diz?</p>
+<label><input type="radio" name="q4"> <code>Illegal trailing comma</code></label>
+<label><input type="radio" name="q4"> Nada: ele não confere o JSON de um bloco de dados</label>
+<label><input type="radio" name="q4"> <code>Bad value for attribute type</code></label>
+<label><input type="radio" name="q4"> Que falta o <code>@context</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. A página da Ana não tem nenhuma avaliação de visitantes. Ela pode pôr um <code>aggregateRating</code> de 5 estrelas na ficha?</p>
+<label><input type="radio" name="q5"> Sim, para aparecer melhor na busca</label>
+<label><input type="radio" name="q5"> Sim, desde que o JSON seja válido</label>
+<label><input type="radio" name="q5"> Sim, se ela mesma der a nota</label>
+<label><input type="radio" name="q5"> Não: a ficha só pode descrever o que existe na página</label>
+</div>
+
+<h3>Missão final: a ficha do pão de queijo</h3>
+
+<div class="tryhtml" data-goal="console:Tipo: Recipe,console:Ingredientes: 3,console:Passos: 2,src:&quot;cookTime&quot;\s*:\s*&quot;PT30M&quot;,src:&quot;image&quot;\s*:\s*&quot;https://">
+<p class="try-task"><strong>Missão:</strong> complete a ficha do pão de queijo. Dê o <code>@type</code> certo, uma <code>image</code> com endereço completo (<code>https://ana.exemplo.com/fotos/pao-de-queijo.jpg</code>), o <code>cookTime</code> de 30 minutos, a lista <code>recipeIngredient</code> com os <strong>3</strong> ingredientes do texto e o <code>recipeInstructions</code> com os <strong>2</strong> passos, como objetos <code>HowToStep</code>. O console mostra o que o robô entenderia.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Pão de queijo&lt;/h1&gt;
+&lt;p&gt;Ingredientes: 500 g de polvilho azedo, 2 ovos e 200 g de queijo meia-cura.&lt;/p&gt;
+&lt;p&gt;Misture tudo e faça bolinhas. Asse por 30 minutos a 200 °C.&lt;/p&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "name": "Pão de queijo"
+}
+&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const bloco = document.querySelector('script[type="application/ld+json"]');
+try {
+  const f = JSON.parse(bloco.textContent);
+  console.log("Tipo: " + f["@type"]);
+  console.log("Nome: " + f.name);
+  console.log("Forno: " + f.cookTime);
+  console.log("Ingredientes: " + (f.recipeIngredient || []).length);
+  console.log("Passos: " + (f.recipeInstructions || []).length);
+} catch (erro) {
+  console.log("JSON com erro: " + erro.message);
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Pão de queijo&lt;/h1&gt;
+&lt;p&gt;Ingredientes: 500 g de polvilho azedo, 2 ovos e 200 g de queijo meia-cura.&lt;/p&gt;
+&lt;p&gt;Misture tudo e faça bolinhas. Asse por 30 minutos a 200 °C.&lt;/p&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Pão de queijo",
+  "image": "https://ana.exemplo.com/fotos/pao-de-queijo.jpg",
+  "cookTime": "PT30M",
+  "recipeIngredient": [
+    "500 g de polvilho azedo",
+    "2 ovos",
+    "200 g de queijo meia-cura"
+  ],
+  "recipeInstructions": [
+    {"@type": "HowToStep", "text": "Misture tudo e faça bolinhas."},
+    {"@type": "HowToStep", "text": "Asse por 30 minutos a 200 °C."}
+  ]
+}
+&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Dados estruturados são uma ficha para programas, com nomes do dicionário <strong>schema.org</strong>. A forma recomendada é o <strong>JSON-LD</strong>.</li>
+  <li>A ficha vai num <code>&lt;script type="application/ld+json"&gt;</code>, que o navegador não mostra nem roda. Ela não pode vir de um arquivo com <code>src</code>.</li>
+  <li>JSON: aspas duplas, dois-pontos, vírgula entre os campos e nunca depois do último, listas entre colchetes, sem comentários.</li>
+  <li>Uma receita: <code>"@type": "Recipe"</code> com <code>name</code>, <code>image</code>, <code>author</code>, tempos (<code>PT20M</code>), <code>recipeYield</code>, <code>recipeIngredient</code> e <code>recipeInstructions</code>.</li>
+  <li>Três conferências: o <code>vnu</code> para o HTML, o <code>python3 -m json.tool</code> para o JSON e o validador do schema.org ou o teste do Google para os nomes e os campos.</li>
+  <li>A ficha descreve só o que está na página. Resultado aprimorado não é garantido, e estrelas inventadas são proibidas.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
