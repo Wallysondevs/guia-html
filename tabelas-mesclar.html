@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Mesclar Células — colspan e rowspan | Guia HTML</title>
+<meta name="description" content="Mesclar células de tabela em HTML para quem nunca fez um site: colspan para ocupar várias colunas, rowspan para ocupar várias linhas, a conta das células de cada linha, as células que não se escrevem embaixo de um rowspan e a tabela torta, com os avisos e erros reais do validador W3C e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Mesclar Células</span></h1>
+
+<p class="intro">Na planilha, você seleciona duas células vizinhas, clica em "Mesclar" e elas viram uma célula grande. Em HTML existe a mesma coisa: uma célula pode <strong>ocupar o espaço de várias</strong>, para o lado (<code>colspan</code>) ou para baixo (<code>rowspan</code>). Nesta aula a Ana usa isso no horário e na escala da lojinha, aprende a fazer a conta das células de cada linha e vê o que acontece quando a conta não fecha: a <strong>tabela torta</strong>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como uma célula ocupa várias colunas com <code>colspan</code>.</li>
+  <li>Como uma célula ocupa várias linhas com <code>rowspan</code>.</li>
+  <li>A conta que todo <code>colspan</code> e <code>rowspan</code> exige, e as células que você <strong>não</strong> escreve.</li>
+  <li>Como desenhar a grade no papel antes de escrever o código.</li>
+  <li>O que o navegador e o validador fazem com uma tabela torta, e por que o validador às vezes só dá um aviso.</li>
+  <li>Os erros reais: coluna sem nenhuma célula, <code>rowspan</code> que passa do fim do grupo e valores que não são números.</li>
+</ul>
+</div>
+
+<p>Os exemplos usam o <code>&lt;head&gt;</code> com as duas regras de CSS da aula <a href="tabelas.html">Tabelas</a>: sem bordas, não dá para ver as células mescladas. Os quadros <strong>Resultado</strong> são desenhados pelo seu navegador; as mensagens do validador saíram do <code>vnu</code> 26.10.12 na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: o quadro de horários</h2>
+<p>No quadro de horários da escola, quando uma aula dura dois tempos seguidos, ninguém escreve "Matemática" duas vezes: desenha uma caixa só, mais comprida, ocupando os dois espaços. O nome da aula vale para a caixa inteira.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>Vem do inglês</th><th>O que faz</th></tr>
+<tr><td><code>colspan</code></td><td><em>column span</em>, "extensão em colunas"</td><td>a célula ocupa várias <strong>colunas</strong>, para a direita</td></tr>
+<tr><td><code>rowspan</code></td><td><em>row span</em>, "extensão em linhas"</td><td>a célula ocupa várias <strong>linhas</strong>, para baixo</td></tr>
+</table>
+</div>
+
+<p>Os dois funcionam em <code>td</code> e em <code>th</code>, e o valor é <strong>quantas</strong> colunas ou linhas a célula ocupa, contando ela mesma.</p>
+
+<hr>
+
+<h2>1. <code>colspan</code>: ocupar várias colunas</h2>
+<p>No horário da lojinha, domingo não tem "abre" nem "fecha": a loja está fechada o dia todo. Uma célula só, ocupando as duas colunas, diz isso melhor:</p>
+
+<pre class="file" data-file="horario.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Horário&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Dia&lt;/th&gt;
+    &lt;th&gt;Abre&lt;/th&gt;
+    &lt;th&gt;Fecha&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Sábado&lt;/td&gt;
+    &lt;td&gt;9h&lt;/td&gt;
+    &lt;td&gt;13h&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Domingo&lt;/td&gt;
+    &lt;td colspan="2"&gt;Fechado&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>colspan="2"</dt><dd>"Esta célula ocupa 2 colunas": a dela e a da direita. No resultado, "Fechado" se estende por baixo de "Abre" e de "Fecha".</dd>
+  <dt>a linha do domingo tem só 2 &lt;td&gt;</dt><dd>As outras linhas têm 3 células. A do domingo tem 2, mas uma delas vale por duas: 1 + 2 = 3. A conta fecha.</dd>
+  <dt>o texto centralizado?</dt><dd>Não: o "Fechado" é um <code>td</code>, então fica à esquerda da célula larga, como qualquer <code>td</code>. Quem centraliza sozinho é o <code>th</code>.</dd>
+</dl>
+
+<h3>A conta de cada linha</h3>
+<p>Esta é a regra mais importante da aula: <strong>em cada linha, a soma dos <code>colspan</code> tem de dar o número de colunas da tabela</strong>. Uma célula sem <code>colspan</code> vale 1.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Linha</th><th>Células</th><th>Conta</th></tr>
+<tr><td>Cabeçalho</td><td>Dia, Abre, Fecha</td><td>1 + 1 + 1 = 3</td></tr>
+<tr><td>Sábado</td><td>Sábado, 9h, 13h</td><td>1 + 1 + 1 = 3</td></tr>
+<tr><td>Domingo</td><td>Domingo, Fechado (colspan="2")</td><td>1 + 2 = 3</td></tr>
+</table>
+</div>
+
+<p>Por isso, quando você põe <code>colspan="2"</code> numa célula, precisa <strong>apagar</strong> uma célula da mesma linha. A célula mesclada "come" a vizinha.</p>
+
+<div class="tryhtml" data-goal="nsel:td[colspan=&quot;2&quot;]=1,texto:td[colspan]=Fechado,nsel:tr:last-child&gt;td=2,nsel:td=8">
+<p class="try-task"><strong>Experimente:</strong> a Ana escreveu "Fechado" duas vezes no domingo. Faça o primeiro "Fechado" ocupar as duas colunas e apague o segundo, para a conta da linha continuar dando 3.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Horário&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;&lt;th&gt;Dia&lt;/th&gt;&lt;th&gt;Abre&lt;/th&gt;&lt;th&gt;Fecha&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Segunda a sexta&lt;/td&gt;&lt;td&gt;9h&lt;/td&gt;&lt;td&gt;18h&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Sábado&lt;/td&gt;&lt;td&gt;9h&lt;/td&gt;&lt;td&gt;13h&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Domingo&lt;/td&gt;&lt;td&gt;Fechado&lt;/td&gt;&lt;td&gt;Fechado&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Horário&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;&lt;th&gt;Dia&lt;/th&gt;&lt;th&gt;Abre&lt;/th&gt;&lt;th&gt;Fecha&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Segunda a sexta&lt;/td&gt;&lt;td&gt;9h&lt;/td&gt;&lt;td&gt;18h&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Sábado&lt;/td&gt;&lt;td&gt;9h&lt;/td&gt;&lt;td&gt;13h&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Domingo&lt;/td&gt;&lt;td colspan="2"&gt;Fechado&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>O <code>colspan</code> também é o jeito certo de fazer uma linha de título que atravessa a tabela toda, como a linha "Papelaria" da aula <a href="tabelas-cabecalho.html">Cabeçalhos</a>: <code>&lt;tr&gt;&lt;th colspan="2"&gt;Papelaria&lt;/th&gt;&lt;/tr&gt;</code>, sem o <code>td</code> vazio ao lado.</p>
+
+<hr>
+
+<h2>2. <code>rowspan</code>: ocupar várias linhas</h2>
+<p>No sábado, a lojinha tem dois turnos: de manhã atende a Ana, à tarde a Bia. O dia "Sábado" vale para as duas linhas:</p>
+
+<pre class="file" data-file="escala.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Escala&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Dia&lt;/th&gt;
+    &lt;th&gt;Turno&lt;/th&gt;
+    &lt;th&gt;Quem atende&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;th rowspan="2"&gt;Sábado&lt;/th&gt;
+    &lt;td&gt;Manhã&lt;/td&gt;
+    &lt;td&gt;Ana&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Tarde&lt;/td&gt;
+    &lt;td&gt;Bia&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;th rowspan="2"&gt;Sábado&lt;/th&gt;</dt><dd>"Esta célula ocupa 2 linhas": a dela e a de baixo. É um <code>th</code> porque é o nome das linhas (um cabeçalho de linha, da aula <a href="tabelas-cabecalho.html">Cabeçalhos</a>).</dd>
+  <dt>a linha da tarde tem só 2 células</dt><dd>O primeiro lugar dessa linha <strong>já está ocupado</strong> pelo "Sábado" que desceu de cima. Por isso ela começa direto em "Tarde". Se você escrevesse "Sábado" de novo, teria uma célula a mais.</dd>
+  <dt>o texto no meio da altura</dt><dd>O navegador alinha "Sábado" no meio vertical da célula alta.</dd>
+</dl>
+
+<p>Com <code>rowspan</code>, a conta continua sendo por linha, mas agora uma célula de cima também ocupa lugar na linha de baixo:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Linha</th><th>Células escritas no código</th><th>Lugares ocupados</th></tr>
+<tr><td>Cabeçalho</td><td>Dia, Turno, Quem atende</td><td>3</td></tr>
+<tr><td>Manhã</td><td>Sábado (rowspan="2"), Manhã, Ana</td><td>3</td></tr>
+<tr><td>Tarde</td><td>Tarde, Bia</td><td>2 escritas + 1 do Sábado que desceu = 3</td></tr>
+</table>
+</div>
+
+<div class="tip">
+<strong>Desenhe a grade no papel</strong>
+<p>Antes de escrever uma tabela com células mescladas, desenhe a grade num papel (ou na planilha) e numere as linhas. Para cada linha do desenho, escreva no código só as células que <strong>começam</strong> nela. As que vieram de cima com <code>rowspan</code> já estão lá.</p>
+</div>
+
+<hr>
+
+<h2>3. Os dois juntos</h2>
+<p>Uma tabela pode ter <code>colspan</code> e <code>rowspan</code> em células diferentes. Aqui, o cabeçalho "Turnos" ocupa duas colunas, e "Dia" ocupa duas linhas do cabeçalho:</p>
+
+<pre class="file" data-file="semana.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Escala&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th rowspan="2"&gt;Dia&lt;/th&gt;
+      &lt;th colspan="2"&gt;Turnos&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Manhã&lt;/th&gt;
+      &lt;th&gt;Tarde&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Sábado&lt;/th&gt;
+      &lt;td&gt;Ana&lt;/td&gt;
+      &lt;td&gt;Bia&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Domingo&lt;/th&gt;
+      &lt;td colspan="2"&gt;Fechado&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Faça a conta: a 1ª linha do cabeçalho tem "Dia" (1) + "Turnos" (2) = 3. A 2ª tem o "Dia" que desceu (1) + "Manhã" + "Tarde" = 3. Sábado: 1 + 1 + 1. Domingo: 1 + 2. Todas as linhas dão 3.</p>
+
+<p>Repare que o <code>rowspan</code> do "Dia" ficou <strong>dentro</strong> do <code>thead</code>: ele desce para a segunda linha do cabeçalho, e não para o corpo. Uma célula nunca atravessa de um grupo (<code>thead</code>, <code>tbody</code>, <code>tfoot</code>) para outro, como você vai ver em <a href="#errado">Quando dá errado</a>.</p>
+
+<div class="note">
+<strong>Mescle com moderação</strong>
+<p>Células mescladas complicam a vida de quem usa leitor de tela: fica mais difícil saber a qual cabeçalho cada dado pertence. Use quando a mesclagem <strong>diz</strong> alguma coisa ("fechado o dia todo", "os dois turnos de sábado"), e não só para enfeitar. A aula <a href="tabelas-legenda.html">Legenda e Acessibilidade</a> mostra como ajudar o leitor de tela com o <code>scope</code>.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Quase tudo o que dá errado com <code>colspan</code> e <code>rowspan</code> vem da conta que não fecha. Nos arquivos completos, as linhas 1 a 11 são o cabeçalho com o <code>&lt;style&gt;</code>, e o código mostrado começa na linha 12.</p>
+
+<div class="cenario">
+<strong>A tabela torta: <code>info warning: A table row was 4 columns wide and exceeded the column count established by the first row (3).</code></strong>
+<p>A Ana pôs o <code>rowspan="2"</code> no "Sábado", mas esqueceu de apagar o "Sábado" da linha de baixo:</p>
+<pre class="file" data-file="torta.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Escala&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Dia&lt;/th&gt;
+    &lt;th&gt;Turno&lt;/th&gt;
+    &lt;th&gt;Quem atende&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;th rowspan="2"&gt;Sábado&lt;/th&gt;
+    &lt;td&gt;Manhã&lt;/td&gt;
+    &lt;td&gt;Ana&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Sábado&lt;/td&gt;
+    &lt;td&gt;Tarde&lt;/td&gt;
+    &lt;td&gt;Bia&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu torta.html; echo "código de saída: $?"
+"file:/home/ana/site/torta.html":26.17-27.7: info warning: A table row was 4 columns wide and exceeded the column count established by the first row (3).
+código de saída: 0</pre>
+<dl class="anatomy">
+  <dt>26.17-27.7</dt><dd>Do fim da última célula (linha 26) até o <code>&lt;/tr&gt;</code> (linha 27): o validador avisa quando a linha termina e ele termina a conta.</dd>
+  <dt>A table row was 4 columns wide</dt><dd>"Uma linha da tabela ficou com 4 colunas de largura": o "Sábado" que desceu (1) + "Sábado", "Tarde" e "Bia" (3).</dd>
+  <dt>and exceeded the column count established by the first row (3)</dt><dd>"e passou do número de colunas definido pela primeira linha (3)". A primeira linha é a régua da tabela.</dd>
+  <dt>código de saída: 0</dt><dd>É só um <em>info warning</em>: para o validador, a página não tem <strong>erro</strong>. Com <code>vnu --errors-only torta.html</code>, ele não mostraria nada. Por isso, leia sempre os avisos de tabela, e não só os erros.</dd>
+</dl>
+<p><strong>O que o navegador faz:</strong> a tabela fica <strong>torta</strong>. As células da linha de baixo andam uma casa para a direita, porque o primeiro lugar já era do "Sábado" de cima: "Sábado" vai parar embaixo de "Turno", "Tarde" embaixo de "Quem atende", e "Bia" fica para fora da tabela, numa quarta coluna que só ela tem.</p>
+<p><strong>Como consertar:</strong> apague a célula que o <code>rowspan</code> já ocupa. A linha da tarde fica com 2 células. O mesmo acontece com <code>colspan</code>: <code>&lt;td colspan="2"&gt;Fechado&lt;/td&gt;</code> seguido de mais um <code>&lt;td&gt;&lt;/td&gt;</code> dá a mesma mensagem, com a célula vazia sobrando para fora.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Table column 3 established by element “th” has no cells beginning in it.</code></strong>
+<p>O contrário: a Ana fez um título ocupar 3 colunas, mas a tabela só tem 2:</p>
+<pre class="file" data-file="colspan-demais.html" data-resultado>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th colspan="3"&gt;Horário da lojinha&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Sábado&lt;/td&gt;
+    &lt;td&gt;9h às 13h&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu colspan-demais.html; echo "código de saída: $?"
+"file:/home/ana/site/colspan-demais.html":18.23-19.7: info warning: A table row was 2 columns wide, which is less than the column count established by the first row (3).
+"file:/home/ana/site/colspan-demais.html":13.7-14.20: error: Table column 3 established by element “th” has no cells beginning in it.
+código de saída: 1</pre>
+<dl class="anatomy">
+  <dt>A table row was 2 columns wide, which is less than…</dt><dd>"Uma linha ficou com 2 colunas, menos que as 3 definidas pela primeira linha". Uma linha curta, sozinha, é só aviso: o navegador deixaria um buraco no fim dela.</dd>
+  <dt>Table column 3 established by element “th” has no cells beginning in it</dt><dd>"A coluna 3, criada pelo elemento <code>th</code>, não tem nenhuma célula começando nela". Essa é <strong>erro</strong>: a 3ª coluna só existe por causa do <code>colspan="3"</code>; nenhuma linha tem célula própria lá. A posição (do fim do <code>&lt;tr&gt;</code> da linha 13 ao fim do <code>&lt;th colspan="3"&gt;</code> da linha 14) aponta o <code>th</code> culpado.</dd>
+</dl>
+<p><strong>O que o navegador faz:</strong> desenha uma tabela que parece <strong>perfeita</strong>. A 3ª coluna fica sem largura nenhuma, invisível. Só o validador vê o problema.</p>
+<p><strong>Como consertar:</strong> o <code>colspan</code> do título tem de ser igual ao número de colunas de verdade: <code>colspan="2"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Table cell spans past the end of its row group established by a “tbody” element; clipped to the end of the row group.</code></strong>
+<p>O "Sábado" diz que ocupa 3 linhas, mas só existem 2:</p>
+<pre class="file" data-file="rowspan-demais.html">&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th rowspan="3"&gt;Sábado&lt;/th&gt;
+    &lt;td&gt;Manhã&lt;/td&gt;
+    &lt;td&gt;Ana&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Tarde&lt;/td&gt;
+    &lt;td&gt;Bia&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu rowspan-demais.html
+"file:/home/ana/site/rowspan-demais.html":13.7-14.20: error: Table cell spans past the end of its row group established by a “tbody” element; clipped to the end of the row group.</pre>
+<p><strong>O que significa:</strong> "a célula se estende além do fim do seu grupo de linhas, criado por um elemento <code>tbody</code>; ela foi cortada no fim do grupo". O <code>tbody</code> aqui é o que o navegador criou sozinho (aula <a href="tabelas.html">Tabelas</a>). Com um <code>rowspan</code> no <code>thead</code> descendo para o <code>tbody</code>, a mensagem é a mesma, com “thead” no lugar de “tbody”: a célula não atravessa de um grupo para outro.</p>
+<p><strong>O que o navegador faz:</strong> corta a célula no fim do grupo, como a mensagem diz. A tabela fica igual à certa, com "Sábado" ocupando 2 linhas.</p>
+<p><strong>Como consertar:</strong> conte as linhas de verdade: <code>rowspan="2"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “dois” for attribute “colspan” on element “td”</code></strong>
+<pre class="file" data-file="colspan-dois.html">&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Domingo&lt;/td&gt;
+    &lt;td colspan="dois"&gt;Fechado&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu colspan-dois.html
+"file:/home/ana/site/colspan-dois.html":14.21-15.23: error: Bad value “dois” for attribute “colspan” on element “td”: Expected a digit but saw “d” instead.</pre>
+<p><strong>O que significa:</strong> o valor tem de ser um número inteiro, escrito com algarismos. O navegador ignora o valor e trata a célula como <code>colspan="1"</code>. Outros valores recusados: <code>colspan="0"</code> (<em>Zero is not a positive integer</em>, "zero não é um inteiro positivo"), <code>rowspan="1.5"</code> (<em>Expected a digit but saw “.” instead</em>) e qualquer <code>colspan</code> acima de 1000.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;td colspan="2"&gt;</code></td><td>A célula ocupa 2 colunas (a dela e a da direita). Apague 1 célula da mesma linha.</td></tr>
+<tr><td><code>&lt;td rowspan="2"&gt;</code></td><td>A célula ocupa 2 linhas (a dela e a de baixo). Na linha de baixo, não escreva a célula daquele lugar.</td></tr>
+<tr><td>A conta</td><td>Em cada linha: células escritas (somando os <code>colspan</code>) + lugares ocupados por <code>rowspan</code> de cima = número de colunas.</td></tr>
+<tr><td>Valores</td><td>Inteiros com algarismos. <code>colspan</code> de 1 a 1000.</td></tr>
+<tr><td>Grupos</td><td>Um <code>rowspan</code> não atravessa de <code>thead</code> para <code>tbody</code> nem de <code>tbody</code> para <code>tfoot</code>.</td></tr>
+<tr><td><em>exceeded the column count</em></td><td><em>info warning</em>: linha com células demais (tabela torta). Código de saída 0.</td></tr>
+<tr><td><em>has no cells beginning in it</em></td><td>Erro: <code>colspan</code> criou uma coluna que nenhuma linha usa.</td></tr>
+<tr><td><em>spans past the end of its row group</em></td><td>Erro: <code>rowspan</code> maior que as linhas que sobram no grupo.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Duas colunas</h3>
+<p>Complete para a célula ocupar 2 colunas:</p>
+<div class="ex-code">&lt;td <input data-answer="colspan" aria-label="atributo">="2"&gt;Fechado&lt;/td&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A conta</h3>
+<p>Uma tabela tem 4 colunas. Uma linha tem uma célula com <code>colspan="3"</code>. Quantas células <strong>a mais</strong> essa linha precisa ter?</p>
+<div class="ex-code"><input data-answer="1|uma" aria-label="número de células"></div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Na linha 1, a primeira célula tem <code>rowspan="2"</code>. A tabela tem 3 colunas. Quantas células a linha 2 deve ter no código?</p>
+<label><input type="radio" name="q3"> 3</label>
+<label><input type="radio" name="q3"> 2</label>
+<label><input type="radio" name="q3"> 1</label>
+<label><input type="radio" name="q3"> 4</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. A Ana esqueceu de apagar a célula embaixo de um <code>rowspan</code>. O que o validador diz?</p>
+<label><input type="radio" name="q4"> Nada</label>
+<label><input type="radio" name="q4"> <em>error: Stray start tag “td”</em>, com código de saída 1</label>
+<label><input type="radio" name="q4"> <em>error: Bad value for attribute “rowspan”</em></label>
+<label><input type="radio" name="q4"> <em>info warning: A table row was 4 columns wide and exceeded the column count…</em>, com código de saída 0</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Um título com <code>colspan="3"</code> numa tabela de 2 colunas aparece perfeito no navegador. Por quê?</p>
+<label><input type="radio" name="q5"> Porque a 3ª coluna não tem nenhuma célula e fica sem largura; mas o validador acusa <em>has no cells beginning in it</em></label>
+<label><input type="radio" name="q5"> Porque o navegador troca o 3 por 2 e o validador aceita</label>
+<label><input type="radio" name="q5"> Porque <code>colspan</code> só funciona em <code>td</code></label>
+<label><input type="radio" name="q5"> Porque o navegador apaga o <code>colspan</code></label>
+</div>
+
+<h3>Missão final: a escala do fim de semana</h3>
+
+<div class="tryhtml" data-goal="nsel:th[rowspan=&quot;2&quot;]=2,nsel:tbody tr=4,nsel:tbody th=2,nsel:tbody tr:nth-child(2)&gt;*=2,nsel:tbody tr:nth-child(4)&gt;*=2">
+<p class="try-task"><strong>Missão:</strong> na escala, "Sábado" e "Domingo" aparecem duas vezes cada. Faça o primeiro "Sábado" ocupar as <strong>duas linhas</strong> do sábado, e o primeiro "Domingo" as duas do domingo. Depois apague as células repetidas, para a tabela não ficar torta.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Escala&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Dia&lt;/th&gt;&lt;th&gt;Turno&lt;/th&gt;&lt;th&gt;Quem atende&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th&gt;Sábado&lt;/th&gt;&lt;td&gt;Manhã&lt;/td&gt;&lt;td&gt;Ana&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th&gt;Sábado&lt;/th&gt;&lt;td&gt;Tarde&lt;/td&gt;&lt;td&gt;Bia&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th&gt;Domingo&lt;/th&gt;&lt;td&gt;Manhã&lt;/td&gt;&lt;td&gt;Bia&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th&gt;Domingo&lt;/th&gt;&lt;td&gt;Tarde&lt;/td&gt;&lt;td&gt;Ana&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Escala&lt;/title&gt;
+&lt;style&gt;
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Dia&lt;/th&gt;&lt;th&gt;Turno&lt;/th&gt;&lt;th&gt;Quem atende&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th rowspan="2"&gt;Sábado&lt;/th&gt;&lt;td&gt;Manhã&lt;/td&gt;&lt;td&gt;Ana&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Tarde&lt;/td&gt;&lt;td&gt;Bia&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th rowspan="2"&gt;Domingo&lt;/th&gt;&lt;td&gt;Manhã&lt;/td&gt;&lt;td&gt;Bia&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Tarde&lt;/td&gt;&lt;td&gt;Ana&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Se você puser os dois <code>rowspan</code> e esquecer de apagar as repetições, o resultado mostra na hora a tabela torta, com "Bia" e "Ana" sobrando para fora. A conta resolve: cada linha precisa ocupar 3 lugares.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>colspan="N"</code>: a célula ocupa N colunas, para a direita. <code>rowspan="N"</code>: ocupa N linhas, para baixo. Valem em <code>td</code> e <code>th</code>.</li>
+  <li>A conta de cada linha tem de dar o número de colunas: some os <code>colspan</code> e os lugares que um <code>rowspan</code> de cima já ocupa.</li>
+  <li>Quem mescla "come" vizinhas: apague as células que a célula grande cobre.</li>
+  <li>Desenhe a grade no papel; em cada linha, escreva só as células que começam nela.</li>
+  <li>Tabela torta (células demais): o navegador empurra as células para fora; o validador dá só <em>info warning</em> (<em>exceeded the column count</em>), com código de saída 0.</li>
+  <li>Erros de verdade: <em>has no cells beginning in it</em> (<code>colspan</code> grande demais), <em>spans past the end of its row group</em> (<code>rowspan</code> grande demais ou atravessando grupos) e <em>Bad value</em> (valor que não é inteiro positivo).</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
