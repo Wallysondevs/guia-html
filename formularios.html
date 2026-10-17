@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Formulários — o elemento form | Guia HTML</title>
+<meta name="description" content="Formulários em HTML para quem nunca fez um site: o elemento form, os campos com name, o botão de enviar, o action e o method, o que o navegador manda (q=bolo+de+cenoura), o que o editor do guia mostra ao enviar, formulário dentro de formulário e os erros reais do validador W3C, com o resultado ao vivo e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Formulários</span></h1>
+
+<p class="intro">A caixa de busca do Google, a tela de login do banco, o "deixe seu comentário" do blog, o carrinho da loja: tudo isso é <strong>formulário</strong>. Até aqui, as suas páginas só <em>mostravam</em> coisas. Com um formulário, a pessoa do outro lado da tela <strong>responde</strong>: digita, escolhe e envia. Esta aula é a visão geral: o elemento <code>&lt;form&gt;</code>, o que acontece quando alguém clica em "Enviar" e o que exatamente o navegador manda. Cada tipo de campo tem a sua aula logo depois desta.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <code>&lt;form&gt;</code> e quais peças ele junta (campos, rótulos e botão).</li>
+  <li>Por que todo campo precisa de um <code>name</code>, e o que acontece sem ele.</li>
+  <li>O que o navegador envia: os pares <code>nome=valor</code>, como <code>q=bolo+de+cenoura</code>.</li>
+  <li>Para onde e como os dados vão: os atributos <code>action</code> e <code>method</code>.</li>
+  <li>O que o editor do guia mostra quando você envia um formulário.</li>
+  <li>Os erros reais: formulário dentro de formulário, <code>action</code> vazio ou com espaço e <code>method</code> inventado.</li>
+</ul>
+</div>
+
+<p>Os exemplos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) e testados com um servidor local na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>). Os quadros "Resultado" são desenhados pelo seu próprio navegador, e você pode digitar e enviar neles.</p>
+
+<hr>
+
+<h2>A ideia: a ficha de inscrição</h2>
+<p>Pense numa ficha de papel para se inscrever num curso de culinária:</p>
+<ul>
+  <li>a <strong>ficha inteira</strong>, de borda a borda, é o <code>&lt;form&gt;</code>;</li>
+  <li>cada <strong>linha em branco</strong> ("Nome: ______") é um campo, como o <code>&lt;input&gt;</code>;</li>
+  <li>o texto impresso antes da linha ("Nome:") é o rótulo, o <code>&lt;label&gt;</code>;</li>
+  <li>o <strong>nome interno</strong> de cada linha, que a secretaria usa para digitar a ficha no computador, é o atributo <code>name</code>;</li>
+  <li>entregar a ficha no balcão é <strong>enviar</strong> (o botão);</li>
+  <li>o <strong>endereço do balcão</strong> é o <code>action</code>, e o jeito de entregar (no envelope ou à mostra) é o <code>method</code>.</li>
+</ul>
+<p>Uma linha preenchida fora da ficha (rabiscada na mesa) não é entregue. No HTML é igual: só vai o que está dentro do <code>&lt;form&gt;</code> e tem <code>name</code>.</p>
+
+<hr>
+
+<h2>1. O primeiro formulário: uma busca</h2>
+<p>O site de receitas da Ana vai ganhar uma caixa de busca:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form action="busca.html"&gt;
+  &lt;label for="q"&gt;Buscar receita:&lt;/label&gt;
+  &lt;input id="q" name="q"&gt;
+  &lt;button&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;form&gt;</dt><dd>De <em>form</em>, "formulário". Uma caixa invisível que junta os campos e sabe enviá-los. Sozinho, ele não desenha nada na tela.</dd>
+  <dt>action="busca.html"</dt><dd>"Ação": <strong>para onde</strong> os dados vão quando a pessoa envia. Aqui, para a página <code>busca.html</code>.</dd>
+  <dt>&lt;label for="q"&gt;</dt><dd>O rótulo, o texto que diz o que digitar. O <code>for="q"</code> o liga ao campo de <code>id="q"</code>: clicar no rótulo põe o cursor no campo, e o leitor de tela lê "Buscar receita" ao entrar nele. Tem aula própria: <a href="label.html">label</a>.</dd>
+  <dt>&lt;input id="q" name="q"&gt;</dt><dd>O campo onde a pessoa digita (aula <a href="input.html">O Elemento input</a>). O <code>id</code> serve para o <code>label</code> achá-lo; o <code>name</code> é o <strong>nome do dado</strong> na hora do envio. O <code>q</code> vem de <em>query</em>, "consulta": é o nome que quase todo site usa para a busca.</dd>
+  <dt>&lt;button&gt;Buscar&lt;/button&gt;</dt><dd>Um botão dentro de um formulário <strong>envia</strong> o formulário quando é clicado (aula <a href="botoes.html">Botões</a>).</dd>
+</dl>
+
+<p>Digite "bolo de cenoura" no resultado e clique em <strong>Buscar</strong> (ou aperte <kbd>Enter</kbd> dentro do campo, que também envia). Como aqui não existe uma <code>busca.html</code> nem um servidor, o editor do guia mostra uma página <strong>"Formulário enviado"</strong> com o que o navegador mandaria: o método, o destino, o endereço que abriria e uma tabela com cada <code>name</code> e o seu valor. O botão "Voltar ao formulário" traz a página de volta.</p>
+
+<div class="note">
+<strong>Aparência</strong>
+<p>O desenho do campo e do botão (borda, cantos, cor, tamanho) muda de um navegador para outro e de um sistema para outro: no celular, no Windows e no Mac, o mesmo código fica um pouco diferente. Tudo isso pode ser mudado com CSS (futuro Guia CSS).</p>
+</div>
+
+<hr>
+
+<h2>2. O que o navegador envia</h2>
+<p>Ao enviar, o navegador monta uma lista de pares <strong><code>name=valor</code></strong>, um para cada campo, e pede o endereço do <code>action</code> com essa lista depois de um <code>?</code>:</p>
+
+<pre class="file" data-file="endereço que o navegador abre">busca.html?q=bolo+de+cenoura
+</pre>
+
+<dl class="anatomy">
+  <dt>busca.html</dt><dd>O destino, que veio do <code>action</code>.</dd>
+  <dt>?</dt><dd>Separa o endereço dos dados. Tudo o que vem depois é a "consulta" (<em>query string</em>).</dd>
+  <dt>q=bolo+de+cenoura</dt><dd>O par: o <code>name</code> do campo (<code>q</code>), um <code>=</code> e o que a pessoa digitou. Os espaços viram <code>+</code>.</dd>
+</dl>
+
+<p>Para ver isso chegando num servidor de verdade, a Ana criou uma <code>busca.html</code> qualquer, ligou o servidor local do Python (aula <a href="servidor-local.html">Servidor Local</a>) e pediu o mesmo endereço que o navegador pediria. Quem faz o pedido aqui é o <code>curl</code>, um programa que pede páginas pelo terminal, como um navegador sem tela:</p>
+
+<pre class="term" data-cwd="~/formulario">$ python3 -m http.server 8000 &amp;      « liga o servidor em segundo plano
+[1] 4
+$ sleep 1                « espera um segundo o servidor ligar
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+$ curl -s -o /dev/null "http://localhost:8000/busca.html?q=bolo+de+cenoura"
+127.0.0.1 - - [17/Oct/2026 15:53:31] "GET /busca.html?q=bolo+de+cenoura HTTP/1.1" 200 -</pre>
+
+<p>O <code>-s -o /dev/null</code> só pede ao <code>curl</code> para não mostrar a página recebida. A linha que começa com <code>127.0.0.1</code> é o <strong>registro</strong> do servidor: "alguém nesta máquina pediu (<code>GET</code>) a página <code>/busca.html?q=bolo+de+cenoura</code> e recebeu o código <code>200</code>" (200 = deu certo). O servidor recebeu a busca inteira. Num site de verdade, um programa no servidor (em PHP, Python, JavaScript…) leria o <code>q</code> e montaria a lista de receitas. Isso já não é HTML: o trabalho do HTML termina quando os dados saem do navegador.</p>
+
+<h3>Vários campos, acentos e símbolos</h3>
+<p>Com vários campos, os pares são separados por <code>&amp;</code>. Letras acentuadas e símbolos viram códigos com <code>%</code>, porque um endereço só pode ter letras simples, números e alguns sinais. Com o servidor ainda ligado, a Ana pediu mais dois endereços, do jeito que um formulário de contato e uma busca com acento mandariam:</p>
+
+<pre class="term" data-cwd="~/formulario">$ curl -s -o /dev/null "http://localhost:8000/busca.html?nome=Ana&amp;email=ana%40exemplo.com.br&amp;msg=Adorei+o+bolo%21"
+127.0.0.1 - - [17/Oct/2026 15:53:31] "GET /busca.html?nome=Ana&amp;email=ana%40exemplo.com.br&amp;msg=Adorei+o+bolo%21 HTTP/1.1" 200 -
+$ curl -s -o /dev/null "http://localhost:8000/busca.html?q=p%C3%A3o+de+queijo"
+127.0.0.1 - - [17/Oct/2026 15:53:31] "GET /busca.html?q=p%C3%A3o+de+queijo HTTP/1.1" 200 -
+$ kill %1                « desliga o servidor</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>A pessoa digitou</th><th>Vai no endereço como</th></tr>
+<tr><td>espaço</td><td><code>+</code></td></tr>
+<tr><td><code>@</code></td><td><code>%40</code></td></tr>
+<tr><td><code>!</code></td><td><code>%21</code></td></tr>
+<tr><td><code>ã</code></td><td><code>%C3%A3</code> (os dois bytes do "ã" em UTF-8, aula <a href="acentos-utf8.html">Acentos e UTF-8</a>)</td></tr>
+</table>
+</div>
+
+<p>Você não precisa decorar nada disso: o navegador codifica sozinho, e o servidor decodifica sozinho. Mas, quando vir um endereço cheio de <code>%</code> e <code>+</code>, você vai saber que é um formulário que passou por ali.</p>
+
+<h3>Sem <code>name</code>, não vai</h3>
+<p>O <code>name</code> é a etiqueta do dado. Um campo <strong>sem</strong> <code>name</code> aparece na tela, a pessoa digita nele, mas o navegador o deixa de fora do envio:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form action="busca.html"&gt;
+  &lt;label for="q"&gt;Buscar receita:&lt;/label&gt;
+  &lt;input id="q"&gt;
+  &lt;button&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Digite algo e clique em Buscar: o editor avisa que <strong>nenhum campo com <code>name</code> foi enviado</strong>, e o endereço fica só <code>busca.html?</code>, sem dados. O validador não reclama, porque um campo sem <code>name</code> é permitido (às vezes ele só serve para um script). Por isso esse é um dos erros mais comuns em formulários.</p>
+
+<div class="tryhtml" data-goal="attr:#nome[name]=nome,attr:#cidade[name]=cidade">
+<p class="try-task"><strong>Missão:</strong> o formulário de inscrição da aula de bolos chega sempre vazio à Ana. Envie uma vez e veja o que o editor mostra. Depois dê aos dois campos os nomes <code>nome</code> e <code>cidade</code> e envie de novo: agora a tabela mostra os dois pares.</p>
+<pre class="script" data-file="index.html">&lt;form action="inscricao.html"&gt;
+  &lt;p&gt;
+    &lt;label for="nome"&gt;Nome:&lt;/label&gt;
+    &lt;input id="nome"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="cidade"&gt;Cidade:&lt;/label&gt;
+    &lt;input id="cidade"&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Inscrever&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="inscricao.html"&gt;
+  &lt;p&gt;
+    &lt;label for="nome"&gt;Nome:&lt;/label&gt;
+    &lt;input id="nome" name="nome"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="cidade"&gt;Cidade:&lt;/label&gt;
+    &lt;input id="cidade" name="cidade"&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Inscrever&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>Repare nos <code>&lt;p&gt;</code> em volta de cada par rótulo + campo: eles só servem para pôr cada um numa linha. Sem eles, tudo ficaria lado a lado, porque campos e rótulos são elementos <strong>em linha</strong> (aula <a href="bloco-inline.html">Bloco × Em Linha</a>).</p>
+
+<hr>
+
+<h2>3. Para onde e como: <code>action</code> e <code>method</code></h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>O que diz</th><th>Se você não escrever</th></tr>
+<tr><td><code>action="busca.html"</code></td><td><strong>Para onde</strong> os dados vão: um endereço (de uma página, de um programa no servidor)</td><td>Vão para a <strong>própria página</strong> em que o formulário está</td></tr>
+<tr><td><code>method="get"</code></td><td><strong>Como</strong>: os dados vão no endereço, depois do <code>?</code>, como você viu acima</td><td><code>get</code> é o padrão</td></tr>
+<tr><td><code>method="post"</code></td><td><strong>Como</strong>: os dados vão escondidos no "corpo" do pedido, fora do endereço</td><td>—</td></tr>
+</table>
+</div>
+
+<p>Uma comparação rápida: o <code>get</code> é um <strong>cartão-postal</strong>, em que tudo fica à vista (no endereço, no histórico do navegador, nos favoritos); o <code>post</code> é uma <strong>carta no envelope</strong>. Use <code>get</code> para buscas e filtros (dá para guardar o link da busca) e <code>post</code> para o que muda alguma coisa ou é pessoal: cadastro, compra, senha, mensagem. A diferença completa, com o que chega no servidor em cada caso, está na aula <a href="enviar-formulario.html">Enviar (action, method, GET e POST)</a>.</p>
+
+<pre class="file" data-file="contato.html" data-resultado>&lt;form action="obrigado.html" method="post"&gt;
+  &lt;p&gt;
+    &lt;label for="email"&gt;Seu e-mail:&lt;/label&gt;
+    &lt;input id="email" name="email"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="msg"&gt;Mensagem:&lt;/label&gt;
+    &lt;input id="msg" name="msg"&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Preencha e envie: desta vez o editor mostra o <strong>corpo da mensagem</strong> (<code>email=…&amp;msg=…</code>) em vez de um endereço com <code>?</code>. Os pares são os mesmos; só o caminho muda.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> esta caixa tem duas abas. A busca da <code>index.html</code> manda para a <code>busca.html</code>, que existe aqui. Envie e repare no endereço em cima do resultado: <code>busca.html?q=…</code>. Depois troque para <code>method="post"</code> e envie de novo. Por fim, acrescente um segundo campo (<code>name="tipo"</code>) e veja o <code>&amp;</code> aparecer.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;form action="busca.html" method="get"&gt;
+  &lt;label for="q"&gt;Buscar receita:&lt;/label&gt;
+  &lt;input id="q" name="q"&gt;
+  &lt;button&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="script" data-file="busca.html">&lt;h1&gt;Resultado da busca&lt;/h1&gt;
+&lt;p&gt;Num site de verdade, o servidor leria o endereço e listaria as receitas aqui.&lt;/p&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Nova busca&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. As peças de um formulário</h2>
+<p>Dentro do <code>&lt;form&gt;</code> podem ir textos, títulos, parágrafos e listas, como em qualquer parte da página, e os <strong>controles</strong>: as peças em que a pessoa mexe. Cada uma tem a sua aula:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Peça</th><th>Para quê</th><th>Aula</th></tr>
+<tr><td><code>&lt;input&gt;</code></td><td>O campo mais comum: uma linha de texto e muitos outros tipos</td><td><a href="input.html">O Elemento input</a>, <a href="tipos-input.html">Tipos de input</a></td></tr>
+<tr><td><code>&lt;label&gt;</code></td><td>O rótulo de cada campo</td><td><a href="label.html">label</a></td></tr>
+<tr><td><code>&lt;textarea&gt;</code></td><td>Texto de várias linhas (comentários, mensagens)</td><td><a href="textarea.html">textarea</a></td></tr>
+<tr><td><code>&lt;select&gt;</code> e <code>&lt;option&gt;</code></td><td>Uma lista para escolher</td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>&lt;button&gt;</code></td><td>Enviar, limpar ou outra ação</td><td><a href="botoes.html">Botões</a></td></tr>
+<tr><td><code>&lt;input type="checkbox"&gt;</code> e <code>"radio"</code></td><td>Marcar opções</td><td><a href="checkbox-radio.html">checkbox e radio</a></td></tr>
+<tr><td><code>&lt;fieldset&gt;</code> e <code>&lt;legend&gt;</code></td><td>Agrupar campos com um título</td><td><a href="fieldset.html">fieldset e legend</a></td></tr>
+</table>
+</div>
+
+<p>E, para conferir o que a pessoa digitou antes de enviar (campo obrigatório, e-mail válido), existe a <a href="validacao.html">validação</a> do próprio HTML.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>As páginas abaixo têm o esqueleto de sempre (<code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;head&gt;</code> e <code>&lt;body&gt;</code>) nas linhas 1 a 7, e o <code>&lt;form&gt;</code> começa na <strong>linha 8</strong>.</p>
+
+<div class="cenario">
+<strong>Formulário dentro de formulário</strong>
+<p>A Ana quis pôr a busca dentro do formulário de cadastro:</p>
+<pre class="file" data-file="dentro.html" data-resultado>&lt;form action="cadastro.html"&gt;
+&lt;label for="nome"&gt;Nome:&lt;/label&gt;
+&lt;input id="nome" name="nome"&gt;
+&lt;form action="busca.html"&gt;
+&lt;label for="q"&gt;Buscar:&lt;/label&gt;
+&lt;input id="q" name="q"&gt;
+&lt;button&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+&lt;button&gt;Cadastrar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="term" data-cwd="~/formulario">$ vnu dentro.html
+"file:/home/ana/formulario/dentro.html":11.1-11.26: error: Saw a “form” start tag, but there was already an active “form” element. Nested forms are not allowed. Ignoring the tag.
+"file:/home/ana/formulario/dentro.html":17.1-17.7: error: Stray end tag “form”.</pre>
+<p><strong>O validador diz:</strong> "Encontrei uma tag <code>&lt;form&gt;</code>, mas já havia um <code>form</code> aberto. Formulários aninhados não são permitidos. <strong>Ignorando a tag</strong>." E, na linha 17: "tag de fechamento <code>form</code> perdida" (<em>stray</em> = "extraviada").</p>
+<p><strong>O que o navegador faz:</strong> exatamente o que a mensagem diz. Ele <strong>ignora</strong> o segundo <code>&lt;form&gt;</code> (com o <code>action="busca.html"</code> e tudo). O primeiro <code>&lt;/form&gt;</code> (linha 15) fecha o formulário de <strong>cadastro</strong>. O botão "Cadastrar" fica fora de qualquer formulário e não faz nada; o último <code>&lt;/form&gt;</code> sobra. No resultado acima, "Buscar" envia <code>nome</code> e <code>q</code> para <code>cadastro.html</code>, e "Cadastrar" não envia nada. Teste.</p>
+<p><strong>Como consertar:</strong> um formulário nunca vai dentro de outro. Faça dois formulários separados, um depois do outro.</p>
+</div>
+
+<div class="cenario">
+<strong><code>action=""</code> vazio</strong>
+<pre class="term" data-cwd="~/formulario">$ vnu vazio.html
+"file:/home/ana/formulario/vazio.html":8.1-8.16: error: Bad value “” for attribute “action” on element “form”: Must be non-empty.
+"file:/home/ana/formulario/vazio.html":8.1-8.16: info: To set the document’s location as the action for a form, omit the “action” attribute.</pre>
+<p><strong>O que significa:</strong> "Valor ruim (vazio) para o atributo <code>action</code>: precisa ter algo". E a dica (<code>info</code>, que não é erro): "para enviar para a própria página, <strong>omita</strong> o atributo <code>action</code>". O navegador trata os dois do mesmo jeito (envia para a própria página), mas só a versão sem <code>action</code> é válida.</p>
+<p><strong>Como consertar:</strong> apague o <code>action=""</code>, ou escreva o destino.</p>
+</div>
+
+<div class="cenario">
+<strong>Espaço no <code>action</code></strong>
+<pre class="term" data-cwd="~/formulario">$ vnu espaco.html
+"file:/home/ana/formulario/espaco.html":8.1-8.35: error: Bad value “busca receitas.html” for attribute “action” on element “form”: Illegal character in path segment. Space is not allowed.</pre>
+<p><strong>O que significa:</strong> "Caractere proibido no caminho: espaço não é permitido". O <code>action</code> é um endereço, e endereços não têm espaço (aula <a href="caminhos.html">Caminhos</a>).</p>
+<p><strong>Como consertar:</strong> renomeie o arquivo sem espaços (<code>busca-receitas.html</code>), que é a regra para todo arquivo de site.</p>
+</div>
+
+<div class="cenario">
+<strong><code>method="put"</code> (ou qualquer outro inventado)</strong>
+<pre class="term" data-cwd="~/formulario">$ vnu put.html
+"file:/home/ana/formulario/put.html":8.1-8.39: error: Bad value “put” for attribute “method” on element “form”.</pre>
+<p><strong>O que significa:</strong> o <code>method</code> de um formulário só aceita <code>get</code>, <code>post</code> e <code>dialog</code> (este último é o da aula <a href="dialog.html">dialog</a>). Outros valores existem em programas que conversam com servidores, mas não em formulários HTML.</p>
+<p><strong>O que o navegador faz:</strong> não avisa nada e usa o padrão, <code>get</code>. Os dados vão no endereço, talvez sem a Ana perceber.</p>
+<p><strong>Como consertar:</strong> <code>method="get"</code> ou <code>method="post"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O campo não chegou (e ninguém reclamou)</strong>
+<p><strong>O que acontece:</strong> a página funciona, o validador não acusa nada, mas um dado não aparece no envio. Confira, nesta ordem:</p>
+<ol class="passo">
+  <li>O campo tem <code>name</code>? Sem ele, não vai.</li>
+  <li>O campo está <strong>dentro</strong> do <code>&lt;form&gt;</code>? Um campo fora dele não vai junto.</li>
+  <li>Dois campos têm o <strong>mesmo</strong> <code>name</code> sem querer? Os dois vão (<code>q=bolo&amp;q=torta</code>), e o programa do servidor pode ficar só com um.</li>
+</ol>
+<p>Use o editor do guia (ou, num site publicado, a aba de rede das <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>) para ver exatamente quais pares saíram.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;form&gt;…&lt;/form&gt;</code></td><td>Junta os campos e os envia</td></tr>
+<tr><td><code>action="destino.html"</code></td><td>Para onde enviar (sem ele: a própria página; vazio é inválido)</td></tr>
+<tr><td><code>method="get"</code></td><td>Dados no endereço: <code>destino.html?nome=valor&amp;outro=valor</code> (padrão)</td></tr>
+<tr><td><code>method="post"</code></td><td>Dados no corpo do pedido, fora do endereço</td></tr>
+<tr><td><code>name="q"</code> num campo</td><td>O nome do dado no envio; sem ele, o campo não vai</td></tr>
+<tr><td><code>&lt;button&gt;Enviar&lt;/button&gt;</code> dentro do form</td><td>Envia o formulário (<kbd>Enter</kbd> num campo também)</td></tr>
+<tr><td>espaço → <code>+</code>, <code>@</code> → <code>%40</code>, <code>ã</code> → <code>%C3%A3</code></td><td>Como o navegador escreve os valores no envio</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O destino</h3>
+<p>Complete o atributo que diz para onde os dados vão:</p>
+<div class="ex-code">&lt;form <input data-answer="action" aria-label="atributo">="contato.html"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O nome do dado</h3>
+<p>Complete o atributo sem o qual o campo não é enviado:</p>
+<div class="ex-code">&lt;input id="cidade" <input data-answer="name" aria-label="atributo">="cidade"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. O endereço</h3>
+<p>Um formulário com <code>action="busca.html"</code> e um campo <code>name="q"</code> foi enviado com "torta" (sem <code>method</code>). Qual endereço o navegador abre?</p>
+<div class="ex-code"><input data-answer="busca.html?q=torta" aria-label="endereço" size="24"></div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. A pessoa digitou "bolo de fubá" num campo <code>name="q"</code>, com <code>method="get"</code>. Como isso aparece no endereço?</p>
+<label><input type="radio" name="q4"> <code>?bolo de fubá</code></label>
+<label><input type="radio" name="q4"> <code>?q="bolo de fubá"</code></label>
+<label><input type="radio" name="q4"> <code>?q=bolo+de+fub%C3%A1</code></label>
+<label><input type="radio" name="q4"> Não aparece: o <code>get</code> esconde os dados</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. O que o navegador faz com um <code>&lt;form&gt;</code> escrito dentro de outro <code>&lt;form&gt;</code>?</p>
+<label><input type="radio" name="q5"> Envia os dois, um depois do outro</label>
+<label><input type="radio" name="q5"> Ignora a tag do formulário de dentro</label>
+<label><input type="radio" name="q5"> Mostra uma mensagem de erro na página</label>
+<label><input type="radio" name="q5"> Envia só o de dentro</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Para um formulário de cadastro com senha, qual método usar?</p>
+<label><input type="radio" name="q6"> <code>get</code>, porque é o padrão</label>
+<label><input type="radio" name="q6"> <code>put</code></label>
+<label><input type="radio" name="q6"> Nenhum: senha não vai em formulário</label>
+<label><input type="radio" name="q6"> <code>post</code>, para os dados não ficarem no endereço</label>
+</div>
+
+<h3>Missão final: a inscrição na aula de bolos</h3>
+
+<div class="tryhtml" data-goal="nsel:form=1,attr:form[action]=inscricao.html,attr:form[method]=post,attr:form #nome[name]=nome,attr:form #email[name]=email,sel:form button">
+<p class="try-task"><strong>Missão:</strong> os campos estão soltos na página. Coloque-os dentro de <strong>um</strong> <code>&lt;form&gt;</code> que envia para <code>inscricao.html</code> pelo método <code>post</code>, dê os nomes <code>nome</code> e <code>email</code> aos campos e acrescente um botão "Inscrever" no fim do formulário. Envie para testar: a tabela tem de mostrar os dois pares.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Aula de bolos&lt;/h1&gt;
+&lt;p&gt;
+  &lt;label for="nome"&gt;Nome:&lt;/label&gt;
+  &lt;input id="nome"&gt;
+&lt;/p&gt;
+&lt;p&gt;
+  &lt;label for="email"&gt;E-mail:&lt;/label&gt;
+  &lt;input id="email"&gt;
+&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Aula de bolos&lt;/h1&gt;
+&lt;form action="inscricao.html" method="post"&gt;
+  &lt;p&gt;
+    &lt;label for="nome"&gt;Nome:&lt;/label&gt;
+    &lt;input id="nome" name="nome"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="email"&gt;E-mail:&lt;/label&gt;
+    &lt;input id="email" name="email"&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Inscrever&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>Na próxima aula você conhece de perto o <code>&lt;input&gt;</code>, a peça que mais aparece nos formulários. E, na seguinte, troca o campo de e-mail por um <code>type="email"</code>, que o navegador confere sozinho.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;form&gt;</code> junta os campos e os envia. Ele não aparece na tela; quem aparece são os campos, os rótulos e o botão.</li>
+  <li>Ao enviar (botão ou <kbd>Enter</kbd>), o navegador monta pares <code>name=valor</code>. Campo sem <code>name</code> ou fora do <code>&lt;form&gt;</code> não vai, e o validador não avisa.</li>
+  <li><code>action</code> = para onde (sem ele, a própria página; vazio é inválido). <code>method</code> = como: <code>get</code> (padrão, dados no endereço: <code>?q=bolo+de+cenoura</code>) ou <code>post</code> (dados no corpo).</li>
+  <li>No editor do guia, enviar mostra uma página "Formulário enviado" com o método, o destino e os pares.</li>
+  <li>Formulário dentro de formulário não existe: o navegador ignora a tag de dentro (<code>Nested forms are not allowed. Ignoring the tag.</code>), e os botões passam a enviar para o lugar errado.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
