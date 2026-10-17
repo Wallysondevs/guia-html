@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Novidades — o que chegou ao HTML nos últimos anos | Guia HTML</title>
+<meta name="description" content="As novidades do HTML Living Standard para quem está começando: search, details com name, hidden=until-found, inert, popover, botões com commandfor e command, closedby, hr no select, e o que ainda não é HTML (switch, interestfor, geolocation), cada uma conferida no validador W3C 26.10.12 e no Chromium 155, com o selo Baseline explicado.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Novidades</span></h1>
+
+<p class="intro">O HTML não tem "versão 6" a caminho: desde 2019 ele é um <strong>padrão vivo</strong> (<em>Living Standard</em>), que ganha recursos novos aos poucos, o ano todo (aula <a href="versoes.html">Versões do HTML</a>). Isso é ótimo, mas cria uma dúvida que todo iniciante tem ao ler um tutorial: "isso já funciona?". Nesta aula você vai conhecer as novidades dos últimos anos, uma de cada vez, e aprender a responder essa pergunta sozinho, com três ferramentas: o validador, o navegador e o selo <strong>Baseline</strong>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>As três perguntas para saber se um recurso novo pode ser usado.</li>
+  <li>O que é o selo <strong>Baseline</strong> e onde encontrá-lo.</li>
+  <li>Novidades que o validador já aceita: <code>&lt;search&gt;</code>, <code>&lt;details name&gt;</code>, <code>hidden="until-found"</code>, <code>inert</code>, <code>popover</code>, os botões com <code>commandfor</code> e <code>command</code>, o <code>closedby</code> do <code>&lt;dialog&gt;</code> e o <code>&lt;hr&gt;</code> dentro do <code>&lt;select&gt;</code>.</li>
+  <li>Coisas que aparecem em artigos, mas <strong>ainda não são HTML</strong> (e o que o validador diz delas).</li>
+  <li>O que acontece com um recurso novo num navegador antigo.</li>
+</ul>
+</div>
+
+<p>Todos os exemplos foram conferidos no <strong>validador W3C</strong> (<code>vnu</code> 26.10.12, o mesmo do validator.w3.org) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/novidades</code>, e no <strong>Chromium 155</strong>. Os quadros "Resultado" são desenhados pelo <strong>seu</strong> navegador: se ele for mais antigo, você vai ver na prática o que acontece com um recurso que ele não conhece.</p>
+
+<hr>
+
+<h2>A ideia: o dicionário que nunca fecha a edição</h2>
+<p>Um dicionário de papel sai em edições: 2001, 2009, 2020. Um dicionário <strong>on-line</strong> ganha palavras novas toda semana. Quando uma palavra entra, nem todo mundo a conhece ainda: os jornais demoram a usar, os corretores ortográficos demoram a aceitar. O HTML é o dicionário on-line, e os navegadores são as pessoas que vão aprendendo as palavras novas, cada uma no seu ritmo.</p>
+
+<p>Por isso, diante de um recurso novo, faça três perguntas:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Pergunta</th><th>Quem responde</th><th>Como</th></tr>
+<tr><td>1. Isso <strong>é HTML</strong>, ou só uma ideia?</td><td>O <strong>validador W3C</strong></td><td>Se ele aceita, o recurso está na especificação (aula <a href="validar.html">Validar o HTML</a>)</td></tr>
+<tr><td>2. Os <strong>navegadores</strong> já entendem?</td><td>O selo <strong>Baseline</strong></td><td>No MDN (developer.mozilla.org) e no web.dev, no topo da página de cada recurso; e no caniuse.com</td></tr>
+<tr><td>3. E quem tem um navegador <strong>antigo</strong>?</td><td>Você</td><td>Teste: a página continua usável sem o recurso?</td></tr>
+</table>
+</div>
+
+<h3>O selo Baseline</h3>
+<p><em>Baseline</em> quer dizer "linha de base": o conjunto de recursos com que você pode contar. O selo tem três níveis:</p>
+<ul>
+  <li><strong>Amplamente disponível</strong> (<em>widely available</em>): funciona nos quatro navegadores principais (Chrome, Edge, Firefox e Safari) há mais de dois anos e meio. Pode usar sem medo.</li>
+  <li><strong>Recentemente disponível</strong> (<em>newly available</em>): acabou de chegar à versão atual dos quatro. Quem não atualiza o navegador pode ficar de fora.</li>
+  <li><strong>Disponibilidade limitada</strong> (<em>limited availability</em>): falta pelo menos um dos quatro. Use só com um plano B.</li>
+</ul>
+
+<div class="warning">
+<strong>As duas respostas podem ser diferentes</strong>
+<p>O validador e os navegadores andam em ritmos diferentes. Nesta aula você vai ver os dois casos: um recurso que o validador aceita e o Chromium 155 ainda não entende, e um recurso que o Chromium 155 já tem e o validador recusa, porque ele ainda não entrou na especificação. Por isso a pergunta 1 e a pergunta 2 são separadas.</p>
+</div>
+
+<hr>
+
+<h2>1. <code>&lt;search&gt;</code>: a área de busca</h2>
+<p>Um elemento só para a <strong>área de busca</strong> do site. Antes dele, a Ana escrevia <code>&lt;div class="busca"&gt;</code>, ou o atributo <code>role="search"</code>. Agora há uma tag com nome próprio, como <code>&lt;nav&gt;</code> e <code>&lt;main&gt;</code> (aula <a href="semantica.html">HTML Semântico</a>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;search&gt;
+  &lt;form action="/busca"&gt;
+    &lt;label&gt;Buscar receita &lt;input type="search" name="q"&gt;&lt;/label&gt;
+    &lt;button&gt;Buscar&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/search&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;search&gt;</dt><dd>"Busca". Embrulha o formulário de busca (ou os filtros de uma lista). Na tela, não muda nada: é um bloco comum.</dd>
+  <dt>Para que serve, então?</dt><dd>Para o <strong>leitor de tela</strong>. Ele anuncia "busca" e deixa o usuário pular direto para essa área, como faz com o menu e o conteúdo principal (aula <a href="leitores-tela.html">Leitores de Tela</a>).</dd>
+</dl>
+
+<p>Num navegador que não conhece o <code>&lt;search&gt;</code>, ele vira uma caixa sem significado, e o formulário dentro continua funcionando. É o melhor tipo de novidade: quem não tem, não perde nada. No Chromium 155, o elemento é um <code>HTMLElement</code> normal, como o <code>&lt;nav&gt;</code>.</p>
+
+<div class="tryhtml" data-goal="sel:search form,nsel:div.busca=0">
+<p class="try-task"><strong>Missão:</strong> o site da Ana ainda usa uma <code>&lt;div&gt;</code> em volta da busca. Troque essa <code>&lt;div&gt;</code> pelo elemento novo de busca (abertura e fechamento). O formulário fica igual.</p>
+<pre class="script" data-file="index.html">&lt;div class="busca"&gt;
+  &lt;form action="/busca"&gt;
+    &lt;label&gt;Buscar receita &lt;input type="search" name="q"&gt;&lt;/label&gt;
+    &lt;button&gt;Buscar&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/div&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;search class="busca"&gt;
+  &lt;form action="/busca"&gt;
+    &lt;label&gt;Buscar receita &lt;input type="search" name="q"&gt;&lt;/label&gt;
+    &lt;button&gt;Buscar&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/search&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. <code>&lt;details name&gt;</code>: o acordeão em que só um abre</h2>
+<p>O <code>&lt;details&gt;</code> abre e fecha um conteúdo com um clique (aula <a href="details.html">details e summary</a>). A novidade é o atributo <code>name</code>: vários <code>&lt;details&gt;</code> com o <strong>mesmo</strong> <code>name</code> viram um grupo, e abrir um fecha o outro. Esse componente é chamado de <strong>acordeão</strong>.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;details name="duvidas" open&gt;
+  &lt;summary&gt;Leva ovo?&lt;/summary&gt;
+  &lt;p&gt;Leva 3 ovos.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details name="duvidas"&gt;
+  &lt;summary&gt;Quanto tempo de forno?&lt;/summary&gt;
+  &lt;p&gt;40 minutos, a 180 °C.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+
+<p>Clique em "Quanto tempo de forno?" no Resultado: a primeira resposta fecha sozinha. No Chromium 155, abrir o segundo <code>&lt;details&gt;</code> deixou o primeiro com <code>open</code> = <code>false</code>. Antes do <code>name</code>, isso exigia JavaScript. Num navegador sem o recurso, os dois abrem juntos, o que também é aceitável.</p>
+
+<div class="tryhtml" data-goal="nsel:details[name=duvidas]=3">
+<p class="try-task"><strong>Missão:</strong> transforme as três perguntas num acordeão: só uma resposta aberta por vez. Use o nome de grupo <code>duvidas</code>. Depois clique nas perguntas para conferir.</p>
+<pre class="script" data-file="index.html">&lt;details&gt;
+  &lt;summary&gt;Leva ovo?&lt;/summary&gt;
+  &lt;p&gt;Leva 3 ovos.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+  &lt;summary&gt;Quanto tempo de forno?&lt;/summary&gt;
+  &lt;p&gt;40 minutos.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+  &lt;summary&gt;Pode congelar?&lt;/summary&gt;
+  &lt;p&gt;Pode, por até 3 meses.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;details name="duvidas"&gt;
+  &lt;summary&gt;Leva ovo?&lt;/summary&gt;
+  &lt;p&gt;Leva 3 ovos.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details name="duvidas"&gt;
+  &lt;summary&gt;Quanto tempo de forno?&lt;/summary&gt;
+  &lt;p&gt;40 minutos.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details name="duvidas"&gt;
+  &lt;summary&gt;Pode congelar?&lt;/summary&gt;
+  &lt;p&gt;Pode, por até 3 meses.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. <code>hidden="until-found"</code>: escondido, mas encontrável</h2>
+<p>O atributo <code>hidden</code> esconde um elemento. Com o valor <code>until-found</code> ("até ser encontrado"), o texto fica escondido, mas o navegador ainda o <strong>procura</strong>: se o visitante usar a busca da página (<kbd>Ctrl</kbd>+<kbd>F</kbd>) ou abrir um link que aponta para dentro dele, o navegador o mostra sozinho.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="#cobertura"&gt;Ir para a cobertura&lt;/a&gt;&lt;/p&gt;
+&lt;div hidden="until-found"&gt;
+  &lt;p id="cobertura"&gt;A cobertura leva chocolate meio amargo.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+
+<p>No Chromium 155, antes do clique, a <code>&lt;div&gt;</code> tinha altura 0. Depois de navegar até <code>#cobertura</code>, o navegador disparou o evento <code>beforematch</code> ("antes de encontrar"), <strong>apagou o atributo</strong> <code>hidden</code> e o parágrafo apareceu. Com o <code>hidden</code> comum, o link não mostraria nada e o <kbd>Ctrl</kbd>+<kbd>F</kbd> não acharia o texto. É um dos recursos mais novos desta lista: confira o selo Baseline antes de depender dele.</p>
+
+<hr>
+
+<h2>4. <code>inert</code>: "olhe, mas não toque"</h2>
+<p>O atributo <code>inert</code> ("inerte", sem ação) deixa um pedaço da página <strong>visível, mas morto</strong>: não dá para clicar, o <kbd>Tab</kbd> pula tudo que está dentro e o leitor de tela o ignora. Serve, por exemplo, para "congelar" o fundo enquanto uma janela está aberta.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;div inert&gt;
+  &lt;p&gt;Esta parte está inerte.&lt;/p&gt;
+  &lt;button&gt;Não dá para clicar&lt;/button&gt;
+&lt;/div&gt;
+&lt;button&gt;Este funciona&lt;/button&gt;
+</pre>
+
+<p>Tente clicar no primeiro botão do Resultado, ou chegar nele com <kbd>Tab</kbd>. No Chromium 155, mandar o foco para um botão dentro do <code>inert</code> não funcionou: o foco ficou no <code>&lt;body&gt;</code>. O texto continua com a mesma aparência; muitos sites deixam a parte inerte mais clara com CSS, para o visitante entender. A aula <a href="teclado.html">Teclado e Foco</a> mostra quando usar.</p>
+
+<hr>
+
+<h2>5. <code>popover</code>: a caixinha que abre por cima</h2>
+<p>O atributo <code>popover</code> transforma qualquer elemento numa caixa que aparece <strong>por cima</strong> da página, como uma dica ou um menu, e fecha com <kbd>Esc</kbd> ou com um clique fora. Um botão com <code>popovertarget</code> abre e fecha, sem JavaScript:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;button popovertarget="dica"&gt;Dica da Ana&lt;/button&gt;
+&lt;div id="dica" popover&gt;Use cenoura bem fresca.&lt;/div&gt;
+</pre>
+
+<p>O <code>popover</code> tem aula própria, com os valores <code>auto</code>, <code>manual</code> e o mais novo, <code>hint</code> (o validador 26.10.12 aceita os três): <a href="popover.html">popover</a>.</p>
+
+<hr>
+
+<h2>6. Botões que mandam: <code>commandfor</code> e <code>command</code></h2>
+<p>Esta é uma das novidades mais úteis. Até pouco tempo atrás, abrir um <code>&lt;dialog&gt;</code> (aula <a href="dialog.html">dialog</a>) como janela exigia JavaScript. Agora o próprio botão diz <strong>para quem</strong> é a ordem e <strong>qual</strong> é a ordem:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;button commandfor="aviso" command="show-modal"&gt;Ver aviso&lt;/button&gt;
+
+&lt;dialog id="aviso"&gt;
+  &lt;p&gt;A loja fecha mais cedo na sexta.&lt;/p&gt;
+  &lt;button commandfor="aviso" command="close"&gt;Fechar&lt;/button&gt;
+&lt;/dialog&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>commandfor="aviso"</dt><dd>"Comando para": o <code>id</code> do elemento que vai receber a ordem.</dd>
+  <dt>command="show-modal"</dt><dd>"Comando": a ordem. <code>show-modal</code> abre o <code>&lt;dialog&gt;</code> como janela <strong>modal</strong> (por cima de tudo, com o fundo bloqueado).</dd>
+  <dt>command="close"</dt><dd>Fecha o <code>&lt;dialog&gt;</code>.</dd>
+</dl>
+
+<p>No Chromium 155, um clique em "Ver aviso" deixou o <code>&lt;dialog&gt;</code> aberto e modal (<code>:modal</code>); um clique em "Fechar" o fechou. As ordens que existem:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>command</code></th><th>Para</th><th>O que faz</th></tr>
+<tr><td><code>show-modal</code></td><td><code>&lt;dialog&gt;</code></td><td>Abre como janela modal</td></tr>
+<tr><td><code>close</code></td><td><code>&lt;dialog&gt;</code></td><td>Fecha</td></tr>
+<tr><td><code>request-close</code></td><td><code>&lt;dialog&gt;</code></td><td>Pede para fechar (um script pode recusar)</td></tr>
+<tr><td><code>show-popover</code>, <code>hide-popover</code>, <code>toggle-popover</code></td><td>elemento com <code>popover</code></td><td>Mostra, esconde ou alterna</td></tr>
+<tr><td><code>--qualquer-nome</code></td><td>qualquer elemento</td><td>Uma ordem sua, com dois hífens no começo, que um JavaScript trata</td></tr>
+</table>
+</div>
+
+<p>Num navegador que ainda não conhece o <code>commandfor</code>, o botão aparece, mas o clique não faz nada. Se a janela for essencial, mantenha um plano B (um link para uma página com o mesmo conteúdo, por exemplo) ou confira o selo Baseline.</p>
+
+<h3>O <code>closedby</code> do <code>&lt;dialog&gt;</code></h3>
+<p>Outro atributo novo, no próprio <code>&lt;dialog&gt;</code>, decide <strong>como</strong> o visitante pode fechá-lo: <code>closedby="any"</code> (com <kbd>Esc</kbd>, com o botão ou com um clique fora), <code>closedby="closerequest"</code> (com <kbd>Esc</kbd> ou com o botão) e <code>closedby="none"</code> (só pelo botão ou por um script). O validador 26.10.12 aceitou, e o Chromium 155 tem a propriedade <code>closedBy</code>.</p>
+
+<hr>
+
+<h2>7. O <code>&lt;select&gt;</code> está mudando</h2>
+<p>A lista de opções (aula <a href="select.html">select e option</a>) ganhou duas novidades:</p>
+<ul>
+  <li><strong><code>&lt;hr&gt;</code> entre as opções</strong>: uma linha que separa grupos. Antes, o navegador jogava o <code>&lt;hr&gt;</code> fora.</li>
+  <li><strong>O <code>&lt;select&gt;</code> personalizável</strong>: um <code>&lt;button&gt;</code> com <code>&lt;selectedcontent&gt;</code> dentro do <code>&lt;select&gt;</code> e opções com outras tags dentro (um <code>&lt;strong&gt;</code>, uma imagem). A aparência nova só liga com uma regra de CSS (<code>appearance: base-select</code>), assunto do futuro Guia CSS.</li>
+</ul>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="doce"&gt;Doce&lt;/label&gt;
+&lt;select id="doce" name="doce"&gt;
+  &lt;option&gt;Bolo de cenoura&lt;/option&gt;
+  &lt;option&gt;Bolo de fubá&lt;/option&gt;
+  &lt;hr&gt;
+  &lt;option&gt;Pudim&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<p>Abra a lista no Resultado: num navegador atual, há uma linha entre os bolos e o pudim. No Chromium 155, o <code>&lt;hr&gt;</code> ficou dentro do <code>&lt;select&gt;</code>, e um <code>&lt;option&gt;&lt;strong&gt;Bolo&lt;/strong&gt; de cenoura&lt;/option&gt;</code> manteve o <code>&lt;strong&gt;</code>; o validador aceitou os dois e também o <code>&lt;selectedcontent&gt;</code>. Num navegador antigo, o <code>&lt;hr&gt;</code> some e o <code>&lt;strong&gt;</code> vira texto comum: a lista continua funcionando.</p>
+
+<hr>
+
+<h2>Todas juntas no validador</h2>
+<p>A Ana juntou as novidades num arquivo só para conferir:</p>
+
+<pre class="file" data-file="aceitos.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Novidades&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;search&gt;&lt;form action="/busca"&gt;&lt;label&gt;Buscar &lt;input type="search" name="q"&gt;&lt;/label&gt;&lt;/form&gt;&lt;/search&gt;
+&lt;details name="faq"&gt;&lt;summary&gt;Leva ovo?&lt;/summary&gt;&lt;p&gt;Leva 3.&lt;/p&gt;&lt;/details&gt;
+&lt;details name="faq"&gt;&lt;summary&gt;Vai ao forno?&lt;/summary&gt;&lt;p&gt;Por 40 minutos.&lt;/p&gt;&lt;/details&gt;
+&lt;div hidden="until-found"&gt;A cobertura leva chocolate meio amargo.&lt;/div&gt;
+&lt;main inert&gt;&lt;p&gt;Fundo da página&lt;/p&gt;&lt;/main&gt;
+&lt;button popovertarget="dica"&gt;Dica&lt;/button&gt;
+&lt;div id="dica" popover&gt;Use cenoura fresca.&lt;/div&gt;
+&lt;button commandfor="aviso" command="show-modal"&gt;Abrir&lt;/button&gt;
+&lt;dialog id="aviso" closedby="any"&gt;&lt;p&gt;Oi!&lt;/p&gt;&lt;button commandfor="aviso" command="close"&gt;Fechar&lt;/button&gt;&lt;/dialog&gt;
+&lt;label for="doce"&gt;Doce&lt;/label&gt;
+&lt;select id="doce" name="doce"&gt;&lt;option&gt;Bolo&lt;/option&gt;&lt;hr&gt;&lt;option&gt;Pudim&lt;/option&gt;&lt;/select&gt;
+&lt;img src="bolo.jpg" alt="Bolo de cenoura" width="400" height="300" fetchpriority="high"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/novidades">$ vnu --verbose aceitos.html
+aceitos.html             « nenhum erro: tudo isso já é HTML</pre>
+
+<p>A última linha traz mais uma novidade, o <code>fetchpriority="high"</code> ("prioridade de busca: alta"), que pede ao navegador para baixar aquela imagem antes das outras. Ele é assunto da aula <a href="preload.html">Desempenho</a>.</p>
+
+<hr>
+
+<h2>O que ainda não é HTML</h2>
+<p>Artigos e vídeos sobre "o futuro do HTML" mostram recursos que ainda são <strong>propostas</strong>: alguns já funcionam num navegador, mas não entraram na especificação. Outros foram abandonados. A Ana testou cinco:</p>
+
+<pre class="file" data-file="ainda.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Ainda não&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;label&gt;&lt;input type="checkbox" switch&gt; Modo escuro&lt;/label&gt;
+&lt;a href="ana.html" interestfor="cartao"&gt;Ana&lt;/a&gt;
+&lt;div id="cartao" popover="hint"&gt;Confeiteira&lt;/div&gt;
+&lt;geolocation&gt;&lt;/geolocation&gt;
+&lt;selectlist&gt;&lt;option&gt;Bolo&lt;/option&gt;&lt;/selectlist&gt;
+&lt;button commandfor="cartao" command="abrir"&gt;Abrir&lt;/button&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/novidades">$ vnu ainda.html
+"file:/home/ana/novidades/ainda.html":8.8-8.37: error: Attribute “switch” not allowed on element “input” at this point.
+"file:/home/ana/novidades/ainda.html":9.1-9.40: error: Attribute “interestfor” not allowed on element “a” at this point.
+"file:/home/ana/novidades/ainda.html":11.1-11.13: error: Element “geolocation” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/novidades/ainda.html":11.1-11.13: error: The “geolocation” element is a completely-unknown element that is not allowed anywhere in any HTML content.
+"file:/home/ana/novidades/ainda.html":12.1-12.12: error: Element “selectlist” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/novidades/ainda.html":12.1-12.12: error: The “selectlist” element is a completely-unknown element that is not allowed anywhere in any HTML content.
+"file:/home/ana/novidades/ainda.html":13.1-13.44: error: Bad value “abrir” for attribute “command” on element “button”.</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Recurso</th><th>O que seria</th><th>Validador 26.10.12</th><th>Chromium 155</th></tr>
+<tr><td><code>&lt;input type="checkbox" switch&gt;</code></td><td>Uma caixa de marcar com cara de interruptor</td><td>recusa (<code>Attribute “switch” not allowed</code>)</td><td>não tem</td></tr>
+<tr><td><code>interestfor</code></td><td>Mostrar um <code>popover</code> quando o mouse para em cima de um link</td><td>recusa</td><td><strong>tem</strong></td></tr>
+<tr><td><code>&lt;geolocation&gt;</code></td><td>Um botão pronto para pedir a localização do visitante</td><td>recusa (<code>completely-unknown element</code>)</td><td><strong>tem</strong></td></tr>
+<tr><td><code>&lt;selectlist&gt;</code></td><td>Nome antigo de uma proposta de lista personalizável</td><td>recusa</td><td>não tem: a ideia virou o <code>&lt;select&gt;</code> personalizável da seção 7</td></tr>
+<tr><td><code>command="abrir"</code></td><td>Uma ordem inventada</td><td>recusa (<code>Bad value “abrir”</code>): ordens próprias precisam de <code>--</code> no começo</td><td>ignora</td></tr>
+</table>
+</div>
+
+<p>Repare nos dois "tem" do Chromium: o navegador já entende o <code>interestfor</code> e o <code>&lt;geolocation&gt;</code>, e o validador mesmo assim os recusa. Isso acontece porque um navegador pode lançar um recurso <strong>antes</strong> de ele entrar no HTML, para testar a ideia. Se a ideia mudar, quem usou fica com um código que só funciona num navegador. E o contrário também existe: o validador aceita <code>&lt;input type="color" alpha&gt;</code> (cor com transparência), mas o Chromium 155 ainda não tem a propriedade <code>alpha</code>. Por isso: validador <strong>e</strong> Baseline, sempre os dois.</p>
+
+<hr>
+
+<h2>Recurso novo num navegador antigo</h2>
+<p>O HTML foi desenhado para <strong>não quebrar</strong> quando encontra algo que não conhece:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O navegador não conhece…</th><th>O que ele faz</th><th>Exemplo</th></tr>
+<tr><td>um <strong>elemento</strong></td><td>Mostra o conteúdo dele como se fosse uma caixa comum, sem significado</td><td><code>&lt;search&gt;</code> vira uma caixa sem significado (em linha, como um <code>&lt;span&gt;</code>): o formulário dentro continua lá</td></tr>
+<tr><td>um <strong>atributo</strong></td><td>Ignora</td><td><code>&lt;details name&gt;</code> deixa de ser acordeão, mas abre e fecha</td></tr>
+<tr><td>um <strong>valor</strong></td><td>Usa o valor padrão do atributo</td><td><code>hidden="until-found"</code> vira um <code>hidden</code> comum: o texto fica escondido de vez</td></tr>
+</table>
+</div>
+
+<p>A pergunta 3 é justamente essa: com o recurso ignorado, a página ainda funciona? Para o <code>&lt;search&gt;</code>, sim. Para o <code>hidden="until-found"</code>, o texto pode ficar inalcançável. Para um botão com <code>commandfor</code>, a janela pode não abrir. Quanto mais importante o recurso é para a página, mais você precisa do selo "Amplamente disponível" ou de um plano B.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>The “selectlist” element is a completely-unknown element that is not allowed anywhere in any HTML content.</code></strong>
+<p><strong>O que significa:</strong> "O elemento <code>selectlist</code> é completamente desconhecido e não é permitido em lugar nenhum do HTML". Você copiou um exemplo de um artigo sobre uma <strong>proposta</strong>. O mesmo vale para <code>&lt;geolocation&gt;</code> e para qualquer tag inventada. A primeira linha do par (<code>not allowed as child of element “body”</code>) é consequência da segunda.</p>
+<p><strong>Como consertar:</strong> procure o recurso no MDN. Se ele não tem página, ou tem um aviso de "experimental", use a forma estabelecida (aqui, o <code>&lt;select&gt;</code>).</p>
+</div>
+
+<div class="cenario">
+<strong><code>Attribute “switch” not allowed on element “input” at this point.</code></strong>
+<p><strong>O que significa:</strong> o atributo não está na especificação. Ele funciona em algum navegador (é por isso que aparece em artigos), mas não é HTML.</p>
+<p><strong>Como consertar:</strong> use o <code>&lt;input type="checkbox"&gt;</code> comum, com <code>&lt;label&gt;</code> (aula <a href="checkbox-radio.html">checkbox e radio</a>). A aparência de interruptor é trabalho do CSS.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Bad value “abrir” for attribute “command” on element “button”.</code></strong>
+<p><strong>O que significa:</strong> o <code>command</code> só aceita as ordens da tabela da seção 6, em inglês, ou uma ordem própria começando com dois hífens (<code>--abrir</code>), que só um JavaScript seu entende.</p>
+<p><strong>Como consertar:</strong> para abrir um <code>&lt;dialog&gt;</code>, <code>command="show-modal"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>"Funciona no meu computador, mas não no da minha tia"</strong>
+<p><strong>O que significa:</strong> nenhum erro no validador, mas o recurso é novo e o navegador da tia (ou um celular antigo) ainda não o conhece. Ele foi ignorado, como mostra a tabela acima.</p>
+<p><strong>Como consertar:</strong> confira o selo Baseline. Se for "Disponibilidade limitada" ou "Recentemente disponível", garanta que a página continua usável sem o recurso.</p>
+</div>
+
+<hr>
+
+<h2>Referência</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Recurso</th><th>Para que serve</th><th>Aula</th></tr>
+<tr><td><code>&lt;search&gt;</code></td><td>Marca a área de busca</td><td><a href="semantica.html">HTML Semântico</a></td></tr>
+<tr><td><code>&lt;details name="grupo"&gt;</code></td><td>Acordeão: só um aberto por grupo</td><td><a href="details.html">details e summary</a></td></tr>
+<tr><td><code>hidden="until-found"</code></td><td>Escondido, mas a busca da página e os links o encontram</td><td>esta aula</td></tr>
+<tr><td><code>inert</code></td><td>Visível, mas sem clique, foco nem leitor de tela</td><td><a href="teclado.html">Teclado e Foco</a></td></tr>
+<tr><td><code>popover</code> + <code>popovertarget</code></td><td>Caixa que abre por cima, sem JS</td><td><a href="popover.html">popover</a></td></tr>
+<tr><td><code>commandfor</code> + <code>command</code></td><td>Botão que abre e fecha <code>&lt;dialog&gt;</code> e <code>popover</code>, sem JS</td><td><a href="dialog.html">dialog</a></td></tr>
+<tr><td><code>&lt;dialog closedby&gt;</code></td><td>Como o visitante pode fechar a janela</td><td><a href="dialog.html">dialog</a></td></tr>
+<tr><td><code>&lt;hr&gt;</code> no <code>&lt;select&gt;</code>, <code>&lt;selectedcontent&gt;</code></td><td>Separador e lista personalizável</td><td><a href="select.html">select e option</a></td></tr>
+<tr><td><code>fetchpriority</code></td><td>Prioridade de download</td><td><a href="preload.html">Desempenho</a></td></tr>
+<tr><td><code>contenteditable="plaintext-only"</code></td><td>Edição só de texto puro</td><td><a href="contenteditable.html">contenteditable</a></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Acordeão</h3>
+<p>Complete o atributo que coloca este <code>&lt;details&gt;</code> no grupo <code>faq</code>:</p>
+<div class="ex-code">&lt;details <input data-answer="name" aria-label="atributo">="faq"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A ordem do botão</h3>
+<p>Complete a ordem que abre o <code>&lt;dialog id="aviso"&gt;</code> como janela modal:</p>
+<div class="ex-code">&lt;button commandfor="aviso" command="<input data-answer="show-modal" aria-label="ordem">"&gt;Abrir&lt;/button&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. O Chromium já entende um recurso, mas o validador W3C o recusa. O que isso indica?</p>
+<label><input type="radio" name="q3"> O validador está quebrado</label>
+<label><input type="radio" name="q3"> O recurso funciona em todos os navegadores</label>
+<label><input type="radio" name="q3"> É uma proposta: ainda não entrou na especificação e pode mudar</label>
+<label><input type="radio" name="q3"> O recurso é obsoleto</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Um recurso tem o selo "Disponibilidade limitada". O que fazer?</p>
+<label><input type="radio" name="q4"> Nunca usar</label>
+<label><input type="radio" name="q4"> Usar só se a página continuar usável nos navegadores que não o têm</label>
+<label><input type="radio" name="q4"> Usar à vontade: o validador aceita</label>
+<label><input type="radio" name="q4"> Pedir aos visitantes que troquem de navegador</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Um navegador antigo encontra <code>&lt;search&gt;&lt;form&gt;…&lt;/form&gt;&lt;/search&gt;</code>. O que acontece?</p>
+<label><input type="radio" name="q5"> A página fica em branco</label>
+<label><input type="radio" name="q5"> Aparece uma mensagem de erro</label>
+<label><input type="radio" name="q5"> O formulário some</label>
+<label><input type="radio" name="q5"> O <code>&lt;search&gt;</code> vira uma caixa comum e o formulário continua funcionando</label>
+</div>
+
+<h3>Missão final: o aviso sem JavaScript</h3>
+
+<div class="tryhtml" data-goal="attr:button[commandfor]=aviso,attr:button[command]=show-modal,sel:dialog#aviso button[commandfor=aviso][command=close],nsrc:&lt;script">
+<p class="try-task"><strong>Missão:</strong> a lojinha da Ana tem um aviso escondido num <code>&lt;dialog&gt;</code>. Sem escrever JavaScript, faça o botão "Ver aviso" abrir o diálogo como janela modal, e o botão "Fechar", lá dentro, fechá-lo. Depois clique nos dois para conferir.</p>
+<pre class="script" data-file="index.html">&lt;button&gt;Ver aviso&lt;/button&gt;
+
+&lt;dialog id="aviso"&gt;
+  &lt;p&gt;A loja fecha mais cedo na sexta.&lt;/p&gt;
+  &lt;button&gt;Fechar&lt;/button&gt;
+&lt;/dialog&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;button commandfor="aviso" command="show-modal"&gt;Ver aviso&lt;/button&gt;
+
+&lt;dialog id="aviso"&gt;
+  &lt;p&gt;A loja fecha mais cedo na sexta.&lt;/p&gt;
+  &lt;button commandfor="aviso" command="close"&gt;Fechar&lt;/button&gt;
+&lt;/dialog&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O HTML é um padrão vivo: ganha recursos aos poucos, sem "versão 6".</li>
+  <li>Antes de usar um recurso novo: <strong>(1)</strong> o validador aceita? <strong>(2)</strong> qual é o selo Baseline? <strong>(3)</strong> a página funciona sem ele?</li>
+  <li>Já são HTML (validador 26.10.12): <code>&lt;search&gt;</code>, <code>&lt;details name&gt;</code>, <code>hidden="until-found"</code>, <code>inert</code>, <code>popover</code>, <code>commandfor</code>/<code>command</code>, <code>closedby</code>, <code>&lt;hr&gt;</code> no <code>&lt;select&gt;</code>, <code>&lt;selectedcontent&gt;</code>, <code>fetchpriority</code>.</li>
+  <li>Ainda não são HTML: <code>switch</code>, <code>interestfor</code>, <code>&lt;geolocation&gt;</code>; e o <code>&lt;selectlist&gt;</code> foi abandonado. Um navegador ter o recurso não quer dizer que ele já é HTML.</li>
+  <li>Num navegador antigo, um elemento desconhecido vira caixa comum, um atributo desconhecido é ignorado e um valor desconhecido volta ao padrão.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
