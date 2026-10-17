@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Caminhos Relativos e Absolutos — ../, pastas e a raiz | Guia HTML</title>
+<meta name="description" content="Caminhos em HTML para quem nunca fez um site: endereço absoluto (https://…) e relativo (sobre.html, receitas/bolo.html, ../index.html), o ../ para subir de pasta, o / da raiz e o problema no GitHub Pages, link para uma pasta, maiúsculas que funcionam no seu computador e quebram no servidor, com tree, ls e curl de verdade e os erros do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Caminhos Relativos e Absolutos</span></h1>
+
+<p class="intro">Na aula <a href="links.html">Links</a>, os arquivos da Ana estavam todos na mesma pasta, e bastava o nome: <code>href="sobre.html"</code>. Mas o site cresceu: agora há uma pasta só de receitas, e dentro dela uma de doces. Como uma página dentro de <code>receitas/doces/</code> aponta para a página inicial, duas pastas acima? E por que um link que funciona no computador da Ana dá "404" depois de publicado? Nesta aula você vai aprender a escrever o <strong>caminho</strong> de um arquivo para outro, do jeito que funciona em qualquer lugar.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>As partes de um endereço <strong>absoluto</strong>: <code>https://</code>, o domínio e o caminho.</li>
+  <li>Endereços <strong>relativos</strong>: o mesmo arquivo dito "a partir de onde eu estou".</li>
+  <li>Descer para uma pasta (<code>receitas/bolo.html</code>) e subir com <code>../</code> (<code>../index.html</code>).</li>
+  <li>O caminho que começa com <code>/</code> (a raiz) e por que ele quebra no seu computador e no GitHub Pages.</li>
+  <li>Link para uma pasta (<code>receitas/</code>) e o papel do <code>index.html</code>.</li>
+  <li>Por que <code>Bolo.html</code> e <code>bolo.html</code> são arquivos diferentes no servidor.</li>
+  <li>Como ver a estrutura do site com <code>tree</code> e testar os caminhos com <code>ls</code> e <code>curl</code>.</li>
+</ul>
+</div>
+
+<p>Os comandos desta aula rodaram na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. O domínio <code>ana.example</code> é inventado (o final <code>.example</code> é reservado para exemplos), como se o site já estivesse publicado.</p>
+
+<hr>
+
+<h2>A ideia: o endereço completo e "a casa do lado"</h2>
+<p>Há dois jeitos de dizer onde fica uma casa:</p>
+<ul>
+  <li><strong>O endereço completo:</strong> "Rua das Flores, 123, Belo Horizonte, MG". Funciona para qualquer pessoa, em qualquer lugar do mundo.</li>
+  <li><strong>A partir de onde você está:</strong> "a casa do lado", "subindo a rua, duas casas". É mais curto, mas só funciona se você souber <strong>de onde</strong> a pessoa está partindo.</li>
+</ul>
+<p>Na web é igual. O endereço completo é o caminho <strong>absoluto</strong>; o "a partir daqui" é o caminho <strong>relativo</strong>. E o "aqui" é sempre <strong>a pasta da página onde o link está</strong>.</p>
+
+<hr>
+
+<h2>1. O site da Ana em pastas</h2>
+<p>O comando <code>tree</code> ("árvore") desenha as pastas e os arquivos, um dentro do outro:</p>
+
+<pre class="term" data-cwd="~/site">$ tree
+.
+├── imagens
+│   └── bolo.jpg
+├── index.html
+├── receitas
+│   ├── bolo.html
+│   ├── doces
+│   │   └── brigadeiro.html
+│   └── index.html
+└── sobre.html
+
+4 directories, 6 files</pre>
+
+<dl class="anatomy">
+  <dt>.</dt><dd>O ponto é a pasta atual: aqui, <code>~/site</code>, a <strong>raiz do site</strong> (a pasta de cima, que vai ser publicada inteira).</dd>
+  <dt>├── e └──</dt><dd>Os galhos da árvore. Cada nível de recuo é uma pasta "para dentro". O <code>└──</code> marca o último item de uma pasta.</dd>
+  <dt>receitas/doces/brigadeiro.html</dt><dd>O brigadeiro está dois níveis abaixo da raiz: dentro de <code>doces</code>, que está dentro de <code>receitas</code>.</dd>
+  <dt>4 directories, 6 files</dt><dd>"4 pastas, 6 arquivos" (o <code>tree</code> conta a própria raiz entre as pastas).</dd>
+</dl>
+
+<p>Há dois arquivos chamados <code>index.html</code>, um na raiz e outro em <code>receitas/</code>. Não tem problema: estão em pastas diferentes, como duas pessoas chamadas Maria em casas diferentes. O caminho é que diz qual é qual.</p>
+
+<hr>
+
+<h2>2. O endereço absoluto</h2>
+<p>Um endereço <strong>absoluto</strong> tem tudo: o protocolo, o nome do site e o caminho até o arquivo. Ele leva ao mesmo lugar não importa em que página o link esteja.</p>
+
+<pre class="file" data-file="endereço absoluto">https://ana.example/receitas/doces/brigadeiro.html
+</pre>
+
+<dl class="anatomy">
+  <dt>https://</dt><dd>O <strong>protocolo</strong> (ou esquema): como conversar com o servidor. <code>https</code> é a conversa segura, criptografada. O <code>://</code> separa o protocolo do resto.</dd>
+  <dt>ana.example</dt><dd>O <strong>domínio</strong>: o nome do site, o "prédio".</dd>
+  <dt>/receitas/doces/</dt><dd>As <strong>pastas</strong>, separadas por <code>/</code>, da raiz do site para dentro.</dd>
+  <dt>brigadeiro.html</dt><dd>O <strong>arquivo</strong>.</dd>
+</dl>
+
+<p>Use endereço absoluto para <strong>outros sites</strong>. Para as páginas do seu próprio site, ele funciona, mas tem um defeito: se o site mudar de domínio, ou se você quiser testá-lo no seu computador, todos os links continuam apontando para o endereço antigo.</p>
+
+<hr>
+
+<h2>3. Relativo: descer para uma pasta</h2>
+<p>Na página <code>index.html</code>, da raiz, a Ana quer links para a receita do bolo e para o brigadeiro. O caminho parte da pasta onde está o <code>index.html</code> e entra nas pastas, separadas por <code>/</code>:</p>
+
+<pre class="file" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="sobre.html"&gt;Quem é a Ana&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="receitas/doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>sobre.html</dt><dd>"O arquivo <code>sobre.html</code>, aqui na minha pasta."</dd>
+  <dt>receitas/bolo.html</dt><dd>"Entre na pasta <code>receitas</code>; lá dentro, o <code>bolo.html</code>."</dd>
+  <dt>receitas/doces/brigadeiro.html</dt><dd>"Entre em <code>receitas</code>, depois em <code>doces</code>, e pegue o <code>brigadeiro.html</code>." Cada <code>/</code> é "entrar em mais uma pasta".</dd>
+</dl>
+
+<p>(O <code>&lt;ul&gt;</code> e o <code>&lt;li&gt;</code> fazem uma lista com marcadores, aula <a href="listas.html">Listas com Marcadores</a>.) Repare que o caminho relativo <strong>não</strong> tem <code>https://</code> nem domínio: o navegador junta o caminho com o endereço da página atual. Na página <code>https://ana.example/index.html</code>, o <code>receitas/bolo.html</code> vira <code>https://ana.example/receitas/bolo.html</code>.</p>
+
+<hr>
+
+<h2>4. Relativo: subir com <code>../</code></h2>
+<p>Agora o caminho de volta. A página <code>receitas/bolo.html</code> quer um link para o <code>index.html</code> da raiz. Se ela escrever só <code>index.html</code>, o navegador procura <strong>na pasta dela</strong>, a <code>receitas/</code>, e acha o <strong>outro</strong> <code>index.html</code>, o das receitas. Para sair da pasta e subir um nível, existe o <code>../</code>:</p>
+
+<pre class="file" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;p&gt;&lt;a href="../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Todas as receitas&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/p&gt;
+&lt;img src="../imagens/bolo.jpg" alt="Bolo de fubá fatiado"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>../</dt><dd>Os dois pontos querem dizer "a pasta <strong>de cima</strong>" (a pasta-mãe). <code>../index.html</code> = "suba uma pasta e pegue o <code>index.html</code> de lá": o da raiz.</dd>
+  <dt>index.html</dt><dd>Sem <code>../</code>, é o <code>index.html</code> da pasta atual, <code>receitas/</code>: a lista de todas as receitas.</dd>
+  <dt>doces/brigadeiro.html</dt><dd>De dentro de <code>receitas/</code>, a pasta <code>doces</code> está logo ali: basta descer uma.</dd>
+  <dt>../imagens/bolo.jpg</dt><dd>Imagens usam os mesmos caminhos no <code>src</code>: suba para a raiz e entre em <code>imagens</code>.</dd>
+</dl>
+
+<p>E do brigadeiro, dois níveis abaixo da raiz? Um <code>../</code> para cada pasta que se sobe:</p>
+
+<pre class="file" data-file="receitas/doces/brigadeiro.html">&lt;p&gt;&lt;a href="../../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="../index.html"&gt;Todas as receitas&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="../bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<p>O terminal entende o <code>../</code> do mesmo jeito. Da pasta do brigadeiro, o <code>ls</code> confirma que os três caminhos existem:</p>
+
+<pre class="term" data-cwd="~/site">$ cd receitas/doces
+$ pwd
+/home/ana/site/receitas/doces
+$ ls ../bolo.html ../../index.html ../../imagens/bolo.jpg
+../bolo.html
+../../imagens/bolo.jpg
+../../index.html</pre>
+
+<p>Se o <code>ls</code> encontra o arquivo a partir da pasta da página, o link também encontra. É um bom jeito de conferir um caminho antes de escrevê-lo.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> este é o site da Ana em miniatura, com as mesmas pastas do <code>tree</code> (as abas com <code>/</code> no nome estão dentro de pastas). Navegue pelos links do resultado e acompanhe o endereço na barra do quadro. Depois quebre um caminho de propósito (tire um <code>../</code>) e veja a página 404.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="sobre.html"&gt;Quem é a Ana&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="receitas/doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;p&gt;&lt;a href="../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/p&gt;
+&lt;img src="../assets/midia/bolo-400.jpg" alt="Bolo de fubá fatiado" width="200" height="150"&gt;
+</pre>
+<pre class="script" data-file="receitas/doces/brigadeiro.html">&lt;h1&gt;Brigadeiro&lt;/h1&gt;
+&lt;p&gt;&lt;a href="../../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="../bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<p>(No editor, a foto mora em <code>assets/midia/</code>, na raiz da caixa; por isso o <code>bolo.html</code> sobe uma pasta para buscá-la.)</p>
+
+<h3>Do lugar de cada página</h3>
+<p>O mesmo <code>href</code> leva a lugares diferentes conforme a página onde ele está. Os endereços da tabela foram calculados pelo navegador (com a mesma regra que ele usa ao clicar):</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O link está em</th><th><code>href</code></th><th>O navegador vai para</th></tr>
+<tr><td><code>/index.html</code></td><td><code>receitas/bolo.html</code></td><td><code>https://ana.example/receitas/bolo.html</code></td></tr>
+<tr><td><code>/receitas/bolo.html</code></td><td><code>receitas/bolo.html</code></td><td><code>https://ana.example/receitas/receitas/bolo.html</code> (não existe!)</td></tr>
+<tr><td><code>/receitas/bolo.html</code></td><td><code>index.html</code></td><td><code>https://ana.example/receitas/index.html</code></td></tr>
+<tr><td><code>/receitas/bolo.html</code></td><td><code>../index.html</code></td><td><code>https://ana.example/index.html</code></td></tr>
+<tr><td><code>/receitas/doces/brigadeiro.html</code></td><td><code>../index.html</code></td><td><code>https://ana.example/receitas/index.html</code></td></tr>
+<tr><td><code>/receitas/doces/brigadeiro.html</code></td><td><code>../../index.html</code></td><td><code>https://ana.example/index.html</code></td></tr>
+<tr><td><code>/receitas/doces/brigadeiro.html</code></td><td><code>../imagens/bolo.jpg</code></td><td><code>https://ana.example/receitas/imagens/bolo.jpg</code> (não existe!)</td></tr>
+</table>
+</div>
+
+<p>Repare na segunda linha: copiar um link do <code>index.html</code> para uma página de dentro de <code>receitas/</code> sem ajustar o caminho é o erro mais comum desta aula.</p>
+
+<div class="tryhtml" data-goal="attr:a[href]=receitas/bolo.html,src:href=[&quot;']\.\./index\.html,nsrc:href=[&quot;']index\.html">
+<p class="try-task"><strong>Missão:</strong> esta caixa tem a página inicial e a pasta <code>receitas/</code> com o <code>bolo.html</code>. (1) No <code>index.html</code>, transforme "Bolo de fubá" num link para a receita. (2) Em <code>receitas/bolo.html</code>, o link "Início" está errado: clique nele no resultado e veja o 404. Conserte o caminho para subir até a raiz.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de fubá&lt;/p&gt;
+</pre>
+<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;p&gt;Fofinho, com erva-doce.&lt;/p&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;p&gt;Fofinho, com erva-doce.&lt;/p&gt;
+&lt;p&gt;&lt;a href="../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<p>No editor, cada aba com <code>/</code> no nome (<code>receitas/bolo.html</code>) é um arquivo dentro de uma pasta, como no site de verdade. A página 404 do editor lista os arquivos que existem, com os caminhos certos a partir da página onde você está.</p>
+
+<hr>
+
+<h2>5. O <code>/</code> do começo: a raiz do site</h2>
+<p>Existe um terceiro jeito: começar o caminho com <code>/</code>. Ele quer dizer "a partir da <strong>raiz do domínio</strong>", não importa a página:</p>
+
+<pre class="file" data-file="receitas/doces/brigadeiro.html">&lt;p&gt;&lt;a href="/index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<p>Em <code>https://ana.example/receitas/doces/brigadeiro.html</code>, o <code>/index.html</code> vira <code>https://ana.example/index.html</code>. Parece prático, porque é igual em todas as páginas. Mas a raiz do domínio nem sempre é a raiz do <strong>seu site</strong>:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Onde a página está</th><th><code>/index.html</code> vira</th><th>Funciona?</th></tr>
+<tr><td>Site no próprio domínio: <code>https://ana.example/…</code></td><td><code>https://ana.example/index.html</code></td><td><strong>Sim</strong></td></tr>
+<tr><td>GitHub Pages de um projeto: <code>https://usuario.github.io/receitas-da-ana/…</code></td><td><code>https://usuario.github.io/index.html</code></td><td><strong>Não</strong>: a raiz do domínio não é a pasta do projeto</td></tr>
+<tr><td>Arquivo aberto do disco: <code>file:///home/ana/site/…</code></td><td><code>file:///index.html</code></td><td><strong>Não</strong>: é a raiz do disco inteiro</td></tr>
+<tr><td>Servidor local: <code>http://localhost:8000/…</code></td><td><code>http://localhost:8000/index.html</code></td><td>Sim, se o servidor rodar na pasta do site</td></tr>
+</table>
+</div>
+
+<p>No GitHub Pages, o site de um projeto fica numa <strong>subpasta</strong> do domínio (aula <a href="publicar.html">Publicar no GitHub Pages</a>). Lá, o <code>../index.html</code> do brigadeiro continua certo (<code>https://usuario.github.io/receitas-da-ana/index.html</code>), e o <code>/index.html</code> cai fora do site. No editor do guia, que também guarda cada caixa numa subpasta, um link que começa com <code>/</code> não abre e o console do quadro avisa que ele "leva para fora dos arquivos desta caixa".</p>
+
+<div class="tip">
+<strong>A regra do guia</strong>
+<p>Para as páginas e imagens do seu site, use sempre <strong>caminhos relativos</strong> (<code>sobre.html</code>, <code>receitas/bolo.html</code>, <code>../index.html</code>). Eles funcionam no seu computador, no servidor local, no GitHub Pages e num domínio próprio, sem mudar nada. Endereço absoluto (<code>https://…</code>), só para outros sites.</p>
+</div>
+
+<hr>
+
+<h2>6. Link para uma pasta e o <code>index.html</code></h2>
+<p>Um caminho pode terminar numa <strong>pasta</strong>, com <code>/</code> no fim: <code>href="receitas/"</code>. O servidor, então, entrega o arquivo <code>index.html</code> daquela pasta. É por isso que a página inicial de quase todo site se chama <code>index.html</code> ("índice"): ela é a página da pasta.</p>
+
+<p>Com o servidor local do Python (aula <a href="servidor-local.html">Servidor Local</a>) rodando em <code>~/site</code>, o <code>curl</code> busca o endereço como um navegador faria:</p>
+
+<pre class="term" data-cwd="~/site">$ python3 -m http.server &gt; /dev/null 2&gt;&amp;1 &amp;
+[1] 3
+$ sleep 1                                 « dá tempo para o servidor ligar
+$ curl -s http://localhost:8000/receitas/ | grep h1
+&lt;h1&gt;receitas/index.html&lt;/h1&gt;           « a pasta entregou o index.html dela
+$ curl -s http://localhost:8000/imagens/ | grep -i title
+&lt;title&gt;Directory listing for /imagens/&lt;/title&gt;
+$ kill %1</pre>
+
+<p>A pasta <code>imagens/</code> não tem <code>index.html</code>, e o servidor do Python mostrou a <strong>lista dos arquivos</strong> dela (<em>directory listing</em>). Outros servidores, como o GitHub Pages, respondem 404. E abrindo direto do disco, sem servidor, o navegador mostra a lista de arquivos da pasta em vez da página. Por isso, no seu site, prefira <code>href="receitas/index.html"</code>, que funciona em todo lugar, ou garanta que toda pasta linkada tenha um <code>index.html</code>.</p>
+
+<hr>
+
+<h2>7. Maiúsculas, acentos e espaços</h2>
+<p>No Windows e no macOS, <code>Bolo.html</code> e <code>bolo.html</code> são o mesmo arquivo. No Linux, e nos servidores que publicam a maioria dos sites (inclusive o GitHub Pages), são <strong>dois nomes diferentes</strong>:</p>
+
+<pre class="term" data-cwd="~/site">$ ls receitas/Bolo.html
+ls: não foi possível acessar 'receitas/Bolo.html': Arquivo ou diretório inexistente
+$ python3 -m http.server &gt; /dev/null 2&gt;&amp;1 &amp;
+[1] 4
+$ sleep 1
+$ curl -sI http://localhost:8000/receitas/bolo.html | head -1
+HTTP/1.0 200 OK
+$ curl -sI http://localhost:8000/receitas/Bolo.html | head -1
+HTTP/1.0 404 File not found
+$ kill %1</pre>
+
+<dl class="anatomy">
+  <dt>curl -sI</dt><dd>O <code>-I</code> pede só o <strong>cabeçalho</strong> da resposta, sem a página; o <code>-s</code> esconde a barra de progresso.</dd>
+  <dt>HTTP/1.0 200 OK</dt><dd>O código <strong>200</strong> quer dizer "achei, aqui está".</dd>
+  <dt>404 File not found</dt><dd>O famoso <strong>404</strong>: "arquivo não encontrado". Uma letra maiúscula bastou.</dd>
+</dl>
+
+<p>Esse é o link que "funciona no meu computador e quebra no site". O validador não ajuda: ele não sabe que arquivos existem. A solução é um costume: <strong>nomes de arquivos e pastas em minúsculas, sem acentos e sem espaços</strong>, com hífen entre as palavras (<code>pao-de-queijo.html</code>). Acentos até funcionam, mas viram códigos no endereço (<code>p%C3%A3o.html</code>); espaços dão erro no validador (aula <a href="links.html">Links</a>). Mais sobre nomes em <a href="organizar-arquivos.html">Organizar os Arquivos de um Site</a>.</p>
+
+<div class="tryhtml" data-goal="sel:img[src='../assets/midia/bolo-400.jpg'][alt],sel:a[href='../index.html']">
+<p class="try-task"><strong>Missão:</strong> a caixa abre na página <code>receitas/bolo.html</code>, e a foto não aparece. No editor, a pasta <code>assets/midia/</code> fica na raiz, ao lado do <code>index.html</code>. Conserte o <code>src</code> da imagem para subir uma pasta antes de entrar em <code>assets</code>, e o link "Início" para voltar à raiz.</p>
+<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de fubá fatiado" width="200" height="150"&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;img src="../assets/midia/bolo-400.jpg" alt="Bolo de fubá fatiado" width="200" height="150"&gt;
+&lt;p&gt;&lt;a href="../index.html"&gt;Início&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>8. Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Para</th><th>Use</th><th>Exemplo</th></tr>
+<tr><td>Outro site</td><td>Absoluto</td><td><code>https://example.com/receitas.html</code></td></tr>
+<tr><td>Arquivo na mesma pasta</td><td>Relativo, só o nome</td><td><code>sobre.html</code></td></tr>
+<tr><td>Arquivo numa pasta de dentro</td><td>Relativo, descendo</td><td><code>receitas/bolo.html</code></td></tr>
+<tr><td>Arquivo numa pasta de cima</td><td>Relativo, subindo</td><td><code>../index.html</code>, <code>../../imagens/bolo.jpg</code></td></tr>
+<tr><td>A página de uma pasta</td><td>O <code>index.html</code> explícito</td><td><code>receitas/index.html</code></td></tr>
+<tr><td>A partir da raiz do domínio</td><td>Evite (quebra no disco e no GitHub Pages de projeto)</td><td><code>/index.html</code></td></tr>
+<tr><td>Um arquivo do seu disco</td><td>Nunca</td><td><code>file:///home/ana/…</code>, <code>C:\Users\…</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>O link de dentro da pasta leva para o lugar errado</strong>
+<p><strong>O que acontece:</strong> em <code>receitas/bolo.html</code>, o link <code>href="index.html"</code> abre a lista de receitas, e não a página inicial. Se a pasta não tiver <code>index.html</code>, dá 404. O mesmo com <code>href="sobre.html"</code>: o navegador procura <code>receitas/sobre.html</code>.</p>
+<p><strong>O que o validador diz:</strong> nada; o caminho é válido, só aponta para outro lugar.</p>
+<p><strong>Como consertar:</strong> parta sempre da <strong>pasta da página</strong> onde o link está: <code>../index.html</code>, <code>../sobre.html</code>. Na dúvida, entre na pasta pelo terminal e teste com <code>ls</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Funciona no computador, quebra no servidor</strong>
+<p><strong>O que acontece:</strong> o arquivo se chama <code>bolo.html</code> e o link diz <code>Bolo.html</code> (ou o contrário). No Windows ou no macOS, abre; publicado, dá <code>404 File not found</code>.</p>
+<p><strong>Como consertar:</strong> o <code>href</code> idêntico ao nome do arquivo, letra por letra. Melhor ainda: só minúsculas nos nomes.</p>
+</div>
+
+<div class="cenario">
+<strong>Um caminho do seu disco: <code>Illegal character after “c:”</code></strong>
+<p>A Ana arrastou o arquivo para o editor de código e ele colou o caminho do Windows no <code>href</code>. Numa página com <code>&lt;a href="C:\Users\Ana\site\sobre.html"&gt;</code> na linha 8:</p>
+<pre class="term" data-cwd="~/testes">$ vnu disco.html
+"file:/home/ana/testes/disco.html":8.4-8.42: error: Bad value “C:\Users\Ana\site\sobre.html” for attribute “href” on element “a”: Illegal character after “c:”. “\” is not allowed.</pre>
+<p><strong>O que significa:</strong> para o validador, <code>C:</code> parece o começo de um endereço (como <code>https:</code>), e a barra invertida não é permitida depois dele. Já um <code>href="file:///home/ana/site/sobre.html"</code> passa no validador, porque é um endereço bem escrito. Mas os dois têm o mesmo defeito: só existem <strong>no computador da Ana</strong>. Para qualquer outra pessoa, o link não leva a nada.</p>
+<p><strong>Como consertar:</strong> caminho relativo: <code>sobre.html</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>/</code> no começo: funciona no servidor local, quebra no disco e no GitHub Pages</strong>
+<p><strong>O que acontece:</strong> com <code>href="/sobre.html"</code>, o site funciona com <code>python3 -m http.server</code> rodando na pasta do site. Aberto com dois cliques (<code>file://</code>), o link procura <code>sobre.html</code> na raiz do disco. Publicado como projeto no GitHub Pages, procura na raiz do domínio, fora da pasta do projeto. No editor do guia, o console avisa que o link sai da caixa.</p>
+<p><strong>Como consertar:</strong> tire a barra do começo e escreva o caminho a partir da página: <code>sobre.html</code> ou <code>../sobre.html</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>../</code> demais</strong>
+<p><strong>O que acontece:</strong> num site publicado, subir além da raiz não dá erro: o navegador para na raiz do domínio. Em <code>https://ana.example/index.html</code>, o <code>../../index.html</code> vira <code>https://ana.example/index.html</code>, e o erro passa despercebido. Mas no disco (<code>file://</code>), cada <code>../</code> sobe mesmo uma pasta, para fora do site, e o link quebra. E no GitHub Pages de projeto, o <code>../</code> a mais sai da pasta do projeto.</p>
+<p><strong>Como consertar:</strong> conte as pastas: um <code>../</code> para cada nível acima, nem mais nem menos.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Quer dizer</th></tr>
+<tr><td><code>https://ana.example/receitas/bolo.html</code></td><td>Absoluto: protocolo, domínio, pastas, arquivo</td></tr>
+<tr><td><code>bolo.html</code> ou <code>./bolo.html</code></td><td>Na mesma pasta da página</td></tr>
+<tr><td><code>receitas/bolo.html</code></td><td>Desce para a pasta <code>receitas</code></td></tr>
+<tr><td><code>../index.html</code></td><td>Sobe uma pasta</td></tr>
+<tr><td><code>../../index.html</code></td><td>Sobe duas pastas</td></tr>
+<tr><td><code>../imagens/bolo.jpg</code></td><td>Sobe uma e desce para <code>imagens</code></td></tr>
+<tr><td><code>receitas/</code></td><td>A pasta; o servidor entrega o <code>index.html</code> dela</td></tr>
+<tr><td><code>/index.html</code></td><td>A partir da raiz do domínio (evite)</td></tr>
+<tr><td><code>tree</code></td><td>Desenha as pastas e arquivos</td></tr>
+<tr><td><code>ls caminho</code></td><td>Confere se o caminho existe, a partir da pasta atual</td></tr>
+<tr><td><code>curl -sI endereço</code></td><td>Mostra a resposta do servidor: <code>200 OK</code> ou <code>404</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Descer</h3>
+<p>Na página <code>index.html</code> da raiz, complete o caminho até <code>receitas/doces/brigadeiro.html</code>:</p>
+<div class="ex-code">&lt;a href="<input data-answer="receitas/doces/brigadeiro.html|./receitas/doces/brigadeiro.html" aria-label="caminho">"&gt;Brigadeiro&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Subir uma</h3>
+<p>Na página <code>receitas/bolo.html</code>, complete o caminho até o <code>sobre.html</code> da raiz:</p>
+<div class="ex-code">&lt;a href="<input data-answer="../sobre.html" aria-label="caminho">"&gt;Quem é a Ana&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Subir duas</h3>
+<p>Na página <code>receitas/doces/brigadeiro.html</code>, complete o caminho até a imagem <code>imagens/bolo.jpg</code> da raiz:</p>
+<div class="ex-code">&lt;img src="<input data-answer="../../imagens/bolo.jpg" aria-label="caminho">" alt="Bolo de fubá"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Em <code>receitas/bolo.html</code>, o link <code>href="index.html"</code> leva para:</p>
+<label><input type="radio" name="q4"> O <code>index.html</code> da raiz do site</label>
+<label><input type="radio" name="q4"> O <code>index.html</code> da pasta <code>receitas/</code></label>
+<label><input type="radio" name="q4"> Um erro do validador</label>
+<label><input type="radio" name="q4"> O site <code>index.html</code> na internet</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O link para <code>Pao.html</code> funciona no Windows da Ana, mas dá 404 no GitHub Pages. O arquivo se chama <code>pao.html</code>. Por quê?</p>
+<label><input type="radio" name="q5"> Faltou o <code>https://</code></label>
+<label><input type="radio" name="q5"> O GitHub Pages não aceita arquivos <code>.html</code></label>
+<label><input type="radio" name="q5"> Faltou o <code>../</code></label>
+<label><input type="radio" name="q5"> No servidor, maiúsculas e minúsculas fazem diferença nos nomes</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Por que o guia recomenda <code>../index.html</code> em vez de <code>/index.html</code>?</p>
+<label><input type="radio" name="q6"> Porque o relativo funciona no disco, no servidor local e no GitHub Pages de projeto; o <code>/</code> depende de onde fica a raiz do domínio</label>
+<label><input type="radio" name="q6"> Porque o validador recusa o <code>/</code></label>
+<label><input type="radio" name="q6"> Porque o <code>/</code> é mais lento</label>
+<label><input type="radio" name="q6"> Não há diferença</label>
+</div>
+
+<h3>Missão final: os caminhos do brigadeiro</h3>
+
+<div class="tryhtml" data-goal="sel:a[href='../../index.html'],sel:a[href='../index.html'],sel:a[href='../bolo.html'],sel:img[src='../../assets/midia/bolo-quadrado-400.jpg'][alt]">
+<p class="try-task"><strong>Missão:</strong> a caixa abre na página <code>receitas/doces/brigadeiro.html</code>, dois níveis abaixo da raiz. Todos os caminhos foram copiados do <code>index.html</code> e estão errados. Conserte com caminhos relativos: "Início" vai para o <code>index.html</code> da raiz, "Todas as receitas" para <code>receitas/index.html</code>, "Bolo de fubá" para <code>receitas/bolo.html</code>, e a foto é <code>assets/midia/bolo-quadrado-400.jpg</code>, que fica na raiz. Clique em cada link do resultado para testar.</p>
+<pre class="script" data-file="receitas/doces/brigadeiro.html">&lt;h1&gt;Brigadeiro&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-quadrado-400.jpg" alt="Doces da Ana" width="150" height="150"&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="receitas/index.html"&gt;Todas as receitas&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="receitas/bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="receitas/doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="script" data-file="receitas/index.html">&lt;h1&gt;Todas as receitas&lt;/h1&gt;
+&lt;p&gt;&lt;a href="doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="script" data-file="receitas/bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+&lt;p&gt;&lt;a href="doces/brigadeiro.html"&gt;Brigadeiro&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="receitas/doces/brigadeiro.html">&lt;h1&gt;Brigadeiro&lt;/h1&gt;
+&lt;img src="../../assets/midia/bolo-quadrado-400.jpg" alt="Doces da Ana" width="150" height="150"&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="../../index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="../index.html"&gt;Todas as receitas&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="../bolo.html"&gt;Bolo de fubá&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<p>As outras três abas já têm links de volta para o brigadeiro, com o caminho certo a partir de cada uma: compare o <code>receitas/doces/brigadeiro.html</code> do <code>index.html</code> com o <code>doces/brigadeiro.html</code> das páginas de <code>receitas/</code>.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><strong>Absoluto</strong> (<code>https://ana.example/receitas/bolo.html</code>): protocolo + domínio + caminho. Leva ao mesmo lugar de qualquer página. Use para outros sites.</li>
+  <li><strong>Relativo</strong>: parte da <strong>pasta da página</strong> onde o link está. <code>bolo.html</code> = mesma pasta; <code>receitas/bolo.html</code> = desce; <code>../index.html</code> = sobe uma; <code>../../</code> = sobe duas. Use para o seu site.</li>
+  <li>O <code>/</code> no começo parte da raiz do domínio: quebra no disco e no GitHub Pages de projeto. Evite.</li>
+  <li>Um caminho terminado em <code>/</code> é uma pasta: o servidor entrega o <code>index.html</code> dela (ou uma lista de arquivos, ou 404).</li>
+  <li>No servidor, <code>Bolo.html</code> ≠ <code>bolo.html</code> (<code>404 File not found</code>). Nomes em minúsculas, sem acentos nem espaços, com hífen.</li>
+  <li>O validador só pega caminhos mal escritos (<code>\</code>, espaço, <code>C:\</code>); um caminho que aponta para o lugar errado, só testando. <code>tree</code>, <code>ls</code> e <code>curl -sI</code> ajudam.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
