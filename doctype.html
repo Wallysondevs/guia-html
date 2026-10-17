@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML O DOCTYPE — a primeira linha, o modo padrão e o modo quirks | Guia HTML</title>
+<meta name="description" content="O DOCTYPE do HTML para quem nunca fez um site: o que é a linha &lt;!DOCTYPE html&gt;, por que ela vem primeiro, o modo padrão e o modo quirks com document.compatMode, os DOCTYPEs antigos do HTML 4 e do XHTML e as mensagens reais do validador W3C quando ele falta ou está errado.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">O DOCTYPE</span></h1>
+
+<p class="intro">Toda página HTML de verdade começa com a mesma linha: <code>&lt;!DOCTYPE html&gt;</code>. Ela é curta, parece um enfeite e muita gente copia sem saber para que serve. Mas ela decide <strong>de que jeito o navegador vai desenhar a sua página</strong>. Sem ela, o navegador entra num modo antigo, chamado <strong>modo quirks</strong>, feito para imitar os navegadores dos anos 1990. Nesta aula você vai entender essa linha parte por parte, ver com os próprios olhos a diferença entre os dois modos e conhecer as mensagens do validador quando ela falta ou está errada.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o DOCTYPE e por que ele não é uma tag como as outras.</li>
+  <li>Onde ele fica (na primeira linha) e como escrevê-lo: <code>&lt;!DOCTYPE html&gt;</code>.</li>
+  <li>A diferença entre o <strong>modo padrão</strong> e o <strong>modo quirks</strong>, e como descobrir o modo com <code>document.compatMode</code>.</li>
+  <li>O que muda de verdade no desenho da página quando o DOCTYPE falta.</li>
+  <li>Os DOCTYPEs compridos do HTML 4 e do XHTML, que você ainda vai encontrar em sites antigos.</li>
+  <li>As mensagens reais do validador W3C para cada erro de DOCTYPE.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, versão 26.10.12) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site/doctype</code>, e abertos no Chromium. O validador tem uma aula própria, <a href="validar.html">Validar o HTML</a>; aqui basta saber que ele lê o arquivo e lista o que está fora das regras do HTML.</p>
+
+<hr>
+
+<h2>A ideia: o aviso na capa do livro de regras</h2>
+<p>Imagine um juiz de futebol que conhece dois livros de regras: o de hoje e um muito antigo, de quando cada time jogava de um jeito. Antes do jogo, alguém precisa dizer a ele: "hoje vale o livro novo". Se ninguém disser nada, ele fica com o livro antigo, por garantia, para não prejudicar os times que só conhecem as regras velhas.</p>
+
+<p>O navegador é esse juiz. Nos anos 1990, cada navegador desenhava as páginas do seu jeito, com vários defeitos. Milhões de sites foram feitos contando com esses defeitos. Quando os navegadores passaram a seguir as regras oficiais, esses sites antigos iam quebrar. A solução foi esta:</p>
+
+<ul>
+  <li>página <strong>com</strong> o aviso <code>&lt;!DOCTYPE html&gt;</code> → o navegador usa as regras de hoje: o <strong>modo padrão</strong> (em inglês, <em>standards mode</em> ou <em>no-quirks mode</em>);</li>
+  <li>página <strong>sem</strong> o aviso → o navegador imita os defeitos antigos: o <strong>modo quirks</strong>. <em>Quirk</em> quer dizer "mania", "esquisitice".</li>
+</ul>
+
+<p>O nome DOCTYPE vem de <em>document type</em>, "tipo de documento". Antigamente ele dizia qual versão do HTML a página usava (veja a seção 4). Hoje ele serve quase só para uma coisa: <strong>ligar o modo padrão</strong>.</p>
+
+<hr>
+
+<h2>1. Escrever o DOCTYPE</h2>
+<p>O DOCTYPE vem <strong>antes de tudo</strong>, na primeira linha do arquivo, antes até do <code>&lt;html&gt;</code>. Esta é a página mínima completa que o guia usa (cada parte dela é explicada em <a href="estrutura.html">Estrutura de uma Página</a>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Repare que o DOCTYPE <strong>não aparece</strong> no resultado. Ele não é conteúdo: é um recado para o navegador. Vamos olhar a linha por partes:</p>
+
+<dl class="anatomy">
+  <dt>&lt;!</dt><dd>Começo de uma <strong>declaração</strong>. O ponto de exclamação logo depois do <code>&lt;</code> avisa que isso não é uma tag comum. (Os comentários também começam assim, com <code>&lt;!--</code>; veja <a href="comentarios.html">Comentários</a>.)</dd>
+  <dt>DOCTYPE</dt><dd>A palavra-chave: "tipo de documento". Pode ser escrita em maiúsculas ou minúsculas: <code>DOCTYPE</code>, <code>doctype</code> e até <code>DocType</code> funcionam igual.</dd>
+  <dt>html</dt><dd>O <strong>nome</strong> do tipo: "este documento é HTML". Também tanto faz maiúscula ou minúscula. Depois do <code>DOCTYPE</code> vem <strong>um espaço</strong> e então o <code>html</code>.</dd>
+  <dt>&gt;</dt><dd>Fim da declaração. Não existe <code>&lt;/!DOCTYPE&gt;</code>: o DOCTYPE não tem fechamento.</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O DOCTYPE…</th><th>Uma tag como <code>&lt;p&gt;</code>…</th></tr>
+<tr><td>começa com <code>&lt;!</code></td><td>começa só com <code>&lt;</code></td></tr>
+<tr><td>aparece <strong>uma vez</strong>, na primeira linha</td><td>pode aparecer quantas vezes quiser</td></tr>
+<tr><td>não tem fechamento</td><td>tem fechamento: <code>&lt;/p&gt;</code></td></tr>
+<tr><td>não vira um elemento na página e não aparece na tela</td><td>vira um elemento (um parágrafo) e aparece na tela</td></tr>
+</table>
+</div>
+
+<h3>Maiúsculas ou minúsculas?</h3>
+<p>As duas formas são válidas, e o validador aceita as duas sem reclamar:</p>
+
+<pre class="term" data-cwd="~/site/doctype">$ head -1 certo.html minusculo.html
+==&gt; certo.html &lt;==
+&lt;!DOCTYPE html&gt;
+
+==&gt; minusculo.html &lt;==
+&lt;!doctype html&gt;
+$ vnu certo.html minusculo.html; echo "código de saída: $?"
+código de saída: 0          « nenhuma mensagem: os dois estão certos</pre>
+
+<p>O <code>vnu</code> fica <strong>calado</strong> quando está tudo certo, e o código de saída <code>0</code> quer dizer "sem erros". Este guia escreve <code>&lt;!DOCTYPE html&gt;</code>, em maiúsculas, nos exemplos, que é a forma mais vista em livros e tutoriais. Muitos sites (e as próprias páginas deste guia) usam <code>&lt;!doctype html&gt;</code>. Escolha uma e use sempre a mesma.</p>
+
+<div class="tip">
+<strong>Antes do DOCTYPE, só espaço ou comentário</strong>
+<p>O HTML permite linhas em branco e comentários (<code>&lt;!-- assim --&gt;</code>) antes do DOCTYPE: o validador aceita e o navegador continua no modo padrão. Qualquer outra coisa antes dele, mesmo uma palavra só, estraga tudo (veja <a href="#errado">Quando dá errado</a>). O mais simples é a regra: <strong>o DOCTYPE é a primeira linha</strong>.</p>
+</div>
+
+<hr>
+
+<h2>2. Os dois modos e o <code>document.compatMode</code></h2>
+<p>Dá para perguntar ao navegador em que modo ele está. A resposta fica em <code>document.compatMode</code> (<em>compatibility mode</em>, "modo de compatibilidade"), uma informação que o JavaScript consegue ler. O JavaScript tem aula própria (<a href="script.html">O Elemento script</a>); aqui ele só escreve o modo na tela:</p>
+
+<pre class="file" data-file="modo.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Qual é o modo?&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p id="modo"&gt;&lt;/p&gt;
+&lt;script&gt;
+  document.getElementById("modo").textContent = "Modo desta página: " + document.compatMode;
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;p id="modo"&gt;&lt;/p&gt;</dt><dd>Um parágrafo vazio, com o nome <code>modo</code>, onde o script vai escrever.</dd>
+  <dt>document.compatMode</dt><dd>A pergunta "em que modo você está?". O <code>document</code> é a página inteira, vista pelo JavaScript.</dd>
+  <dt>textContent = …</dt><dd>Troca o texto do parágrafo pela resposta.</dd>
+</dl>
+
+<p>As respostas possíveis têm nomes estranhos, de uma época em que só existia o CSS 1:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>document.compatMode</code></th><th>Quer dizer</th><th>Quando acontece</th></tr>
+<tr><td><code>CSS1Compat</code></td><td>"compatível com o CSS": <strong>modo padrão</strong></td><td>a página começa com <code>&lt;!DOCTYPE html&gt;</code></td></tr>
+<tr><td><code>BackCompat</code></td><td>"compatível com o passado" (<em>backwards compatible</em>): <strong>modo quirks</strong></td><td>sem DOCTYPE, ou com um DOCTYPE errado ou muito antigo</td></tr>
+</table>
+</div>
+
+<p>Salvando o mesmo arquivo <strong>sem</strong> a primeira linha e abrindo-o no navegador (como em <a href="primeiro-arquivo.html">Criar e Abrir um Arquivo .html</a>), o parágrafo passa a mostrar <code>Modo desta página: BackCompat</code>. Foi o que o Chromium mostrou na máquina da Ana; o Firefox e o Safari dão a mesma resposta.</p>
+
+<h3>Testar vários DOCTYPEs de uma vez</h3>
+<p>Existe um jeito de testar sem criar um arquivo para cada caso: o <code>DOMParser</code> ("leitor de documentos") lê um texto como se fosse uma página nova e diz em que modo ela ficaria. Cada <code>console.log</code> escreve uma linha no <strong>console</strong>, que aparece embaixo do resultado:</p>
+
+<div class="tryhtml" data-goal="console:Teste: CSS1Compat">
+<p class="try-task"><strong>Missão:</strong> veja no console o modo de cada texto. O terceiro, <code>teste</code>, tem um erro de digitação no DOCTYPE e caiu no modo quirks. Conserte só esse texto para o console mostrar <code>Teste: CSS1Compat</code>. Depois, se quiser, invente outros testes: troque para minúsculas, apague o espaço, escreva uma palavra antes…</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Teste de DOCTYPE&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;O resultado dos testes está no console, aqui embaixo.&lt;/p&gt;
+&lt;script&gt;
+  const leitor = new DOMParser();
+  const semDoctype = leitor.parseFromString("&lt;p&gt;Bolo&lt;/p&gt;", "text/html");
+  const comDoctype = leitor.parseFromString("&lt;!DOCTYPE html&gt;&lt;p&gt;Bolo&lt;/p&gt;", "text/html");
+  const teste = leitor.parseFromString("&lt;!DOCTYPE hmtl&gt;&lt;p&gt;Bolo&lt;/p&gt;", "text/html");
+  console.log("Sem DOCTYPE: " + semDoctype.compatMode);
+  console.log("Com DOCTYPE: " + comDoctype.compatMode);
+  console.log("Teste: " + teste.compatMode);
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Teste de DOCTYPE&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;O resultado dos testes está no console, aqui embaixo.&lt;/p&gt;
+&lt;script&gt;
+  const leitor = new DOMParser();
+  const semDoctype = leitor.parseFromString("&lt;p&gt;Bolo&lt;/p&gt;", "text/html");
+  const comDoctype = leitor.parseFromString("&lt;!DOCTYPE html&gt;&lt;p&gt;Bolo&lt;/p&gt;", "text/html");
+  const teste = leitor.parseFromString("&lt;!DOCTYPE html&gt;&lt;p&gt;Bolo&lt;/p&gt;", "text/html");
+  console.log("Sem DOCTYPE: " + semDoctype.compatMode);
+  console.log("Com DOCTYPE: " + comDoctype.compatMode);
+  console.log("Teste: " + teste.compatMode);
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>O erro estava em <code>hmtl</code>, com as letras trocadas. O navegador não "adivinha" o que você quis dizer: um nome diferente de <code>html</code> é um DOCTYPE desconhecido, e um DOCTYPE desconhecido liga o modo quirks.</p>
+
+<hr>
+
+<h2>3. O que muda no modo quirks</h2>
+<p>Quase sempre a página parece igual nos dois modos, e é por isso que o erro passa despercebido. As diferenças aparecem nos detalhes, principalmente no <strong>CSS</strong>, a linguagem que cuida da aparência (quer aprender mais? futuro Guia CSS; a ligação entre HTML e CSS está em <a href="ligar-css.html">Ligar CSS</a>). Esta página tem dois erros de CSS que um navegador moderno <strong>deveria</strong> ignorar: a cor sem o <code>#</code> e a largura sem a unidade <code>px</code>:</p>
+
+<pre class="file" data-file="quirks.html · sem DOCTYPE de propósito">&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;style&gt;
+  body { font-size: 24px; }
+  h1 { color: ff0000; }
+  .aviso { width: 200; border: 2px solid; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p class="aviso"&gt;Receita nova toda sexta.&lt;/p&gt;
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;Bolo de cenoura&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>A Ana abriu esse arquivo no Chromium duas vezes: como está e com <code>&lt;!DOCTYPE html&gt;</code> na primeira linha. O que o navegador calculou (com as ferramentas do desenvolvedor, aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>):</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O que olhar</th><th>Sem DOCTYPE (quirks)</th><th>Com DOCTYPE (padrão)</th></tr>
+<tr><td>Cor do título (<code>color: ff0000</code>)</td><td><strong>vermelho</strong>: o navegador aceitou a cor sem <code>#</code></td><td>preto: a regra errada foi ignorada</td></tr>
+<tr><td>Largura do aviso (<code>width: 200</code>)</td><td><strong>200 pixels</strong>: aceitou o número sem unidade</td><td>a largura toda da janela: a regra foi ignorada</td></tr>
+<tr><td>Tamanho da letra dentro da tabela</td><td><strong>16 pixels</strong>: a tabela não herdou os 24px da página</td><td>24 pixels, como o resto da página</td></tr>
+</table>
+</div>
+
+<p>Leia a primeira linha com atenção: no modo quirks, o código <strong>errado</strong> "funciona". Isso parece bom, mas é uma armadilha. A Ana testa no navegador, vê o título vermelho e acha que acertou. Um dia ela acrescenta o DOCTYPE (ou copia o CSS para outra página) e o vermelho some sem explicação. No modo padrão, o erro aparece logo, e você conserta (<code>color: #ff0000;</code> e <code>width: 200px;</code>).</p>
+
+<p>O validador também confere o CSS que está dentro do <code>&lt;style&gt;</code>, e pega os dois erros, com ou sem DOCTYPE. O <code>padrao.html</code> é o mesmo arquivo com o DOCTYPE na linha 1 (por isso os números de linha andam uma casa):</p>
+
+<pre class="term" data-cwd="~/site/doctype">$ vnu quirks.html padrao.html
+"file:/home/ana/site/doctype/quirks.html":1.1-1.19: error: Start tag seen without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/doctype/quirks.html":7.15-7.20: error: CSS: “color”: “ff0000” is not a “color” value.
+"file:/home/ana/site/doctype/quirks.html":8.19-8.21: error: CSS: “width”: only “0” can be a “unit”. You must put a unit after your number.
+"file:/home/ana/site/doctype/padrao.html":8.15-8.20: error: CSS: “color”: “ff0000” is not a “color” value.
+"file:/home/ana/site/doctype/padrao.html":9.19-9.21: error: CSS: “width”: only “0” can be a “unit”. You must put a unit after your number.</pre>
+
+<p><em>“ff0000” is not a “color” value</em> = "<code>ff0000</code> não é um valor de cor". <em>Only “0” can be a “unit”. You must put a unit after your number</em> = "só o 0 pode ficar sem unidade. Você precisa pôr uma unidade depois do número". Mais um motivo para validar: o validador vê o que o modo quirks esconde.</p>
+
+<div class="note">
+<strong>Por que o resultado não está desenhado aqui embaixo?</strong>
+<p>Nos outros exemplos, o guia desenha o resultado ao vivo. Este é diferente: a página do guia tem DOCTYPE, e o quadro de resultado fica dentro dela, então não dá para garantir que você veria o modo quirks ali. Para ver de verdade, salve o código num arquivo <code>quirks.html</code>, abra no seu navegador, e depois acrescente <code>&lt;!DOCTYPE html&gt;</code> na primeira linha e recarregue.</p>
+</div>
+
+<p>Existem dezenas de outras manias do modo quirks, quase todas ligadas a altura de caixas, tabelas e espaço entre linhas. Você não precisa decorar nenhuma: basta nunca cair nele.</p>
+
+<h3>O terceiro modo: "quase padrão"</h3>
+<p>Existe ainda um modo do meio, o <strong>modo quase padrão</strong> (<em>almost standards mode</em>, ou <em>limited-quirks mode</em>), ligado por alguns DOCTYPEs antigos (seção 4). Ele segue as regras de hoje, com uma única exceção: o espaço em volta de imagens dentro de células de tabela. O <code>document.compatMode</code> não distingue esse modo: ele responde <code>CSS1Compat</code>.</p>
+
+<hr>
+
+<h2>4. Os DOCTYPEs antigos</h2>
+<p>Antes do HTML5, o DOCTYPE era comprido e dizia qual versão do HTML a página seguia, com o endereço de um arquivo de regras (um DTD, <em>Document Type Definition</em>). A história das versões está em <a href="versoes.html">Versões do HTML</a>. Você ainda vai encontrar estes em sites antigos e em tutoriais velhos:</p>
+
+<pre class="file" data-file="DOCTYPEs antigos (só para reconhecer)">&lt;!-- HTML 4.01 Strict --&gt;
+&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+
+&lt;!-- HTML 4.01 Transitional --&gt;
+&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+
+&lt;!-- XHTML 1.0 Transitional --&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>HTML</dt><dd>O nome do tipo, como hoje.</dd>
+  <dt>PUBLIC</dt><dd>"Público": o que vem a seguir é o nome oficial de um padrão conhecido.</dd>
+  <dt>"-//W3C//DTD HTML 4.01//EN"</dt><dd>O nome do padrão: um DTD do W3C para o HTML 4.01, escrito em inglês (<code>EN</code>).</dd>
+  <dt>"http://www.w3.org/TR/html4/strict.dtd"</dt><dd>O endereço do arquivo de regras. O navegador nunca baixa esse arquivo: ele só olha o texto do DOCTYPE para escolher o modo.</dd>
+</dl>
+
+<p>Em que modo cada um deixa o Chromium, e o que o validador diz deles (com a página igual à da seção 1):</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>DOCTYPE</th><th>Modo no navegador</th><th>Mensagem do validador</th></tr>
+<tr><td><code>&lt;!DOCTYPE html&gt;</code></td><td>padrão</td><td>nenhuma</td></tr>
+<tr><td>HTML 4.01 Strict</td><td>padrão</td><td><code>Obsolete doctype.</code></td></tr>
+<tr><td>HTML 4.01 Transitional, com o endereço</td><td>quase padrão</td><td><code>Almost standards mode doctype.</code></td></tr>
+<tr><td>HTML 4.01 Transitional, <strong>sem</strong> o endereço</td><td><strong>quirks</strong></td><td><code>Quirky doctype.</code></td></tr>
+<tr><td>XHTML 1.0 Transitional</td><td>quase padrão</td><td><code>Almost standards mode doctype.</code></td></tr>
+<tr><td>HTML 3.2</td><td><strong>quirks</strong></td><td><code>Quirky doctype.</code></td></tr>
+</table>
+</div>
+
+<pre class="term" data-cwd="~/site/doctype">$ vnu html4.html html4-trans-url.html html4-trans.html xhtml.html html32.html
+"file:/home/ana/site/doctype/html4.html":1.1-1.90: error: Obsolete doctype. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/doctype/html4-trans-url.html":1.1-1.102: error: Almost standards mode doctype. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/doctype/html4-trans.html":1.1-1.63: error: Quirky doctype. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/doctype/xhtml.html":1.1-1.121: error: Almost standards mode doctype. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/doctype/html32.html":1.1-1.55: error: Quirky doctype. Expected “&lt;!DOCTYPE html&gt;”.</pre>
+
+<dl class="anatomy">
+  <dt>"file:/home/ana/site/doctype/html4.html"</dt><dd>O arquivo com o problema.</dd>
+  <dt>:1.1-1.90:</dt><dd>Onde está: da linha 1, coluna 1, até a linha 1, coluna 90. É a linha inteira do DOCTYPE comprido.</dd>
+  <dt>error:</dt><dd>É um <strong>erro</strong>, e não um aviso.</dd>
+  <dt>Obsolete doctype.</dt><dd>"DOCTYPE obsoleto": ele era certo antigamente, não é mais.</dd>
+  <dt>Expected “&lt;!DOCTYPE html&gt;”.</dt><dd>"Esperava <code>&lt;!DOCTYPE html&gt;</code>": o validador já diz o conserto.</dd>
+</dl>
+
+<p>As outras duas mensagens dizem o modo que o DOCTYPE liga: <em>Almost standards mode doctype</em> = "DOCTYPE do modo quase padrão" e <em>Quirky doctype</em> = "DOCTYPE de modo quirks". Em todos os casos, o conserto é o mesmo: troque a linha inteira por <code>&lt;!DOCTYPE html&gt;</code>.</p>
+
+<div class="tip">
+<strong>Existe um DOCTYPE "comprido" ainda válido</strong>
+<p>Ferramentas que geram HTML por programa às vezes escrevem <code>&lt;!DOCTYPE html SYSTEM "about:legacy-compat"&gt;</code>. Ele é aceito pelo validador e liga o modo padrão. Você nunca precisa escrevê-lo; só não estranhe se o vir.</p>
+</div>
+
+<hr>
+
+<h2>Qual usar</h2>
+<p>Só um: <code>&lt;!DOCTYPE html&gt;</code> (ou <code>&lt;!doctype html&gt;</code>), na primeira linha, em <strong>toda</strong> página. Ele é curto, fácil de decorar, liga o modo padrão em todos os navegadores (inclusive em navegadores bem antigos) e vale para todas as versões futuras do HTML: o HTML de hoje é um <em>Living Standard</em>, um "padrão vivo" sem número de versão, então o DOCTYPE não muda mais.</p>
+
+<p>Ao pegar um site antigo para consertar, troque o DOCTYPE comprido por <code>&lt;!DOCTYPE html&gt;</code> e confira a página com calma: se ela dependia do modo quirks, algumas coisas vão mudar de lugar, e o CSS precisa de ajuste.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O navegador nunca mostra uma mensagem de erro por causa do DOCTYPE. Ele simplesmente escolhe o modo quirks e segue em frente. Quem avisa é o validador.</p>
+
+<div class="cenario">
+<strong>Sem DOCTYPE: <code>Start tag seen without seeing a doctype first.</code></strong>
+<pre class="file" data-file="sem-doctype.html · erro de propósito">&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Bolo de cenoura.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site/doctype">$ vnu sem-doctype.html; echo "código de saída: $?"
+"file:/home/ana/site/doctype/sem-doctype.html":1.1-1.19: error: Start tag seen without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.
+código de saída: 1</pre>
+<p><strong>O que significa:</strong> "Tag de abertura encontrada sem ver um DOCTYPE antes. Esperava <code>&lt;!DOCTYPE html&gt;</code>". As colunas 1 a 19 da linha 1 são o <code>&lt;html lang="pt-BR"&gt;</code>: a primeira coisa do arquivo foi uma tag, e não o DOCTYPE. O código de saída <code>1</code> quer dizer "achei erro". <strong>No navegador:</strong> a página aparece normal, mas em modo quirks (<code>BackCompat</code>).</p>
+<p><strong>Como consertar:</strong> escreva <code>&lt;!DOCTYPE html&gt;</code> na linha 1.</p>
+</div>
+
+<div class="cenario">
+<strong>Texto antes do DOCTYPE: <code>Non-space characters found without seeing a doctype first.</code></strong>
+<p>A Ana deixou a palavra <code>Receitas</code> perdida na linha 1, e o DOCTYPE foi para a linha 2:</p>
+<pre class="term" data-cwd="~/site/doctype">$ head -2 texto-antes.html
+Receitas
+&lt;!DOCTYPE html&gt;
+$ vnu texto-antes.html
+"file:/home/ana/site/doctype/texto-antes.html":1.1-1.9: error: Non-space characters found without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/doctype/texto-antes.html":1.1-1.9: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/site/doctype/texto-antes.html":2.1-2.15: error: Stray doctype.
+"file:/home/ana/site/doctype/texto-antes.html":3.1-3.19: error: Stray start tag “html”.
+"file:/home/ana/site/doctype/texto-antes.html":3.1-3.19: error fatal: Cannot recover after last error. Any further errors will be ignored.
+"file:/home/ana/site/doctype/texto-antes.html":1.1-1.9: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.</pre>
+<p><strong>O que significa:</strong> um erro só virou seis mensagens. Leia na ordem:</p>
+<ul>
+  <li><em>Non-space characters found without seeing a doctype first</em>: "caracteres que não são espaço encontrados antes de um DOCTYPE".</li>
+  <li><em>Element “head” is missing a required instance of child element “title”</em>: ao ver texto, o navegador já montou sozinho um <code>&lt;html&gt;</code>, um <code>&lt;head&gt;</code> vazio (sem <code>&lt;title&gt;</code>) e um <code>&lt;body&gt;</code> com a palavra dentro (aula <a href="como-funciona.html">Como o Navegador Lê HTML</a>).</li>
+  <li><em>Stray doctype</em>: "DOCTYPE perdido", fora do lugar. Na linha 2 ele não vale mais nada.</li>
+  <li><em>Stray start tag “html”</em>: o <code>&lt;html lang="pt-BR"&gt;</code> da linha 3 chegou tarde, porque a página já tinha um <code>html</code>. Por isso o <code>lang</code> dele não conta, e a última mensagem pede um <code>lang</code>.</li>
+  <li><em>error fatal: Cannot recover after last error</em>: "não consigo me recuperar depois do último erro": o validador parou de procurar.</li>
+</ul>
+<p><strong>No navegador:</strong> a palavra "Receitas" aparece no alto da página, e o modo é quirks. <strong>Como consertar:</strong> apague o que vem antes do DOCTYPE. Quase sempre o primeiro erro é o único de verdade; os outros são consequência dele.</p>
+</div>
+
+<div class="cenario">
+<strong>Nome errado: <code>Quirky doctype.</code></strong>
+<pre class="term" data-cwd="~/site/doctype">$ head -1 hmtl.html
+&lt;!DOCTYPE hmtl&gt;
+$ vnu hmtl.html
+"file:/home/ana/site/doctype/hmtl.html":1.1-1.15: error: Quirky doctype. Expected “&lt;!DOCTYPE html&gt;”.</pre>
+<p><strong>O que significa:</strong> o DOCTYPE existe, mas é de um tipo desconhecido (<code>hmtl</code>, com letras trocadas), e um DOCTYPE desconhecido liga o modo quirks. <strong>Como consertar:</strong> escreva <code>html</code> certinho.</p>
+</div>
+
+<div class="cenario">
+<strong>Sem nome: <code>Nameless doctype.</code></strong>
+<pre class="term" data-cwd="~/site/doctype">$ head -1 vazio.html
+&lt;!DOCTYPE&gt;
+$ vnu vazio.html
+"file:/home/ana/site/doctype/vazio.html":1.1-1.10: error: Missing space before doctype name.
+"file:/home/ana/site/doctype/vazio.html":1.1-1.10: error: Nameless doctype.
+"file:/home/ana/site/doctype/vazio.html":1.1-1.10: error: Quirky doctype. Expected “&lt;!DOCTYPE html&gt;”.</pre>
+<p><strong>O que significa:</strong> "falta o espaço antes do nome", "DOCTYPE sem nome" e, por isso, "DOCTYPE de modo quirks". <strong>Como consertar:</strong> <code>&lt;!DOCTYPE html&gt;</code>, com o espaço e o <code>html</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Espaço depois do <code>&lt;</code>: <code>Bad character “ ” after “&lt;”.</code></strong>
+<pre class="term" data-cwd="~/site/doctype">$ head -1 espaco.html
+&lt; !DOCTYPE html&gt;
+$ vnu espaco.html
+"file:/home/ana/site/doctype/espaco.html":1.1-1.2: error: Bad character “ ” after “&lt;”. Probable cause: Unescaped “&lt;”. Try escaping it as “&amp;lt;”.
+"file:/home/ana/site/doctype/espaco.html":1.1-1.2: error: Non-space characters found without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/doctype/espaco.html":1.1-1.2: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/site/doctype/espaco.html":2.1-2.19: error: Stray start tag “html”.
+"file:/home/ana/site/doctype/espaco.html":2.1-2.19: error fatal: Cannot recover after last error. Any further errors will be ignored.
+"file:/home/ana/site/doctype/espaco.html":1.1-1.2: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.</pre>
+<p><strong>O que significa:</strong> "caractere ruim (um espaço) depois de <code>&lt;</code>". Com o espaço, o navegador não reconhece nem uma declaração nem uma tag: ele entende o <code>&lt;</code> como um sinal de "menor que" no meio do texto. A dica do validador ("escape como <code>&amp;lt;</code>") serve para quem queria mesmo escrever o sinal na tela (aula <a href="entidades.html">Entidades</a>). <strong>No navegador:</strong> o texto <code>&lt; !DOCTYPE html&gt;</code> aparece escrito no alto da página, e o modo é quirks. <strong>Como consertar:</strong> nada de espaço entre <code>&lt;</code> e <code>!</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>DOCTYPE repetido ou no meio: <code>Stray doctype.</code></strong>
+<pre class="term" data-cwd="~/site/doctype">$ vnu dois.html meio.html
+"file:/home/ana/site/doctype/dois.html":1.16-2.15: error: Stray doctype.
+"file:/home/ana/site/doctype/meio.html":8.1-8.15: error: Stray doctype.</pre>
+<p><strong>O que significa:</strong> "DOCTYPE perdido". No <code>dois.html</code>, a linha 2 repete o DOCTYPE; no <code>meio.html</code>, alguém colou um DOCTYPE dentro do <code>&lt;body&gt;</code>, na linha 8 (isso acontece quando se junta o código de duas páginas). O navegador ignora o DOCTYPE extra; como o primeiro estava certo, a página fica no modo padrão. <strong>Como consertar:</strong> deixe só um, na linha 1.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Resultado</th></tr>
+<tr><td><code>&lt;!DOCTYPE html&gt;</code> na linha 1</td><td>Modo padrão (<code>CSS1Compat</code>). Válido.</td></tr>
+<tr><td><code>&lt;!doctype html&gt;</code></td><td>Igual: maiúsculas e minúsculas tanto faz.</td></tr>
+<tr><td>Linhas em branco ou comentário antes</td><td>Modo padrão. Válido.</td></tr>
+<tr><td>Sem DOCTYPE</td><td>Modo quirks (<code>BackCompat</code>). <code>Start tag seen without seeing a doctype first.</code></td></tr>
+<tr><td>Texto antes do DOCTYPE</td><td>Modo quirks. <code>Non-space characters found without seeing a doctype first.</code></td></tr>
+<tr><td><code>&lt;!DOCTYPE hmtl&gt;</code>, <code>&lt;!DOCTYPE&gt;</code></td><td>Modo quirks. <code>Quirky doctype.</code></td></tr>
+<tr><td>DOCTYPE do HTML 4 ou do XHTML</td><td>Padrão, quase padrão ou quirks. <code>Obsolete doctype.</code> / <code>Almost standards mode doctype.</code> / <code>Quirky doctype.</code></td></tr>
+<tr><td>DOCTYPE repetido ou no meio</td><td>O extra é ignorado. <code>Stray doctype.</code></td></tr>
+<tr><td><code>document.compatMode</code></td><td>Mostra o modo: <code>CSS1Compat</code> (padrão) ou <code>BackCompat</code> (quirks)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A primeira linha</h3>
+<p>Complete a primeira linha de toda página HTML:</p>
+<div class="ex-code">&lt;!<input data-answer="DOCTYPE html|doctype html|DOCTYPE HTML|doctype HTML" aria-label="DOCTYPE"> &gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O modo padrão</h3>
+<p>O que o <code>document.compatMode</code> mostra numa página que começa com <code>&lt;!DOCTYPE html&gt;</code>?</p>
+<div class="ex-code"><input data-answer="CSS1Compat" aria-label="modo"></div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. A Ana esqueceu o DOCTYPE. O que o navegador faz?</p>
+<label><input type="radio" name="q3"> Mostra uma mensagem de erro e não abre a página</label>
+<label><input type="radio" name="q3"> Mostra a página em branco</label>
+<label><input type="radio" name="q3"> Mostra a página normalmente, mas no modo quirks</label>
+<label><input type="radio" name="q3"> Coloca o DOCTYPE sozinho e usa o modo padrão</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Qual destas páginas fica no modo padrão?</p>
+<label><input type="radio" name="q4"> Uma que começa com a palavra <code>Oi</code> e depois tem <code>&lt;!DOCTYPE html&gt;</code></label>
+<label><input type="radio" name="q4"> Uma que começa com um comentário <code>&lt;!-- site da Ana --&gt;</code> e depois tem <code>&lt;!DOCTYPE html&gt;</code></label>
+<label><input type="radio" name="q4"> Uma que começa com <code>&lt;!DOCTYPE hmtl&gt;</code></label>
+<label><input type="radio" name="q4"> Uma que começa com <code>&lt; !DOCTYPE html&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. No modo quirks, a regra <code>h1 { color: ff0000; }</code> (sem o <code>#</code>) deixa o título vermelho. Por que isso é um problema?</p>
+<label><input type="radio" name="q5"> Porque o erro fica escondido: quando a página passar para o modo padrão, o vermelho some</label>
+<label><input type="radio" name="q5"> Porque o vermelho fica mais claro</label>
+<label><input type="radio" name="q5"> Não é problema: o modo quirks é o recomendado</label>
+<label><input type="radio" name="q5"> Porque o validador não consegue mais ler a página</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. O validador mostrou <code>error: Obsolete doctype. Expected “&lt;!DOCTYPE html&gt;”.</code> O que fazer?</p>
+<label><input type="radio" name="q6"> Apagar o DOCTYPE</label>
+<label><input type="radio" name="q6"> Acrescentar um segundo DOCTYPE embaixo do antigo</label>
+<label><input type="radio" name="q6"> Nada: <code>Obsolete</code> é só um aviso</label>
+<label><input type="radio" name="q6"> Trocar a linha inteira por <code>&lt;!DOCTYPE html&gt;</code></label>
+</div>
+
+<h3>Missão final: a página antiga da Ana</h3>
+
+<div class="tryhtml" data-goal="src:^&lt;!DOCTYPE html&gt;,nsrc:\S[\s\S]*&lt;!DOCTYPE,css:h1{color}=rgb(192\, 57\, 43),texto:h1=Receitas da Ana">
+<p class="try-task"><strong>Missão:</strong> a Ana achou a primeira versão do site dela, de anos atrás. Ela não tem DOCTYPE, e a cor do título está escrita sem o <code>#</code>, um erro que só "funcionava" no modo quirks. Faça duas coisas: (1) coloque <code>&lt;!DOCTYPE html&gt;</code> na <strong>primeira linha</strong> e (2) escreva a cor do jeito certo, <code>#c0392b</code> (um vermelho-tijolo), para o título ficar vermelho também no modo padrão.</p>
+<pre class="script" data-file="index.html">&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;style&gt;
+  h1 { color: c0392b; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;style&gt;
+  h1 { color: #c0392b; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>A missão confere três coisas: que o DOCTYPE é mesmo a primeira coisa do código, que não há nada antes dele e que a cor calculada do título é o vermelho-tijolo. Ela não aceita a cor sem <code>#</code>, mesmo que algum navegador a mostre vermelha, porque esse "acerto" depende do modo quirks.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O DOCTYPE é a <strong>primeira linha</strong> de toda página: <code>&lt;!DOCTYPE html&gt;</code>. Não é uma tag, não tem fechamento e não aparece na tela.</li>
+  <li>Maiúsculas ou minúsculas tanto faz. Antes dele, só linhas em branco ou comentários.</li>
+  <li>Com ele, o navegador usa o <strong>modo padrão</strong> (<code>document.compatMode</code> = <code>CSS1Compat</code>). Sem ele, ou com ele errado, usa o <strong>modo quirks</strong> (<code>BackCompat</code>), que imita os defeitos dos navegadores antigos.</li>
+  <li>No modo quirks, CSS errado pode "funcionar" (cor sem <code>#</code>, largura sem unidade) e tabelas mudam de letra. O erro fica escondido até o dia em que a página muda de modo.</li>
+  <li>Os DOCTYPEs compridos do HTML 4 e do XHTML são obsoletos: troque-os por <code>&lt;!DOCTYPE html&gt;</code>.</li>
+  <li>O navegador nunca avisa: quem avisa é o validador, com <code>Start tag seen without seeing a doctype first</code>, <code>Quirky doctype</code>, <code>Obsolete doctype</code> ou <code>Stray doctype</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
