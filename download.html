@@ -115,9 +115,17 @@ certo.html                « só o nome do arquivo: nenhum erro</pre>
 </div>
 
 <div class="tryhtml" data-goal="attr:a[download],attr:a[href]=receita.txt">
-<p class="try-task"><strong>Missão:</strong> o link abaixo abre a receita na tela. Acrescente o atributo <code>download</code> para ele <strong>baixar</strong> o arquivo <code>receita.txt</code>. Não mude o <code>href</code>.</p>
+<p class="try-task"><strong>Missão:</strong> clique no link do Resultado: a receita abre dentro do quadro (o botão <strong>↻</strong> da barra do quadro volta à página). Agora acrescente o atributo <code>download</code> para ele <strong>baixar</strong> o arquivo <code>receita.txt</code>, sem mudar o <code>href</code>, e clique de novo. O <code>receita.txt</code> é a segunda aba do editor: um arquivo de verdade, que o seu navegador baixa.</p>
 <pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
 &lt;p&gt;&lt;a href="receita.txt"&gt;Baixar a receita&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="script" data-file="receita.txt">Bolo de cenoura
+3 cenouras
+4 ovos
+1 xícara de óleo
+2 xícaras de açúcar
+2 xícaras de farinha de trigo
+1 colher de sopa de fermento
 </pre>
 <pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
 &lt;p&gt;&lt;a href="receita.txt" download&gt;Baixar a receita&lt;/a&gt;&lt;/p&gt;
