@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML picture — recortes e formatos com plano B | Guia HTML</title>
+<meta name="description" content="O elemento picture do HTML para quem nunca fez um site: source com type para oferecer AVIF e WebP com um JPG de reserva, source com media para mostrar outro recorte da foto no celular (direção de arte), a ordem que decide a escolha, o que um Chromium de verdade escolheu e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">O Elemento picture</span></h1>
+
+<p class="intro">Na aula <a href="imagens-responsivas.html">Imagens Responsivas</a>, o <code>srcset</code> ofereceu <strong>tamanhos</strong> da mesma foto, e o navegador escolheu. Mas a Ana quer mais duas coisas. Primeiro, usar o AVIF, que pesa um quarto do JPG, sem deixar sem foto quem tem um aparelho antigo. Segundo, mostrar no celular um <strong>recorte quadrado</strong> do bolo, porque a foto larga, encolhida numa tela estreita, vira um bolinho perdido no meio da mesa. Para as duas, existe o <code>&lt;picture&gt;</code> ("imagem", "quadro"): ele deixa <strong>você</strong> dar as ordens, em vez de só oferecer opções.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>A estrutura do <code>&lt;picture&gt;</code>: vários <code>&lt;source&gt;</code> e um <code>&lt;img&gt;</code> no fim.</li>
+  <li><code>&lt;source type="image/avif"&gt;</code>: formatos novos com um plano B.</li>
+  <li><code>&lt;source media="(max-width: 600px)"&gt;</code>: outro recorte da foto no celular (a "direção de arte").</li>
+  <li>Por que a <strong>ordem</strong> dos <code>&lt;source&gt;</code> decide tudo, com o que um Chromium de verdade escolheu.</li>
+  <li>Onde ficam o <code>alt</code>, o <code>width</code> e o <code>height</code>.</li>
+  <li>Os erros reais do validador e o que o navegador faz com eles.</li>
+</ul>
+</div>
+
+<p>Antes, veja <a href="formatos-imagem.html">Formatos</a> (JPG, WebP e AVIF) e <a href="imagens-responsivas.html">Imagens Responsivas</a> (<code>srcset</code> e <code>sizes</code>). As fotos são as do guia: o bolo em <code>bolo-800.jpg</code> (25 KB), <code>bolo-800.webp</code> (11 KB), <code>bolo-800.avif</code> (6 KB) e o recorte quadrado <code>bolo-quadrado-400.jpg</code> (400 × 400). As escolhas foram medidas num <strong>Chromium 155</strong> (o mesmo que confere as missões do guia) e as mensagens saíram do validador <code>vnu</code> na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/picture</code>.</p>
+
+<hr>
+
+<h2>A ideia: a lista de pedidos com plano B</h2>
+<p>A Ana manda o filho à padaria com um bilhete: "Se tiver pão integral, traz integral. Se não tiver, traz pão de forma. Se não tiver nenhum dos dois, traz pão francês". O filho lê <strong>de cima para baixo</strong> e para no primeiro que der certo. E a última linha, o pão francês, é o que sempre tem: ninguém volta de mãos vazias.</p>
+
+<p>O <code>&lt;picture&gt;</code> é esse bilhete. Cada <code>&lt;source&gt;</code> ("fonte") é uma linha "se der, traga isto"; o <code>&lt;img&gt;</code> no fim é o pão francês, o que sempre funciona. A diferença para o <code>srcset</code> sozinho: lá, o navegador escolhe como achar melhor; aqui, ele obedece às condições, na ordem que você escreveu.</p>
+
+<hr>
+
+<h2>1. Formatos novos com plano B</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;picture&gt;
+  &lt;source srcset="assets/midia/bolo-800.avif" type="image/avif"&gt;
+  &lt;source srcset="assets/midia/bolo-800.webp" type="image/webp"&gt;
+  &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+&lt;/picture&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;picture&gt;</dt><dd>Abre o bilhete. Sozinho, ele não desenha nada: é só uma caixa em volta das opções.</dd>
+  <dt>&lt;source srcset="…avif" type="image/avif"&gt;</dt><dd>1ª linha: "se você sabe mostrar AVIF, use este arquivo". O <code>type</code> é o tipo do arquivo, o mesmo nome que o servidor manda no <code>Content-type</code> (aula <a href="formatos-imagem.html">Formatos</a>). Repare que o <code>&lt;source&gt;</code> usa <strong><code>srcset</code></strong>, e não <code>src</code>. Ele é um elemento vazio, sem fechamento.</dd>
+  <dt>&lt;source srcset="…webp" type="image/webp"&gt;</dt><dd>2ª linha: "senão, se sabe mostrar WebP, use este".</dd>
+  <dt>&lt;img src="…jpg" alt="…" width="400" height="300"&gt;</dt><dd>A última linha, obrigatória: o JPG, que todo navegador mostra. E mais: é <strong>o <code>&lt;img&gt;</code> que aparece na tela</strong>, seja qual for o arquivo escolhido. O <code>alt</code>, o <code>width</code> e o <code>height</code> ficam nele.</dd>
+  <dt>&lt;/picture&gt;</dt><dd>Fecha.</dd>
+</dl>
+
+<p>O navegador nem baixa os arquivos para "experimentar": ele lê o <code>type</code>, sabe na hora se conhece o formato e baixa <strong>um</strong> arquivo só. O que o Chromium 155 fez com variações deste código:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Os <code>&lt;source&gt;</code>, na ordem</th><th>Arquivo escolhido</th><th>Por quê</th></tr>
+<tr><td>AVIF, depois WebP</td><td><code>bolo-800.avif</code> (6 KB)</td><td>conhece AVIF: parou na 1ª linha</td></tr>
+<tr><td>WebP, depois AVIF</td><td><code>bolo-800.webp</code> (11 KB)</td><td>conhece WebP, e o WebP veio primeiro: nem olhou o AVIF</td></tr>
+<tr><td>um <code>type="image/formato-inventado"</code></td><td><code>bolo-800.jpg</code> (25 KB)</td><td>não conhece o tipo: pulou para o <code>&lt;img&gt;</code></td></tr>
+<tr><td>AVIF e WebP <strong>sem</strong> <code>type</code></td><td><code>bolo-800.avif</code></td><td>sem <code>type</code>, ele aceita a 1ª linha sem perguntar (veja o perigo em "Quando dá errado")</td></tr>
+</table>
+</div>
+
+<p>Dois aprendizados: o formato mais leve vai <strong>primeiro</strong>, e todo <code>&lt;source&gt;</code> de formato leva <code>type</code>. Um navegador que não conhece AVIF pula para o WebP; um que não conhece nenhum dos dois (um bem antigo, ou um programa que lê HTML e só entende <code>&lt;img&gt;</code>) usa o JPG.</p>
+
+<div class="tryhtml" data-goal="sel:picture &gt; source[type=&quot;image/avif&quot;][srcset=&quot;assets/midia/bolo-800.avif&quot;] + source[type=&quot;image/webp&quot;][srcset=&quot;assets/midia/bolo-800.webp&quot;] + img:last-child,attr:picture img[src]=assets/midia/bolo-800.jpg,sel:picture img[alt]:not([alt=&quot;&quot;])">
+<p class="try-task"><strong>Missão:</strong> a foto usa só o JPG (25 KB). Coloque o <code>&lt;img&gt;</code> dentro de um <code>&lt;picture&gt;</code> e, antes dele, ofereça o AVIF (<code>assets/midia/bolo-800.avif</code>) e depois o WebP (<code>assets/midia/bolo-800.webp</code>), cada um com o seu <code>type</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;picture&gt;
+  &lt;source srcset="assets/midia/bolo-800.avif" type="image/avif"&gt;
+  &lt;source srcset="assets/midia/bolo-800.webp" type="image/webp"&gt;
+  &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+&lt;/picture&gt;
+</pre>
+</div>
+
+<p>Na tela, nada muda: é a mesma foto. Para ver qual arquivo veio, use a aba de rede do F12, como na aula <a href="imagens-responsivas.html">Imagens Responsivas</a>.</p>
+
+<hr>
+
+<h2>2. Outro recorte no celular: a direção de arte</h2>
+<p>A foto larga do bolo (4 por 3) tem mesa, parede e janela em volta. No computador, fica bonita. Numa tela de celular, encolhida para uns 350 pixels de largura, o bolo vira um detalhe pequeno. O fotógrafo de uma revista resolveria isso <strong>recortando</strong> a foto de outro jeito para cada página. Isso se chama <strong>direção de arte</strong>, e é o <code>media</code> do <code>&lt;source&gt;</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;picture&gt;
+  &lt;source media="(max-width: 600px)" srcset="assets/midia/bolo-quadrado-400.jpg" width="400" height="400"&gt;
+  &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+       style="max-width: 100%; height: auto"&gt;
+&lt;/picture&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>media="(max-width: 600px)"</dt><dd>A condição: "se a janela tiver até 600 pixels de largura". É a mesma escrita do <code>sizes</code> e do CSS (as <em>media queries</em>, "perguntas sobre a mídia"), sempre <strong>entre parênteses</strong>.</dd>
+  <dt>srcset="…bolo-quadrado-400.jpg"</dt><dd>O recorte quadrado, mais fechado no bolo.</dd>
+  <dt>width="400" height="400"</dt><dd>A proporção <strong>deste</strong> arquivo (quadrado). Como o recorte tem outra forma, o <code>&lt;source&gt;</code> pode ter o seu próprio <code>width</code> e <code>height</code>, para o navegador reservar o espaço certo (aula <a href="imagens-tamanho.html#pulo">Largura e Altura</a>).</dd>
+  <dt>&lt;img … width="800" height="600" style="…"&gt;</dt><dd>A foto larga, para telas maiores e como plano B. O <code>style</code> faz a foto caber no quadro (é CSS; ele vale para a imagem escolhida, seja qual for).</dd>
+</dl>
+
+<p>O quadro "Resultado" acima tem a largura da coluna do guia. Se ela tiver mais de 600 pixels (num computador), você vê a foto larga; num celular, a quadrada. Abra a página no celular, ou estreite a janela do navegador e recarregue, para ver a troca. O Chromium 155 escolheu assim:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Janela</th><th>Arquivo escolhido</th><th>Tamanho na tela</th></tr>
+<tr><td>1280 px</td><td><code>bolo-800.jpg</code> (larga)</td><td>800 × 600</td></tr>
+<tr><td>800 px</td><td><code>bolo-800.jpg</code></td><td>784 × 588</td></tr>
+<tr><td>601 px</td><td><code>bolo-800.jpg</code></td><td>585 × 439</td></tr>
+<tr><td>600 px</td><td><code>bolo-quadrado-400.jpg</code> (quadrada)</td><td>400 × 400</td></tr>
+<tr><td>360 px</td><td><code>bolo-quadrado-400.jpg</code></td><td>344 × 344</td></tr>
+<tr><td>1280 px, depois a janela encolhida para 360</td><td>trocou para <code>bolo-quadrado-400.jpg</code></td><td>344 × 344</td></tr>
+</table>
+</div>
+
+<p>Com 600 pixels a condição <code>max-width: 600px</code> ("no máximo 600") ainda vale; com 601, não. E repare na última linha: com o <code>media</code>, o navegador <strong>troca</strong> a foto quando a janela muda, coisa que o <code>srcset</code> sozinho não garantiu (na aula anterior, ele ficou com o arquivo grande). Com o <code>&lt;picture&gt;</code>, a condição é uma ordem, não uma sugestão.</p>
+
+<div class="tryhtml" data-goal="sel:picture &gt; source[media][srcset=&quot;assets/midia/bolo-quadrado-400.jpg&quot;] + img:last-child,src:media=&quot;\(\s*max-width:\s*500px\s*\)&quot;,attr:picture img[src]=assets/midia/bolo-800.jpg,attr:source[width]=400,attr:source[height]=400">
+<p class="try-task"><strong>Missão:</strong> faça telas de até <strong>500</strong> pixels mostrarem o recorte quadrado <code>assets/midia/bolo-quadrado-400.jpg</code> (400 × 400, com <code>width</code> e <code>height</code> no <code>&lt;source&gt;</code>). As outras continuam com a foto larga do <code>&lt;img&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;picture&gt;
+  &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+       style="max-width: 100%; height: auto"&gt;
+&lt;/picture&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;picture&gt;
+  &lt;source media="(max-width: 500px)" srcset="assets/midia/bolo-quadrado-400.jpg" width="400" height="400"&gt;
+  &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+       style="max-width: 100%; height: auto"&gt;
+&lt;/picture&gt;
+</pre>
+</div>
+
+<p>Depois de cumprir a missão, clique em <strong>↗</strong> na barra do quadro: o resultado abre numa aba nova. Estreite a janela dessa aba até menos de 500 pixels (ou use o modo de dispositivo do F12) e veja o bolo trocar de recorte.</p>
+
+<div class="warning">
+<strong>A ordem das condições</strong>
+<p>O navegador para no <strong>primeiro</strong> <code>&lt;source&gt;</code> que serve. Com condições do tipo "pelo menos" (<code>min-width</code>), a maior tem de vir primeiro. A Ana escreveu ao contrário:</p>
+<pre class="file" data-file="index.html · ordem errada">&lt;picture&gt;
+  &lt;source media="(min-width: 400px)" srcset="assets/midia/bolo-800.jpg"&gt;
+  &lt;source media="(min-width: 900px)" srcset="assets/midia/bolo-1200.jpg"&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Bolo de cenoura" width="800" height="600"&gt;
+&lt;/picture&gt;
+</pre>
+<p>Numa janela de 1280 px, o Chromium escolheu o <code>bolo-800.jpg</code>: 1280 é "pelo menos 400", a primeira linha serviu, e o <code>bolo-1200.jpg</code> nunca é escolhido. O validador não reclama (o HTML está certo; a lógica é que não). O conserto é trocar as duas linhas de lugar: a condição mais exigente primeiro.</p>
+</div>
+
+<hr>
+
+<h2>3. Juntando tudo, e qual usar</h2>
+<p>Os <code>&lt;source&gt;</code> aceitam <code>media</code>, <code>type</code>, <code>srcset</code> (com <code>x</code> ou <code>w</code>) e <code>sizes</code>, tudo junto. Recorte quadrado no celular e larga no computador, cada um em WebP com JPG de reserva:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;picture&gt;
+  &lt;source media="(max-width: 600px)" srcset="assets/midia/bolo-quadrado-400.webp" type="image/webp" width="400" height="400"&gt;
+  &lt;source media="(max-width: 600px)" srcset="assets/midia/bolo-quadrado-400.jpg" width="400" height="400"&gt;
+  &lt;source srcset="assets/midia/bolo-800.webp" type="image/webp"&gt;
+  &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+       style="max-width: 100%; height: auto"&gt;
+&lt;/picture&gt;
+</pre>
+
+<p>Leia como o bilhete da padaria: "celular e conhece WebP? quadrada em WebP. Celular? quadrada em JPG. Conhece WebP? larga em WebP. Nada disso? larga em JPG."</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th></tr>
+<tr><td>a mesma foto em vários tamanhos, e o navegador escolhe</td><td><code>&lt;img srcset sizes&gt;</code>, sem <code>&lt;picture&gt;</code> (aula <a href="imagens-responsivas.html">Imagens Responsivas</a>)</td></tr>
+<tr><td>formatos novos (AVIF, WebP) com plano B</td><td><code>&lt;picture&gt;</code> + <code>&lt;source type&gt;</code></td></tr>
+<tr><td>um recorte diferente em telas diferentes</td><td><code>&lt;picture&gt;</code> + <code>&lt;source media&gt;</code></td></tr>
+<tr><td>só WebP, sem se preocupar com aparelhos antigos</td><td>um <code>&lt;img src="….webp"&gt;</code> simples basta: todos os navegadores atuais mostram WebP</td></tr>
+<tr><td>mudar o tamanho, a borda, o visual</td><td>CSS no <code>&lt;img&gt;</code> (o <code>&lt;picture&gt;</code> não aparece na tela)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: Element “picture” is missing a required instance of child element “img”.</code></strong>
+<p><strong>O que aconteceu:</strong> a Ana escreveu os <code>&lt;source&gt;</code> e esqueceu o <code>&lt;img&gt;</code>.</p>
+<pre class="term" data-cwd="~/picture">$ vnu sem-img.html
+"file:/home/ana/picture/sem-img.html":11.1-11.10: error: Element “picture” is missing a required instance of child element “img”.</pre>
+<p>"Falta ao <code>picture</code> o filho obrigatório <code>img</code>." No navegador, <strong>nada aparece</strong>: nem foto, nem <code>alt</code>, nem espaço. No teste com o Chromium, o parágrafo de depois subiu como se a foto não existisse. Lembre: quem aparece na tela é o <code>&lt;img&gt;</code>; os <code>&lt;source&gt;</code> só dizem a ele qual arquivo usar.</p>
+<p><strong>Como consertar:</strong> o <code>&lt;img&gt;</code>, com <code>src</code>, <code>alt</code>, <code>width</code> e <code>height</code>, como último filho.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “source” not allowed as child of element “picture” in this context.</code></strong>
+<p><strong>O que aconteceu:</strong> o <code>&lt;source&gt;</code> veio <strong>depois</strong> do <code>&lt;img&gt;</code>.</p>
+<pre class="term" data-cwd="~/picture">$ vnu img-antes.html
+"file:/home/ana/picture/img-antes.html":10.1-10.49: error: Element “source” not allowed as child of element “picture” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>O navegador lê até o <code>&lt;img&gt;</code> e para: o que vem depois é ignorado. No Chromium, a foto apareceu com o arquivo do <code>src</code> do <code>&lt;img&gt;</code>, como se o <code>&lt;source&gt;</code> não existisse. Um <code>&lt;img&gt;</code> a mais dentro do mesmo <code>&lt;picture&gt;</code> dá o erro parecido <code>Element “img” not allowed as child of element “picture” in this context.</code></p>
+<p><strong>Como consertar:</strong> todos os <code>&lt;source&gt;</code> primeiro; um <code>&lt;img&gt;</code> só, no fim.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Attribute “src” not allowed on element “source” at this point.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>&lt;source src="bolo-800.avif" type="image/avif"&gt;</code>, por costume do <code>&lt;img&gt;</code> (ou do <code>&lt;source&gt;</code> do <code>&lt;video&gt;</code>, que usa <code>src</code>).</p>
+<pre class="term" data-cwd="~/picture">$ vnu source-src.html
+"file:/home/ana/picture/source-src.html":9.1-9.46: error: Attribute “src” not allowed on element “source” at this point.
+"file:/home/ana/picture/source-src.html":9.1-9.46: error: Element “source” is missing required attribute “srcset”.</pre>
+<p>Dentro do <code>&lt;picture&gt;</code>, o <code>&lt;source&gt;</code> só entende <code>srcset</code>. Com <code>src</code>, ele não tem arquivo nenhum e é pulado.</p>
+<p><strong>Como consertar:</strong> <code>srcset="bolo-800.avif"</code> (um arquivo só, sem descritor, também vale).</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Attribute “alt” not allowed on element “source” at this point.</code></strong>
+<p><strong>O que aconteceu:</strong> o <code>alt</code> foi para o <code>&lt;source&gt;</code>, e o <code>&lt;img&gt;</code> ficou sem:</p>
+<pre class="term" data-cwd="~/picture">$ vnu alt-source.html
+"file:/home/ana/picture/alt-source.html":9.1-9.71: error: Attribute “alt” not allowed on element “source” at this point.
+"file:/home/ana/picture/alt-source.html":10.1-10.49: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
+<p><strong>Como consertar:</strong> um <code>alt</code> só, no <code>&lt;img&gt;</code>. Ele vale para qualquer arquivo escolhido, então todos os <code>&lt;source&gt;</code> devem ser a mesma cena (outro recorte, outro formato), que o mesmo <code>alt</code> descreve.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “avif” for attribute “type” on element “source”: Subtype missing.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>type="avif"</code>, só com o nome do formato.</p>
+<pre class="term" data-cwd="~/picture">$ vnu type-curto.html
+"file:/home/ana/picture/type-curto.html":9.1-9.43: error: Bad value “avif” for attribute “type” on element “source”: Subtype missing.</pre>
+<p>"Falta o subtipo." O <code>type</code> tem duas partes: o tipo (<code>image</code>) e o subtipo (<code>avif</code>), separados por <code>/</code>. O navegador não reconhece <code>avif</code> sozinho, pula esse <code>&lt;source&gt;</code> e usa o JPG: no Chromium, a foto apareceu, mas pesada.</p>
+<p><strong>Como consertar:</strong> <code>type="image/avif"</code>, <code>type="image/webp"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “max-width: 600px” for attribute “media” on element “source”: unrecognized media “max-width”.</code></strong>
+<p><strong>O que aconteceu:</strong> a condição sem parênteses: <code>media="max-width: 600px"</code>.</p>
+<pre class="term" data-cwd="~/picture">$ vnu media-sem-parenteses.html
+"file:/home/ana/picture/media-sem-parenteses.html":9.1-9.64: error: Bad value “max-width: 600px” for attribute “media” on element “source”: unrecognized media “max-width”.</pre>
+<p>"Mídia não reconhecida." Sem parênteses, o navegador também não entende a condição e pula o <code>&lt;source&gt;</code>: o recorte quadrado nunca aparece, em tela nenhuma.</p>
+<p><strong>Como consertar:</strong> <code>media="(max-width: 600px)"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Sem erro no validador, mas a foto some num aparelho antigo: <code>&lt;source&gt;</code> sem <code>type</code></strong>
+<p><strong>O que aconteceu:</strong> <code>&lt;source srcset="bolo-800.avif"&gt;</code>, sem <code>type</code>. O validador aceita. Mas, sem <code>type</code> nem <code>media</code>, a primeira linha "serve" para qualquer navegador: ele baixa o AVIF sem perguntar (o Chromium fez isso no teste da seção 1). Um navegador que não sabe mostrar AVIF baixa o arquivo, não consegue desenhar e mostra a <strong>imagem quebrada</strong>, em vez de passar para o JPG.</p>
+<p><strong>Como consertar:</strong> todo <code>&lt;source&gt;</code> de formato leva <code>type</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;picture&gt;…&lt;/picture&gt;</code></td><td>Caixa com as opções; não aparece na tela</td></tr>
+<tr><td><code>&lt;source srcset="a.avif" type="image/avif"&gt;</code></td><td>Use este arquivo se o navegador conhece o formato</td></tr>
+<tr><td><code>&lt;source media="(max-width: 600px)" srcset="q.jpg" width="400" height="400"&gt;</code></td><td>Use este arquivo (com esta proporção) se a condição vale</td></tr>
+<tr><td><code>&lt;img src="…" alt="…" width="…" height="…"&gt;</code></td><td>Obrigatório, por último: o plano B e o que aparece na tela</td></tr>
+<tr><td>A ordem</td><td>O primeiro <code>&lt;source&gt;</code> que serve ganha: o formato mais leve e a condição mais exigente primeiro</td></tr>
+<tr><td><code>alt</code>, CSS</td><td>Só no <code>&lt;img&gt;</code></td></tr>
+<tr><td><code>srcset</code> (não <code>src</code>) no <code>&lt;source&gt;</code></td><td>Pode ter <code>x</code> ou <code>w</code> + <code>sizes</code>, como no <code>&lt;img&gt;</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O tipo</h3>
+<p>Complete o tipo do WebP:</p>
+<div class="ex-code">&lt;source srcset="bolo.webp" type="<input data-answer="image/webp" aria-label="tipo">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O plano B</h3>
+<p>Qual elemento é obrigatório e vem por último dentro do <code>&lt;picture&gt;</code>?</p>
+<div class="ex-code">&lt;<input data-answer="img" aria-label="elemento">&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Um <code>&lt;picture&gt;</code> tem, nesta ordem, um <code>&lt;source&gt;</code> WebP, um <code>&lt;source&gt;</code> AVIF e o <code>&lt;img&gt;</code> JPG. Um navegador que conhece os dois formatos baixa…</p>
+<label><input type="radio" name="q3"> o AVIF, porque é o mais leve</label>
+<label><input type="radio" name="q3"> o WebP, porque é o primeiro que ele conhece</label>
+<label><input type="radio" name="q3"> o JPG, porque é o do <code>&lt;img&gt;</code></label>
+<label><input type="radio" name="q3"> os três</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. Onde vai o <code>alt</code>?</p>
+<label><input type="radio" name="q4"> No <code>&lt;picture&gt;</code></label>
+<label><input type="radio" name="q4"> Em cada <code>&lt;source&gt;</code></label>
+<label><input type="radio" name="q4"> No primeiro <code>&lt;source&gt;</code></label>
+<label><input type="radio" name="q4"> Só no <code>&lt;img&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Quer mostrar uma foto quadrada no celular e uma larga no computador. O que usar?</p>
+<label><input type="radio" name="q5"> <code>&lt;picture&gt;</code> com <code>&lt;source media="…"&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;img srcset&gt;</code> com as duas fotos</label>
+<label><input type="radio" name="q5"> Dois <code>&lt;img&gt;</code> com <code>width</code> diferentes</label>
+<label><input type="radio" name="q5"> <code>&lt;source type="image/quadrada"&gt;</code></label>
+</div>
+
+<h3>Missão final: recorte e formato</h3>
+
+<div class="tryhtml" data-goal="nsel:picture &gt; source=3,sel:picture &gt; source:nth-child(1)[media][type=&quot;image/webp&quot;][srcset=&quot;assets/midia/bolo-quadrado-400.webp&quot;],sel:picture &gt; source:nth-child(2)[media][srcset=&quot;assets/midia/bolo-quadrado-400.jpg&quot;]:not([type]),sel:picture &gt; source:nth-child(3):not([media])[type=&quot;image/webp&quot;][srcset=&quot;assets/midia/bolo-800.webp&quot;],sel:picture &gt; img:last-child[src=&quot;assets/midia/bolo-800.jpg&quot;][alt],src:media=&quot;\(\s*max-width:\s*600px\s*\)&quot;[^&gt;]*bolo-quadrado-400\.webp|bolo-quadrado-400\.webp[^&gt;]*media=&quot;\(\s*max-width:\s*600px\s*\)&quot;">
+<p class="try-task"><strong>Missão:</strong> monte o bilhete completo, nesta ordem: (1) até 600 px de janela e com WebP: <code>assets/midia/bolo-quadrado-400.webp</code>; (2) até 600 px: <code>assets/midia/bolo-quadrado-400.jpg</code>; (3) com WebP: <code>assets/midia/bolo-800.webp</code>; e o <code>&lt;img&gt;</code> com o JPG largo, que já está pronto. Use <code>media="(max-width: 600px)"</code> e <code>type="image/webp"</code> onde for preciso.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo da semana&lt;/h1&gt;
+&lt;picture&gt;
+
+  &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+       style="max-width: 100%; height: auto"&gt;
+&lt;/picture&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo da semana&lt;/h1&gt;
+&lt;picture&gt;
+  &lt;source media="(max-width: 600px)" srcset="assets/midia/bolo-quadrado-400.webp" type="image/webp" width="400" height="400"&gt;
+  &lt;source media="(max-width: 600px)" srcset="assets/midia/bolo-quadrado-400.jpg" width="400" height="400"&gt;
+  &lt;source srcset="assets/midia/bolo-800.webp" type="image/webp"&gt;
+  &lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="800" height="600"
+       style="max-width: 100%; height: auto"&gt;
+&lt;/picture&gt;
+</pre>
+</div>
+
+<p>Por que a 2ª linha não tem <code>type</code>? Porque ela é JPG, que todo navegador conhece: ela serve de plano B para o recorte quadrado. E o <code>width</code>/<code>height</code> nos dois primeiros <code>&lt;source&gt;</code> não é obrigatório para a missão, mas evita o pulo da página com o recorte quadrado.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <code>&lt;picture&gt;</code> é um bilhete com plano B: vários <code>&lt;source&gt;</code> e um <code>&lt;img&gt;</code> obrigatório no fim. O navegador lê de cima para baixo e usa o <strong>primeiro</strong> <code>&lt;source&gt;</code> que serve; se nenhum serve, o <code>src</code> do <code>&lt;img&gt;</code>.</li>
+  <li><code>&lt;source type="image/avif"&gt;</code>: formatos novos com plano B. O mais leve primeiro, e sempre com <code>type</code> (sem ele, um navegador antigo pode ficar com a imagem quebrada).</li>
+  <li><code>&lt;source media="(max-width: 600px)"&gt;</code>: direção de arte, outro recorte em telas diferentes. A condição é uma ordem, e o navegador troca a foto quando a janela muda. O <code>&lt;source&gt;</code> pode ter <code>width</code>/<code>height</code> próprios.</li>
+  <li>Quem aparece na tela é o <code>&lt;img&gt;</code>: o <code>alt</code>, o <code>width</code>/<code>height</code> principal e o CSS ficam nele.</li>
+  <li>O <code>&lt;source&gt;</code> usa <code>srcset</code> (não <code>src</code>), não tem <code>alt</code>, e o <code>type</code> é completo (<code>image/webp</code>). O validador pega <code>&lt;img&gt;</code> faltando ou fora do lugar, <code>src</code> e <code>alt</code> no <code>&lt;source&gt;</code>, <code>type</code> sem subtipo e <code>media</code> sem parênteses; a ordem errada e a falta de <code>type</code>, não.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
