@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Editores — VS Code, Emmet e outras opções para escrever HTML | Guia HTML</title>
+<meta name="description" content="Onde escrever HTML: por que um editor de código ajuda, o VS Code (instalar, abrir a pasta do site, fechar tags sozinho, Emmet com ! e ul&gt;li*3, formatar, Live Server), outras opções (Notepad++, Sublime Text, Kate, nano, Vim) e os cuidados com o arquivo: texto puro, extensão .html, UTF-8 e salvar antes de recarregar, com as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Editores</span></h1>
+
+<p class="intro">Um arquivo HTML é texto puro, então qualquer programa que edita texto serve para escrevê-lo, até o Bloco de Notas. Mas um <strong>editor de código</strong> facilita muito a vida: ele pinta as tags de outra cor, fecha as tags sozinho, completa o que você começou a digitar e escreve a moldura da página com duas teclas. Nesta aula você conhece o <strong>VS Code</strong>, o editor mais usado hoje, outras boas opções e os cuidados que todo editor exige para o arquivo sair certo.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que um editor de código faz por você, e por que o Word não serve.</li>
+  <li>Instalar o VS Code e abrir a pasta do site.</li>
+  <li>Os ajudantes do VS Code para HTML: cores, fechamento automático de tags, formatação e o <strong>Emmet</strong> (<code>!</code>, <code>ul&gt;li*3</code>).</li>
+  <li>Ver a página no navegador enquanto edita (extensão Live Server).</li>
+  <li>Outras opções: Notepad++, Sublime Text, Kate, Editor de Texto, nano, Vim, editores on-line.</li>
+  <li>Os cuidados com o arquivo: texto puro, extensão <code>.html</code>, codificação UTF-8 e salvar antes de recarregar.</li>
+</ul>
+</div>
+
+<p>As telas dos editores não puderam ser reproduzidas na máquina do guia, então esta aula as <strong>descreve</strong>, sem prometer o texto exato de cada menu (ele muda com a versão e o idioma). Os arquivos, as mensagens do validador e os resultados, sim, são reais: vieram da máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: lápis, caneta ou estojo completo</h2>
+<p>Dá para escrever uma redação a lápis, numa folha qualquer. Mas um estojo com borracha, régua, marca-texto e corretivo ajuda a escrever mais rápido e com menos erros. Com HTML é igual:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Ferramenta</th><th>Na escola</th><th>Para HTML</th></tr>
+<tr><td>Lápis e papel</td><td>Escreve, e só</td><td>Um editor de texto simples (Bloco de Notas, Editor de Texto, nano)</td></tr>
+<tr><td>Estojo completo</td><td>Marca-texto, régua, corretivo</td><td>Um <strong>editor de código</strong> (VS Code, Sublime Text, Notepad++)</td></tr>
+<tr><td>Caderno de desenho com tinta</td><td>Ótimo para outra coisa, péssimo para redação</td><td>Um processador de texto (Word, LibreOffice Writer): ótimo para documentos, errado para HTML</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O que um editor de código faz por você</h2>
+<p>Todos os editores de código fazem mais ou menos as mesmas coisas, com nomes diferentes:</p>
+<ul>
+  <li><strong>Cores no código</strong> (<em>syntax highlighting</em>, "destaque de sintaxe"): as tags aparecem numa cor, os atributos em outra, o texto em outra. Um <code>&lt;</code> esquecido muda a cor de tudo o que vem depois, e você enxerga o erro na hora.</li>
+  <li><strong>Fechamento automático</strong>: quando você termina de digitar <code>&lt;p&gt;</code>, o editor escreve o <code>&lt;/p&gt;</code> logo depois do cursor. É o fim do <code>&lt;/strong&gt;</code> esquecido que vazava o negrito em <a href="como-funciona.html">Como o Navegador Lê HTML</a>.</li>
+  <li><strong>Autocompletar</strong>: comece a digitar <code>&lt;bl</code> e ele sugere <code>blockquote</code>; dentro de uma tag, ele sugere os atributos que ela aceita.</li>
+  <li><strong>Formatar</strong>: arruma o recuo (os espaços no começo das linhas) de um arquivo bagunçado com um atalho.</li>
+  <li><strong>Atalhos de digitação</strong>: no VS Code, o Emmet escreve a moldura inteira da página a partir de um <code>!</code>.</li>
+  <li><strong>Ver a pasta inteira</strong>: uma barra lateral com todos os arquivos do site, para pular de um para outro.</li>
+</ul>
+
+<p>Nada disso muda o arquivo final: ele continua sendo o mesmo texto puro que você escreveria no Bloco de Notas. O editor só ajuda a escrevê-lo.</p>
+
+<hr>
+
+<h2>2. VS Code</h2>
+<p>O <strong>Visual Studio Code</strong> (ou só <strong>VS Code</strong>) é um editor gratuito da Microsoft, para Windows, macOS e Linux. É o mais usado no mundo para desenvolvimento web, e é o que o guia recomenda para quem está começando: ele já vem com tudo o que o HTML precisa, sem instalar nada a mais.</p>
+
+<h3>Instalando</h3>
+<ol class="passo">
+  <li>Entre no site oficial, <strong>code.visualstudio.com</strong>, e baixe a versão do seu sistema. Cuidado com sites que oferecem o "VS Code" para baixar em outros endereços.</li>
+  <li><strong>Windows:</strong> rode o instalador. Uma das opções do instalador adiciona o comando <code>code</code> ao terminal; vale deixá-la marcada.</li>
+  <li><strong>macOS:</strong> abra o arquivo baixado e arraste o aplicativo para a pasta Aplicativos.</li>
+  <li><strong>Linux (Ubuntu):</strong> baixe o pacote <code>.deb</code> e abra-o com a central de programas, ou instale pelo terminal com <code>sudo snap install code --classic</code>.</li>
+  <li>Para o VS Code em português, instale a extensão de idioma <strong>Portuguese (Brazil) Language Pack</strong> (o próprio editor costuma oferecer isso na primeira vez que abre).</li>
+</ol>
+
+<div class="note">
+<strong>VSCodium</strong>
+<p>Existe uma versão do VS Code montada pela comunidade, o <strong>VSCodium</strong>, sem a coleta de dados de uso da Microsoft. Ela funciona igual para tudo o que este guia ensina.</p>
+</div>
+
+<h3>Abrir a pasta do site</h3>
+<p>No VS Code, você abre a <strong>pasta</strong> do site inteira, e não um arquivo de cada vez. Use a opção de abrir pasta do menu Arquivo (<em>File → Open Folder</em>, no VS Code em inglês) e escolha a pasta do site. Os arquivos aparecem numa barra lateral, à esquerda; clique num para abri-lo. Pelo terminal, dá no mesmo entrar na pasta e digitar <code>code .</code> (o ponto quer dizer "esta pasta").</p>
+
+<p>Na primeira vez, o VS Code pode perguntar se você confia nos autores dos arquivos da pasta. Como é a sua própria pasta, pode confirmar.</p>
+
+<h3>Criar a moldura com o Emmet: <code>!</code></h3>
+<p>O VS Code traz embutido o <strong>Emmet</strong>, um atalho de digitação para HTML. Num arquivo novo terminado em <code>.html</code>, digite só um ponto de exclamação, <code>!</code>. O editor mostra uma sugestão do Emmet; aceite com <kbd>Tab</kbd> ou <kbd>Enter</kbd>, e o <code>!</code> vira a moldura completa de uma página:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O resultado está em branco porque o <code>body</code>, a parte que aparece na tela, está vazio: o cursor fica justamente ali, esperando o conteúdo. Cada linha é explicada em <a href="estrutura.html">Estrutura de uma Página</a>; aqui, repare em duas que você <strong>sempre</strong> precisa mudar:</p>
+
+<dl class="anatomy">
+  <dt>lang="en"</dt><dd>Diz que a página está em inglês (<em>English</em>). Para uma página em português do Brasil, troque por <code>lang="pt-BR"</code>. O navegador usa isso para escolher a pronúncia do leitor de tela, as regras de hifenização e a oferta de tradução.</dd>
+  <dt>&lt;title&gt;Document&lt;/title&gt;</dt><dd>O título que aparece na aba do navegador e nos resultados do Google. "Document" não diz nada; troque pelo nome da página.</dd>
+</dl>
+
+<p>As outras linhas estão boas como estão. O <code>UTF-8</code> em maiúsculas é o mesmo que o <code>utf-8</code> que o guia usa (tanto faz). O <code>meta name="viewport"</code> faz a página funcionar bem no celular (aula <a href="meta-viewport.html">Celular (meta viewport)</a>), e os quatro espaços de recuo são o costume do VS Code. Dependendo da versão do Emmet, pode aparecer uma linha a mais, com <code>X-UA-Compatible</code>; ela era para o Internet Explorer e pode ser apagada.</p>
+
+<div class="tryhtml" data-goal="attr:html[lang]=pt-BR,texto:title=Receitas da Ana">
+<p class="try-task"><strong>Experimente:</strong> esta é a moldura do Emmet com um título no <code>body</code>. Faça as duas trocas de sempre: o idioma para <code>pt-BR</code> e o título da aba para <code>Receitas da Ana</code>. O resultado na tela não muda (nenhuma das duas coisas aparece no corpo da página), mas a missão confere as duas no DOM.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<div class="tip">
+<strong>Para o Emmet já escrever <code>pt-BR</code></strong>
+<p>Nas configurações do VS Code (o arquivo <code>settings.json</code> do usuário), a opção <code>"emmet.variables": { "lang": "pt-BR" }</code> faz o <code>!</code> sair com <code>lang="pt-BR"</code> daqui para a frente. O título continua sendo "Document", porque cada página tem o seu.</p>
+</div>
+
+<h3>Outras abreviações do Emmet</h3>
+<p>O <code>!</code> é só a mais famosa. O Emmet entende uma "taquigrafia" de HTML: você escreve a abreviação, aceita a sugestão e ele escreve as tags. Estas são as mais úteis no começo:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você digita</th><th>O Emmet escreve</th><th>Leia como</th></tr>
+<tr><td><code>!</code></td><td>A moldura completa da página</td><td>"página nova"</td></tr>
+<tr><td><code>p</code></td><td><code>&lt;p&gt;&lt;/p&gt;</code></td><td>o nome de uma tag vira a tag aberta e fechada</td></tr>
+<tr><td><code>h1{Receitas da Ana}</code></td><td><code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code></td><td><code>{ }</code> = o texto de dentro</td></tr>
+<tr><td><code>ul&gt;li*3</code></td><td>Um <code>ul</code> com três <code>li</code> vazios, cada um na sua linha</td><td><code>&gt;</code> = "dentro de"; <code>*3</code> = "três vezes"</td></tr>
+<tr><td><code>a</code></td><td><code>&lt;a href=""&gt;&lt;/a&gt;</code></td><td>já com o atributo do endereço (aula <a href="links.html">Links</a>)</td></tr>
+<tr><td><code>img</code></td><td><code>&lt;img src="" alt=""&gt;</code></td><td>já com o <code>alt</code> (aula <a href="imagens-alt.html">Texto Alternativo</a>)</td></tr>
+</table>
+</div>
+
+<p>O <code>ul&gt;li*3</code>, por exemplo, sai assim, com o recuo de quatro espaços do VS Code:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;ul&gt;
+    &lt;li&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<p>O resultado mostra três marcadores sem texto: a estrutura está pronta, falta o conteúdo. O Emmet é ótimo, mas não deixe ele pensar por você. No começo, digitar as tags inteiras ajuda a decorá-las; use o Emmet quando já souber o que ele vai escrever.</p>
+
+<h3>Formatar e salvar</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Ação</th><th>Windows</th><th>macOS</th><th>Linux</th></tr>
+<tr><td>Salvar</td><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td><td><kbd>Cmd</kbd> + <kbd>S</kbd></td><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td></tr>
+<tr><td>Formatar o arquivo (arrumar o recuo)</td><td><kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>F</kbd></td><td><kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>F</kbd></td><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd></td></tr>
+<tr><td>Abrir a paleta de comandos (procurar qualquer função pelo nome)</td><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd></td><td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd></td><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd></td></tr>
+<tr><td>Comentar ou descomentar a linha</td><td><kbd>Ctrl</kbd> + <kbd>/</kbd></td><td><kbd>Cmd</kbd> + <kbd>/</kbd></td><td><kbd>Ctrl</kbd> + <kbd>/</kbd></td></tr>
+</table>
+</div>
+
+<p>Enquanto um arquivo tem mudanças não salvas, a aba dele mostra uma bolinha no lugar do <strong>×</strong> de fechar. Se não quiser se preocupar com isso, ligue o salvamento automático (<em>Auto Save</em>), que fica no menu Arquivo.</p>
+
+<h3>Ver a página enquanto edita: Live Server</h3>
+<p>Para ver o resultado, você salva no editor e recarrega o navegador (<kbd>F5</kbd>). Uma extensão muito usada faz o navegador recarregar sozinho a cada vez que você salva: a <strong>Live Server</strong>. Depois de instalá-la (pela área de extensões do VS Code), aparece um botão na barra de baixo do editor; ele liga um pequeno servidor e abre a página num endereço como <code>http://127.0.0.1:5500/index.html</code>. É o mesmo tipo de servidor local que você viu em <a href="como-funciona.html">Como o Navegador Lê HTML</a>, só que com o recarregamento automático. A própria Microsoft tem uma extensão parecida, a <strong>Live Preview</strong>, que mostra a página dentro do editor.</p>
+
+<hr>
+
+<h2>3. Outras opções</h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Editor</th><th>Sistemas</th><th>Como é</th></tr>
+<tr><td><strong>Notepad++</strong></td><td>Windows</td><td>Gratuito, leve, com cores e abas. Ótimo em computadores mais fracos.</td></tr>
+<tr><td><strong>Sublime Text</strong></td><td>Windows, macOS, Linux</td><td>Muito rápido. É pago, mas pode ser avaliado de graça sem limite de tempo (com um lembrete de compra de vez em quando).</td></tr>
+<tr><td><strong>WebStorm</strong></td><td>Windows, macOS, Linux</td><td>Um ambiente completo, da JetBrains, com muitos recursos prontos. Gratuito para uso não comercial; pesado para computadores modestos.</td></tr>
+<tr><td><strong>Editor de Texto</strong> do GNOME, <strong>Kate</strong> do KDE</td><td>Linux</td><td>Os editores que já vêm no Ubuntu e no Kubuntu. Têm cores para HTML e bastam para começar.</td></tr>
+<tr><td><strong>nano</strong>, <strong>Vim</strong></td><td>Terminal (Linux, macOS)</td><td>Funcionam dentro do terminal, inclusive num servidor sem tela. O nano é simples; o Vim é poderoso, mas tem uma curva de aprendizado famosa.</td></tr>
+<tr><td><strong>Bloco de Notas</strong> (Windows), <strong>TextEdit</strong> (macOS)</td><td>Windows, macOS</td><td>Funcionam, sem nenhuma ajuda. No TextEdit, transforme o documento em texto simples antes de salvar (opção no menu Formatar), senão ele salva em formato de documento formatado.</td></tr>
+<tr><td>Editores on-line (CodePen, JSFiddle…)</td><td>Navegador</td><td>Nada para instalar. Bons para testar e mostrar exemplos; para um site de verdade, prefira os arquivos no seu computador.</td></tr>
+</table>
+</div>
+
+<h3>Qual escolher?</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Recomendação</th></tr>
+<tr><td>Está começando, qualquer sistema</td><td><strong>VS Code</strong>: gratuito, completo, com Emmet e a maior parte dos tutoriais do mundo usando ele</td></tr>
+<tr><td>Computador fraco, Windows</td><td>Notepad++</td></tr>
+<tr><td>Computador fraco, Linux</td><td>O editor que já veio no sistema (Editor de Texto, Kate)</td></tr>
+<tr><td>Mexendo num servidor pelo terminal</td><td>nano</td></tr>
+<tr><td>Num computador onde não pode instalar nada</td><td>As caixas Experimente do guia, ou um editor on-line</td></tr>
+</table>
+</div>
+
+<p>O editor não muda o HTML: uma página feita no Notepad++ é idêntica a uma feita no VS Code. Escolha um, aprenda os atalhos dele e siga em frente.</p>
+
+<hr>
+
+<h2>4. Os cuidados com o arquivo</h2>
+<p>Qualquer que seja o editor, três coisas precisam estar certas no arquivo salvo.</p>
+
+<h3>Texto puro, com a extensão <code>.html</code></h3>
+<p>O arquivo tem de ser texto puro (nada de Word) e terminar em <code>.html</code>. Os editores de código já fazem isso; nos editores simples, confira na hora de salvar o tipo do arquivo e o nome completo. Os detalhes de cada sistema estão na próxima aula, <a href="primeiro-arquivo.html">Criar e Abrir um Arquivo .html</a>.</p>
+
+<h3>Codificação: UTF-8</h3>
+<p>Um arquivo de texto guarda cada letra como um ou mais números (bytes). A tabela que diz qual número é qual letra se chama <strong>codificação</strong> (<em>encoding</em>). Para o <code>a</code> sem acento, todas as tabelas concordam; para o <code>ã</code>, o <code>é</code> e o <code>ç</code>, não. A tabela de hoje, que tem as letras de todos os idiomas e até os emojis, é a <strong>UTF-8</strong>, e é a que a página declara com <code>&lt;meta charset="utf-8"&gt;</code>. Se o editor salvar com outra tabela, a declaração mente e os acentos quebram.</p>
+
+<p>Veja dois arquivos com o mesmo texto: um salvo em UTF-8 e outro numa tabela antiga, a ISO-8859-1 (também chamada de Latin-1, comum em editores e sistemas antigos). O comando <code>file</code> percebe a diferença:</p>
+
+<pre class="term" data-cwd="~/site">$ file receita.html
+receita.html: HTML document, ISO-8859 text          « salvo na tabela antiga
+$ file receita-utf8.html
+receita-utf8.html: HTML document, Unicode text, UTF-8 text</pre>
+
+<p>O <code>receita.html</code> diz <code>&lt;meta charset="utf-8"&gt;</code>, mas foi salvo em ISO-8859. O validador encontra os bytes que não fazem sentido em UTF-8:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu receita.html
+"file:/home/ana/site/receita.html":9.5-9.5: error: Malformed byte sequence: “e3”.
+"file:/home/ana/site/receita.html":9.23-9.23: error: Malformed byte sequence: “e9”.
+"file:/home/ana/site/receita.html":9.30-9.30: error: Malformed byte sequence: “e7”.
+"file:/home/ana/site/receita.html":9.31-9.31: error: Malformed byte sequence: “fa”.</pre>
+
+<p><em>Malformed byte sequence</em> = "sequência de bytes malformada". Os números <code>e3</code>, <code>e9</code>, <code>e7</code> e <code>fa</code> são, na tabela antiga, o <code>ã</code>, o <code>é</code>, o <code>ç</code> e o <code>ú</code> da frase "Pão de queijo e café com açúcar.": quatro letras acentuadas, quatro erros. E o navegador, lendo como UTF-8, troca cada uma pelo símbolo de "caractere inválido", um losango com uma interrogação. Este é o parágrafo que um navegador de verdade (Chromium) montou com esse arquivo:</p>
+
+<pre class="file" data-file="DOM montado pelo navegador (o parágrafo)">&lt;p&gt;P�o de queijo e caf� com a��car.&lt;/p&gt;</pre>
+
+<p>O conserto é salvar o arquivo de novo em UTF-8. No VS Code, a codificação do arquivo aparece na barra de baixo (por exemplo, <code>UTF-8</code> ou <code>ISO 8859-1</code>); clicando nela, há a opção de salvar com outra codificação. No terminal, o comando <code>iconv</code> converte de uma tabela para outra:</p>
+
+<pre class="term" data-cwd="~/site">$ iconv -f latin1 -t utf-8 receita.html &gt; receita-utf8.html     « -f: de (from); -t: para (to)
+$ vnu --verbose receita-utf8.html
+receita-utf8.html                                             « sem erros
+$ sed -n 9p receita-utf8.html                                 « mostra a linha 9
+&lt;p&gt;Pão de queijo e café com açúcar.&lt;/p&gt;</pre>
+
+<p>Os editores modernos já salvam em UTF-8 por padrão. O problema aparece com arquivos vindos de sistemas antigos ou de editores configurados de outro jeito. Acentos e emojis têm aula própria: <a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>.</p>
+
+<h3>Salve antes de recarregar</h3>
+<p>O navegador mostra o arquivo que está <strong>no disco</strong>, e não o que está na tela do editor. Se você mudou o código e não salvou, recarregar a página mostra a versão antiga. A rotina é sempre: <strong>salvar</strong> (<kbd>Ctrl</kbd> + <kbd>S</kbd>) e depois <strong>recarregar</strong> (<kbd>F5</kbd>), ou deixar o Live Server recarregar por você.</p>
+
+<hr>
+
+<h2>Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Mudei o código e a página não mudou</strong>
+<p><strong>O que significa:</strong> quase sempre, o arquivo não foi salvo (a bolinha na aba do VS Code denuncia). Outras causas: você está editando um arquivo e abriu outro no navegador (confira o nome na barra de endereço), ou o navegador guardou a versão antiga.</p>
+<p><strong>Como consertar:</strong> salve, recarregue com <kbd>F5</kbd> e compare o caminho na barra de endereço com o arquivo aberto no editor. Se mesmo assim não mudar, recarregue ignorando a cópia guardada: <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> no macOS).</p>
+</div>
+
+<div class="cenario">
+<strong>Os acentos viraram <code>�</code> ou <code>Ã£</code></strong>
+<p><strong>O que significa:</strong> a codificação do arquivo não bate com a que o navegador usou. O losango <code>�</code> aparece quando o arquivo foi salvo numa tabela antiga e lido como UTF-8 (o caso acima, com <code>Malformed byte sequence</code>). Já pares estranhos como <code>Ã£</code> no lugar de <code>ã</code> aparecem no caminho contrário: o arquivo está em UTF-8, mas o navegador foi levado a ler com uma tabela antiga, em geral porque falta o <code>&lt;meta charset="utf-8"&gt;</code> (aula <a href="estrutura.html">Estrutura de uma Página</a>).</p>
+<p><strong>Como consertar:</strong> salve o arquivo em UTF-8 e confira se o <code>&lt;meta charset="utf-8"&gt;</code> está no <code>head</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: This document appears to be written in Portuguese but the “html” start tag has “lang="en"”.</code></strong>
+<p><strong>O que significa:</strong> a página foi começada com o <code>!</code> do Emmet e ficou com <code>lang="en"</code>. Quando a página tem bastante texto, o validador percebe a língua e avisa: "este documento parece estar escrito em português, mas a tag <code>html</code> tem <code>lang="en"</code>. Considere usar <code>lang="pt"</code> (ou uma variante)". Com esta página "Sobre", de seis parágrafos:</p>
+<pre class="file" data-file="sobre.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+    &lt;p&gt;A Ana cozinha desde pequena, quando ajudava a avó a preparar o almoço de domingo para a família inteira. Hoje ela guarda todas as receitas num caderno velho, cheio de anotações nas margens, manchas de chocolate e dicas que aprendeu errando.&lt;/p&gt;
+    &lt;p&gt;Este site é o jeito que ela encontrou de dividir esse caderno com os amigos, os vizinhos e quem mais tiver vontade de cozinhar em casa, sem complicação e sem ingredientes difíceis de achar no mercado do bairro.&lt;/p&gt;
+    &lt;p&gt;Toda semana entra uma receita nova. Primeiro os bolos, que são a especialidade da casa; depois os salgados, as sopas de inverno e os doces de festa junina, que a vizinhança inteira pede todo ano.&lt;/p&gt;
+    &lt;p&gt;As receitas são testadas pelo menos duas vezes antes de aparecer aqui. Se alguma coisa der errado na sua cozinha, mande uma mensagem: a Ana responde todas, nem que demore um pouquinho, e muitas dicas dos leitores já viraram observações no fim das receitas.&lt;/p&gt;
+    &lt;p&gt;Ela também conta as histórias por trás de cada prato: a torta que salvou um aniversário, o pão que deu errado três vezes antes de dar certo e o pudim que a avó só fazia quando chovia. Cozinhar, para ela, é um jeito de lembrar das pessoas.&lt;/p&gt;
+    &lt;p&gt;Nos fins de semana, a Ana prepara encomendas para festas do bairro: bolos de aniversário, docinhos de brigadeiro e beijinho, salgados fritos na hora e tortas salgadas para os almoços de família. As encomendas são feitas com uma semana de antecedência, e cada cliente escolhe o recheio, a cobertura e o tamanho.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu sobre.html; echo $?
+"file:/home/ana/site/sobre.html":1.16-2.16: info warning: This document appears to be written in Portuguese but the “html” start tag has “lang="en"”. Consider using “lang="pt"” (or variant) instead.
+0                                    « é um aviso: o código de saída continua 0</pre>
+<p>Numa página curta, com um título e uma frase, o validador não tem texto suficiente para adivinhar a língua e fica quieto. O erro continua lá: o leitor de tela vai ler o português com pronúncia de inglês.</p>
+<p><strong>Como consertar:</strong> <code>lang="pt-BR"</code> (a "variante" do português do Brasil). E configure o Emmet, como na dica acima, para não precisar lembrar.</p>
+</div>
+
+<div class="cenario">
+<strong>O arquivo abre como texto, ou com o ícone errado</strong>
+<p><strong>O que significa:</strong> o editor salvou com a extensão errada (<code>index.txt</code>, <code>index.html.txt</code>) ou num formato que não é texto puro (<code>.docx</code>, <code>.rtf</code>).</p>
+<p><strong>Como consertar:</strong> salve de novo como texto puro, com o nome terminando em <code>.html</code>. A próxima aula mostra como ver a extensão verdadeira no Windows e no macOS.</p>
+</div>
+
+<hr>
+
+<h2>Referência: atalhos do VS Code</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atalho (Windows e Linux)</th><th>macOS</th><th>O que faz</th></tr>
+<tr><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td><td><kbd>Cmd</kbd> + <kbd>S</kbd></td><td>Salva o arquivo</td></tr>
+<tr><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd></td><td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd></td><td>Paleta de comandos: procura qualquer função pelo nome</td></tr>
+<tr><td><kbd>Ctrl</kbd> + <kbd>P</kbd></td><td><kbd>Cmd</kbd> + <kbd>P</kbd></td><td>Abre um arquivo da pasta pelo nome</td></tr>
+<tr><td><kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>F</kbd> (Windows), <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> (Linux)</td><td><kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>F</kbd></td><td>Formata o arquivo</td></tr>
+<tr><td><kbd>Ctrl</kbd> + <kbd>/</kbd></td><td><kbd>Cmd</kbd> + <kbd>/</kbd></td><td>Transforma a linha em comentário (<code>&lt;!-- --&gt;</code>) e volta</td></tr>
+<tr><td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td><td><kbd>Cmd</kbd> + <kbd>Z</kbd></td><td>Desfaz</td></tr>
+<tr><td><code>!</code> + <kbd>Tab</kbd></td><td><code>!</code> + <kbd>Tab</kbd></td><td>Emmet: a moldura da página</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O atalho do Emmet</h3>
+<p>Que caractere você digita num arquivo <code>.html</code> vazio para o Emmet escrever a moldura da página?</p>
+<div class="ex-code"><input data-answer="!" aria-label="caractere"></div>
+</div>
+
+<div class="exercise">
+<h3>2. O idioma certo</h3>
+<p>O Emmet escreveu <code>&lt;html lang="en"&gt;</code>. Complete com o idioma da Ana:</p>
+<div class="ex-code">&lt;html lang="<input data-answer="pt-BR" aria-label="idioma">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. A abreviação da lista</h3>
+<p>Que abreviação do Emmet escreve um <code>ul</code> com quatro <code>li</code> dentro?</p>
+<div class="ex-code"><input data-answer="ul&gt;li*4" aria-label="abreviação"></div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Você mudou o título no VS Code, apertou <kbd>F5</kbd> no navegador e nada mudou. Qual é a causa mais provável?</p>
+<label><input type="radio" name="q4"> O navegador não entende o VS Code</label>
+<label><input type="radio" name="q4"> O arquivo não foi salvo</label>
+<label><input type="radio" name="q4"> Faltou instalar o Emmet</label>
+<label><input type="radio" name="q4"> O título só muda no dia seguinte</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. O validador mostra <code>Malformed byte sequence</code> numa linha com acentos. O que aconteceu?</p>
+<label><input type="radio" name="q5"> Faltou fechar uma tag</label>
+<label><input type="radio" name="q5"> Acentos são proibidos em HTML</label>
+<label><input type="radio" name="q5"> O arquivo não foi salvo em UTF-8, apesar do <code>&lt;meta charset="utf-8"&gt;</code></label>
+<label><input type="radio" name="q5"> O arquivo está grande demais</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Uma página feita no Notepad++ e a mesma página feita no VS Code…</p>
+<label><input type="radio" name="q6"> …aparecem diferentes no navegador</label>
+<label><input type="radio" name="q6"> …precisam de validadores diferentes</label>
+<label><input type="radio" name="q6"> …só funcionam no editor em que foram feitas</label>
+<label><input type="radio" name="q6"> …são o mesmo arquivo de texto: o editor só ajuda a escrever</label>
+</div>
+
+<h3>Missão final: o recuo que ajuda a ler</h3>
+
+<div class="tryhtml" data-goal="nsel:ul > li=3,src:^&lt;ul&gt;\s*$,src:^\s+&lt;li&gt;Farinha&lt;/li&gt;\s*$,src:^\s+&lt;li&gt;Ovos&lt;/li&gt;\s*$,src:^\s+&lt;li&gt;Açúcar&lt;/li&gt;\s*$,src:^&lt;/ul&gt;\s*$">
+<p class="try-task"><strong>Missão:</strong> a lista está toda numa linha só. O navegador não liga (repare que o resultado já está certo), mas quem lê o código sofre. Deixe como o Emmet e o "formatar" do VS Code deixariam: o <code>&lt;ul&gt;</code> numa linha, cada <code>&lt;li&gt;</code> na sua linha, com alguns espaços de recuo na frente, e o <code>&lt;/ul&gt;</code> na última linha.</p>
+<pre class="script" data-file="index.html">&lt;ul&gt;&lt;li&gt;Farinha&lt;/li&gt;&lt;li&gt;Ovos&lt;/li&gt;&lt;li&gt;Açúcar&lt;/li&gt;&lt;/ul&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;ul&gt;
+    &lt;li&gt;Farinha&lt;/li&gt;
+    &lt;li&gt;Ovos&lt;/li&gt;
+    &lt;li&gt;Açúcar&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<p>O recuo não muda nada na tela: espaços no começo da linha são ignorados pelo navegador (aula <a href="espacos.html">Espaços e Quebras de Linha</a>). Ele existe para as pessoas: com ele, você vê de relance quem está dentro de quem.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>HTML é texto puro: qualquer editor de texto serve, mas um <strong>editor de código</strong> dá cores, fechamento automático de tags, autocompletar, formatação e atalhos. Processadores de texto (Word) não servem.</li>
+  <li>O guia recomenda o <strong>VS Code</strong> (gratuito, Windows, macOS e Linux). Baixe só do site oficial e abra a <strong>pasta</strong> do site, não um arquivo solto.</li>
+  <li>O <strong>Emmet</strong> transforma <code>!</code> na moldura da página e <code>ul&gt;li*3</code> numa lista. Troque sempre o <code>lang="en"</code> por <code>lang="pt-BR"</code> e o <code>&lt;title&gt;Document&lt;/title&gt;</code> pelo título certo.</li>
+  <li>A extensão Live Server recarrega o navegador sozinha a cada vez que você salva.</li>
+  <li>Boas alternativas: Notepad++, Sublime Text, Kate, Editor de Texto, nano, Vim, editores on-line. O arquivo final é o mesmo em todos.</li>
+  <li>Cuidados: texto puro, extensão <code>.html</code>, codificação <strong>UTF-8</strong> (senão: <code>Malformed byte sequence</code> e <code>�</code>) e <strong>salvar antes de recarregar</strong>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
