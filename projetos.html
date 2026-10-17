@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Projetos — como usar os sete projetos do guia | Guia HTML</title>
+<meta name="description" content="Como usar os projetos do Guia HTML: sete páginas completas construídas em versões (currículo, receita, cardápio em tabela, formulário de cadastro, blog semântico, portfólio com várias páginas e página de produto), as aulas que cada uma pratica, em que ordem fazê-las e como fazer cada versão no editor do guia ou no seu computador, com o validador do W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Sobre os Projetos</span></h1>
+
+<p class="intro">Nas aulas, cada página ensina <strong>um</strong> assunto: um dia os <a href="titulos.html">títulos</a>, outro dia as <a href="listas.html">listas</a>, outro as <a href="tabelas.html">tabelas</a>. Nos projetos, você junta tudo isso para fazer uma página de verdade, do arquivo vazio até a versão final, validada pelo W3C. É aqui que as peças se encaixam: o <code>h1</code> da aula de títulos fica em cima de uma <code>ul</code>, que fica dentro de uma <code>section</code>, que tem um link para outra página do seu site. Esta página explica como os sete projetos estão organizados e como fazê-los.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como os sete projetos estão montados (em versões pequenas, cada uma com um <em>Experimente</em>).</li>
+  <li>Que aulas cada projeto pratica e em que ordem fazê-los.</li>
+  <li>Como fazer cada versão: no editor do guia ou no seu computador.</li>
+  <li>Como conferir o seu trabalho com o validador do W3C.</li>
+  <li>O que fazer quando a sua página não fica igual à do projeto.</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>A ideia: montar a página como quem arruma uma casa nova</h2>
+<p>Quando alguém se muda, não arruma a casa inteira de uma vez. Primeiro põe a cama no quarto, para já poder dormir. Depois a mesa da cozinha. Depois as prateleiras, os quadros, as cortinas. Em cada etapa, a casa <strong>já dá para usar</strong>, só que com menos coisas.</p>
+<p>Os projetos funcionam assim. Cada um é dividido em <strong>versões</strong>, e cada versão acrescenta <strong>uma</strong> coisa à anterior. No fim de toda versão, a página abre no navegador e está certa: você nunca fica com um monte de código pela metade.</p>
+
+<p>Toda página de projeto segue o mesmo roteiro:</p>
+<ol class="passo">
+  <li><strong>O que vamos construir.</strong> A página pronta, desenhada pelo seu navegador, para você ver aonde vai chegar.</li>
+  <li><strong>Antes de começar.</strong> As aulas que você precisa ter visto (com links) e a pasta do projeto.</li>
+  <li><strong>As versões 1, 2, 3 e 4.</strong> Cada uma mostra o código, explica cada parte nova, mostra o resultado e termina com um <em>Experimente</em> em que <strong>você</strong> faz a versão.</li>
+  <li><strong>Quando dá errado.</strong> Os erros que aparecem de verdade naquele projeto: o que o navegador faz com eles e a mensagem do validador.</li>
+  <li><strong>A página completa e os desafios.</strong> A versão final, inteira, validada, e ideias para continuar sozinho.</li>
+</ol>
+
+<hr>
+
+<h2>Os sete projetos</h2>
+<p>Estão em ordem de dificuldade. Os três primeiros usam só o Nível 1; os três do meio, o Nível 2 (formulários, semântica e várias páginas ligadas); o último junta coisas do Nível 3.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Projeto</th><th>O que é</th><th>Aulas que ele pratica</th><th>Faça depois de</th></tr>
+<tr><td><a href="projeto-curriculo.html">Currículo Pessoal</a></td><td>O currículo da Ana numa página: nome, apresentação, experiência, formação, habilidades e contato.</td><td><a href="estrutura.html">Estrutura</a>, <a href="titulos.html">Títulos</a>, <a href="paragrafos.html">Parágrafos</a>, <a href="listas.html">Listas</a>, <a href="listas-descricao.html">Listas de Descrição</a>, <a href="links-email-tel.html">Links de E-mail e Telefone</a></td><td><a href="listas.html">Listas</a></td></tr>
+<tr><td><a href="projeto-receita.html">Página de Receita</a></td><td>O bolo de cenoura da Ana: foto com legenda, tempo de preparo, ingredientes, modo de preparo numerado e um índice que pula para cada parte.</td><td><a href="figure.html">figure</a>, <a href="listas-ordenadas.html">Listas Numeradas</a>, <a href="ancoras.html">Âncoras</a>, <a href="citacoes.html">Citações</a>, <a href="negrito-italico.html">strong e em</a></td><td>Nível 1</td></tr>
+<tr><td><a href="projeto-cardapio.html">Cardápio (tabela)</a></td><td>O cardápio do café da Ana numa tabela de verdade: cabeçalho, grupos de pratos, preços e uma legenda que o leitor de tela anuncia.</td><td><a href="tabelas.html">Tabelas</a>, <a href="tabelas-cabecalho.html">Cabeçalhos</a>, <a href="tabelas-mesclar.html">colspan</a>, <a href="tabelas-legenda.html">caption e scope</a></td><td><a href="tabelas-legenda.html">Tabelas</a></td></tr>
+<tr><td><a href="projeto-cadastro.html">Formulário de Cadastro</a></td><td>O cadastro de clientes da lojinha: campos com <code>label</code>, tipos certos, grupos com <code>fieldset</code>, validação e preenchimento automático.</td><td><a href="formularios.html">Formulários</a>, <a href="label.html">label</a>, <a href="tipos-input.html">Tipos de input</a>, <a href="select.html">select</a>, <a href="checkbox-radio.html">checkbox e radio</a>, <a href="fieldset.html">fieldset</a>, <a href="validacao.html">Validação</a>, <a href="formularios-acessiveis.html">Formulários Acessíveis</a></td><td><a href="validacao.html">Formulários</a></td></tr>
+<tr><td><a href="projeto-blog.html">Blog Semântico</a></td><td>O blog da Ana: cabeçalho, menu, posts com data, barra lateral e rodapé, cada parte com o elemento certo.</td><td><a href="semantica.html">Semântica</a>, <a href="header-footer.html">header e footer</a>, <a href="nav.html">nav</a>, <a href="main.html">main</a>, <a href="section-article.html">section e article</a>, <a href="aside.html">aside</a>, <a href="time.html">time</a></td><td><a href="aside.html">Semântica</a></td></tr>
+<tr><td><a href="projeto-portfolio.html">Portfólio (várias páginas)</a></td><td>Um site de três páginas (início, sobre e contato) ligadas por um menu, com um arquivo de CSS só para todas.</td><td><a href="links.html">Links</a>, <a href="caminhos.html">Caminhos</a>, <a href="ligar-css.html">Ligar CSS</a>, <a href="organizar-arquivos.html">Organizar os Arquivos</a>, <a href="servidor-local.html">Servidor Local</a></td><td><a href="caminhos.html">Caminhos</a> e <a href="ligar-css.html">Ligar CSS</a></td></tr>
+<tr><td><a href="projeto-produto.html">Página de Produto</a></td><td>Um produto da lojinha da Ana: foto com <code>picture</code>, tabela de medidas, perguntas que abrem e fecham (<code>details</code>) e a prévia bonita quando alguém compartilha o link.</td><td><a href="picture.html">picture</a>, <a href="tabelas-legenda.html">Tabelas</a>, <a href="details.html">details</a>, <a href="meta.html">meta</a>, <a href="open-graph.html">Open Graph</a></td><td><a href="open-graph.html">Open Graph</a></td></tr>
+</table>
+</div>
+
+<div class="tip">
+<strong>Não precisa ter terminado o nível inteiro</strong>
+<p>A coluna "Faça depois de" é o mínimo. Se alguma versão usar algo que você ainda não viu, o texto tem o link para a aula. Abra numa aba nova, leia e volte. E não precisa seguir a ordem da tabela: se você já tem uma lojinha, pode começar pelo cadastro.</p>
+</div>
+
+<hr>
+
+<h2>Onde fazer: duas formas</h2>
+
+<h3>1. No editor do guia (mais fácil)</h3>
+<p>Toda versão tem um <strong>Experimente</strong> que já começa com o código da versão anterior. Você edita, e o seu navegador desenha o resultado na hora, logo abaixo. Nas missões, o guia confere a página desenhada e diz se você chegou lá; se travar, dá para ver a solução. Veja como o editor funciona em <a href="simulador.html">O Editor do Guia</a>.</p>
+<p>No projeto do <a href="projeto-portfolio.html">Portfólio</a>, o site tem vários arquivos (<code>index.html</code>, <code>sobre.html</code>, <code>contato.html</code> e <code>estilo.css</code>). No editor, cada arquivo vira uma <strong>aba</strong>, e os links entre as páginas funcionam dentro do quadro.</p>
+
+<p>Experimente agora. Esta é a primeira página de quase todo projeto: o esqueleto que você aprendeu em <a href="estrutura.html">Estrutura de uma Página</a>. Mude o nome e a frase, e veja o resultado mudar:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Currículo da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira e dona de uma lojinha on-line. Estou aprendendo HTML.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<dl class="anatomy">
+  <dt>&lt;!DOCTYPE html&gt;</dt><dd>Avisa que é HTML de hoje (veja <a href="doctype.html">O DOCTYPE</a>).</dd>
+  <dt>&lt;html lang="pt-BR"&gt;</dt><dd>A página inteira, em português do Brasil. O leitor de tela usa o <code>lang</code> para pronunciar certo.</dd>
+  <dt>&lt;meta charset="utf-8"&gt;</dt><dd>A tabela de letras do arquivo. Sem ela, os acentos podem virar símbolos estranhos (veja <a href="acentos-utf8.html">Acentos e UTF-8</a>).</dd>
+  <dt>&lt;meta name="viewport"…&gt;</dt><dd>Deixa a página do tamanho certo no celular (veja <a href="meta-viewport.html">meta viewport</a>).</dd>
+  <dt>&lt;title&gt;</dt><dd>O nome da aba do navegador e do resultado no buscador.</dd>
+  <dt>&lt;body&gt;</dt><dd>O que aparece na tela.</dd>
+</dl>
+
+<h3>2. No seu computador (o jeito "de verdade")</h3>
+<p>Para guardar o seu trabalho, crie uma pasta para cada projeto dentro de uma pasta <code>sites</code>, escreva os arquivos num editor de código (<a href="editores.html">Editores</a> mostra as opções) e abra o <code>index.html</code> no navegador (veja <a href="primeiro-arquivo.html">Criar e Abrir um Arquivo .html</a>). Este é o terminal da Ana começando o currículo:</p>
+
+<pre class="term">$ mkdir -p sites/curriculo           « cria a pasta do projeto (e a sites, se não existir)
+$ cd sites/curriculo
+$ ls                                  « vazia, por enquanto
+$ ls                                  « a Ana escreveu o arquivo no editor e salvou
+index.html</pre>
+
+<p>Depois de salvar, ela abre o arquivo no navegador (dois cliques no <code>index.html</code>, ou arrastando o arquivo para a janela). A barra de endereço mostra <code>file:///home/ana/sites/curriculo/index.html</code>: o navegador está lendo o arquivo direto do disco. Toda vez que mudar o código, <strong>salve</strong> e <strong>recarregue</strong> a aba (<kbd>F5</kbd>): o navegador não fica olhando o arquivo sozinho.</p>
+
+<h3>Conferir com o validador</h3>
+<p>O navegador quase nunca reclama de erro: ele conserta sozinho e desenha alguma coisa. Por isso, no fim de toda versão, a Ana confere a página com o <strong>validador do W3C</strong> (veja <a href="validar.html">Validar o HTML</a>). No terminal, é o comando <code>vnu</code>; na internet, é o site validator.w3.org/nu, com as mesmas mensagens.</p>
+
+<pre class="term" data-cwd="~/sites/curriculo">$ vnu --verbose index.html
+index.html                           « só o nome do arquivo: nenhum erro
+$ echo $?
+0                                    « 0 = deu tudo certo</pre>
+
+<dl class="anatomy">
+  <dt>vnu</dt><dd>O validador do W3C (o "Nu Html Checker"), o mesmo do validator.w3.org.</dd>
+  <dt>--verbose</dt><dd>"Falante": mostra o nome de cada arquivo que conferiu. Sem ele, uma página certa não mostra <strong>nada</strong>, e fica difícil saber se o comando rodou.</dd>
+  <dt>index.html</dt><dd>O arquivo a conferir. Dá para passar vários (<code>vnu --verbose *.html</code>).</dd>
+</dl>
+
+<p>Agora a Ana errou duas coisas de propósito: apagou o <code>&lt;title&gt;</code> e fechou o <code>&lt;h1&gt;</code> com <code>&lt;/h2&gt;</code>. O navegador mostrou a página quase igual. O validador não deixou passar:</p>
+
+<pre class="term" data-cwd="~/sites/curriculo">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/curriculo/index.html":6.1-6.7: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/sites/curriculo/index.html":8.16-8.20: error: End tag “h2” seen, but there were open elements.
+$ echo $?
+1                                    « 1 = encontrou erro</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Parte da mensagem</th><th>O que quer dizer</th></tr>
+<tr><td><code>"file:/home/ana/sites/curriculo/index.html"</code></td><td>O arquivo com o problema.</td></tr>
+<tr><td><code>6.1-6.7</code></td><td>Linha 6, da coluna 1 à coluna 7. É onde está o <code>&lt;/head&gt;</code>: foi ali que o validador percebeu que o <code>head</code> acabou sem título.</td></tr>
+<tr><td><code>error</code></td><td>Um erro de verdade. Um <code>info warning</code> é só um conselho.</td></tr>
+<tr><td><code>Element “head” is missing a required instance of child element “title”.</code></td><td>"O elemento <code>head</code> está sem um filho obrigatório: o <code>title</code>."</td></tr>
+<tr><td><code>End tag “h2” seen, but there were open elements.</code></td><td>"Vi um <code>&lt;/h2&gt;</code>, mas havia elementos abertos": o <code>h1</code> ainda estava aberto. O navegador fechou o <code>h1</code> ali mesmo (para ele, qualquer <code>&lt;/h1&gt;</code> a <code>&lt;/h6&gt;</code> fecha o título aberto), e por isso a tela ficou igual. Outro navegador, ou outro erro parecido, poderia não ter essa sorte.</td></tr>
+</table>
+</div>
+
+<p>As mensagens do validador são em inglês. Em cada projeto, você vai ver as mensagens reais dos erros daquele projeto, explicadas em português. A lista completa está em <a href="ref-erros.html">Mensagens do Validador</a>.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>Como</th><th>Quando usar</th></tr>
+<tr><td>Editor do guia</td><td>O <em>Experimente</em> de cada versão</td><td>Para fazer as versões rapidamente, em qualquer computador ou celular.</td></tr>
+<tr><td>Seu computador</td><td>Uma pasta por projeto em <code>sites/</code>, um editor de código e o navegador; o validador no fim de cada versão</td><td>Para guardar o projeto, montar um site de várias páginas com arquivos de verdade e, depois, <a href="publicar.html">publicar no GitHub Pages</a>.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Como estudar um projeto</h2>
+<ol class="passo">
+  <li><strong>Leia a versão inteira antes de digitar.</strong> Entenda o que muda e por quê.</li>
+  <li><strong>Digite o código, não copie e cole.</strong> Parece mais lento, mas é digitando que você esquece um <code>&lt;/li&gt;</code>, vê o que acontece e aprende a consertar. Os erros mais comuns estão em <a href="erros-comuns.html">Erros Comuns</a>.</li>
+  <li><strong>Olhe o resultado e valide.</strong> Compare com o resultado mostrado na versão. Se a tela estiver igual, passe no validador mesmo assim: o navegador esconde erros.</li>
+  <li><strong>Mude alguma coisa.</strong> Troque um texto, um título, a ordem de uma lista. Preveja o que vai acontecer e confira: é o melhor exercício que existe.</li>
+  <li><strong>Só então vá para a próxima versão.</strong> No fim, tente os desafios sem olhar a solução.</li>
+</ol>
+
+<div class="cenario">
+<strong>"Mudei o código e a página não mudou"</strong>
+<p>Quase sempre é um destes:</p>
+<ul>
+  <li><strong>O arquivo não foi salvo.</strong> Muitos editores mostram um ponto ou um asterisco no nome da aba quando há mudanças não salvas.</li>
+  <li><strong>A aba não foi recarregada.</strong> Aperte <kbd>F5</kbd> depois de salvar.</li>
+  <li><strong>Você está editando um arquivo e abrindo outro.</strong> Confira na barra de endereço o caminho do arquivo aberto e compare com o que está no editor.</li>
+</ul>
+</div>
+
+<div class="cenario">
+<strong>"Abri o arquivo e apareceu o código, não a página"</strong>
+<p>O arquivo não termina em <code>.html</code>. Alguns editores de texto simples salvam como <code>index.html.txt</code>, e alguns sistemas escondem o final do nome. O <code>ls</code> mostra o nome inteiro:</p>
+<pre class="term" data-cwd="~/sites/curriculo">$ ls
+index.html.txt                        « o navegador acha que é texto puro
+$ mv index.html.txt index.html        « renomeia para .html
+$ ls
+index.html</pre>
+<p>No editor do guia isso não acontece: as abas já têm o nome certo.</p>
+</div>
+
+<div class="cenario">
+<strong>"A minha página está igual à do projeto, mas o validador reclama"</strong>
+<p>É o caso mais comum, e é exatamente para isso que o validador existe. Leia a <strong>primeira</strong> mensagem com <code>error</code>, vá até a linha indicada e conserte; depois rode o <code>vnu</code> de novo. Muitas vezes um erro só gera vários avisos, e consertar o primeiro faz os outros sumirem. Veja como ler as mensagens em <a href="validar.html">Validar o HTML</a>.</p>
+</div>
+
+<hr>
+
+<h2>Missão: o esqueleto de toda página</h2>
+<p>Todos os sete projetos começam do mesmo esqueleto. Monte-o agora, e você vai reconhecê-lo no topo de cada um.</p>
+
+<div class="tryhtml" data-goal="src:&lt;!DOCTYPE html&gt;,attr:html[lang]=pt-BR,sel:head meta[charset],texto:title=Currículo da Ana,texto:h1=Ana Costa">
+<p class="try-task"><strong>Missão:</strong> a Ana escreveu só o conteúdo. Coloque em volta o esqueleto completo: o <code>&lt;!DOCTYPE html&gt;</code>, o <code>&lt;html lang="pt-BR"&gt;</code>, um <code>&lt;head&gt;</code> com <code>&lt;meta charset="utf-8"&gt;</code> e o título <code>Currículo da Ana</code>, e o <code>&lt;body&gt;</code> com o conteúdo. Se precisar, revise <a href="estrutura.html">Estrutura de uma Página</a>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Ana Costa&lt;/h1&gt;
+&lt;p&gt;Confeiteira e dona de uma lojinha on-line.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Currículo da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ana Costa&lt;/h1&gt;
+  &lt;p&gt;Confeiteira e dona de uma lojinha on-line.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Repare que, mesmo sem o esqueleto, o código inicial já mostrava o título e o parágrafo: o navegador cria o <code>html</code>, o <code>head</code> e o <code>body</code> que faltam. Mas ele não tem como adivinhar o idioma, a tabela de letras e o nome da aba. Esse é o trabalho do esqueleto, e o validador cobra cada parte dele:</p>
+
+<pre class="term" data-cwd="~/sites/curriculo">$ cat sem-esqueleto.html
+&lt;h1&gt;Ana Costa&lt;/h1&gt;
+&lt;p&gt;Confeiteira e dona de uma lojinha on-line.&lt;/p&gt;
+$ vnu --verbose sem-esqueleto.html
+sem-esqueleto.html
+"file:/home/ana/sites/curriculo/sem-esqueleto.html":1.1-1.4: error: Start tag seen without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/sites/curriculo/sem-esqueleto.html":1.1-1.4: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/sites/curriculo/sem-esqueleto.html":1.1-1.4: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.</pre>
+
+<p>Três avisos para três peças: o DOCTYPE ("vi uma tag sem ter visto um doctype antes"), o <code>title</code> e o <code>lang</code> ("considere acrescentar um atributo <code>lang</code>"). A <code>meta charset</code> não aparece porque o <code>vnu</code> lê o arquivo do disco em UTF-8; num servidor que diga outra coisa, os acentos quebram (veja <a href="acentos-utf8.html">Acentos e UTF-8</a>).</p>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">1. A Ana terminou uma versão e a página parece certa no navegador. O que falta?</p>
+<label><input type="radio" name="q1"> Nada: se o navegador mostrou, está certo.</label>
+<label><input type="radio" name="q1"> Abrir em outro navegador.</label>
+<label><input type="radio" name="q1"> Passar a página no validador, porque o navegador conserta erros sem avisar.</label>
+<label><input type="radio" name="q1"> Copiar a página completa do fim do projeto.</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">2. Qual projeto tem várias páginas ligadas por um menu e um arquivo de CSS?</p>
+<label><input type="radio" name="q2"> Currículo Pessoal</label>
+<label><input type="radio" name="q2"> Cardápio</label>
+<label><input type="radio" name="q2"> Blog Semântico</label>
+<label><input type="radio" name="q2"> Portfólio</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">3. A Ana mudou o texto no editor de código, mas a aba do navegador mostra o texto antigo. Qual a causa mais provável?</p>
+<label><input type="radio" name="q3"> Ela não salvou o arquivo ou não recarregou a aba.</label>
+<label><input type="radio" name="q3"> Falta o <code>&lt;!DOCTYPE html&gt;</code>.</label>
+<label><input type="radio" name="q3"> O navegador guarda a primeira versão para sempre.</label>
+<label><input type="radio" name="q3"> O arquivo precisa ser validado antes de abrir.</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O <code>vnu --verbose index.html</code> mostrou só <code>index.html</code> e mais nada. O que isso quer dizer?</p>
+<label><input type="radio" name="q4"> Que o validador não encontrou o arquivo.</label>
+<label><input type="radio" name="q4"> Que a página não tem nenhum erro.</label>
+<label><input type="radio" name="q4"> Que o validador travou.</label>
+<label><input type="radio" name="q4"> Que faltou o <code>--errors-only</code>.</label>
+</div>
+
+<div class="exercise">
+<p>5. Complete o comando que valida a página e mostra o nome do arquivo mesmo quando está tudo certo:</p>
+<div class="ex-code">vnu <input data-answer="--verbose" aria-label="opção"> index.html</div>
+</div>
+
+<div class="exercise">
+<p>6. Complete a primeira linha de toda página do guia:</p>
+<div class="ex-code">&lt;!<input data-answer="DOCTYPE html|doctype html" aria-label="declaração">&gt;</div>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Cada projeto é construído em versões; no fim de cada versão, a página abre no navegador e passa no validador.</li>
+  <li>Sete projetos, em ordem de dificuldade: <a href="projeto-curriculo.html">Currículo</a>, <a href="projeto-receita.html">Receita</a>, <a href="projeto-cardapio.html">Cardápio</a>, <a href="projeto-cadastro.html">Cadastro</a>, <a href="projeto-blog.html">Blog</a>, <a href="projeto-portfolio.html">Portfólio</a> e <a href="projeto-produto.html">Produto</a>.</li>
+  <li>No editor do guia, o resultado aparece na hora; no seu computador, salve e recarregue a aba a cada mudança.</li>
+  <li>O navegador conserta os erros sem avisar; o validador (<code>vnu --verbose</code> ou validator.w3.org/nu) mostra a linha, a coluna e o motivo.</li>
+  <li>Leia a versão, digite, olhe o resultado, valide, mude algo, e só então siga.</li>
+</ul>
+<p>Comece pelo primeiro: <a href="projeto-curriculo.html">Currículo Pessoal</a>.</p>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
