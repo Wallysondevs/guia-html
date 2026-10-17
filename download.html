@@ -154,6 +154,13 @@ certo.html                « só o nome do arquivo: nenhum erro</pre>
   <li>perguntar à pessoa onde salvar e com que nome, se ela configurou o navegador assim.</li>
 </ul>
 
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> o guia tem um PDF de verdade, a receita do bolo, em <code>assets/midia/receita-bolo.pdf</code>. Clique no primeiro link: o navegador tenta <strong>abrir</strong> o PDF dentro do quadro (alguns mostram o PDF; outros mostram um aviso de bloqueio, porque não abrem o leitor de PDF dentro de quadros como este). Clique no segundo: o arquivo é baixado com o nome <code>receita-do-bolo-da-ana.pdf</code>. Confira na lista de downloads do navegador. Depois, troque o nome sugerido e baixe de novo.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;a href="assets/midia/receita-bolo.pdf"&gt;Abrir a receita (PDF, 38 KB)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="assets/midia/receita-bolo.pdf" download="receita-do-bolo-da-ana.pdf"&gt;Baixar a receita (PDF, 38 KB)&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
 <div class="tip">
 <strong>Mantenha a extensão</strong>
 <p>A extensão (o <code>.pdf</code>, o <code>.jpg</code> do fim) é o que diz ao computador da pessoa com que programa abrir o arquivo. Se você sugerir <code>download="cardapio"</code>, sem extensão, o arquivo pode chegar sem ela, e a pessoa não consegue abrir com dois cliques. Escreva o nome inteiro, com a extensão certa.</p>
