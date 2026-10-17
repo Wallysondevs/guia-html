@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Código — code, pre, kbd, samp e var | Guia HTML</title>
+<meta name="description" content="Mostrar código num site, para quem nunca fez um: code para um trecho de código, pre para texto pré-formatado que guarda os espaços, pre com code para blocos de código, kbd para teclas, samp para a saída de um programa e var para variáveis, o escape de &lt; e &amp; com &amp;lt; e &amp;amp;, e o que o navegador e o validador W3C fazem quando o escape falta, com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Código</span></h1>
+
+<p class="intro">A Ana resolveu escrever no blog um tutorial: "como fiz o meu site". Agora ela precisa mostrar <strong>código</strong> na página, comandos que o leitor vai digitar e a resposta que o computador dá. O HTML tem cinco tags para isso: <code>&lt;code&gt;</code>, <code>&lt;pre&gt;</code>, <code>&lt;kbd&gt;</code>, <code>&lt;samp&gt;</code> e <code>&lt;var&gt;</code>. E tem uma pegadinha que todo mundo que escreve sobre HTML encontra: para <strong>mostrar</strong> uma tag na tela, você não pode escrevê-la como tag, senão o navegador a obedece. Esta é a aula que ensina a "escapar" o código.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li><code>&lt;code&gt;</code>: um trecho de código no meio do texto.</li>
+  <li><code>&lt;pre&gt;</code>: texto pré-formatado, que guarda os espaços e as quebras de linha.</li>
+  <li><code>&lt;pre&gt;&lt;code&gt;</code>: o bloco de código, e a pegadinha da indentação.</li>
+  <li><code>&lt;kbd&gt;</code>: o que o leitor digita ou a tecla que ele aperta (<kbd><kbd>Ctrl</kbd>+<kbd>C</kbd></kbd>).</li>
+  <li><code>&lt;samp&gt;</code>: a resposta de um programa. <code>&lt;var&gt;</code>: uma variável.</li>
+  <li>O <strong>escape</strong>: escrever <code>&amp;lt;</code> no lugar de <code>&lt;</code> e <code>&amp;amp;</code> no lugar de <code>&amp;</code>.</li>
+  <li>O que o navegador faz quando o escape falta: a tag "mostrada" vira tag de verdade.</li>
+</ul>
+</div>
+
+<p>Os exemplos são desenhados <strong>pelo seu navegador</strong>, no quadro "Resultado". As mensagens do validador saíram do <code>vnu</code> (o validador do W3C) na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: a placa "não é para obedecer"</h2>
+<p>Imagine um professor de trânsito dando aula. Ele levanta uma placa de "PARE" para mostrar à turma como ela é. Ninguém na sala para de respirar: todo mundo entende que aquela placa está sendo <strong>mostrada</strong>, não dada como ordem.</p>
+
+<p>O navegador não entende sozinho essa diferença. Se o texto da sua página tiver <code>&lt;h1&gt;</code>, ele <strong>obedece</strong> e cria um título. Para mostrar a "placa" sem que ela seja obedecida, você precisa avisar, trocando o <code>&lt;</code> por um código especial (seção 6). E para deixar claro, para o leitor, que aquilo é código, você usa as tags desta aula, que normalmente aparecem numa letra de <strong>largura fixa</strong> (<em>monospace</em>), aquela em que o "i" ocupa o mesmo espaço que o "m", como numa máquina de escrever.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tag</th><th>Vem de</th><th>Marca</th></tr>
+<tr><td><code>&lt;code&gt;</code></td><td><em>code</em>, "código"</td><td>Um trecho de código: tag, comando, nome de arquivo</td></tr>
+<tr><td><code>&lt;pre&gt;</code></td><td><em>preformatted</em>, "pré-formatado"</td><td>Texto que deve aparecer com os espaços e as linhas exatamente como foi digitado</td></tr>
+<tr><td><code>&lt;kbd&gt;</code></td><td><em>keyboard</em>, "teclado"</td><td>O que a pessoa digita ou a tecla que ela aperta</td></tr>
+<tr><td><code>&lt;samp&gt;</code></td><td><em>sample</em>, "amostra"</td><td>A resposta (saída) de um programa</td></tr>
+<tr><td><code>&lt;var&gt;</code></td><td><em>variable</em>, "variável"</td><td>Uma variável, em matemática ou programação</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. <code>&lt;code&gt;</code>: código no meio do texto</h2>
+
+<pre class="file" data-file="code.html" data-resultado>&lt;p&gt;Abra o arquivo &lt;code&gt;index.html&lt;/code&gt; e procure o &lt;code&gt;&amp;lt;h1&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;O comando &lt;code&gt;python3 -m http.server&lt;/code&gt; liga um servidor local.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;code&gt;index.html&lt;/code&gt;</dt><dd>Um nome de arquivo, marcado como código. O navegador troca a letra pela de largura fixa.</dd>
+  <dt>&lt;code&gt;&amp;lt;h1&amp;gt;&lt;/code&gt;</dt><dd>Uma <strong>tag mostrada</strong>. No código está <code>&amp;lt;h1&amp;gt;</code>, e na tela aparece <code>&lt;h1&gt;</code>. O <code>&amp;lt;</code> quer dizer "um sinal de menor, para mostrar" (<em>less than</em>, "menor que"), e o <code>&amp;gt;</code>, "um sinal de maior" (<em>greater than</em>). A seção 6 explica.</dd>
+  <dt>&lt;code&gt;python3 -m http.server&lt;/code&gt;</dt><dd>Um comando. (O comando em si é da aula <a href="servidor-local.html">Servidor Local</a>.)</dd>
+</dl>
+
+<p>O <code>&lt;code&gt;</code> é um elemento <strong>em linha</strong>: fica dentro do parágrafo. Ele <strong>não</strong> guarda os espaços: como num parágrafo comum, vários espaços viram um e as quebras de linha somem. Para isso existe o <code>&lt;pre&gt;</code>.</p>
+
+<hr>
+
+<h2>2. <code>&lt;pre&gt;</code>: o texto exatamente como foi digitado</h2>
+<p>Lembra da aula <a href="paragrafos.html">Parágrafos</a>, em que o navegador juntava os espaços e ignorava as quebras de linha? O <code>&lt;pre&gt;</code> é a exceção: dentro dele, <strong>cada</strong> espaço e <strong>cada</strong> quebra de linha aparecem na tela.</p>
+
+<pre class="file" data-file="pre.html" data-resultado>&lt;pre&gt;
+Ingrediente      Quantidade
+Cenoura          3
+Ovos             3
+Farinha          2 xícaras
+&lt;/pre&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;pre&gt;</dt><dd>Abre o texto pré-formatado. É um elemento <strong>de bloco</strong>, com a letra de largura fixa. Por causa dela, as colunas ficam alinhadas: cada letra ocupa o mesmo espaço.</dd>
+  <dt>a quebra de linha logo depois de &lt;pre&gt;</dt><dd>Uma regra especial: <strong>a primeira</strong> quebra de linha, logo depois do <code>&lt;pre&gt;</code>, é ignorada. Por isso você pode começar o texto na linha de baixo, como no exemplo, sem ganhar uma linha em branco no começo.</dd>
+  <dt>os espaços</dt><dd>Todos aparecem: os seis depois de "Ingrediente", os dez depois de "Cenoura".</dd>
+  <dt>&lt;/pre&gt;</dt><dd>Fecha o bloco.</dd>
+</dl>
+
+<div class="warning">
+<strong><code>&lt;pre&gt;</code> não quebra linha sozinho</strong>
+<p>Como o <code>&lt;pre&gt;</code> respeita as suas quebras de linha, ele também <strong>não</strong> cria outras: uma linha comprida continua para a direita, além da borda da tela, e no celular aparece uma barra de rolagem. Mantenha as linhas de um <code>&lt;pre&gt;</code> curtas. E não use <code>&lt;pre&gt;</code> para texto comum só para "guardar os espaços": isso é tarefa do CSS.</p>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O que você quer mostrar</th><th>É <code>&lt;pre&gt;</code>?</th></tr>
+<tr><td>Um bloco de código, com a indentação</td><td>Sim (com <code>&lt;code&gt;</code> dentro, seção 3)</td></tr>
+<tr><td>A resposta de um terminal</td><td>Sim (com <code>&lt;samp&gt;</code> dentro, seção 5)</td></tr>
+<tr><td>Um desenho feito com letras (arte ASCII)</td><td>Sim</td></tr>
+<tr><td>Um poema</td><td>Não: <code>&lt;p&gt;</code> com <code>&lt;br&gt;</code> (aula <a href="quebras.html">Quebras</a>)</td></tr>
+<tr><td>Uma tabela de dados</td><td>Não: uma tabela de verdade (aula <a href="tabelas.html">Tabelas</a>). O exemplo acima é só para mostrar os espaços.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>3. <code>&lt;pre&gt;&lt;code&gt;</code>: o bloco de código</h2>
+<p>Para um bloco de código, junte os dois: o <code>&lt;pre&gt;</code> guarda as linhas e a indentação; o <code>&lt;code&gt;</code> diz que aquilo é código. É assim que quase todos os sites de programação mostram código.</p>
+
+<pre class="file" data-file="bloco.html" data-resultado>&lt;p&gt;O começo do meu site:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;h1&amp;gt;Receitas da Ana&amp;lt;/h1&amp;gt;
+&amp;lt;ul&amp;gt;
+  &amp;lt;li&amp;gt;Bolos&amp;lt;/li&amp;gt;
+  &amp;lt;li&amp;gt;Tortas&amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;pre&gt;&lt;code&gt;</dt><dd>Abre os dois juntos, na mesma linha, com o código começando logo depois.</dd>
+  <dt>&amp;lt;h1&amp;gt;…</dt><dd>O código <strong>mostrado</strong>, com todo <code>&lt;</code> trocado por <code>&amp;lt;</code> e todo <code>&gt;</code> por <code>&amp;gt;</code>. Sem isso, o navegador criaria um título e uma lista de verdade (veja em <a href="#errado">Quando dá errado</a>).</dd>
+  <dt>os dois espaços antes de &amp;lt;li&amp;gt;</dt><dd>A indentação do código, que o <code>&lt;pre&gt;</code> guarda.</dd>
+  <dt>&lt;/code&gt;&lt;/pre&gt;</dt><dd>Fecha os dois, na ordem inversa, colados no fim do código.</dd>
+</dl>
+
+<h3>A pegadinha da indentação</h3>
+<p>Dentro de um <code>&lt;pre&gt;</code>, <strong>todo</strong> espaço conta, inclusive os que você põe para deixar o seu próprio HTML arrumado. Se o <code>&lt;pre&gt;</code> estiver dentro de algo indentado, e você indentar as linhas do código junto, os espaços extras aparecem na tela:</p>
+
+<pre class="file" data-file="indentado.html" data-resultado>&lt;div&gt;
+  &lt;pre&gt;&lt;code&gt;&amp;lt;ul&amp;gt;
+      &amp;lt;li&amp;gt;Bolos&amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</pre>
+
+<p>A Ana quis manter o código "alinhado" com o <code>&lt;pre&gt;</code>, e o resultado saiu torto: o <code>&lt;li&gt;</code> com seis espaços, o <code>&lt;/ul&gt;</code> com quatro. A regra: as linhas de dentro de um <code>&lt;pre&gt;</code> começam na margem esquerda do arquivo, mesmo que o resto do HTML esteja indentado.</p>
+
+<hr>
+
+<h2>4. <code>&lt;kbd&gt;</code>: o que você digita</h2>
+<p>O <code>&lt;kbd&gt;</code> marca o que a pessoa vai <strong>digitar</strong> ou a <strong>tecla</strong> que ela vai apertar:</p>
+
+<pre class="file" data-file="kbd.html" data-resultado>&lt;p&gt;Para salvar, aperte &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;S&lt;/kbd&gt;.&lt;/p&gt;
+&lt;p&gt;Para abrir as ferramentas do desenvolvedor, aperte &lt;kbd&gt;F12&lt;/kbd&gt;.&lt;/p&gt;
+&lt;p&gt;No terminal, digite &lt;kbd&gt;ls&lt;/kbd&gt; e aperte &lt;kbd&gt;Enter&lt;/kbd&gt;.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;S&lt;/kbd&gt;</dt><dd>Uma combinação de teclas: cada tecla no seu <code>&lt;kbd&gt;</code>, e o <code>+</code> fora, como texto. O padrão do HTML também aceita embrulhar a combinação inteira em mais um <code>&lt;kbd&gt;</code>: <code>&lt;kbd&gt;&lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;S&lt;/kbd&gt;&lt;/kbd&gt;</code>.</dd>
+  <dt>&lt;kbd&gt;ls&lt;/kbd&gt;</dt><dd>Um comando que a pessoa digita.</dd>
+</dl>
+
+<p>Por padrão, o <code>&lt;kbd&gt;</code> aparece só com a letra de largura fixa, igual ao <code>&lt;code&gt;</code>. Muitos sites dão a ele, com CSS, a cara de uma tecla de verdade, com borda e sombra.</p>
+
+<div class="tryhtml" data-goal="texto:kbd=Ctrl,sel:kbd + kbd,texto:kbd + kbd=C,nsel:code=0">
+<p class="try-task"><strong>Experimente:</strong> a Ana marcou o atalho com <code>&lt;code&gt;</code>, mas são teclas. Troque por <code>&lt;kbd&gt;</code>, uma tecla em cada: <code>Ctrl</code> num <code>&lt;kbd&gt;</code>, <code>C</code> em outro, e o <code>+</code> no meio, fora deles.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Para copiar, aperte &lt;code&gt;Ctrl+C&lt;/code&gt;.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Para copiar, aperte &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;C&lt;/kbd&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. <code>&lt;samp&gt;</code> e <code>&lt;var&gt;</code>: a resposta e a variável</h2>
+<p>O <code>&lt;samp&gt;</code> marca o que um <strong>programa responde</strong>: uma mensagem de erro, a saída de um comando. Para uma saída de várias linhas, coloque-o dentro de um <code>&lt;pre&gt;</code>, como no bloco de código:</p>
+
+<pre class="file" data-file="samp.html" data-resultado>&lt;p&gt;Digitei &lt;kbd&gt;lss&lt;/kbd&gt; por engano, e o terminal respondeu &lt;samp&gt;bash: lss: comando não encontrado&lt;/samp&gt;.&lt;/p&gt;
+&lt;p&gt;Com &lt;kbd&gt;ls&lt;/kbd&gt;, apareceu:&lt;/p&gt;
+&lt;pre&gt;&lt;samp&gt;index.html  receitas.html  sobre.html&lt;/samp&gt;&lt;/pre&gt;
+</pre>
+
+<p>O <code>&lt;var&gt;</code> marca uma <strong>variável</strong>: um nome que representa um valor, numa fórmula ou num programa. O navegador o mostra em itálico.</p>
+
+<pre class="file" data-file="var.html" data-resultado>&lt;p&gt;A área da mesa é &lt;var&gt;l&lt;/var&gt; × &lt;var&gt;c&lt;/var&gt;, a largura vezes o comprimento.&lt;/p&gt;
+&lt;p&gt;Troque &lt;var&gt;nome-do-arquivo&lt;/var&gt; pelo nome do seu arquivo: &lt;kbd&gt;vnu &lt;var&gt;nome-do-arquivo&lt;/var&gt;&lt;/kbd&gt;.&lt;/p&gt;
+</pre>
+
+<p>No segundo parágrafo, o <code>&lt;var&gt;</code> está dentro do <code>&lt;kbd&gt;</code>: a pessoa digita <code>vnu</code> e, no lugar da parte em itálico, o nome do arquivo dela. É assim que muitos manuais mostram "a parte que você troca".</p>
+
+<hr>
+
+<h2>6. O escape: <code>&amp;lt;</code> e <code>&amp;amp;</code></h2>
+<p>Agora a parte mais importante da aula. Para o navegador, o sinal <code>&lt;</code> quer dizer "aqui começa uma tag", e o <code>&amp;</code> quer dizer "aqui começa um código especial" (uma <strong>entidade</strong>). Para <strong>mostrar</strong> esses sinais, você escreve o código especial de cada um:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Para mostrar</th><th>Escreva</th><th>Nome</th></tr>
+<tr><td><code>&lt;</code></td><td><code>&amp;lt;</code></td><td><em>less than</em>, "menor que"</td></tr>
+<tr><td><code>&gt;</code></td><td><code>&amp;gt;</code></td><td><em>greater than</em>, "maior que"</td></tr>
+<tr><td><code>&amp;</code></td><td><code>&amp;amp;</code></td><td><em>ampersand</em>, o "e comercial"</td></tr>
+</table>
+</div>
+
+<p>Trocar um sinal pelo seu código se chama <strong>escapar</strong> (<em>escape</em>): o sinal "escapa" de ser lido como parte do HTML. Os três vêm com ponto e vírgula no fim. A lista completa de entidades está na aula <a href="entidades.html">Entidades</a>.</p>
+
+<div class="tip">
+<strong>Só três, e o mais importante é o <code>&lt;</code></strong>
+<p>Na prática, o <code>&gt;</code> sozinho raramente confunde o navegador, mas escapá-lo junto deixa o código mais fácil de ler. Os que você <strong>sempre</strong> precisa escapar são o <code>&lt;</code> e o <code>&amp;</code>. Uma regra fácil: ao colar código dentro de <code>&lt;code&gt;</code> ou <code>&lt;pre&gt;</code>, troque <strong>primeiro</strong> todo <code>&amp;</code> por <code>&amp;amp;</code> e <strong>depois</strong> todo <code>&lt;</code> por <code>&amp;lt;</code> (nessa ordem, senão você estraga os <code>&amp;lt;</code> que acabou de criar).</p>
+</div>
+
+<p>Para mostrar uma <strong>entidade</strong> (por exemplo, ensinar alguém a escrever <code>&amp;lt;</code>), escape o <code>&amp;</code> dela: no código vai <code>&amp;amp;lt;</code>, e na tela aparece <code>&amp;lt;</code>. Este guia inteiro é escrito assim.</p>
+
+<div class="tryhtml" data-goal="nsel:h1=0,texto:code=&lt;h1&gt;Receitas&lt;/h1&gt;">
+<p class="try-task"><strong>Missão:</strong> a Ana quer <strong>mostrar</strong> a tag do título, mas o navegador criou um título de verdade no meio da página. Escape a tag que está dentro do <code>&lt;code&gt;</code> para ela aparecer como texto: <code>&lt;h1&gt;Receitas&lt;/h1&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Para criar um título, escreva &lt;code&gt;&lt;h1&gt;Receitas&lt;/h1&gt;&lt;/code&gt; no seu arquivo.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Para criar um título, escreva &lt;code&gt;&amp;lt;h1&amp;gt;Receitas&amp;lt;/h1&amp;gt;&lt;/code&gt; no seu arquivo.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>7. Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer mostrar</th><th>Use</th></tr>
+<tr><td>Uma tag, um comando ou um nome de arquivo, no meio da frase</td><td><code>&lt;code&gt;</code></td></tr>
+<tr><td>Um bloco de código com várias linhas</td><td><code>&lt;pre&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;</code></td></tr>
+<tr><td>Uma tecla ou um atalho</td><td><code>&lt;kbd&gt;</code>, uma por tecla</td></tr>
+<tr><td>Um comando que o leitor vai digitar</td><td><code>&lt;kbd&gt;</code></td></tr>
+<tr><td>A resposta de um programa, numa linha</td><td><code>&lt;samp&gt;</code></td></tr>
+<tr><td>A resposta de um programa, em várias linhas</td><td><code>&lt;pre&gt;&lt;samp&gt;…&lt;/samp&gt;&lt;/pre&gt;</code></td></tr>
+<tr><td>Uma variável numa fórmula, ou "a parte que você troca"</td><td><code>&lt;var&gt;</code></td></tr>
+<tr><td>Um sinal <code>&lt;</code> ou <code>&amp;</code> em qualquer lugar do texto</td><td><code>&amp;lt;</code> e <code>&amp;amp;</code></td></tr>
+<tr><td>Só a letra de largura fixa, sem ser código</td><td>CSS (<code>font-family: monospace</code>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O navegador nunca mostra mensagem de erro. Em cada caso, veja no quadro "Resultado" o que ele fez de verdade.</p>
+
+<div class="cenario">
+<strong>A tag dentro de <code>&lt;code&gt;</code> sem escape</strong>
+<pre class="file" data-file="semescape.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Para criar um parágrafo, escreva &lt;code&gt;&lt;p&gt;Olá&lt;/p&gt;&lt;/code&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> ele não vê um exemplo; vê um parágrafo novo começando dentro do primeiro. Fecha o primeiro parágrafo (com um <code>&lt;code&gt;</code> vazio), abre outro com "Olá", deixa o ponto final solto e cria um parágrafo vazio no fim. Na tela, a frase quebra em duas, e as tags que a Ana queria mostrar sumiram. A página montada ficou assim:</p>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;Para criar um parágrafo, escreva &lt;code&gt;&lt;/code&gt;&lt;/p&gt;&lt;p&gt;&lt;code&gt;Olá&lt;/code&gt;&lt;/p&gt;.&lt;p&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu semescape.html
+"file:/home/ana/site/semescape.html":8.43-8.45: error: End tag “p” implied, but there were open elements.
+"file:/home/ana/site/semescape.html":8.37-8.42: error: Unclosed element “code”.
+"file:/home/ana/site/semescape.html":8.49-8.52: error: End tag “p” seen, but there were open elements.
+"file:/home/ana/site/semescape.html":8.53-8.59: error: No “code” element in scope but a “code” end tag seen.
+"file:/home/ana/site/semescape.html":8.61-8.64: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p>Cinco erros numa linha só. O primeiro, "o fechamento do <code>p</code> ficou subentendido, mas havia elementos abertos", aponta as colunas 43 a 45: o <code>&lt;p&gt;</code> que a Ana queria mostrar. Quando o validador acusa uma tag dentro de um <code>&lt;code&gt;</code>, quase sempre é escape que faltou.</p>
+<p><strong>Como consertar:</strong> <code>&lt;code&gt;&amp;lt;p&amp;gt;Olá&amp;lt;/p&amp;gt;&lt;/code&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Código sem escape dentro de <code>&lt;pre&gt;</code></strong>
+<pre class="file" data-file="presemescape.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;&lt;code&gt;&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura.&lt;/p&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> o <code>&lt;pre&gt;</code> guarda os espaços, mas <strong>não</strong> desliga as tags. O <code>&lt;h1&gt;</code> e o <code>&lt;p&gt;</code> viram um título e um parágrafo de verdade, desenhados dentro do bloco. É um erro comum de quem acha que o <code>&lt;pre&gt;</code> "mostra tudo como está".</p>
+<pre class="term" data-cwd="~/site">$ vnu presemescape.html
+"file:/home/ana/site/presemescape.html":8.12-8.15: error: Element “h1” not allowed as child of element “code” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/presemescape.html":9.1-9.3: error: Element “p” not allowed as child of element “code” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>Como consertar:</strong> escape cada <code>&lt;</code> do código mostrado: <code>&amp;lt;h1&amp;gt;Receitas da Ana&amp;lt;/h1&amp;gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>&amp;</code> sem escape que vira outra coisa</strong>
+<pre class="file" data-file="ecomercial.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Em C: &lt;code&gt;if (a &amp;&amp; b)&lt;/code&gt; e &lt;code&gt;&amp;copy&lt;/code&gt; e &lt;code&gt;R&amp;D&lt;/code&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> o <code>&amp;&amp;</code> e o <code>R&amp;D</code> saem certos, porque depois do <code>&amp;</code> não vem um nome de entidade. Mas o <code>&amp;copy</code> é o começo da entidade do símbolo de direitos autorais, e o navegador mostra <strong>©</strong> no lugar do que a Ana escreveu, mesmo sem o ponto e vírgula.</p>
+<pre class="term" data-cwd="~/site">$ vnu ecomercial.html
+"file:/home/ana/site/ecomercial.html":8.43-8.48: error: Named character reference was not terminated by a semicolon. (Or “&amp;” should have been escaped as “&amp;amp;”.)</pre>
+<p>"A referência de caractere com nome não terminou com ponto e vírgula. (Ou o <code>&amp;</code> devia ter sido escapado como <code>&amp;amp;</code>.)" O validador entendeu <code>&amp;copy</code> como uma entidade mal escrita, e ele mesmo sugere o conserto. Os outros dois <code>&amp;</code> passaram sem erro, mas não conte com a sorte: escape todos.</p>
+<p><strong>Como consertar:</strong> <code>&amp;amp;copy</code>, e também <code>&amp;amp;&amp;amp;</code> e <code>R&amp;amp;D</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;pre&gt;</code> dentro de um parágrafo</strong>
+<p>O <code>&lt;pre&gt;</code> é um bloco, então o navegador fecha o parágrafo antes dele, e o <code>&lt;/p&gt;</code> que sobra vira um parágrafo vazio, como você já viu com listas e citações. Com <code>&lt;p&gt;O código:</code>, um <code>&lt;pre&gt;ls -l&lt;/pre&gt;</code> e o <code>&lt;/p&gt;</code> na linha 10:</p>
+<pre class="term" data-cwd="~/site">$ vnu prep.html
+"file:/home/ana/site/prep.html":10.1-10.4: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p><strong>Como consertar:</strong> feche o parágrafo antes do <code>&lt;pre&gt;</code>: <code>&lt;p&gt;O código:&lt;/p&gt;</code> e, depois, o <code>&lt;pre&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;xmp&gt;</code> e <code>&lt;listing&gt;</code>: os antigos</strong>
+<p>Páginas muito antigas usam <code>&lt;xmp&gt;</code> (de <em>example</em>, "exemplo"), que mostrava as tags sem precisar de escape. O navegador ainda obedece, mas o validador recusa:</p>
+<pre class="term" data-cwd="~/site">$ vnu xmp.html
+"file:/home/ana/site/xmp.html":8.1-8.5: error: The “xmp” element is obsolete. Use “pre” or “code” element instead.
+$ vnu listing.html
+"file:/home/ana/site/listing.html":8.1-8.9: error: The “listing” element is obsolete. Use “pre” or “code” element instead.</pre>
+<p>"O elemento é obsoleto. Use o elemento <code>pre</code> ou <code>code</code> no lugar." O mesmo vale para o <code>&lt;tt&gt;</code> (aula <a href="formatacao.html#errado">Formatação</a>).</p>
+<p><strong>Como consertar:</strong> <code>&lt;pre&gt;&lt;code&gt;</code>, com o escape.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;code&gt;…&lt;/code&gt;</code></td><td>Trecho de código, em linha, letra de largura fixa</td></tr>
+<tr><td><code>&lt;pre&gt;…&lt;/pre&gt;</code></td><td>Bloco que guarda espaços e quebras; a 1ª quebra logo depois do <code>&lt;pre&gt;</code> é ignorada</td></tr>
+<tr><td><code>&lt;pre&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;</code></td><td>Bloco de código</td></tr>
+<tr><td><code>&lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;C&lt;/kbd&gt;</code></td><td>Teclas e o que a pessoa digita</td></tr>
+<tr><td><code>&lt;samp&gt;…&lt;/samp&gt;</code></td><td>Resposta de um programa</td></tr>
+<tr><td><code>&lt;var&gt;…&lt;/var&gt;</code></td><td>Variável, em itálico</td></tr>
+<tr><td><code>&amp;lt;</code> <code>&amp;gt;</code> <code>&amp;amp;</code></td><td>Mostram <code>&lt;</code>, <code>&gt;</code> e <code>&amp;</code></td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Mensagem do validador</th><th>Quer dizer</th></tr>
+<tr><td><code>Element “h1” not allowed as child of element “code” in this context.</code></td><td>Uma tag que devia ser mostrada virou tag de verdade: faltou o escape (error)</td></tr>
+<tr><td><code>End tag “p” implied, but there were open elements.</code> + <code>Unclosed element “code”.</code></td><td>Um <code>&lt;p&gt;</code> sem escape dentro de <code>&lt;code&gt;</code> (error)</td></tr>
+<tr><td><code>Named character reference was not terminated by a semicolon. (Or “&amp;” should have been escaped as “&amp;amp;”.)</code></td><td>Um <code>&amp;</code> sem escape virou entidade (error)</td></tr>
+<tr><td><code>The “xmp” element is obsolete. Use “pre” or “code” element instead.</code></td><td>Tag antiga (error)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O escape do menor</h3>
+<p>Complete para a tela mostrar <code>&lt;p&gt;</code>:</p>
+<div class="ex-code">&lt;code&gt;<input data-answer="&amp;lt;" aria-label="código do sinal de menor">p&amp;gt;&lt;/code&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A tecla</h3>
+<p>Complete com a tag de tecla:</p>
+<div class="ex-code">&lt;p&gt;Aperte &lt;<input data-answer="kbd" aria-label="tag de abertura">&gt;Enter&lt;/kbd&gt; para confirmar.&lt;/p&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. A Ana escreveu <code>&lt;pre&gt;&lt;code&gt;&lt;h1&gt;Oi&lt;/h1&gt;&lt;/code&gt;&lt;/pre&gt;</code>, sem escape. O que aparece?</p>
+<label><input type="radio" name="q3"> O texto <code>&lt;h1&gt;Oi&lt;/h1&gt;</code>, porque o <code>pre</code> mostra tudo como está</label>
+<label><input type="radio" name="q3"> Nada</label>
+<label><input type="radio" name="q3"> Um título "Oi" de verdade, desenhado dentro do bloco</label>
+<label><input type="radio" name="q3"> Uma mensagem de erro</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Qual a diferença entre <code>&lt;code&gt;</code> e <code>&lt;pre&gt;</code>?</p>
+<label><input type="radio" name="q4"> Nenhuma: os dois guardam os espaços</label>
+<label><input type="radio" name="q4"> <code>&lt;code&gt;</code> marca código e fica no meio da frase; <code>&lt;pre&gt;</code> é um bloco que guarda os espaços e as quebras de linha</label>
+<label><input type="radio" name="q4"> <code>&lt;pre&gt;</code> desliga as tags; <code>&lt;code&gt;</code> não</label>
+<label><input type="radio" name="q4"> <code>&lt;code&gt;</code> é obsoleto</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O terminal respondeu "comando não encontrado". Qual tag marca essa resposta?</p>
+<label><input type="radio" name="q5"> <code>&lt;kbd&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;var&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;q&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;samp&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Ao escapar um código à mão, em que ordem você troca os sinais?</p>
+<label><input type="radio" name="q6"> Primeiro <code>&amp;</code> → <code>&amp;amp;</code>, depois <code>&lt;</code> → <code>&amp;lt;</code></label>
+<label><input type="radio" name="q6"> Primeiro <code>&lt;</code> → <code>&amp;lt;</code>, depois <code>&amp;</code> → <code>&amp;amp;</code></label>
+<label><input type="radio" name="q6"> Tanto faz</label>
+<label><input type="radio" name="q6"> Só o <code>&gt;</code> precisa ser trocado</label>
+</div>
+
+<h3>Missão final: o tutorial do terminal</h3>
+
+<div class="tryhtml" data-goal="texto:kbd=ls,nsel:kbd=2,texto:kbd + kbd=Enter,sel:pre > samp,texto:pre samp=receitas.html,nsel:p=2">
+<p class="try-task"><strong>Missão:</strong> marque o tutorial da Ana. O comando <code>ls</code> e a tecla <code>Enter</code> são coisas que o leitor <strong>digita</strong> (cada um no seu <code>&lt;kbd&gt;</code>). A lista de arquivos é a <strong>resposta</strong> do terminal: troque o último parágrafo por um <code>&lt;pre&gt;</code> com um <code>&lt;samp&gt;</code> dentro, para os espaços entre os nomes aparecerem como no terminal.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Listar os arquivos&lt;/h2&gt;
+&lt;p&gt;No terminal, digite ls e aperte Enter.&lt;/p&gt;
+&lt;p&gt;O terminal mostra:&lt;/p&gt;
+&lt;p&gt;index.html  receitas.html  sobre.html&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Listar os arquivos&lt;/h2&gt;
+&lt;p&gt;No terminal, digite &lt;kbd&gt;ls&lt;/kbd&gt; e aperte &lt;kbd&gt;Enter&lt;/kbd&gt;.&lt;/p&gt;
+&lt;p&gt;O terminal mostra:&lt;/p&gt;
+&lt;pre&gt;&lt;samp&gt;index.html  receitas.html  sobre.html&lt;/samp&gt;&lt;/pre&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;code&gt;</code> = código no meio da frase. <code>&lt;pre&gt;</code> = bloco que guarda espaços e quebras (e não quebra linhas compridas). Juntos, <code>&lt;pre&gt;&lt;code&gt;</code>, fazem o bloco de código.</li>
+  <li>Dentro de <code>&lt;pre&gt;</code>, todo espaço conta: as linhas começam na margem do arquivo. A primeira quebra logo depois do <code>&lt;pre&gt;</code> é ignorada.</li>
+  <li><code>&lt;kbd&gt;</code> = o que a pessoa digita ou a tecla (uma por <code>kbd</code>). <code>&lt;samp&gt;</code> = a resposta do programa. <code>&lt;var&gt;</code> = variável.</li>
+  <li>Nenhuma dessas tags desliga o HTML: para <strong>mostrar</strong> uma tag, escape. <code>&lt;</code> vira <code>&amp;lt;</code>, <code>&gt;</code> vira <code>&amp;gt;</code>, <code>&amp;</code> vira <code>&amp;amp;</code> (troque o <code>&amp;</code> primeiro).</li>
+  <li>Sem escape, a tag mostrada vira tag de verdade (<code>Element “h1” not allowed as child of element “code”</code>), e um <code>&amp;copy</code> vira ©.</li>
+  <li><code>&lt;xmp&gt;</code>, <code>&lt;listing&gt;</code> e <code>&lt;tt&gt;</code> são obsoletos.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
