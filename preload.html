@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Desempenho — defer, async, preload, prefetch e fetchpriority | Guia HTML</title>
+<meta name="description" content="Desempenho no HTML para quem nunca fez um site: como o navegador lê a página e para nos scripts, defer e async, link rel=&quot;preload&quot; com as, prefetch, preconnect, fetchpriority, a ordem real dos scripts no console e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Desempenho</span></h1>
+
+<p class="intro">Uma página rápida não depende só da internet do visitante: depende também da <strong>ordem</strong> em que o navegador descobre e baixa cada arquivo. Com algumas palavras no HTML, você pode dizer "este script pode esperar" (<code>defer</code>), "vou precisar desta imagem já" (<code>preload</code>), "o visitante provavelmente vai abrir esta página depois" (<code>prefetch</code>) e "esta foto é a mais importante" (<code>fetchpriority</code>). Nesta aula você vai ver, no console, a ordem real em que os scripts rodam, e aprender quando cada pedido ajuda e quando atrapalha.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como o navegador lê a página e por que um <code>&lt;script&gt;</code> no <code>&lt;head&gt;</code> o faz parar.</li>
+  <li><code>defer</code> e <code>async</code>: baixar o script sem travar a leitura.</li>
+  <li><code>&lt;link rel="preload"&gt;</code> e o atributo <code>as</code>: baixar cedo o que o navegador só descobriria tarde.</li>
+  <li><code>&lt;link rel="prefetch"&gt;</code>: adiantar a próxima página.</li>
+  <li><code>preconnect</code> e <code>dns-prefetch</code>: adiantar a conversa com outro site.</li>
+  <li><code>fetchpriority</code>: dizer qual imagem é a mais importante.</li>
+  <li>Os erros reais do validador e os avisos do console do navegador.</li>
+</ul>
+</div>
+
+<p>As mensagens do validador desta aula saíram do <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. A ordem dos scripts e os avisos do console foram conferidos no Chromium, servindo a página por <code>http://</code>, como num site de verdade. A aula anterior, <a href="lazy-loading.html">Carregamento Preguiçoso</a>, cuidou das imagens que podem esperar; esta cuida do que <strong>não</strong> pode.</p>
+
+<hr>
+
+<h2>A ideia: a lista de compras da festa</h2>
+<p>A Ana vai fazer uma festa. Ela pode ir ao mercado <strong>uma coisa por vez</strong>: lê a receita do bolo, descobre que falta farinha, vai ao mercado, volta, lê mais um pouco, descobre que falta chocolate, vai de novo. Ou pode ler tudo antes e mandar alguém buscar os ingredientes <strong>enquanto</strong> ela já começa a arrumar a casa.</p>
+<p>O navegador enfrenta o mesmo problema. Ele lê o HTML de cima para baixo e, a cada arquivo que descobre (um CSS, um script, uma imagem), pede ao servidor. Os atributos desta aula são os recados que você deixa para ele: "este pode buscar depois", "este busque já", "este é o mais urgente".</p>
+
+<hr>
+
+<h2>1. O navegador lê de cima para baixo e para nos scripts</h2>
+<p>Quando o navegador encontra um <code>&lt;script src="…"&gt;</code> comum, ele <strong>para de ler</strong> o HTML, baixa o script, roda o script e só então continua. Ele faz isso porque o script pode mudar a página que vem depois. Enquanto isso, o visitante olha para uma tela em branco.</p>
+
+<p>Esta página tem dois scripts no <code>&lt;head&gt;</code>: o <code>normal.js</code>, comum, e o <code>adiado.js</code>, com <code>defer</code>. Cada um pergunta se o <code>&lt;h1&gt;</code> já existe. Rode e leia a ordem no console:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;script src="normal.js"&gt;&lt;/script&gt;
+&lt;script src="adiado.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;script&gt;
+  console.log("2. script no fim do body");
+  document.addEventListener("DOMContentLoaded", () =&gt; console.log("4. o HTML foi todo lido"));
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="normal.js">console.log("1. normal.js: o h1 existe? " + (document.querySelector("h1") !== null));
+</pre>
+<pre class="script" data-file="adiado.js">console.log("3. adiado.js (defer): o h1 existe? " + (document.querySelector("h1") !== null));
+</pre>
+</div>
+
+<p>O console mostra, nesta ordem:</p>
+<pre class="out">1. normal.js: o h1 existe? false
+2. script no fim do body
+3. adiado.js (defer): o h1 existe? true
+4. o HTML foi todo lido</pre>
+
+<ol class="passo">
+  <li>O <code>normal.js</code> rodou <strong>no meio do <code>&lt;head&gt;</code></strong>, antes de o navegador ler o <code>&lt;h1&gt;</code>: para ele, o título ainda não existe.</li>
+  <li>O navegador continuou lendo e rodou o script do fim do <code>&lt;body&gt;</code>.</li>
+  <li>O <code>adiado.js</code> foi baixado <strong>enquanto</strong> o navegador lia, mas só rodou quando o HTML inteiro foi lido: o <code>&lt;h1&gt;</code> já existe.</li>
+  <li>Logo depois, o navegador avisa que terminou de ler (o evento <code>DOMContentLoaded</code>, "conteúdo do DOM carregado").</li>
+</ol>
+
+<p>O <code>adiado.js</code> foi escrito <strong>antes</strong> do script do fim do <code>&lt;body&gt;</code>, mas rodou depois: é o efeito do <code>defer</code>.</p>
+
+<hr>
+
+<h2>2. defer: baixe agora, rode no fim</h2>
+
+<pre class="file" data-file="index.html">&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;script src="menu.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>src="menu.js"</dt><dd>O arquivo do script (aula <a href="script.html">O Elemento script</a>).</dd>
+  <dt>defer</dt><dd>"Adiar". Um atributo <strong>booleano</strong>: basta o nome. O navegador baixa o script em paralelo, <strong>sem parar</strong> de ler o HTML, e só o roda quando a página inteira foi lida. Vários scripts com <code>defer</code> rodam <strong>na ordem</strong> em que aparecem no HTML.</dd>
+</dl>
+
+<p>Com <code>defer</code>, você ganha duas coisas: a página aparece mais cedo (a leitura não para) e o script encontra todos os elementos (o problema do <code>null</code>, visto na aula <a href="canvas.html">canvas</a>, some). Por isso o costume moderno é pôr os scripts no <code>&lt;head&gt;</code> com <code>defer</code>, em vez de no fim do <code>&lt;body&gt;</code>. O <code>defer</code> funciona em todos os navegadores há muitos anos.</p>
+
+<div class="tryhtml" data-goal="sel:head script[src=&quot;script.js&quot;][defer],console:Achei o título: Receitas da Ana">
+<p class="try-task"><strong>Missão:</strong> o console mostra um erro: o script roda antes de o <code>&lt;h1&gt;</code> existir. Sem tirar o script do <code>&lt;head&gt;</code>, faça-o esperar a página ser lida, para o console mostrar <code>Achei o título: Receitas da Ana</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="script.js">const titulo = document.querySelector("h1");
+console.log("Achei o título: " + titulo.textContent);
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;script src="script.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Antes do conserto, o erro é <code>Cannot read properties of null (reading 'textContent')</code>: o <code>querySelector("h1")</code> devolveu <code>null</code> ("nada"), porque o <code>&lt;h1&gt;</code> ainda não tinha sido lido.</p>
+
+<hr>
+
+<h2>3. async: rode assim que chegar</h2>
+<p>O <code>async</code> ("assíncrono") também baixa sem parar a leitura, mas roda o script <strong>assim que ele chega</strong>, no meio da leitura ou depois, sem esperar ninguém. Se a página tiver dois scripts <code>async</code>, o que chegar primeiro roda primeiro: a ordem pode mudar de uma visita para outra.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Para a leitura do HTML?</th><th>Quando roda</th><th>Ordem entre eles</th><th>Use para</th></tr>
+<tr><td><code>&lt;script src&gt;</code> no <code>&lt;head&gt;</code></td><td><strong>sim</strong>, enquanto baixa e roda</td><td>na hora</td><td>a do HTML</td><td>quase nunca</td></tr>
+<tr><td><code>&lt;script src&gt;</code> no fim do <code>&lt;body&gt;</code></td><td>não (já leu quase tudo)</td><td>no fim</td><td>a do HTML</td><td>o jeito antigo; ainda funciona</td></tr>
+<tr><td><code>&lt;script src defer&gt;</code></td><td>não</td><td>quando o HTML foi todo lido</td><td>a do HTML</td><td><strong>os scripts da sua página</strong></td></tr>
+<tr><td><code>&lt;script src async&gt;</code></td><td>não para baixar (só um instante, para rodar)</td><td>assim que chega</td><td>qualquer uma</td><td>scripts independentes, como um contador de visitas</td></tr>
+<tr><td><code>&lt;script type="module" src&gt;</code></td><td>não</td><td>como o <code>defer</code>, sozinho</td><td>a do HTML</td><td>JavaScript moderno, com <code>import</code></td></tr>
+</table>
+</div>
+
+<p>O <code>defer</code> e o <code>async</code> só funcionam com <code>src</code>: num script escrito direto na página, eles não fazem nada, e o validador acusa (veja em <a href="#errado">Quando dá errado</a>).</p>
+
+<hr>
+
+<h2>4. preload: busque já, vou precisar logo</h2>
+<p>Alguns arquivos o navegador só descobre <strong>tarde</strong>: uma imagem de fundo escrita dentro do CSS, uma fonte de letra pedida pelo CSS. Ele precisa primeiro baixar e ler o CSS para saber que eles existem. O <code>&lt;link rel="preload"&gt;</code> ("pré-carregar") avisa já no <code>&lt;head&gt;</code>: "busque este arquivo agora, com prioridade, que ele vai ser usado nesta página":</p>
+
+<pre class="file" data-file="index.html">&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;link rel="preload" href="assets/midia/bolo-1200.jpg" as="image"&gt;
+  &lt;link rel="preload" href="fontes/caderno.woff2" as="font" type="font/woff2" crossorigin&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>rel="preload"</dt><dd>A relação: "pré-carregue este arquivo". Não mostra nada na página: só antecipa o download. Quem usa o arquivo continua sendo o CSS (ou a <code>&lt;img&gt;</code>, ou o script).</dd>
+  <dt>href="…"</dt><dd>O arquivo. Tem de ser <strong>exatamente</strong> o mesmo endereço que a página vai usar depois; senão, o navegador baixa duas vezes.</dd>
+  <dt>as="image"</dt><dd>"Como": o tipo do arquivo. É <strong>obrigatório</strong>. Os mais comuns: <code>image</code>, <code>font</code>, <code>style</code> (CSS), <code>script</code> e <code>fetch</code> (dados). Com ele, o navegador sabe a prioridade certa e consegue reaproveitar o download.</dd>
+  <dt>type="font/woff2"</dt><dd>O formato da fonte. Um navegador que não entende o formato nem baixa.</dd>
+  <dt>crossorigin</dt><dd>As fontes são sempre pedidas num "modo especial" (o modo CORS), mesmo quando vêm do seu próprio site. O <code>preload</code> de uma fonte precisa pedir do mesmo jeito; sem o <code>crossorigin</code>, o pedido não combina, e a fonte é baixada <strong>duas vezes</strong>. O validador não avisa.</dd>
+</dl>
+
+<div class="warning">
+<strong>Preload demais atrapalha</strong>
+<p>Tudo o que tem <code>preload</code> passa na frente da fila. Se você pré-carrega dez coisas, nenhuma é especial, e o que importa de verdade (o CSS, a foto do topo) espera. Use para <strong>um ou dois</strong> arquivos que o navegador descobriria tarde. E se o arquivo pré-carregado não for usado, o Chrome reclama no console do F12, alguns segundos depois de a página carregar:</p>
+<pre class="out">The resource http://localhost:8000/assets/midia/bolo-1200.jpg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.</pre>
+<p>"O arquivo foi pré-carregado, mas não foi usado poucos segundos depois de a página carregar. Confira se o <code>as</code> está certo e se o pré-carregamento é de propósito." (A página de teste foi servida com <code>python3 -m http.server</code>, por isso o endereço começa com <code>http://localhost:8000</code>; veja a aula <a href="servidor-local.html">Servidor Local</a>.)</p>
+</div>
+
+<p>O <code>preload</code> funciona em todos os navegadores atuais desde 2021, quando o Firefox, o último, passou a aceitar.</p>
+
+<hr>
+
+<h2>5. prefetch: adiantar a próxima página</h2>
+<p>O <code>preload</code> é para <strong>esta</strong> página. O <code>prefetch</code> ("buscar antes") é para a <strong>próxima</strong>: quando você tem quase certeza de para onde o visitante vai depois, pede ao navegador para baixar essa página com <strong>baixa prioridade</strong>, quando estiver à toa:</p>
+
+<pre class="file" data-file="index.html">&lt;link rel="prefetch" href="receita-bolo.html"&gt;
+</pre>
+
+<p>Se o visitante clicar no link da receita, ela abre mais rápido, porque já está guardada. Se não clicar, o download foi desperdiçado: por isso, use só quando o próximo passo é muito provável (a página 2 de uma lista, o passo 2 de um cadastro). Nem todo navegador atende esse pedido (o Safari, por muito tempo, ignorou o <code>prefetch</code>), mas, como é só um pedido, nada quebra.</p>
+
+<h3>preconnect e dns-prefetch: adiantar a conversa com outro site</h3>
+<p>Antes de baixar qualquer arquivo de <strong>outro</strong> site (as fontes do Google, um vídeo incorporado), o navegador precisa achar o endereço do site e abrir uma conexão segura com ele. Isso leva um tempinho. Dois pedidos adiantam essa parte:</p>
+
+<pre class="file" data-file="index.html">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+&lt;link rel="dns-prefetch" href="https://videos.exemplo.com"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>rel="preconnect"</dt><dd>"Pré-conectar": acha o endereço <strong>e</strong> abre a conexão. Use para um ou dois sites de que a página vai precisar logo.</dd>
+  <dt>rel="dns-prefetch"</dt><dd>Só acha o endereço (o <strong>DNS</strong> é a "lista telefônica" da internet, que troca o nome do site pelo número dele). Mais leve; serve para sites que talvez sejam usados.</dd>
+</dl>
+
+<hr>
+
+<h2>6. fetchpriority: qual imagem é a mais importante</h2>
+<p>O navegador adivinha a prioridade de cada imagem, e às vezes erra: a foto grande do topo pode ficar na fila atrás de ícones pequenos. O atributo <code>fetchpriority</code> ("prioridade de busca") corrige o palpite:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate"
+     width="800" height="600" fetchpriority="high"&gt;
+</pre>
+
+<p>Na tela, nada muda: a foto é a mesma. A diferença está na <strong>fila</strong> de downloads, que você vê na aba de rede do F12 (numa página com várias imagens, a de <code>high</code> sai na frente).</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Valor</th><th>Significado</th></tr>
+<tr><td><code>high</code></td><td>Alta: "esta é a foto principal, busque antes das outras"</td></tr>
+<tr><td><code>low</code></td><td>Baixa: "esta pode esperar" (uma imagem de um carrossel que ainda não apareceu)</td></tr>
+<tr><td><code>auto</code></td><td>Automático: o navegador decide (o padrão)</td></tr>
+</table>
+</div>
+
+<p>Ele vale em <code>&lt;img&gt;</code>, <code>&lt;link&gt;</code> (inclusive no <code>preload</code>) e <code>&lt;script&gt;</code>. Num <code>&lt;iframe&gt;</code>, o validador recusa: <code>Attribute “fetchpriority” not allowed on element “iframe” at this point.</code> É o contrário do <a href="lazy-loading.html"><code>loading="lazy"</code></a>, e os dois não combinam na mesma imagem. Todos os navegadores atuais entendem o <code>fetchpriority</code> desde o fim de 2024 (o Chrome desde 2022, o Safari desde o fim de 2023 e o Firefox por último); quem não entende, ignora.</p>
+
+<hr>
+
+<h2>7. Qual usar?</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>Os scripts da sua página</td><td><code>&lt;script src="…" defer&gt;</code> no <code>&lt;head&gt;</code></td></tr>
+<tr><td>Um script independente, de outro serviço (estatísticas)</td><td><code>&lt;script src="…" async&gt;</code></td></tr>
+<tr><td>Uma imagem de fundo ou uma fonte que o CSS pede</td><td><code>&lt;link rel="preload" … as="…"&gt;</code></td></tr>
+<tr><td>A foto principal do topo</td><td><code>fetchpriority="high"</code> na <code>&lt;img&gt;</code> (e nunca <code>loading="lazy"</code>)</td></tr>
+<tr><td>As imagens lá de baixo</td><td><code>loading="lazy"</code></td></tr>
+<tr><td>A página que o visitante quase certamente abre depois</td><td><code>&lt;link rel="prefetch"&gt;</code></td></tr>
+<tr><td>Arquivos de outro site, logo no começo</td><td><code>&lt;link rel="preconnect"&gt;</code></td></tr>
+</table>
+</div>
+
+<p>Uma regra de ouro: <strong>meça antes de otimizar</strong>. No F12, a aba de rede mostra cada arquivo e quanto ele demorou, e a ferramenta Lighthouse do Chrome dá uma nota de desempenho com sugestões (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>). Um pedido no lugar errado pode deixar a página mais lenta.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>A “link” element with a “rel” attribute that contains the value “preload” must have an “as” attribute.</code></strong>
+<p><strong>O que o navegador faz:</strong> sem o <code>as</code>, o pré-carregamento não serve para nada: o navegador não sabe o tipo do arquivo e não consegue reaproveitar o download.</p>
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;link rel="preload" href="fonte.woff2"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":6.1-6.39: error: A “link” element with a “rel” attribute that contains the value “preload” must have an “as” attribute.</pre>
+<p>"Um <code>link</code> com <code>rel="preload"</code> precisa ter um atributo <code>as</code>." Com um valor que não existe, como <code>as="fonte"</code>, saem <strong>dois</strong> erros para a mesma linha:</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":6.1-6.50: error: Bad value “fonte” for attribute “as” on element “link”.
+"file:/home/ana/site/index.html":6.1-6.50: error: The value “fonte” is not a valid value for the “as” attribute of a “link” element with “rel=preload”.</pre>
+<p><strong>Como consertar:</strong> o tipo em inglês: <code>as="font"</code>, <code>as="image"</code>, <code>as="style"</code>, <code>as="script"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>An inline “script” element … must not have a “defer” attribute.</code></strong>
+<p><strong>O que significa:</strong> <code>&lt;script defer&gt;console.log(1)&lt;/script&gt;</code>, um script escrito direto na página, com <code>defer</code>. O navegador ignora o <code>defer</code> e roda o script na hora.</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":6.1-6.14: error: An inline “script” element (i.e., a “script” element without a “src” attribute and with a “type” attribute that is either unspecified, empty, or a JavaScript MIME type) must not have a “defer” attribute.</pre>
+<p>"Um <code>script</code> embutido (sem <code>src</code>) não pode ter <code>defer</code>." <strong>Como consertar:</strong> mova o código para um arquivo e use <code>&lt;script src="arquivo.js" defer&gt;</code>, ou deixe o script embutido no fim do <code>&lt;body&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>A “script” element with “type=module” must not have a “defer” attribute.</code></strong>
+<p><strong>O que significa:</strong> um <code>&lt;script type="module" src="…" defer&gt;</code>. O módulo já espera a página ser lida sozinho; o <code>defer</code> é repetido. O navegador não se importa, mas o validador acusa (com o script na linha 7):</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":7.1-7.39: error: A “script” element with “type=module” must not have a “defer” attribute.</pre>
+<p><strong>Como consertar:</strong> apague o <code>defer</code>. (O <code>async</code> num módulo é permitido e muda o comportamento: o módulo roda assim que chega.)</p>
+</div>
+
+<div class="cenario">
+<strong><code>Bad value “false” for attribute “defer” on element “script”.</code></strong>
+<p><strong>O que significa:</strong> <code>defer="false"</code>. Como em todo atributo booleano, o que conta é ele <strong>existir</strong>: o navegador adia o script do mesmo jeito. O validador recusa o valor (linha 6):</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":6.1-6.33: error: Bad value “false” for attribute “defer” on element “script”.</pre>
+<p><strong>Como consertar:</strong> para não adiar, apague o atributo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Bad value “alta” for attribute “fetchpriority” on element “img”.</code></strong>
+<p><strong>O que o navegador faz:</strong> ignora o valor e usa <code>auto</code>. A foto não ganha prioridade nenhuma, em silêncio.</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.77: error: Bad value “alta” for attribute “fetchpriority” on element “img”.</pre>
+<p>(Com <code>&lt;img src="bolo.jpg" alt="Bolo" width="800" height="600" fetchpriority="alta"&gt;</code> na linha 8.) <strong>Como consertar:</strong> <code>high</code>, <code>low</code> ou <code>auto</code>, em inglês.</p>
+</div>
+
+<div class="cenario">
+<strong>O validador aceita, mas o navegador baixa duas vezes</strong>
+<p><strong>O que acontece:</strong> o <code>preload</code> e o uso de verdade não combinam: o <code>href</code> é diferente (<code>bolo-1200.jpg</code> no <code>preload</code> e <code>bolo-800.jpg</code> no CSS), o <code>as</code> é de outro tipo, ou falta o <code>crossorigin</code> numa fonte. A página passa no validador sem erros, mas o navegador baixa o arquivo pré-carregado à toa e depois baixa o de verdade. O Chrome costuma avisar no console do F12, como no aviso da seção 4.</p>
+<p><strong>Como consertar:</strong> copie o endereço exatamente como ele aparece no CSS ou na <code>&lt;img&gt;</code>, confira o <code>as</code> e, para fontes, ponha <code>crossorigin</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;script src="a.js" defer&gt;&lt;/script&gt;</code></td><td>Baixa sem parar a leitura; roda quando o HTML foi lido, na ordem</td></tr>
+<tr><td><code>&lt;script src="a.js" async&gt;&lt;/script&gt;</code></td><td>Baixa sem parar a leitura; roda assim que chega, em qualquer ordem</td></tr>
+<tr><td><code>&lt;script type="module" src="a.js"&gt;&lt;/script&gt;</code></td><td>Já se comporta como <code>defer</code></td></tr>
+<tr><td><code>&lt;link rel="preload" href="…" as="image"&gt;</code></td><td>Busca já um arquivo que esta página vai usar (<code>as</code> obrigatório)</td></tr>
+<tr><td><code>&lt;link rel="preload" … as="font" type="font/woff2" crossorigin&gt;</code></td><td>Pré-carrega uma fonte (sempre com <code>crossorigin</code>)</td></tr>
+<tr><td><code>&lt;link rel="prefetch" href="proxima.html"&gt;</code></td><td>Busca, com baixa prioridade, a provável próxima página</td></tr>
+<tr><td><code>&lt;link rel="preconnect" href="https://…"&gt;</code></td><td>Abre cedo a conexão com outro site</td></tr>
+<tr><td><code>&lt;link rel="dns-prefetch" href="https://…"&gt;</code></td><td>Só acha o endereço de outro site</td></tr>
+<tr><td><code>fetchpriority="high"</code> / <code>"low"</code> / <code>"auto"</code></td><td>Sobe ou desce a prioridade de uma imagem, link ou script</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Adiar</h3>
+<p>Complete para o script ser baixado sem parar a leitura e rodar no fim, na ordem:</p>
+<div class="ex-code">&lt;script src="menu.js" <input data-answer="defer" aria-label="atributo">&gt;&lt;/script&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O tipo do preload</h3>
+<p>Complete o atributo obrigatório do <code>preload</code> de uma imagem:</p>
+<div class="ex-code">&lt;link rel="preload" href="capa.jpg" <input data-answer="as" aria-label="atributo">="image"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. A próxima página</h3>
+<p>Complete para o navegador adiantar, com baixa prioridade, a página 2 da lista de receitas:</p>
+<div class="ex-code">&lt;link rel="<input data-answer="prefetch" aria-label="relação">" href="receitas-2.html"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Dois scripts no <code>&lt;head&gt;</code>, ambos com <code>defer</code>: <code>a.js</code> e depois <code>b.js</code>. Qual roda primeiro?</p>
+<label><input type="radio" name="q4"> O que terminar de baixar primeiro</label>
+<label><input type="radio" name="q4"> O <code>a.js</code>: com <code>defer</code>, vale a ordem do HTML</label>
+<label><input type="radio" name="q4"> O <code>b.js</code></label>
+<label><input type="radio" name="q4"> Os dois ao mesmo tempo</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Para que serve <code>&lt;link rel="preload" … as="image"&gt;</code>?</p>
+<label><input type="radio" name="q5"> Mostrar a imagem no lugar do link</label>
+<label><input type="radio" name="q5"> Adiar a imagem até o visitante rolar a página</label>
+<label><input type="radio" name="q5"> Buscar já uma imagem que esta página vai usar, mas que o navegador só descobriria tarde (por exemplo, no CSS)</label>
+<label><input type="radio" name="q5"> Baixar a imagem para o computador do visitante</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. A foto grande do topo deve ter…</p>
+<label><input type="radio" name="q6"> <code>fetchpriority="high"</code>, e nunca <code>loading="lazy"</code></label>
+<label><input type="radio" name="q6"> <code>loading="lazy"</code>, para economizar</label>
+<label><input type="radio" name="q6"> <code>defer</code></label>
+<label><input type="radio" name="q6"> <code>rel="prefetch"</code></label>
+</div>
+
+<h3>Missão final: a página inicial mais rápida</h3>
+
+<div class="tryhtml" data-goal="nsel:head script[src][defer]=2,sel:head link[rel=preload][as=image][href=&quot;assets/midia/bolo-1200.jpg&quot;],sel:head link[rel=prefetch][href=&quot;sobre.html&quot;],console:menu pronto,console:contador pronto">
+<p class="try-task"><strong>Missão:</strong> a página da Ana tem três problemas de desempenho. Conserte os três no <code>&lt;head&gt;</code> do <code>index.html</code>:</p>
+<ol>
+  <li>os dois scripts param a leitura e rodam cedo demais (o console mostra erro): faça-os esperar a página ser lida, mantendo-os no <code>&lt;head&gt;</code>;</li>
+  <li>a foto do banner está no <code>estilo.css</code> (<code>assets/midia/bolo-1200.jpg</code>), e o navegador só a descobre tarde: pré-carregue-a;</li>
+  <li>quase todo visitante clica em "Sobre a Ana" depois: adiante o <code>sobre.html</code>.</li>
+</ol>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;script src="menu.js"&gt;&lt;/script&gt;
+&lt;script src="contador.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header class="banner"&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;nav id="menu"&gt;
+  &lt;a href="index.html"&gt;Início&lt;/a&gt;
+  &lt;a href="sobre.html"&gt;Sobre a Ana&lt;/a&gt;
+&lt;/nav&gt;
+&lt;p&gt;Hoje o site tem &lt;span id="total"&gt;0&lt;/span&gt; receitas.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="estilo.css">.banner {
+  background-image: url("assets/midia/bolo-1200.jpg");
+  background-size: cover;
+  background-position: center;
+  padding: 60px 16px;
+}
+.banner h1 {
+  color: white;
+  text-shadow: 0 2px 4px black;
+}
+</pre>
+<pre class="script" data-file="menu.js">const menu = document.getElementById("menu");
+menu.querySelector("a").setAttribute("aria-current", "page");
+console.log("menu pronto");
+</pre>
+<pre class="script" data-file="contador.js">document.getElementById("total").textContent = "32";
+console.log("contador pronto");
+</pre>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Sobre a Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;A Ana faz bolos desde os 12 anos. &lt;a href="index.html"&gt;Voltar&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;link rel="preload" href="assets/midia/bolo-1200.jpg" as="image"&gt;
+&lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;link rel="prefetch" href="sobre.html"&gt;
+&lt;script src="menu.js" defer&gt;&lt;/script&gt;
+&lt;script src="contador.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header class="banner"&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;nav id="menu"&gt;
+  &lt;a href="index.html"&gt;Início&lt;/a&gt;
+  &lt;a href="sobre.html"&gt;Sobre a Ana&lt;/a&gt;
+&lt;/nav&gt;
+&lt;p&gt;Hoje o site tem &lt;span id="total"&gt;0&lt;/span&gt; receitas.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Com o conserto, o console mostra <code>menu pronto</code> e <code>contador pronto</code>, nessa ordem (a ordem do HTML, por causa do <code>defer</code>), e a página mostra "32 receitas". Num site pequeno como este, a diferença de velocidade é de milésimos de segundo; numa página grande, com internet de celular, ela aparece.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O navegador lê o HTML de cima para baixo e <strong>para</strong> num <code>&lt;script src&gt;</code> comum até baixá-lo e rodá-lo.</li>
+  <li><code>defer</code>: baixa sem parar e roda quando o HTML foi lido, na ordem. É o jeito recomendado para os scripts da página. <code>async</code>: roda assim que chega, em qualquer ordem. <code>type="module"</code> já é adiado. Os três só valem com <code>src</code>.</li>
+  <li><code>&lt;link rel="preload" href as&gt;</code> busca já um arquivo desta página que seria descoberto tarde; o <code>as</code> é obrigatório, e fontes precisam de <code>crossorigin</code>. Preload demais atrapalha.</li>
+  <li><code>prefetch</code> adianta a próxima página; <code>preconnect</code> e <code>dns-prefetch</code> adiantam a conversa com outro site.</li>
+  <li><code>fetchpriority="high"</code> na foto principal; <code>loading="lazy"</code> nas de baixo.</li>
+  <li>Valores errados (<code>as="fonte"</code>, <code>fetchpriority="alta"</code>, <code>defer="false"</code>) o validador pega; o <code>href</code> diferente entre o preload e o uso, não. Meça no F12 antes e depois.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
