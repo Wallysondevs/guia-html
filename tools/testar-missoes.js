@@ -163,7 +163,7 @@ function linhaVnu(nome, m, v) {
   // sem firstColumn (ex.: "End of file seen…"), o vnu na linha de comando mostra só "linha.coluna"
   const pos = !fim ? "" : ini && m.firstColumn ? ini.linha + "." + ini.coluna + "-" + fim.linha + "." + fim.coluna : fim.linha + "." + fim.coluna + "-" + fim.linha + "." + fim.coluna;
   const tipo = m.type === "info" ? (m.subType === "warning" ? "warning" : "info") : m.type;
-  return "\"" + nome + "\":" + pos + ": " + tipo + ": " + m.message + (m.lastLine && !fim ? "  (no esqueleto que o testador pôs em volta do fragmento)" : "");
+  return "\"" + nome + "\":" + pos + ": " + tipo + ": " + m.message + (m.lastLine && !fim ? (m.lastLine - v.deslocamento > (v.linhasCodigo || 0) ? "  (depois do fim do seu código: o validador chegou ao fechamento que o testador pôs em volta do fragmento)" : "  (no esqueleto que o testador pôs em volta do fragmento)") : "");
 }
 
 function trecho(s, n) { s = String(s || "").replace(/\n$/, ""); if (!s) return "        │ (vazio)"; const l = s.split("\n"); return (l.length > n ? l.slice(0, n).concat(["… (" + (l.length - n) + " linhas a mais)"]) : l).map((x) => "        │ " + x).join("\n"); }
