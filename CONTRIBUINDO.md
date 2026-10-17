@@ -171,13 +171,17 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
 - Não tem caminho absoluto `/…` (num site do GitHub Pages ele aponta para outro lugar): use caminhos relativos.
 - Não abre sites de fora **dentro** do quadro, a não ser num `<iframe>` do próprio código do leitor. Um link para outro site vai para uma aba nova.
 - **Não é uma barreira de segurança.**
-  - O quadro é da mesma origem do guia (precisa ser, para o service worker e as metas). O `sandbox` dele só impede que o código navegue a página do guia.
-  - O código do leitor **pode** mexer no `localStorage` do guia (o tema escolhido, por exemplo). Não ensine `localStorage.clear()` no editor.
-  - O Chrome mostra no F12 da página do guia o aviso `An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.`: é esperado.
-- **Modo simples:** sem service worker (arquivo aberto do disco, janela anônima do Firefox), o quadro usa `srcdoc`:
-  - o CSS e o JS das abas entram embutidos (o `href` do `<link>` muda, e as metas `attr:` em `link`/`script` podem falhar);
-  - os links entre abas e as âncoras continuam funcionando.
-  - O guia publicado (HTTPS) sempre usa o modo completo. Para ver o modo simples, abra com `?htmlsim=simples` no endereço.
+  - O quadro é um `<iframe>` da mesma origem do guia (precisa ser, para o service worker e as metas), **sem** o atributo `sandbox`.
+    - Com `sandbox="allow-scripts allow-same-origin"`, o Chrome mostraria no F12 da página do guia um aviso por quadro: `An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.`
+    - O editor mesmo impede que um link (`target="_top"`) ou um formulário troque a página do guia.
+  - O CSS e o JS do leitor ficam no documento do quadro. Mesmo assim, um script **pode** alcançar a página do guia (`parent`, `top.location`) e o `localStorage` dela (o tema escolhido). Não ensine `localStorage.clear()` nem `top.location` no editor.
+- **Modo simples:** sem service worker (arquivo aberto do disco, janela anônima do Firefox), o quadro usa `srcdoc`. O guia publicado (HTTPS) sempre usa o modo completo. Para ver o modo simples, abra com `?htmlsim=simples` no endereço. Neste modo, conferido no Chromium:
+  - o CSS e o JS das abas entram embutidos: o `href` do `<link>` muda, e as metas `attr:` em `link`/`script` podem falhar;
+  - os links entre as abas, as âncoras e os formulários continuam funcionando;
+  - um link para uma página que não existe só dá um aviso no console;
+  - um GET para outra aba não leva os dados no `location.search`;
+  - o documento **nunca** fica em modo quirks (é a regra do `srcdoc`);
+  - `assets/midia/…` só funciona em páginas da raiz do site.
 
 ### Mídia de exemplo (`assets/midia/`)
 Tudo foi desenhado ou sintetizado para o guia (sem fotos de terceiros). O gerador é `tools/midia/gerar.sh`. São 664 KB no total. Use `alt` de verdade, como "Bolo de cenoura com cobertura de chocolate".
