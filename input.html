@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML input — o campo de formulário | Guia HTML</title>
+<meta name="description" content="O elemento input do HTML para quem nunca fez um site: um elemento vazio, sem tag de fechamento, o atributo type, o name e o id, o valor inicial com value, o input em linha, fora do form e com o atributo form, e os erros reais do validador W3C (Stray end tag, Bad value txt, Duplicate attribute, aspas faltando), com o resultado ao vivo e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">input</span></h1>
+
+<p class="intro">Na aula <a href="formularios.html">Formulários</a>, o <code>&lt;input&gt;</code> apareceu como "o campo onde a pessoa digita". Ele é o elemento mais usado dos formulários, e também o mais versátil: com uma única palavra trocada, a mesma tag vira um campo de texto, de senha, de data, de cor, uma caixa de marcar ou um seletor de arquivo. Nesta aula você conhece o <code>&lt;input&gt;</code> por dentro: como se escreve, quais atributos ele sempre tem e os erros que todo mundo comete no começo.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Por que o <code>&lt;input&gt;</code> não tem tag de fechamento (é um elemento <strong>vazio</strong>).</li>
+  <li>O atributo <code>type</code>, que decide que tipo de campo ele é, e o que acontece com um <code>type</code> que não existe.</li>
+  <li>A diferença entre <code>id</code> e <code>name</code>, e por que quase sempre os dois aparecem.</li>
+  <li>Como dar um valor inicial com <code>value</code> (e por que as aspas importam).</li>
+  <li>Que o <code>&lt;input&gt;</code> é um elemento em linha, e que ele pode até ficar fora do <code>&lt;form&gt;</code>.</li>
+  <li>Os erros reais do validador W3C: <code>Stray end tag “input”</code>, <code>Bad value “txt”</code>, <code>Duplicate attribute</code> e o atributo fantasma das aspas esquecidas.</li>
+</ul>
+</div>
+
+<p>Os exemplos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>). O que o navegador faz com o código errado foi conferido no Chromium. Os quadros "Resultado" são desenhados pelo seu próprio navegador: você pode digitar neles.</p>
+
+<hr>
+
+<h2>A ideia: a tomada com vários adaptadores</h2>
+<p>Pense num carregador com pontas trocáveis: a base é sempre a mesma, e você encaixa a ponta do celular, do fone ou do relógio. O <code>&lt;input&gt;</code> é a base; o atributo <code>type</code> ("tipo") é a ponta. Muda o <code>type</code>, muda o campo inteiro: a aparência, o teclado que o celular abre e o que o navegador confere antes de enviar.</p>
+<p>Por isso existem duas aulas: esta, sobre a base (o que vale para todo <code>&lt;input&gt;</code>), e <a href="tipos-input.html">Tipos de input</a>, sobre cada ponta.</p>
+
+<hr>
+
+<h2>1. O <code>&lt;input&gt;</code> mais simples</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;label for="nome"&gt;Seu nome:&lt;/label&gt;
+&lt;input id="nome" name="nome"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;input</dt><dd>"Entrada", em inglês: um lugar por onde a informação <strong>entra</strong> na página. Sem <code>type</code>, ele é uma caixa de texto de uma linha.</dd>
+  <dt>id="nome"</dt><dd>A identidade do campo <strong>dentro da página</strong>. É ela que o <code>&lt;label for="nome"&gt;</code> procura, e é por ela que o CSS e o JavaScript o acham. Tem de ser única na página.</dd>
+  <dt>name="nome"</dt><dd>O nome do dado <strong>no envio</strong>: o navegador manda <code>nome=o que foi digitado</code>. Sem <code>name</code>, o campo não é enviado (aula <a href="formularios.html">Formulários</a>).</dd>
+  <dt>&gt;</dt><dd>E acabou. Não existe <code>&lt;/input&gt;</code>.</dd>
+</dl>
+
+<h3>Um elemento vazio</h3>
+<p>Um parágrafo tem <strong>conteúdo</strong>: o texto entre <code>&lt;p&gt;</code> e <code>&lt;/p&gt;</code>. Um campo não tem: o que aparece dentro dele é o que a pessoa digita, e não um texto do código. Elementos assim se chamam <strong>vazios</strong> (<em>void elements</em>), como o <code>&lt;img&gt;</code> e o <code>&lt;br&gt;</code> (aula <a href="elementos.html">Elementos e Tags</a>). Eles têm só a tag de abertura.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Válido?</th><th>Comentário</th></tr>
+<tr><td><code>&lt;input id="nome" name="nome"&gt;</code></td><td>Sim</td><td>A forma do guia.</td></tr>
+<tr><td><code>&lt;input id="nome" name="nome" /&gt;</code></td><td>Sim</td><td>A barra no fim é aceita e ignorada. Ela vem do XHTML, uma versão antiga e mais rígida (aula <a href="versoes.html">Versões do HTML</a>), e muitos editores ainda a escrevem.</td></tr>
+<tr><td><code>&lt;input id="nome" name="nome"&gt;&lt;/input&gt;</code></td><td><strong>Não</strong></td><td>Não existe tag de fechamento (veja <a href="#errado">Quando dá errado</a>).</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>2. O atributo <code>type</code></h2>
+<p>O mesmo elemento, quatro tipos:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt; &lt;input type="email" id="email" name="email"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="senha"&gt;Senha:&lt;/label&gt; &lt;input type="password" id="senha" name="senha"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;input type="checkbox" id="novidades" name="novidades"&gt; &lt;label for="novidades"&gt;Quero receber novidades&lt;/label&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>type="text"</dt><dd>Texto de uma linha. É o <strong>padrão</strong>: <code>&lt;input&gt;</code> sem <code>type</code> é igual a <code>type="text"</code>.</dd>
+  <dt>type="email"</dt><dd>Parece igual ao texto, mas o navegador confere se tem cara de e-mail antes de enviar, e o celular mostra um teclado com <code>@</code>.</dd>
+  <dt>type="password"</dt><dd>Senha: o que você digita aparece como bolinhas ou asteriscos. Digite no resultado para ver.</dd>
+  <dt>type="checkbox"</dt><dd>Uma caixinha de marcar. Repare que aqui o <code>&lt;label&gt;</code> vem <strong>depois</strong> do campo, que é o costume para caixas de marcar (aula <a href="checkbox-radio.html">checkbox e radio</a>).</dd>
+</dl>
+
+<p>Existem mais de vinte tipos. Todos estão, com o resultado de cada um, na próxima aula: <a href="tipos-input.html">Tipos de input</a>. O desenho de cada campo muda de um navegador para outro e de um sistema para outro (no celular, um campo de data abre um calendário diferente do computador, por exemplo). Por isso o guia descreve o que o campo <strong>faz</strong>, e não o desenho exato.</p>
+
+<div class="tip">
+<strong>Escreva o <code>type="text"</code> mesmo sendo o padrão?</strong>
+<p>Tanto faz para o navegador. Muita gente escreve, para deixar claro para quem lê o código. Neste guia, ele aparece quando o assunto é o tipo e some nos exemplos curtos.</p>
+</div>
+
+<hr>
+
+<h2>3. <code>id</code> e <code>name</code>: dois nomes, dois trabalhos</h2>
+<p>É a dúvida mais comum sobre o <code>&lt;input&gt;</code>: se os dois são "nomes", para que dois?</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>id</code></th><th><code>name</code></th></tr>
+<tr><td>Serve para</td><td>achar o campo <strong>na página</strong>: <code>&lt;label for&gt;</code>, CSS (<code>#nome</code>), JavaScript, links (<code>#nome</code>)</td><td>dar nome ao dado <strong>no envio</strong>: <code>nome=Ana</code></td></tr>
+<tr><td>Tem de ser único?</td><td>Sim, na página inteira</td><td>Não: campos do mesmo grupo (como as bolinhas de um <code>radio</code>) compartilham o mesmo <code>name</code></td></tr>
+<tr><td>Se faltar</td><td>o <code>&lt;label for&gt;</code> não acha o campo</td><td>o campo não é enviado</td></tr>
+</table>
+</div>
+
+<p>Na maioria dos campos de texto, os dois têm o <strong>mesmo valor</strong> (<code>id="email" name="email"</code>), e está tudo certo: cada um trabalha num lugar. Eles só costumam ser diferentes em grupos de opções e em formulários maiores.</p>
+
+<div class="tryhtml" data-goal="sel:input#cidade[name='cidade'],sel:label[for='cidade']">
+<p class="try-task"><strong>Missão:</strong> o formulário de entrega tem o rótulo "Cidade:", mas falta o campo. Acrescente um <code>&lt;input&gt;</code> logo depois do rótulo, com <code>id</code> e <code>name</code> iguais a <code>cidade</code>. Depois clique em "Cidade:" no resultado: o cursor deve ir para o campo novo.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Entrega&lt;/h1&gt;
+&lt;form action="entrega.html"&gt;
+  &lt;p&gt;
+    &lt;label for="rua"&gt;Rua e número:&lt;/label&gt;
+    &lt;input id="rua" name="rua"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="cidade"&gt;Cidade:&lt;/label&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Calcular frete&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Entrega&lt;/h1&gt;
+&lt;form action="entrega.html"&gt;
+  &lt;p&gt;
+    &lt;label for="rua"&gt;Rua e número:&lt;/label&gt;
+    &lt;input id="rua" name="rua"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="cidade"&gt;Cidade:&lt;/label&gt;
+    &lt;input id="cidade" name="cidade"&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Calcular frete&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Um valor inicial: <code>value</code></h2>
+<p>O atributo <code>value</code> ("valor") faz o campo já começar preenchido. A pessoa pode apagar e escrever outra coisa:</p>
+
+<pre class="file" data-file="pedido.html" data-resultado>&lt;form action="pedido.html"&gt;
+  &lt;p&gt;
+    &lt;label for="produto"&gt;Produto:&lt;/label&gt;
+    &lt;input id="produto" name="produto" value="Bolo de cenoura"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="cliente"&gt;Seu nome:&lt;/label&gt;
+    &lt;input id="cliente" name="cliente" value="Ana Maria"&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Pedir&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>value="Bolo de cenoura"</dt><dd>O texto que aparece no campo quando a página abre. Se a pessoa enviar sem mexer, vai <code>produto=Bolo+de+cenoura</code>.</dd>
+  <dt>As aspas</dt><dd>Com espaço no valor, as aspas são <strong>obrigatórias</strong>. Sem elas, <code>value=Ana Maria</code> vira duas coisas: o valor <code>Ana</code> e um atributo chamado <code>maria</code> (veja <a href="#errado">Quando dá errado</a>). Por isso o guia põe aspas em todo valor.</dd>
+</dl>
+
+<p>O <code>value</code> é um valor de verdade, que vai no envio. Não confunda com o texto cinza de exemplo que some quando você começa a digitar: esse é o <code>placeholder</code>, explicado em <a href="atributos-input.html">placeholder, value, autocomplete…</a>, junto com outros atributos do <code>&lt;input&gt;</code>.</p>
+
+<div class="tryhtml" data-goal="attr:#quantidade[value]=2,attr:#produto[value]=Pão de queijo">
+<p class="try-task"><strong>Missão:</strong> a maioria dos clientes pede 2 pacotes de pão de queijo. Faça o campo <code>quantidade</code> começar com <code>2</code> e o campo <code>produto</code> com <code>Pão de queijo</code>. Envie para ver os valores na tabela do editor.</p>
+<pre class="script" data-file="index.html">&lt;form action="pedido.html"&gt;
+  &lt;p&gt;
+    &lt;label for="produto"&gt;Produto:&lt;/label&gt;
+    &lt;input id="produto" name="produto"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="quantidade"&gt;Pacotes:&lt;/label&gt;
+    &lt;input id="quantidade" name="quantidade"&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Pedir&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="pedido.html"&gt;
+  &lt;p&gt;
+    &lt;label for="produto"&gt;Produto:&lt;/label&gt;
+    &lt;input id="produto" name="produto" value="Pão de queijo"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="quantidade"&gt;Pacotes:&lt;/label&gt;
+    &lt;input id="quantidade" name="quantidade" value="2"&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Pedir&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. Um elemento em linha</h2>
+<p>O <code>&lt;input&gt;</code> é um elemento <strong>em linha</strong> (aula <a href="bloco-inline.html">Bloco × Em Linha</a>): ele fica no meio do texto, como uma palavra, e não pula de linha sozinho.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Quero &lt;input id="qtd" name="qtd" value="1" size="3" aria-label="Quantidade"&gt; bolo(s) para o dia 20.&lt;/p&gt;
+&lt;label for="a"&gt;Rua:&lt;/label&gt; &lt;input id="a" name="rua"&gt;
+&lt;label for="b"&gt;Bairro:&lt;/label&gt; &lt;input id="b" name="bairro"&gt;
+</pre>
+
+<ul>
+  <li>Na primeira linha, o campo ficou no meio da frase. O <code>size="3"</code> pede uma caixa estreita, de uns 3 caracteres. Como não há um <code>&lt;label&gt;</code> ali, o <code>aria-label</code> dá ao campo um nome para os leitores de tela (aula <a href="aria.html">ARIA</a>).</li>
+  <li>Os dois pares de baixo ficaram <strong>lado a lado</strong>, e, se a tela for estreita, quebram onde der. Para um campo por linha, embrulhe cada par num bloco, como os <code>&lt;p&gt;</code> das missões acima (ou use CSS).</li>
+</ul>
+
+<h3>Fora do <code>&lt;form&gt;</code></h3>
+<p>Um <code>&lt;input&gt;</code> fora de um <code>&lt;form&gt;</code> é válido. Ele aparece e aceita digitação, só não é enviado. Isso é útil quando um script usa o campo (um filtro que esconde receitas enquanto você digita, por exemplo). E, se o campo precisa ficar longe do formulário no código, o atributo <code>form</code> o liga ao formulário pelo <code>id</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form id="busca" action="busca.html"&gt;
+  &lt;button&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+&lt;p&gt;
+  &lt;label for="q"&gt;Termo:&lt;/label&gt;
+  &lt;input id="q" name="q" form="busca"&gt;
+&lt;/p&gt;
+</pre>
+
+<p>O campo está fora do <code>&lt;form&gt;</code>, mas o <code>form="busca"</code> faz o navegador enviá-lo junto com o formulário de <code>id="busca"</code>. Digite e clique em Buscar: o <code>q</code> vai no envio. Use isso só quando o layout exigir; na maioria das vezes, deixar o campo dentro do <code>&lt;form&gt;</code> é mais simples.</p>
+
+<hr>
+
+<h2>Os atributos que você vai ver em todo <code>&lt;input&gt;</code></h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>Para quê</th><th>Aula</th></tr>
+<tr><td><code>type</code></td><td>O tipo de campo (padrão: <code>text</code>)</td><td><a href="tipos-input.html">Tipos de input</a></td></tr>
+<tr><td><code>id</code></td><td>Achar o campo na página (para o <code>&lt;label&gt;</code>)</td><td><a href="label.html">label</a>, <a href="class-id.html">class e id</a></td></tr>
+<tr><td><code>name</code></td><td>Nome do dado no envio</td><td><a href="formularios.html">Formulários</a></td></tr>
+<tr><td><code>value</code></td><td>Valor inicial</td><td>esta aula e <a href="atributos-input.html">placeholder, value, autocomplete…</a></td></tr>
+<tr><td><code>placeholder</code>, <code>autocomplete</code>, <code>readonly</code>, <code>disabled</code>, <code>size</code></td><td>Texto de exemplo, preenchimento automático, só leitura, desligado, largura</td><td><a href="atributos-input.html">placeholder, value, autocomplete…</a></td></tr>
+<tr><td><code>required</code>, <code>min</code>, <code>max</code>, <code>maxlength</code>, <code>pattern</code></td><td>Regras que o navegador confere antes de enviar</td><td><a href="validacao.html">Validação</a></td></tr>
+<tr><td><code>form</code></td><td>Liga um campo de fora a um formulário (pelo <code>id</code>)</td><td>esta aula</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>As páginas abaixo têm o esqueleto de sempre nas linhas 1 a 7 e um <code>&lt;label&gt;</code> na linha 8. O <code>&lt;input&gt;</code> errado está na <strong>linha 9</strong>.</p>
+
+<div class="cenario">
+<strong><code>&lt;/input&gt;</code>: fechar um elemento vazio</strong>
+<pre class="file" data-file="fecha.html">&lt;label for="nome"&gt;Nome:&lt;/label&gt;
+&lt;input id="nome" name="nome"&gt;&lt;/input&gt;
+</pre>
+<pre class="term" data-cwd="~/campos">$ vnu fecha.html
+"file:/home/ana/campos/fecha.html":9.30-9.37: error: Stray end tag “input”.</pre>
+<p><strong>O validador diz:</strong> "Tag de fechamento <code>input</code> perdida" (<em>stray</em> = "extraviada"). As colunas 30 a 37 são exatamente o <code>&lt;/input&gt;</code>.</p>
+<p><strong>O que o navegador faz:</strong> joga o <code>&lt;/input&gt;</code> fora, sem dizer nada. A página fica certa, por isso o erro passa despercebido.</p>
+<p><strong>Como consertar:</strong> apague o <code>&lt;/input&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Texto "dentro" do <code>&lt;input&gt;</code></strong>
+<pre class="file" data-file="dentro.html" data-resultado>&lt;label for="nome"&gt;Nome:&lt;/label&gt;
+&lt;input id="nome" name="nome"&gt;Digite seu nome&lt;/input&gt;
+</pre>
+<pre class="term" data-cwd="~/campos">$ vnu dentro.html
+"file:/home/ana/campos/dentro.html":9.45-9.52: error: Stray end tag “input”.</pre>
+<p><strong>O que o navegador faz:</strong> o campo termina no primeiro <code>&gt;</code>. "Digite seu nome" vira um texto comum <strong>do lado de fora</strong> do campo, como mostra o resultado, e o <code>&lt;/input&gt;</code> é jogado fora.</p>
+<p><strong>Como consertar:</strong> para um valor inicial, use <code>value="…"</code>; para um texto de exemplo que some ao digitar, <code>placeholder="…"</code> (aula <a href="atributos-input.html">placeholder, value, autocomplete…</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>type</code> que não existe: <code>type="txt"</code></strong>
+<pre class="term" data-cwd="~/campos">$ vnu txt.html
+"file:/home/ana/campos/txt.html":9.1-9.40: error: Bad value “txt” for attribute “type” on element “input”.</pre>
+<p><strong>O validador diz:</strong> "Valor ruim <code>txt</code> para o atributo <code>type</code>".</p>
+<p><strong>O que o navegador faz:</strong> não reconhece o tipo e usa o padrão, <code>text</code>. Por isso, com <code>type="txt"</code>, tudo <strong>parece</strong> funcionar. O perigo aparece com <code>type="emial"</code> ou <code>type="pasword"</code>: o campo vira texto comum, sem conferência de e-mail e, pior, com a senha <strong>visível</strong> na tela.</p>
+<p><strong>Como consertar:</strong> confira a grafia na tabela de <a href="tipos-input.html">Tipos de input</a>.</p>
+</div>
+
+<div class="cenario">
+<strong>Dois <code>type</code> na mesma tag</strong>
+<pre class="term" data-cwd="~/campos">$ sed -n 9p dois.html
+&lt;input type="text" id="email" name="email" type="email"&gt;
+$ vnu dois.html
+"file:/home/ana/campos/dois.html":9.1-9.48: error: Duplicate attribute “type”.</pre>
+<p><strong>O validador diz:</strong> "Atributo <code>type</code> repetido".</p>
+<p><strong>O que o navegador faz:</strong> fica com o <strong>primeiro</strong> e ignora o segundo. Este campo é <code>text</code>, e não <code>email</code>. Acontece muito quando se copia e cola um campo e se acrescenta o atributo novo no fim, sem apagar o antigo.</p>
+<p><strong>Como consertar:</strong> um atributo de cada, uma vez só.</p>
+</div>
+
+<div class="cenario">
+<strong>Aspas esquecidas: <code>value=Ana Maria</code></strong>
+<pre class="file" data-file="aspas.html" data-resultado>&lt;label for="nome"&gt;Nome:&lt;/label&gt;
+&lt;input id="nome" name="nome" value=Ana Maria&gt;
+</pre>
+<pre class="term" data-cwd="~/campos">$ vnu aspas.html
+"file:/home/ana/campos/aspas.html":9.1-9.45: error: Attribute “maria” not allowed on element “input” at this point.</pre>
+<p><strong>O validador diz:</strong> "Atributo <code>maria</code> não permitido no elemento <code>input</code>". Que atributo <code>maria</code>?</p>
+<p><strong>O que o navegador faz:</strong> sem aspas, o valor termina no primeiro espaço. O navegador lê <code>value="Ana"</code> e depois um atributo novo, sem valor, chamado <code>maria</code> (em minúsculas, porque nomes de atributo não diferenciam maiúsculas). O campo mostra só "Ana", como no resultado.</p>
+<p><strong>Como consertar:</strong> <code>value="Ana Maria"</code>. Aspas sempre, mesmo quando o valor não tem espaço.</p>
+</div>
+
+<div class="cenario">
+<strong>A barra no fim e o valor sem aspas</strong>
+<p>A barra de <code>&lt;input … /&gt;</code> é aceita, mas o validador dá uma dica (<code>info</code>, que não é erro):</p>
+<pre class="term" data-cwd="~/campos">$ sed -n 9,10p barra.html
+&lt;input id="nome" name="nome" /&gt;
+&lt;input id="x" name="x" value=a/&gt;
+$ vnu barra.html
+"file:/home/ana/campos/barra.html":9.1-9.31: info: Trailing slash on void elements has no effect and interacts badly with unquoted attribute values.</pre>
+<p><strong>O que significa:</strong> "A barra no fim de elementos vazios não tem efeito e se dá mal com valores sem aspas". A linha 10 mostra o porquê, e repare que ela passou <strong>sem aviso</strong>: com <code>value=a/&gt;</code>, a barra entra no valor, e o campo começa com <code>a/</code>, e não com <code>a</code>.</p>
+<p><strong>Como consertar:</strong> aspas em todo valor resolvem; a barra pode ficar ou sair.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;input id="x" name="x"&gt;</code></td><td>Campo de texto de uma linha (sem tag de fechamento)</td></tr>
+<tr><td><code>&lt;input … /&gt;</code></td><td>Igual: a barra é aceita e ignorada</td></tr>
+<tr><td><code>type="…"</code></td><td>Tipo de campo; sem ele, ou com um valor que não existe, vira <code>text</code></td></tr>
+<tr><td><code>id="x"</code></td><td>Identifica o campo na página (para <code>&lt;label for="x"&gt;</code>)</td></tr>
+<tr><td><code>name="x"</code></td><td>Nome do dado no envio (sem ele, não vai)</td></tr>
+<tr><td><code>value="…"</code></td><td>Valor inicial (aspas sempre)</td></tr>
+<tr><td><code>form="id-do-form"</code></td><td>Envia o campo junto com um formulário que está em outro lugar</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O tipo padrão</h3>
+<p>Um <code>&lt;input&gt;</code> sem <code>type</code> é de qual tipo?</p>
+<div class="ex-code">type="<input data-answer="text" aria-label="tipo">"</div>
+</div>
+
+<div class="exercise">
+<h3>2. O nome do dado</h3>
+<p>Complete para o campo ser enviado como <code>telefone=…</code>:</p>
+<div class="ex-code">&lt;input id="tel" <input data-answer="name" aria-label="atributo">="telefone"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Valor inicial</h3>
+<p>Complete para o campo começar com "Recife":</p>
+<div class="ex-code">&lt;input id="cidade" name="cidade" <input data-answer="value" aria-label="atributo">="Recife"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que acontece com <code>&lt;input id="nome"&gt;&lt;/input&gt;</code>?</p>
+<label><input type="radio" name="q4"> O campo não aparece</label>
+<label><input type="radio" name="q4"> O campo aparece normal; o validador acusa <code>Stray end tag “input”</code></label>
+<label><input type="radio" name="q4"> Aparecem dois campos</label>
+<label><input type="radio" name="q4"> Está certo: toda tag precisa fechar</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. A Ana escreveu <code>type="pasword"</code> (com um <code>s</code> só). O que a pessoa vê ao digitar a senha?</p>
+<label><input type="radio" name="q5"> Bolinhas, normalmente</label>
+<label><input type="radio" name="q5"> Uma mensagem de erro</label>
+<label><input type="radio" name="q5"> Nada: o campo some</label>
+<label><input type="radio" name="q5"> A senha visível, porque o campo virou <code>text</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. Para que serve o <code>id</code> de um campo, se o <code>name</code> já dá nome ao dado?</p>
+<label><input type="radio" name="q6"> Para o <code>&lt;label for&gt;</code>, o CSS e o JavaScript acharem o campo na página</label>
+<label><input type="radio" name="q6"> Para o servidor saber o nome do dado</label>
+<label><input type="radio" name="q6"> Para nada: é só um costume</label>
+<label><input type="radio" name="q6"> Para definir o tipo do campo</label>
+</div>
+
+<h3>Missão final: conserte o cadastro</h3>
+
+<div class="tryhtml" data-goal="nsrc:&lt;/input,nsrc:type=.txt,nsel:[maria]=0,attr:#cliente[value]=Ana Maria,sel:#cliente[name='cliente'],attr:#email[type]=email">
+<p class="try-task"><strong>Missão:</strong> o cadastro da lojinha tem quatro erros: um <code>&lt;/input&gt;</code>, um <code>type</code> que não existe, um valor sem aspas e um campo sem <code>name</code>. Conserte os quatro sem apagar nenhum campo. Depois use o botão <strong>Validar no W3C</strong> do editor para conferir.</p>
+<pre class="script" data-file="index.html">&lt;form action="cadastro.html" method="post"&gt;
+  &lt;p&gt;
+    &lt;label for="cliente"&gt;Nome:&lt;/label&gt;
+    &lt;input type="txt" id="cliente" value=Ana Maria&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="email"&gt;E-mail:&lt;/label&gt;
+    &lt;input type="email" id="email" name="email"&gt;&lt;/input&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Cadastrar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="cadastro.html" method="post"&gt;
+  &lt;p&gt;
+    &lt;label for="cliente"&gt;Nome:&lt;/label&gt;
+    &lt;input type="text" id="cliente" name="cliente" value="Ana Maria"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="email"&gt;E-mail:&lt;/label&gt;
+    &lt;input type="email" id="email" name="email"&gt;
+  &lt;/p&gt;
+  &lt;button&gt;Cadastrar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>Reparou que o resultado quase não mudou? Três dos quatro erros eram invisíveis na tela. Só o validador e a tabela do envio mostram que algo estava errado.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;input&gt;</code> é um elemento <strong>vazio</strong>: só a tag de abertura. <code>&lt;/input&gt;</code> é erro (<code>Stray end tag “input”</code>); a barra em <code>&lt;input /&gt;</code> é aceita e ignorada.</li>
+  <li><code>type</code> decide o tipo de campo. Sem ele, ou com um valor que não existe (<code>txt</code>, <code>pasword</code>), o campo vira <code>text</code>, e o validador acusa <code>Bad value</code>.</li>
+  <li><code>id</code> acha o campo na página (o <code>&lt;label for&gt;</code> usa); <code>name</code> dá nome ao dado no envio. Quase sempre os dois aparecem, muitas vezes com o mesmo valor.</li>
+  <li><code>value="…"</code> é o valor inicial. Sem aspas, o valor termina no primeiro espaço, e o resto vira um atributo fantasma.</li>
+  <li>O <code>&lt;input&gt;</code> é em linha. Fora do <code>&lt;form&gt;</code> ele não é enviado, a não ser com <code>form="id"</code>. A aparência muda de um navegador e de um sistema para outro.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
