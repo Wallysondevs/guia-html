@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Atributos — nome, valor, aspas e atributos booleanos | Guia HTML</title>
+<meta name="description" content="Atributos do HTML para quem nunca fez um site: nome=&quot;valor&quot; na tag de abertura, vários atributos, aspas duplas, simples ou nenhuma, atributos booleanos como open, atributos globais e específicos, e o que acontece com atributo repetido, sem aspas, sem espaço ou no lugar errado, com as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Atributos</span></h1>
+
+<p class="intro">A tag diz <strong>o que</strong> um elemento é: um parágrafo, um link, uma imagem. Mas um link precisa dizer <em>para onde</em> vai, e uma imagem precisa dizer <em>qual</em> arquivo mostrar. Essas informações extras são os <strong>atributos</strong>. Nesta aula você vai aprender a escrever um atributo parte por parte, a usar vários de uma vez, a escolher as aspas, a conhecer os atributos "liga e desliga" e a reconhecer os erros mais comuns, com o que o navegador faz e a mensagem do validador.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>A receita de um atributo: <code>nome="valor"</code>, sempre na tag de <strong>abertura</strong>.</li>
+  <li>Como escrever vários atributos no mesmo elemento.</li>
+  <li>Quando usar aspas duplas, simples ou nenhuma (e por que o guia usa sempre as duplas).</li>
+  <li>O que são os atributos <strong>booleanos</strong>, como <code>open</code>, e por que <code>open="false"</code> não fecha nada.</li>
+  <li>A diferença entre atributos <strong>globais</strong> (que todo elemento aceita) e <strong>específicos</strong>.</li>
+  <li>Os erros: atributo repetido, sem aspas, sem espaço, com nome errado, no elemento errado ou com valor inválido.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code> 26.10.12, aula <a href="validar.html">Validar o HTML</a>) na máquina fictícia da Ana, na pasta <code>~/site/atributos</code>, e abertos no Chromium. Como na aula anterior, os exemplos mostram só o que vai dentro do <code>&lt;body&gt;</code>.</p>
+
+<hr>
+
+<h2>A ideia: a ficha presa no pote</h2>
+<p>Na cozinha da Ana, cada pote tem uma etiqueta com o que está dentro: "farinha", "açúcar". Isso é a tag. Mas alguns potes têm também uma fichinha amarrada com mais detalhes: "<em>validade: 10/11</em>", "<em>marca: Boa Massa</em>". Cada detalhe tem duas partes: <strong>o que</strong> está sendo informado (validade) e <strong>o valor</strong> (10/11).</p>
+
+<p>Um atributo é essa fichinha. Ele tem um <strong>nome</strong> (o que está sendo informado) e um <strong>valor</strong>, e fica preso na tag de abertura do elemento.</p>
+
+<hr>
+
+<h2>1. Anatomia de um atributo</h2>
+<p>O exemplo mais famoso é o link. O elemento <code>&lt;a&gt;</code> (de <em>anchor</em>, "âncora") faz um texto clicável, e o atributo <code>href</code> diz o endereço:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Veja as &lt;a href="receitas.html"&gt;receitas&lt;/a&gt; da Ana.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;a</dt><dd>O começo da tag de abertura, com o nome do elemento.</dd>
+  <dt>href</dt><dd>O <strong>nome</strong> do atributo. <code>href</code> = <em>hypertext reference</em>, "referência de hipertexto": o endereço do link. Entre o nome do elemento e o primeiro atributo vai <strong>um espaço</strong>.</dd>
+  <dt>=</dt><dd>O sinal de igual liga o nome ao valor. Pode ter espaços em volta (<code>href = "…"</code>), mas o costume é escrever tudo junto.</dd>
+  <dt>"receitas.html"</dt><dd>O <strong>valor</strong>, entre aspas: o arquivo para onde o link leva.</dd>
+  <dt>&gt;</dt><dd>Fim da tag de abertura. Depois vêm o conteúdo (<code>receitas</code>) e o fechamento <code>&lt;/a&gt;</code>, que <strong>nunca</strong> leva atributos.</dd>
+</dl>
+
+<p>No resultado, a palavra "receitas" aparece sublinhada e de outra cor: é um link. O atributo em si não aparece; ele muda o <strong>comportamento</strong> do elemento. (Clicar nele aqui leva a um arquivo que não existe; os links têm aula própria, <a href="links.html">Links</a>.)</p>
+
+<h3>Atributos que aparecem para o leitor</h3>
+<p>Alguns atributos mudam o que o leitor vê. O <code>title</code> ("título") guarda uma explicação extra, que o navegador mostra numa caixinha quando o mouse para em cima do elemento:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p title="Receita da vovó Lúcia"&gt;Bolo de cenoura&lt;/p&gt;
+</pre>
+
+<p>Pare o mouse sobre "Bolo de cenoura" no resultado e espere um segundo: aparece "Receita da vovó Lúcia". No celular não há mouse, e a caixinha não aparece. Por isso, nunca coloque <strong>só</strong> no <code>title</code> uma informação importante.</p>
+
+<div class="tryhtml" data-goal="attr:a[href]=sobre.html,attr:a[title]=Quem é a Ana">
+<p class="try-task"><strong>Missão:</strong> o link "Sobre mim" ainda não leva a lugar nenhum. Dê a ele o atributo <code>href</code> com o valor <code>sobre.html</code> (a outra aba) e um <code>title</code> com o texto <code>Quem é a Ana</code>. Depois clique no link, no resultado, para ver a outra página.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a&gt;Sobre mim&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Sobre a Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;A Ana cozinha desde criança e adora bolos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="sobre.html" title="Quem é a Ana"&gt;Sobre mim&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Vários atributos</h2>
+<p>Um elemento pode ter quantos atributos precisar, separados por <strong>espaço</strong>. A ordem não importa. A imagem é o exemplo clássico: ela precisa do arquivo, de um texto alternativo e, de preferência, do tamanho (aula <a href="imagens.html">Imagens</a>):</p>
+
+<pre class="file" data-file="bolo.html">&lt;img src="bolo.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>Nome em inglês</th><th>O que diz</th></tr>
+<tr><td><code>src="bolo.jpg"</code></td><td><em>source</em>, "fonte, origem"</td><td>qual arquivo de imagem mostrar</td></tr>
+<tr><td><code>alt="Bolo de…"</code></td><td><em>alternative</em>, "alternativo"</td><td>o que a imagem mostra, em palavras, para quem não pode vê-la (aula <a href="imagens-alt.html">Texto Alternativo</a>)</td></tr>
+<tr><td><code>width="400"</code></td><td>"largura"</td><td>a largura, em pixels (sem escrever <code>px</code>)</td></tr>
+<tr><td><code>height="300"</code></td><td>"altura"</td><td>a altura, em pixels</td></tr>
+</table>
+</div>
+
+<p>Repare que o <code>&lt;img&gt;</code> é um <strong>elemento vazio</strong> (aula <a href="elementos.html">Elementos e Tags</a>): ele não tem conteúdo, então tudo o que ele precisa saber vem pelos atributos.</p>
+
+<h3>Maiúsculas e minúsculas</h3>
+<p>Como as tags, os <strong>nomes</strong> de atributo não diferenciam maiúsculas: <code>TITLE="Bolo"</code> funciona e é válido, e o navegador o guarda como <code>title</code>. Use minúsculas. Já os <strong>valores</strong> podem diferenciar: <code>href="Receitas.html"</code> e <code>href="receitas.html"</code> são arquivos diferentes num servidor de verdade (aula <a href="caminhos.html">Caminhos</a>).</p>
+
+<hr>
+
+<h2>3. As aspas</h2>
+<p>O HTML aceita três jeitos de escrever o valor. Os três parágrafos abaixo são válidos:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p title="Receita da vovó"&gt;Bolo de cenoura&lt;/p&gt;
+&lt;p title='Receita da "vovó"'&gt;Pudim&lt;/p&gt;
+&lt;p title=Pudim&gt;Pudim de leite&lt;/p&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Jeito</th><th>Quando funciona</th></tr>
+<tr><td>Aspas duplas: <code>title="…"</code></td><td>Sempre, desde que o valor não tenha aspas duplas dentro. É o jeito do guia.</td></tr>
+<tr><td>Aspas simples: <code>title='…'</code></td><td>Sempre, desde que o valor não tenha aspas simples dentro. Útil quando o valor tem aspas duplas, como <code>'Receita da "vovó"'</code>.</td></tr>
+<tr><td>Sem aspas: <code>title=Pudim</code></td><td>Só se o valor for <strong>uma palavra</strong>: sem espaço, sem aspas, sem <code>=</code>, <code>&lt;</code>, <code>&gt;</code> ou <code>`</code>.</td></tr>
+</table>
+</div>
+
+<p>Por que o guia usa <strong>sempre</strong> aspas duplas? Porque um dia o valor ganha um espaço. Veja o que acontece quando a Ana tira as aspas de um valor com espaços:</p>
+
+<pre class="file" data-file="sem-aspas-espaco.html · erro de propósito">&lt;p title=Receita da vovó&gt;Bolo de cenoura&lt;/p&gt;
+</pre>
+<pre class="file" data-file="o que o navegador montou">&lt;p title="Receita" da="" vovó=""&gt;Bolo de cenoura&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/atributos">$ vnu sem-aspas-espaco.html
+"file:/home/ana/site/atributos/sem-aspas-espaco.html":8.1-8.25: error: Attribute “da” not allowed on element “p” at this point.
+"file:/home/ana/site/atributos/sem-aspas-espaco.html":8.1-8.25: error: Attribute “vovó” not allowed on element “p” at this point.</pre>
+
+<p>Sem aspas, o valor termina no primeiro espaço. O <code>title</code> ficou só com "Receita", e "da" e "vovó" viraram dois atributos novos, sem valor. O validador diz: "o atributo <code>da</code> não é permitido no elemento <code>p</code> neste ponto". Na tela, o parágrafo parece normal: só a caixinha do <code>title</code> mostra "Receita".</p>
+
+<hr>
+
+<h2>4. Atributos booleanos: liga e desliga</h2>
+<p>Alguns atributos não precisam de valor: <strong>estar lá</strong> já é a informação. Eles se chamam <strong>booleanos</strong> (de George Boole, o matemático do "verdadeiro ou falso"). Um exemplo é o <code>open</code> ("aberto") do elemento <code>&lt;details&gt;</code>, uma caixa que abre e fecha com um clique (aula <a href="details.html">details e summary</a>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;details open&gt;
+&lt;summary&gt;Ingredientes&lt;/summary&gt;
+&lt;p&gt;3 cenouras, 3 ovos e 2 xícaras de farinha.&lt;/p&gt;
+&lt;/details&gt;
+</pre>
+
+<p>Com o <code>open</code>, a caixa já começa aberta. Clique em "Ingredientes" no resultado para fechá-la e abri-la de novo. Outros atributos booleanos que você vai encontrar: <code>disabled</code> ("desativado") e <code>required</code> ("obrigatório") nos formulários, <code>checked</code> ("marcado") nas caixas de seleção, <code>hidden</code> ("escondido") em qualquer elemento.</p>
+
+<p>As três formas abaixo querem dizer exatamente a mesma coisa, e as três são válidas:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>Resultado</th></tr>
+<tr><td><code>&lt;details open&gt;</code></td><td>aberto (a forma do guia)</td></tr>
+<tr><td><code>&lt;details open=""&gt;</code></td><td>aberto</td></tr>
+<tr><td><code>&lt;details open="open"&gt;</code></td><td>aberto</td></tr>
+<tr><td><code>&lt;details&gt;</code></td><td><strong>fechado</strong>: o único jeito de "desligar" é tirar o atributo</td></tr>
+</table>
+</div>
+
+<div class="warning">
+<strong><code>open="false"</code> não fecha</strong>
+<p>Parece lógico escrever <code>open="false"</code> para fechar a caixa. Mas o navegador só olha se o atributo <strong>existe</strong>, e não o valor: com <code>open="false"</code>, a caixa continua <strong>aberta</strong>. O validador avisa: <code>error: Bad value “false” for attribute “open” on element “details”.</code> ("valor ruim, <code>false</code>, para o atributo <code>open</code> no elemento <code>details</code>"). Para fechar, apague o atributo.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:details[open]=1,attr:details:first-of-type[open],nsel:details:last-of-type[open]=0">
+<p class="try-task"><strong>Missão:</strong> a Ana quer que só os <strong>ingredientes</strong> comecem abertos, e o modo de preparo fechado. Hoje é o contrário, e a pessoa que escreveu tentou fechar a caixa com <code>open="false"</code>. Conserte os dois <code>&lt;details&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;details open="false"&gt;
+&lt;summary&gt;Ingredientes&lt;/summary&gt;
+&lt;p&gt;3 cenouras, 3 ovos e 2 xícaras de farinha.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details open&gt;
+&lt;summary&gt;Modo de preparo&lt;/summary&gt;
+&lt;p&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+&lt;/details&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;details open&gt;
+&lt;summary&gt;Ingredientes&lt;/summary&gt;
+&lt;p&gt;3 cenouras, 3 ovos e 2 xícaras de farinha.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;Modo de preparo&lt;/summary&gt;
+&lt;p&gt;Bata tudo no liquidificador e asse por 40 minutos.&lt;/p&gt;
+&lt;/details&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. Globais e específicos</h2>
+<p>Cada elemento aceita uma lista de atributos. Alguns, chamados <strong>globais</strong>, funcionam em <strong>qualquer</strong> elemento. Outros são <strong>específicos</strong>: só fazem sentido em certos elementos.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>Tipo</th><th>Para que serve</th></tr>
+<tr><td><code>lang</code></td><td>global</td><td>o idioma do conteúdo: <code>lang="pt-BR"</code> (aula <a href="estrutura.html">Estrutura de uma Página</a>)</td></tr>
+<tr><td><code>title</code></td><td>global</td><td>uma explicação extra, mostrada ao parar o mouse</td></tr>
+<tr><td><code>id</code></td><td>global</td><td>um nome único para o elemento (aula <a href="class-id.html">class e id</a>)</td></tr>
+<tr><td><code>class</code></td><td>global</td><td>um ou mais "grupos" do elemento, usados pelo CSS (aula <a href="class-id.html">class e id</a>)</td></tr>
+<tr><td><code>style</code></td><td>global</td><td>CSS escrito direto no elemento (aula <a href="atributo-style.html">O Atributo style</a>)</td></tr>
+<tr><td><code>hidden</code></td><td>global, booleano</td><td>esconde o elemento</td></tr>
+<tr><td><code>href</code></td><td>específico</td><td>o endereço de <code>&lt;a&gt;</code> e <code>&lt;link&gt;</code></td></tr>
+<tr><td><code>src</code>, <code>alt</code></td><td>específico</td><td>o arquivo e o texto alternativo de <code>&lt;img&gt;</code></td></tr>
+<tr><td><code>open</code></td><td>específico, booleano</td><td>deixa <code>&lt;details&gt;</code> e <code>&lt;dialog&gt;</code> abertos</td></tr>
+<tr><td><code>charset</code></td><td>específico</td><td>a codificação do texto, em <code>&lt;meta&gt;</code> (aula <a href="acentos-utf8.html">Acentos e UTF-8</a>)</td></tr>
+</table>
+</div>
+
+<p>A lista completa dos globais está em <a href="atributos-globais.html">Atributos Globais</a>, e a de todos os atributos em <a href="ref-atributos.html">Referência de Atributos</a>. Um atributo específico no elemento errado é um erro (veja abaixo). E você pode inventar os seus próprios, desde que comecem com <code>data-</code> (aula <a href="data-atributos.html">Atributos data-*</a>).</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Com atributos, o navegador quase nunca mostra nada de estranho: ele ignora o que não entende. O erro fica escondido, e só o validador o encontra. A exceção é a aspa esquecida, que pode apagar a página inteira.</p>
+
+<div class="cenario">
+<strong>Aspa esquecida: <code>End of file reached when inside an attribute value.</code></strong>
+<pre class="file" data-file="aspa-aberta.html · erro de propósito">&lt;p title="Bolo de cenoura&gt;Bolo de cenoura&lt;/p&gt;
+&lt;p&gt;Pudim de leite.&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site/atributos">$ vnu aspa-aberta.html
+"file:/home/ana/site/atributos/aspa-aberta.html":8.1-11.8: error: End of file reached when inside an attribute value. Ignoring tag.</pre>
+<p><strong>O que significa:</strong> "fim do arquivo alcançado dentro do valor de um atributo. Ignorando a tag". Sem a aspa de fechamento, o valor do <code>title</code> continua até achar outra aspa dupla, e não há nenhuma: o resto do arquivo inteiro, até o <code>&lt;/html&gt;</code> da linha 11, virou o valor. <strong>No navegador:</strong> a página fica <strong>em branco</strong>. O Chromium montou um <code>&lt;body&gt;</code> vazio. <strong>Como consertar:</strong> feche a aspa: <code>title="Bolo de cenoura"</code>. Se uma página inteira sumiu, procure uma aspa sem par perto do ponto onde o conteúdo some.</p>
+</div>
+
+<div class="cenario">
+<strong>Atributo repetido: <code>Duplicate attribute “title”.</code></strong>
+<pre class="term" data-cwd="~/site/atributos">$ sed -n 8p repetido.html
+&lt;p title="Bolo" title="Pudim"&gt;Doces&lt;/p&gt;
+$ vnu repetido.html
+"file:/home/ana/site/atributos/repetido.html":8.1-8.22: error: Duplicate attribute “title”.</pre>
+<p><strong>O que significa:</strong> "atributo <code>title</code> repetido". <strong>No navegador:</strong> vale o <strong>primeiro</strong>; o segundo é jogado fora (o Chromium montou <code>&lt;p title="Bolo"&gt;</code>). Isso costuma acontecer com <code>class</code>: quem escreve <code>class="a" class="b"</code> esperando os dois grupos fica só com o <code>a</code>. <strong>Como consertar:</strong> um atributo de cada nome. Para dois grupos, <code>class="a b"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Sem espaço entre atributos: <code>No space between attributes.</code></strong>
+<pre class="term" data-cwd="~/site/atributos">$ sed -n 8p sem-espaco.html
+&lt;a href="receitas.html"title="Todas as receitas"&gt;Receitas&lt;/a&gt;
+$ vnu sem-espaco.html
+"file:/home/ana/site/atributos/sem-espaco.html":8.1-8.24: error: No space between attributes.</pre>
+<p><strong>O que significa:</strong> "não há espaço entre os atributos". <strong>No navegador:</strong> funciona, porque a aspa já mostrou onde o primeiro valor termina; o Chromium montou os dois atributos certinho. Mas é um erro, e o validador acusa. <strong>Como consertar:</strong> um espaço antes de cada atributo.</p>
+</div>
+
+<div class="cenario">
+<strong>Nome errado ou elemento errado: <code>Attribute “hreff” not allowed on element “a” at this point.</code></strong>
+<pre class="term" data-cwd="~/site/atributos">$ sed -sn 8p digitacao.html lugar-errado.html
+&lt;a hreff="receitas.html"&gt;Receitas&lt;/a&gt;
+&lt;p href="receitas.html"&gt;Receitas&lt;/p&gt;
+$ vnu digitacao.html lugar-errado.html
+"file:/home/ana/site/atributos/digitacao.html":8.1-8.25: error: Attribute “hreff” not allowed on element “a” at this point.
+"file:/home/ana/site/atributos/lugar-errado.html":8.1-8.24: error: Attribute “href” not allowed on element “p” at this point.</pre>
+<p><strong>O que significa:</strong> "o atributo <code>hreff</code> não é permitido no elemento <code>a</code> neste ponto". A mesma mensagem serve para os dois casos: um nome que não existe (<code>hreff</code>, com dois <code>f</code>) e um nome que existe, mas não nesse elemento (<code>href</code> num parágrafo). <strong>No navegador:</strong> o atributo é guardado, mas não faz nada. Os dois "Receitas" aparecem como texto comum, e <strong>nenhum é um link</strong>. <strong>Como consertar:</strong> confira a grafia e se o atributo pertence ao elemento. Um link é sempre <code>&lt;a href="…"&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Valor inválido: <code>Bad value “portugues” for attribute “lang”</code></strong>
+<pre class="term" data-cwd="~/site/atributos">$ sed -sn 8p valor-errado.html dir.html
+&lt;p lang="portugues"&gt;Bolo de cenoura&lt;/p&gt;
+&lt;p dir="direita"&gt;Bolo de cenoura&lt;/p&gt;
+$ vnu valor-errado.html dir.html
+"file:/home/ana/site/atributos/valor-errado.html":8.1-8.20: error: Bad value “portugues” for attribute “lang” on element “p”: Subtags must not exceed 8 characters in length.
+"file:/home/ana/site/atributos/dir.html":8.1-8.17: error: Bad value “direita” for attribute “dir” on element “p”.</pre>
+<p><strong>O que significa:</strong> "valor ruim para o atributo". Alguns atributos aceitam qualquer texto (<code>title</code>), mas outros têm uma lista de valores permitidos. O <code>lang</code> usa códigos padronizados: <code>pt-BR</code>, <code>pt</code>, <code>en</code>, <code>es</code>. O validador explica: "as partes do código não podem passar de 8 letras". O <code>dir</code> (direção do texto) só aceita <code>ltr</code>, <code>rtl</code> e <code>auto</code>, em inglês. <strong>No navegador:</strong> nada muda na tela, mas o leitor de tela não sabe em que idioma ler o texto. <strong>Como consertar:</strong> use os valores da lista, que estão em cada aula e na <a href="ref-atributos.html">Referência de Atributos</a>.</p>
+</div>
+
+<div class="cenario">
+<strong>Atributo no fechamento: <code>End tag had attributes.</code></strong>
+<pre class="term" data-cwd="~/site/atributos">$ sed -n 8p fechamento.html
+&lt;p&gt;Bolo de cenoura&lt;/p title="Bolo"&gt;
+$ vnu fechamento.html
+"file:/home/ana/site/atributos/fechamento.html":8.19-8.35: error: End tag had attributes.</pre>
+<p><strong>O que significa:</strong> "a tag de fechamento tinha atributos". <strong>No navegador:</strong> o atributo é jogado fora. <strong>Como consertar:</strong> atributos vão sempre na tag de abertura: <code>&lt;p title="Bolo"&gt;Bolo de cenoura&lt;/p&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Atributo obsoleto: <code>The “align” attribute on the “p” element is obsolete.</code></strong>
+<pre class="term" data-cwd="~/site/atributos">$ sed -n 8p obsoleto.html
+&lt;p align="center"&gt;Bolo de cenoura&lt;/p&gt;
+$ vnu obsoleto.html; echo "código de saída: $?"
+"file:/home/ana/site/atributos/obsoleto.html":8.1-8.18: info warning: The “align” attribute on the “p” element is obsolete. Use CSS instead.
+código de saída: 0</pre>
+<p><strong>O que significa:</strong> "o atributo <code>align</code> no elemento <code>p</code> é obsoleto. Use CSS no lugar". Tutoriais antigos usam vários atributos de aparência, como <code>align</code>, <code>bgcolor</code> e <code>border</code>. Hoje a aparência é trabalho do CSS (quer aprender mais? futuro Guia CSS). Repare que é um <code>info warning</code>, um aviso: o código de saída é <code>0</code>. <strong>No navegador:</strong> o texto ainda fica centralizado, porque os navegadores mantêm o comportamento antigo. <strong>Como consertar:</strong> use CSS, como em <a href="atributo-style.html">O Atributo style</a>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que é</th></tr>
+<tr><td><code>&lt;a href="receitas.html"&gt;</code></td><td>Atributo <code>href</code> com valor <code>receitas.html</code></td></tr>
+<tr><td><code>&lt;img src="a.jpg" alt="…"&gt;</code></td><td>Vários atributos, separados por espaço, em qualquer ordem</td></tr>
+<tr><td><code>title="…"</code> / <code>title='…'</code></td><td>Aspas duplas ou simples: as duas valem (o guia usa duplas)</td></tr>
+<tr><td><code>title=Pudim</code></td><td>Sem aspas: só para uma palavra (evite)</td></tr>
+<tr><td><code>&lt;details open&gt;</code></td><td>Atributo booleano: estar lá = ligado</td></tr>
+<tr><td><code>&lt;details&gt;</code></td><td>Atributo booleano ausente = desligado</td></tr>
+<tr><td><code>lang</code>, <code>title</code>, <code>id</code>, <code>class</code>, <code>style</code>, <code>hidden</code></td><td>Globais: valem em qualquer elemento</td></tr>
+<tr><td><code>data-qualquer-nome="…"</code></td><td>Atributo seu, inventado (aula <a href="data-atributos.html">Atributos data-*</a>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O endereço do link</h3>
+<p>Complete o nome do atributo que diz para onde o link vai:</p>
+<div class="ex-code">&lt;a <input data-answer="href" aria-label="atributo">="contato.html"&gt;Contato&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O idioma</h3>
+<p>Complete o valor do idioma da página, em português do Brasil:</p>
+<div class="ex-code">&lt;html lang="<input data-answer="pt-BR|pt-br" aria-label="idioma">"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Onde ficam os atributos?</p>
+<label><input type="radio" name="q3"> Na tag de fechamento</label>
+<label><input type="radio" name="q3"> No conteúdo, entre as tags</label>
+<label><input type="radio" name="q3"> Na tag de abertura</label>
+<label><input type="radio" name="q3"> Em qualquer uma das duas tags</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Em <code>&lt;p title=Receita da vovó&gt;</code>, qual é o valor do <code>title</code>?</p>
+<label><input type="radio" name="q4"> <code>Receita da vovó</code></label>
+<label><input type="radio" name="q4"> <code>Receita</code>: sem aspas, o valor acaba no primeiro espaço</label>
+<label><input type="radio" name="q4"> Nenhum: o navegador apaga o parágrafo</label>
+<label><input type="radio" name="q4"> <code>vovó</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Como deixar um <code>&lt;details&gt;</code> fechado?</p>
+<label><input type="radio" name="q5"> <code>&lt;details open="false"&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;details open="no"&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;details closed&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;details&gt;</code>, sem o atributo <code>open</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. A página inteira da Ana ficou em branco depois que ela mexeu num <code>title</code>. Qual é o suspeito número 1?</p>
+<label><input type="radio" name="q6"> Uma aspa de fechamento esquecida</label>
+<label><input type="radio" name="q6"> Um atributo repetido</label>
+<label><input type="radio" name="q6"> Um atributo em maiúsculas</label>
+<label><input type="radio" name="q6"> Faltou um espaço entre dois atributos</label>
+</div>
+
+<h3>Missão final: o cartão da receita</h3>
+
+<div class="tryhtml" data-goal="attr:p[title]=Receita da vovó Lúcia,nsel:p[da]=0,attr:a[href]=receitas.html,attr:a[title]=Todas as receitas,attr:details[open],nsel:[hreff]=0,nsrc:&quot;title=">
+<p class="try-task"><strong>Missão:</strong> o cartão da receita tem quatro erros de atributo. (1) O <code>title</code> do parágrafo está sem aspas: ele deve valer <code>Receita da vovó Lúcia</code>. (2) O link tem o atributo <code>href</code> escrito errado, e (3) falta um espaço antes do <code>title</code> dele. (4) A caixa de ingredientes deve começar <strong>aberta</strong>, e não está. Conserte tudo.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p title=Receita da vovó Lúcia&gt;Rende 12 pedaços.&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt;Ingredientes&lt;/summary&gt;
+&lt;p&gt;3 cenouras, 3 ovos e 2 xícaras de farinha.&lt;/p&gt;
+&lt;/details&gt;
+&lt;p&gt;&lt;a hreff="receitas.html"title="Todas as receitas"&gt;Voltar para as receitas&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo de cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p title="Receita da vovó Lúcia"&gt;Rende 12 pedaços.&lt;/p&gt;
+&lt;details open&gt;
+&lt;summary&gt;Ingredientes&lt;/summary&gt;
+&lt;p&gt;3 cenouras, 3 ovos e 2 xícaras de farinha.&lt;/p&gt;
+&lt;/details&gt;
+&lt;p&gt;&lt;a href="receitas.html" title="Todas as receitas"&gt;Voltar para as receitas&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>A meta que pega o espaço esquecido olha o <strong>código</strong>, e não a página desenhada: como você viu, o navegador monta os dois atributos mesmo sem o espaço, então só o código (e o validador) mostra esse erro.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Um atributo é uma informação extra de um elemento: <code>nome="valor"</code>, na tag de <strong>abertura</strong>, separado do nome do elemento e dos outros atributos por espaço.</li>
+  <li>Use sempre aspas duplas. Sem aspas, o valor acaba no primeiro espaço; com uma aspa esquecida, a página pode sumir inteira.</li>
+  <li>Atributos <strong>booleanos</strong> (<code>open</code>, <code>disabled</code>, <code>checked</code>, <code>hidden</code>…) ligam só por estar lá. Para desligar, tire o atributo: <code>open="false"</code> continua aberto.</li>
+  <li><strong>Globais</strong> (<code>lang</code>, <code>title</code>, <code>id</code>, <code>class</code>, <code>style</code>…) valem em qualquer elemento; os <strong>específicos</strong> (<code>href</code>, <code>src</code>, <code>alt</code>, <code>open</code>…), só nos seus.</li>
+  <li>O navegador ignora em silêncio atributo repetido (fica o primeiro), com nome errado, no elemento errado ou com valor inválido. Quem mostra é o validador: <code>Duplicate attribute</code>, <code>not allowed on element</code>, <code>Bad value</code>, <code>No space between attributes</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
