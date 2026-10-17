@@ -159,7 +159,7 @@ Adorei o bolo de cenoura.&lt;/textarea&gt;
 
 <div class="note">
 <strong>No editor do guia</strong>
-<p>Ao enviar um <code>&lt;textarea&gt;</code> com várias linhas, a página "Formulário enviado" do editor mostra a quebra como <code>%0A</code>, sem o <code>%0D</code>. É uma diferença do editor, que monta o envio de outro jeito; um navegador enviando para um servidor de verdade manda <code>%0D%0A</code>, como acima. O texto em si é o mesmo.</p>
+<p>Ao enviar um <code>&lt;textarea&gt;</code> com várias linhas, a página "Formulário enviado" do editor mostra a quebra do mesmo jeito que o navegador manda: <code>%0D%0A</code>, no corpo da mensagem (POST) ou no endereço (GET). Na tabela, embaixo, o texto aparece com as linhas juntas, separadas por um espaço, mas o par enviado é o mesmo.</p>
 </div>
 
 <div class="tryhtml">
