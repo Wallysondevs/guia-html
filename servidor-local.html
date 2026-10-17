@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Servidor Local — file:// ou http://, python3 -m http.server | Guia HTML</title>
+<meta name="description" content="Servidor local para quem nunca fez um site: a diferença entre abrir o arquivo (file://) e abrir pelo servidor (http://localhost), o que quebra no file:// (caminhos com barra no começo, fetch, módulos), o python3 -m http.server com porta, --bind e -d, o registro de cada pedido, o curl -I, o erro Address already in use e a extensão Live Server do VS Code.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Servidor Local</span></h1>
+
+<p class="intro">Até aqui, para ver uma página, você dava dois cliques no arquivo e o navegador a abria. Funciona, mas não é assim que o seu site vai chegar aos visitantes: na internet, quem entrega cada página é um <strong>servidor</strong>. Algumas coisas funcionam de um jeito com o arquivo aberto direto e de outro com o servidor, e a surpresa costuma aparecer no dia de publicar. Nesta aula a Ana liga um servidor de verdade no próprio computador, com um comando só, e vê lado a lado o que muda.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>A diferença entre abrir o arquivo (<code>file://</code>) e abrir pelo servidor (<code>http://</code>).</li>
+  <li>Três coisas que quebram no <code>file://</code>: o caminho que começa com <code>/</code>, o <code>fetch</code> e os módulos de JavaScript.</li>
+  <li>A ligar e desligar o servidor do Python: <code>python3 -m http.server</code>, com porta, <code>--bind</code> e <code>-d</code>.</li>
+  <li>A ler o registro de cada pedido e a conferir uma resposta com <code>curl -I</code>.</li>
+  <li>O erro <code>Address already in use</code> e a extensão <strong>Live Server</strong> do VS Code.</li>
+</ul>
+</div>
+
+<p>Os comandos desta aula rodaram na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>, Ubuntu), com o <strong>Python 3.14.4</strong>, na pasta do site de receitas arrumada na aula <a href="organizar-arquivos.html">Organizar os Arquivos</a>. As páginas foram abertas no <strong>Chromium 155</strong>.</p>
+
+<hr>
+
+<h2>A ideia: a receita no caderno e a receita no restaurante</h2>
+<p>A Ana pode ler uma receita direto no caderno dela: abre, folheia, pronto. Num restaurante, o cliente não pega o caderno: ele <strong>pede</strong> ao garçom, que vai até a cozinha e <strong>entrega</strong> o prato. Com o garçom no meio, valem as regras do restaurante: o pedido tem de ter o nome certo do prato, a cozinha diz "acabou" quando não tem, e ninguém mexe nas gavetas da casa.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>Abrir o arquivo (o caderno)</th><th>Pelo servidor (o restaurante)</th></tr>
+<tr><td>Endereço</td><td><code>file:///home/ana/sites/receitas/index.html</code></td><td><code>http://localhost:8000/</code></td></tr>
+<tr><td>Quem entrega</td><td>O navegador lê o arquivo do disco</td><td>Um programa servidor responde a um pedido</td></tr>
+<tr><td>Arquivo que não existe</td><td>O navegador mostra um erro dele</td><td>O servidor responde <code>404</code></td></tr>
+<tr><td>Parecido com o site publicado?</td><td>Não muito</td><td>Sim: é como a internet funciona</td></tr>
+</table>
+</div>
+
+<dl class="anatomy">
+  <dt>file://</dt><dd>O "protocolo" do arquivo local: "pegue este arquivo direto do disco". Depois dele vem o caminho completo no computador.</dd>
+  <dt>http://</dt><dd><em>HyperText Transfer Protocol</em>, "protocolo de transferência de hipertexto": a língua que o navegador e o servidor falam. Na internet, quase sempre aparece como <code>https://</code>, a versão com cadeado (criptografia).</dd>
+  <dt>localhost</dt><dd>"Este computador aqui". É o nome que todo computador dá a si mesmo.</dd>
+  <dt>:8000</dt><dd>A <strong>porta</strong>: um número que diz qual programa do computador vai atender. Um computador pode ter vários servidores ligados, cada um numa porta.</dd>
+</dl>
+
+<hr>
+
+<h2>1. O que quebra no <code>file://</code></h2>
+<p>A Ana montou uma página de teste com três coisas comuns em sites reais:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Teste&lt;/title&gt;
+&lt;link rel="stylesheet" href="/css/estilo.css"&gt;
+&lt;script type="module" src="js/modulo.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;pre id="out"&gt;&lt;/pre&gt;
+&lt;script&gt;
+var o=document.getElementById("out");
+function p(t){o.textContent+=t+"\n";}
+p("protocolo: "+location.protocol+" origin: "+location.origin+" seguro: "+isSecureContext);
+setTimeout(function(){p("cor do h1: "+getComputedStyle(document.querySelector("h1")).color); p("modulo rodou: "+(window.moduloOk===true));},1500);
+fetch("receitas.json").then(function(r){return r.json();}).then(function(d){p("fetch ok: "+d.length+" receitas");}).catch(function(e){p("fetch falhou: "+e.name+": "+e.message);});
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>href="/css/estilo.css"</dt><dd>Um caminho que <strong>começa com barra</strong>: "a partir da raiz do site" (aula <a href="caminhos.html">Caminhos</a>). O <code>estilo.css</code> pinta o <code>&lt;h1&gt;</code> de vermelho-tijolo.</dd>
+  <dt>&lt;script type="module"&gt;</dt><dd>Um <strong>módulo</strong> de JavaScript, o jeito moderno de dividir o código em arquivos (aula <a href="script.html">O Elemento script</a>).</dd>
+  <dt>fetch("receitas.json")</dt><dd>O JavaScript <strong>buscando</strong> um arquivo de dados (<em>fetch</em> = "ir buscar"), como os sites fazem para carregar uma lista de produtos.</dd>
+  <dt>O resto do script</dt><dd>Só um teste: escreve na página, dentro do <code>&lt;pre&gt;</code>, o que deu certo e o que não deu.</dd>
+</dl>
+
+<h3>Com dois cliques (<code>file://</code>)</h3>
+<p>Aberta direto do disco, em <code>file:///home/ana/sites/srv/index.html</code>, a página escreveu:</p>
+
+<pre class="file" data-file="o que apareceu na página">protocolo: file: origin: file:// seguro: true
+fetch falhou: TypeError: Failed to fetch
+cor do h1: rgb(0, 0, 0)
+modulo rodou: false
+</pre>
+
+<p>E o console do F12 mostrou duas mensagens (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>):</p>
+
+<pre class="file" data-file="Console (Chromium 155)">Access to script at 'file:///home/ana/sites/srv/js/modulo.js' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: chrome, chrome-experimental-site-token-provider, chrome-extension, chrome-untrusted, data, http, https, isolated-app.
+Access to fetch at 'file:///home/ana/sites/srv/receitas.json' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: chrome, chrome-experimental-site-token-provider, chrome-extension, chrome-untrusted, data, http, https, isolated-app.
+</pre>
+
+<p>Três problemas:</p>
+<ol>
+  <li><strong>O título ficou preto</strong> (<code>rgb(0, 0, 0)</code>). No <code>file://</code>, a "raiz" é a raiz do <strong>disco</strong>: o navegador procurou <code>file:///css/estilo.css</code>, uma pasta <code>css</code> no começo do disco, que não existe.</li>
+  <li><strong>O módulo não rodou.</strong> A mensagem diz: "o acesso ao script <code>modulo.js</code> a partir da origem <code>null</code> foi bloqueado pela política de CORS: pedidos entre origens só são aceitos para os protocolos chrome, data, http, https…". Em português simples: arquivo aberto do disco não tem "endereço de site" (a origem é <code>null</code>, "nenhuma"), e o Chromium não deixa uma página assim carregar módulos.</li>
+  <li><strong>O <code>fetch</code> falhou</strong>, pelo mesmo motivo. Para o JavaScript, o erro é só <code>TypeError: Failed to fetch</code> ("falha ao buscar"); a explicação está no console.</li>
+</ol>
+
+<p>CORS é a sigla de <em>Cross-Origin Resource Sharing</em>, "compartilhamento de recursos entre origens": as regras que decidem que arquivos uma página pode carregar com JavaScript. Elas existem para proteger você: sem elas, uma página qualquer que você baixasse e abrisse poderia ler outros arquivos do seu disco. Outros navegadores têm regras parecidas para o <code>file://</code>, cada um com seus detalhes.</p>
+
+<h3>Pelo servidor (<code>http://</code>)</h3>
+<p>A mesma pasta, o mesmo arquivo, agora em <code>http://localhost:8000/</code>:</p>
+
+<pre class="file" data-file="o que apareceu na página">protocolo: http: origin: http://localhost:8000 seguro: true
+fetch ok: 2 receitas
+cor do h1: rgb(178, 34, 34)
+modulo rodou: true
+</pre>
+
+<p>Tudo funcionou: o <code>/css/estilo.css</code> virou <code>http://localhost:8000/css/estilo.css</code> (a raiz do <strong>site</strong>), o módulo rodou (o console mostrou <code>módulo carregado</code>) e o <code>fetch</code> trouxe as 2 receitas. O <code>seguro: true</code> dos dois lados quer dizer que o navegador trata <code>localhost</code> como um lugar confiável, mesmo sem <code>https</code>: alguns recursos do navegador só funcionam em páginas "seguras", e o <code>localhost</code> conta.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Recurso</th><th><code>file://</code></th><th><code>http://localhost</code></th></tr>
+<tr><td>Caminhos relativos (<code>css/estilo.css</code>)</td><td>funciona</td><td>funciona</td></tr>
+<tr><td>Caminho com barra no começo (<code>/css/estilo.css</code>)</td><td>quebra: vai para a raiz do disco</td><td>funciona: raiz do site</td></tr>
+<tr><td><code>&lt;script type="module"&gt;</code></td><td>bloqueado (CORS)</td><td>funciona</td></tr>
+<tr><td><code>fetch()</code> de um arquivo do site</td><td>bloqueado (CORS)</td><td>funciona</td></tr>
+<tr><td>Endereço terminado em <code>/</code> abre o <code>index.html</code></td><td>não: mostra a lista da pasta</td><td>sim</td></tr>
+<tr><td>Maiúsculas no nome</td><td>depende do sistema (Windows não liga)</td><td>no Linux, diferencia, como o servidor de verdade</td></tr>
+</table>
+</div>
+
+<p>Se a sua página é só HTML, CSS e imagens com caminhos relativos, os dois cliques continuam servindo para olhar. Mas, assim que aparecer JavaScript que busca arquivos, ou antes de publicar, teste com um servidor.</p>
+
+<hr>
+
+<h2>2. Ligar o servidor do Python</h2>
+<p>O Python, que já vem instalado no Ubuntu e no macOS, traz um servidor simples. Abra o terminal, entre na pasta do site e rode:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ python3 -m http.server
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...</pre>
+
+<dl class="anatomy">
+  <dt>python3</dt><dd>O Python 3. (No Windows, o comando costuma ser <code>python</code> ou <code>py</code>, depois de instalar o Python pelo site python.org ou pela Microsoft Store.)</dd>
+  <dt>-m http.server</dt><dd>"Rode o <strong>m</strong>ódulo <code>http.server</code>", que vem com o Python.</dd>
+  <dt>Serving HTTP on 0.0.0.0 port 8000</dt><dd>"Servindo HTTP em 0.0.0.0, porta 8000". O <code>0.0.0.0</code> quer dizer "atendo em todas as redes deste computador". O servidor entrega os arquivos da <strong>pasta onde você rodou o comando</strong>.</dd>
+  <dt>O terminal "travou"</dt><dd>De propósito: o servidor fica ligado, esperando pedidos, até você desligá-lo. Abra outra aba do terminal se precisar dele.</dd>
+</dl>
+
+<p>Agora abra o navegador e digite na barra de endereços: <strong><code>http://localhost:8000/</code></strong>. Aparece o <code>index.html</code> da pasta. Não digite o <code>0.0.0.0</code> da mensagem: ele descreve onde o servidor atende, e não é um endereço garantido para o navegador; o <code>localhost</code> funciona em todo lugar.</p>
+
+<h3>Desligar: <kbd>Ctrl</kbd>+<kbd>C</kbd></h3>
+<pre class="term" data-cwd="~/sites/receitas">$ python3 -m http.server
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+^C
+Keyboard interrupt received, exiting.</pre>
+
+<p>O <code>^C</code> é o <kbd>Ctrl</kbd>+<kbd>C</kbd> que a Ana apertou. "Interrupção pelo teclado recebida, saindo." O servidor parou e o terminal voltou a aceitar comandos. Recarregue a página no navegador: agora ele não consegue se conectar, porque não há ninguém atendendo na porta 8000.</p>
+
+<h3>As opções mais úteis</h3>
+<pre class="term" data-cwd="~/sites/receitas">$ python3 -m http.server --bind 127.0.0.1 8080
+Serving HTTP on 127.0.0.1 port 8080 (http://127.0.0.1:8080/) ...
+^C
+Keyboard interrupt received, exiting.</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Opção</th><th>Exemplo</th><th>O que faz</th></tr>
+<tr><td>um número no fim</td><td><code>python3 -m http.server 8080</code></td><td>Usa outra porta (o padrão é 8000). O endereço vira <code>http://localhost:8080/</code>.</td></tr>
+<tr><td><code>--bind</code> (ou <code>-b</code>)</td><td><code>--bind 127.0.0.1</code></td><td>Atende só este computador. <code>127.0.0.1</code> é o número do <code>localhost</code>.</td></tr>
+<tr><td><code>--directory</code> (ou <code>-d</code>)</td><td><code>-d ~/sites/receitas</code></td><td>Serve outra pasta, sem precisar entrar nela com <code>cd</code>.</td></tr>
+<tr><td><code>--help</code></td><td><code>python3 -m http.server --help</code></td><td>Lista todas as opções (em inglês).</td></tr>
+</table>
+</div>
+
+<div class="warning">
+<strong>Só para testar, e de preferência com <code>--bind 127.0.0.1</code></strong>
+<p>Sem o <code>--bind</code>, o servidor atende em <strong>todas</strong> as redes (o <code>0.0.0.0</code>): qualquer aparelho no mesmo Wi-Fi pode abrir os arquivos da pasta, digitando o endereço do seu computador na rede (algo como <code>http://192.168.0.15:8000/</code>). Isso é útil para testar o site no celular, mas num Wi-Fi público é uma porta aberta. E o <code>http.server</code> é feito para testes: a própria documentação do Python avisa que ele não deve ser usado para publicar um site de verdade. Para publicar, veja a aula <a href="publicar.html">Publicar</a>.</p>
+</div>
+
+<hr>
+
+<h2>3. O registro: cada pedido, uma linha</h2>
+<p>Enquanto está ligado, o servidor escreve no terminal, embaixo da linha "Serving HTTP…", uma linha para cada pedido que recebe. Quando o Chromium abriu a página de teste da seção 1, apareceram estas:</p>
+
+<pre class="file" data-file="registro do servidor">127.0.0.1 - - [17/Oct/2026 16:02:18] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 16:02:18] "GET /css/estilo.css HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 16:02:18] "GET /js/modulo.js HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 16:02:18] "GET /receitas.json HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 16:02:18] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 16:02:18] "GET /favicon.ico HTTP/1.1" 404 -
+</pre>
+
+<dl class="anatomy">
+  <dt>127.0.0.1</dt><dd>Quem pediu: este mesmo computador (o <code>localhost</code>).</dd>
+  <dt>- -</dt><dd>Dois campos de identificação que este servidor não usa.</dd>
+  <dt>[17/Oct/2026 16:02:18]</dt><dd>Data e hora do pedido.</dd>
+  <dt>"GET /css/estilo.css HTTP/1.1"</dt><dd>O pedido: o <strong>método</strong> <code>GET</code> ("pegar"), o <strong>caminho</strong> pedido e a versão do HTTP.</dd>
+  <dt>200 / 404</dt><dd>O <strong>código de resposta</strong>: <code>200</code> = "achei, aqui está"; <code>404</code> = "não encontrado".</dd>
+</dl>
+
+<p>Repare na ordem: primeiro o navegador pediu a página (<code>/</code>); lendo o HTML, achou o CSS, o módulo e o <code>fetch</code>, e pediu cada um. Uma página é uma <strong>conversa</strong> de vários pedidos, e o registro mostra todos.</p>
+
+<p>E o <code>/favicon.ico</code>? Ninguém pediu no HTML: o navegador procura sozinho o ícone da aba na raiz do site. Como a pasta não tem esse arquivo, deu 404. É inofensivo, e a aula <a href="favicon.html">Ícone da Aba</a> mostra como acabar com ele.</p>
+
+<div class="tip">
+<strong>O registro é o seu detetive</strong>
+<p>Uma imagem que não aparece, um CSS que não pega: olhe o registro. Se o caminho pedido tem um <code>404</code>, compare-o com o nome do arquivo na pasta. Quase sempre é uma maiúscula, um <code>../</code> faltando ou uma extensão diferente (aula <a href="organizar-arquivos.html">Organizar os Arquivos</a>).</p>
+</div>
+
+<hr>
+
+<h2>4. Conferir a resposta com o <code>curl</code></h2>
+<p>O <code>curl</code> faz um pedido ao servidor pelo terminal, sem navegador. Com <code>-I</code>, ele mostra só o <strong>cabeçalho</strong> da resposta, as informações que o servidor manda antes do arquivo. Para usar o mesmo terminal, a Ana ligou o servidor em <strong>segundo plano</strong>: o <code>&amp;</code> no fim devolve o terminal na hora, e o <code>&gt; ~/servidor.log 2&gt;&amp;1</code> manda o registro para um arquivo, em vez de misturá-lo com as respostas:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ python3 -m http.server 8000 &gt; ~/servidor.log 2&gt;&amp;1 &amp;
+[1] 4
+$ curl -I http://localhost:8000/
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 19:04:59 GMT
+Content-type: text/html
+Content-Length: 494
+Last-Modified: Sat, 17 Oct 2026 18:56:22 GMT
+</pre>
+
+<dl class="anatomy">
+  <dt>[1] 4</dt><dd>O Bash avisa que o servidor virou o "trabalho 1" em segundo plano (o 4 é o número do processo).</dd>
+  <dt>HTTP/1.0 200 OK</dt><dd>A resposta: "200, tudo certo".</dd>
+  <dt>Server</dt><dd>Quem respondeu: o servidor simples do Python.</dd>
+  <dt>Date</dt><dd>A hora da resposta, em GMT (o horário de Greenwich, 3 horas à frente do horário de Brasília: 19:04 GMT = 16:04 no registro).</dd>
+  <dt>Content-type: text/html</dt><dd>O <strong>tipo</strong> do arquivo: "texto HTML". É assim que o navegador sabe que deve desenhar uma página, e não mostrar o código. O servidor decide o tipo pela extensão (<code>.html</code>, <code>.css</code>, <code>.jpg</code>).</dd>
+  <dt>Content-Length: 494</dt><dd>O tamanho do arquivo, em bytes.</dd>
+  <dt>Last-Modified</dt><dd>Quando o arquivo foi alterado pela última vez.</dd>
+</dl>
+
+<p>Uma pasta <strong>sem</strong> <code>index.html</code> também responde <code>200</code>, mas com outro tipo: é a lista de arquivos que o próprio servidor monta (aula <a href="organizar-arquivos.html">Organizar os Arquivos</a>). E o registro guardou os dois pedidos; <code>HEAD</code> é o método "só o cabeçalho", que o <code>curl -I</code> usa:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ curl -I http://localhost:8000/receitas/
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 19:05:00 GMT
+Content-type: text/html; charset=utf-8
+Content-Length: 384
+
+$ cat ~/servidor.log
+127.0.0.1 - - [17/Oct/2026 16:04:59] "HEAD / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 16:05:00] "HEAD /receitas/ HTTP/1.1" 200 -</pre>
+
+<p>Para desligar um servidor em segundo plano, use <code>kill %1</code> (o <code>%1</code> é o "trabalho número 1", o <code>[1]</code> que apareceu quando ele foi ligado). Fechar o terminal também desliga.</p>
+
+<hr>
+
+<h2>5. "Address already in use"</h2>
+<p>Só um programa pode atender numa porta. Com o servidor da seção 4 ainda ligado, a Ana tentou ligar outro na mesma porta 8000. O Python mostrou uma mensagem longa, com o caminho do erro por dentro do Python; a parte que importa é a última linha:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ python3 -m http.server 2&gt;&amp;1 | tail -1
+OSError: [Errno 98] Address already in use</pre>
+
+<p>"Endereço já em uso": a porta 8000 já tem dono. Ou você esqueceu um servidor ligado em outra aba do terminal (desligue-o com <kbd>Ctrl</kbd>+<kbd>C</kbd> lá), ou outro programa usa essa porta. A saída mais rápida é escolher outra: <code>python3 -m http.server 8001</code>.</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ kill %1
+$ python3 -m http.server --bind 127.0.0.1 8080
+Serving HTTP on 127.0.0.1 port 8080 (http://127.0.0.1:8080/) ...
+^C
+Keyboard interrupt received, exiting.
+[1]+  Terminado                  python3 -m http.server 8000 &gt; ~/servidor.log 2&gt;&amp;1</pre>
+
+<p>A última linha é o Bash avisando que o servidor da porta 8000, desligado pelo <code>kill %1</code>, terminou.</p>
+
+<hr>
+
+<h2>6. No editor do guia</h2>
+<p>O editor "Experimente" deste guia funciona como um pequeno servidor: cada aba vira um arquivo com endereço, como num site publicado. Por isso o <code>fetch</code> e os caminhos se comportam como no <code>http://</code>, e não como no <code>file://</code>.</p>
+
+<div class="tryhtml" data-goal="console:2 receitas">
+<p class="try-task"><strong>Missão:</strong> o script busca a lista de receitas, mas o console mostra um erro: o servidor respondeu 404. Compare o nome pedido no <code>fetch</code> com o nome da aba e conserte o <code>script.js</code>. O console deve mostrar <code>2 receitas</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">fetch("Receitas.json")
+  .then(function (resposta) {
+    console.log("resposta: " + resposta.status);
+    return resposta.json();
+  })
+  .then(function (lista) {
+    console.log(lista.length + " receitas");
+  })
+  .catch(function (erro) {
+    console.log("erro: " + erro.message);
+  });
+</pre>
+<pre class="script" data-file="receitas.json">["Bolo de cenoura", "Pudim"]
+</pre>
+<pre class="solucao" data-file="script.js">fetch("receitas.json")
+  .then(function (resposta) {
+    console.log("resposta: " + resposta.status);
+    return resposta.json();
+  })
+  .then(function (lista) {
+    console.log(lista.length + " receitas");
+  })
+  .catch(function (erro) {
+    console.log("erro: " + erro.message);
+  });
+</pre>
+</div>
+
+<div class="tryhtml" data-goal="css:h1{color}=rgb(178, 34, 34)">
+<p class="try-task"><strong>Missão:</strong> o <code>&lt;link&gt;</code> usa um caminho com barra no começo. No editor, como num servidor, essa barra leva à raiz do <strong>site do guia</strong>, onde não existe <code>css/estilo.css</code>, e o título fica sem cor. Troque pelo caminho relativo à página.</p>
+<pre class="script" data-file="index.html">&lt;link rel="stylesheet" href="/css/estilo.css"&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+</pre>
+<pre class="script" data-file="css/estilo.css">h1 {
+  color: firebrick;
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;link rel="stylesheet" href="css/estilo.css"&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+</pre>
+</div>
+
+<p>Repare: no seu computador, com o <code>python3 -m http.server</code> rodando na pasta do site, o <code>/css/estilo.css</code> <strong>funcionaria</strong>, porque ali a raiz do servidor é a raiz do site. A barra no começo depende de <strong>onde</strong> o site está. Se um dia ele for publicado numa subpasta (como <code>https://ana.github.io/receitas/</code>, aula <a href="publicar.html">Publicar</a>), a barra aponta para fora dele. Caminhos relativos funcionam em todos os casos.</p>
+
+<hr>
+
+<h2>7. Live Server, no VS Code</h2>
+<p>Se você usa o VS Code (aula <a href="editores.html">Editores</a>), uma extensão faz o papel do servidor sem terminal: a <strong>Live Server</strong> (de Ritwick Dey). Ela também <strong>recarrega a página sozinha</strong> cada vez que você salva o arquivo.</p>
+
+<ol class="passo">
+  <li>No VS Code, abra a aba de extensões (o ícone de quadradinhos na barra da esquerda, ou <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>), procure "Live Server" e instale a do autor Ritwick Dey.</li>
+  <li>Abra a <strong>pasta</strong> do site no VS Code (menu Arquivo, abrir pasta), e não só um arquivo: a pasta aberta vira a raiz do servidor.</li>
+  <li>Clique no botão <strong>Go Live</strong> que aparece na barra de baixo da janela, à direita, ou clique com o botão direito num arquivo <code>.html</code> e escolha <strong>Open with Live Server</strong>.</li>
+  <li>O navegador abre num endereço como <code>http://127.0.0.1:5500/index.html</code>: a porta padrão da extensão é a <strong>5500</strong>.</li>
+  <li>Edite e salve: a página no navegador se atualiza sozinha. Para desligar, clique no mesmo botão da barra de baixo, que passa a mostrar a porta.</li>
+</ol>
+
+<p>Por baixo, é a mesma ideia do <code>python3 -m http.server</code>: um servidor no seu computador entregando os arquivos de uma pasta por <code>http://</code>. A Microsoft tem uma extensão parecida, a <strong>Live Preview</strong>, que mostra a página dentro do próprio VS Code. Os textos dos botões podem mudar de uma versão para outra (e aparecer em português, se o VS Code estiver em português); o que importa é o endereço com <code>http://</code> na barra do navegador.</p>
+
+<hr>
+
+<h2>Formas de ter um servidor local: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Forma</th><th>Como</th><th>Bom para</th><th>Cuidado</th></tr>
+<tr><td>Dois cliques no arquivo</td><td>abre em <code>file://</code></td><td>Olhar uma página só de HTML e CSS</td><td>Quebra <code>fetch</code>, módulos e caminhos com <code>/</code></td></tr>
+<tr><td><code>python3 -m http.server</code></td><td>um comando no terminal, na pasta do site</td><td>Testar o site como ele vai ser publicado; já vem com o Python</td><td>Não recarrega sozinho; só para testes</td></tr>
+<tr><td>Live Server (VS Code)</td><td>um botão no editor</td><td>Trabalhar no dia a dia: salva e vê</td><td>Precisa abrir a <strong>pasta</strong>, não só o arquivo</td></tr>
+</table>
+</div>
+
+<p><strong>Qual usar?</strong> Para o dia a dia no VS Code, o Live Server. Para conferir o site antes de publicar, ou quando você está no terminal, o <code>python3 -m http.server</code>: ele não tem nenhuma mágica, e o registro mostra cada pedido.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>Access to fetch at 'file:///…' from origin 'null' has been blocked by CORS policy</code></strong>
+<p><strong>O que significa:</strong> a página foi aberta com dois cliques (<code>file://</code>) e o JavaScript tentou buscar um arquivo. O Chromium bloqueia. Com <code>type="module"</code>, a mensagem começa com <code>Access to script at</code>.</p>
+<p><strong>Como consertar:</strong> abra a página por um servidor: <code>python3 -m http.server</code> na pasta e <code>http://localhost:8000/</code> no navegador.</p>
+</div>
+
+<div class="cenario">
+<strong><code>OSError: [Errno 98] Address already in use</code></strong>
+<p><strong>O que significa:</strong> já existe um programa atendendo naquela porta, quase sempre um servidor esquecido em outra janela do terminal.</p>
+<p><strong>Como consertar:</strong> desligue o outro (<kbd>Ctrl</kbd>+<kbd>C</kbd> na janela dele) ou use outra porta: <code>python3 -m http.server 8001</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>"O navegador não consegue se conectar a localhost"</strong>
+<p><strong>O que significa:</strong> não há servidor ligado naquela porta. Ou ele foi desligado (você apertou <kbd>Ctrl</kbd>+<kbd>C</kbd> ou fechou o terminal), ou o endereço tem outra porta (<code>:8000</code> × <code>:8080</code> × <code>:5500</code>). Cada navegador mostra essa falha com o seu próprio texto.</p>
+<p><strong>Como consertar:</strong> confira no terminal se a linha <code>Serving HTTP on … port 8000</code> está lá e se a porta do endereço é a mesma.</p>
+</div>
+
+<div class="cenario">
+<strong>O site abre, mas mostra a lista de arquivos (<code>Directory listing for /</code>)</strong>
+<p><strong>O que significa:</strong> o servidor foi ligado na pasta errada (uma acima, por exemplo) ou a pasta não tem <code>index.html</code>.</p>
+<p><strong>Como consertar:</strong> desligue, entre na pasta onde está o <code>index.html</code> (<code>cd ~/sites/receitas</code>) e ligue de novo, ou use <code>-d ~/sites/receitas</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O CSS some só no servidor (ou só no <code>file://</code>)</strong>
+<p><strong>O que significa:</strong> um caminho que depende de onde está a raiz. <code>/css/estilo.css</code> funciona no servidor e quebra no <code>file://</code>; um caminho com a pasta do seu computador (<code>C:\…</code>) funciona no <code>file://</code> e quebra no servidor.</p>
+<p><strong>Como consertar:</strong> use caminhos <strong>relativos</strong> (<code>css/estilo.css</code>, <code>../css/estilo.css</code>) e confira o registro do servidor: o <code>404</code> mostra o caminho que o navegador pediu.</p>
+</div>
+
+<hr>
+
+<h2>Referência</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Comando ou endereço</th><th>O que faz</th></tr>
+<tr><td><code>python3 -m http.server</code></td><td>Serve a pasta atual em <code>http://localhost:8000/</code></td></tr>
+<tr><td><code>python3 -m http.server 8080</code></td><td>Usa a porta 8080</td></tr>
+<tr><td><code>python3 -m http.server --bind 127.0.0.1</code></td><td>Atende só este computador</td></tr>
+<tr><td><code>python3 -m http.server -d pasta</code></td><td>Serve outra pasta</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>Desliga o servidor</td></tr>
+<tr><td><code>curl -I http://localhost:8000/</code></td><td>Mostra o cabeçalho da resposta</td></tr>
+<tr><td><code>curl http://localhost:8000/sobre.html</code></td><td>Mostra o arquivo que o servidor entrega</td></tr>
+<tr><td><code>http://localhost:8000/</code></td><td>O seu site, pelo servidor local</td></tr>
+<tr><td><code>http://127.0.0.1:5500/</code></td><td>O endereço padrão do Live Server</td></tr>
+<tr><td>Código 200 / 404</td><td>Achei / não encontrado</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Ligar na porta 3000</h3>
+<p>Complete o comando:</p>
+<div class="ex-code">python3 -m <input data-answer="http.server" aria-label="módulo"> 3000</div>
+</div>
+
+<div class="exercise">
+<h3>2. O endereço</h3>
+<p>Com o servidor da questão 1 ligado, qual endereço você digita no navegador?</p>
+<div class="ex-code"><input data-answer="http://localhost:3000/|http://localhost:3000|localhost:3000|http://127.0.0.1:3000/|http://127.0.0.1:3000" aria-label="endereço"></div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Aberta com dois cliques, a página não carrega um <code>&lt;script type="module"&gt;</code>, e o console fala em CORS e <code>origin 'null'</code>. O que fazer?</p>
+<label><input type="radio" name="q3"> Tirar o <code>type="module"</code></label>
+<label><input type="radio" name="q3"> Abrir a página por um servidor local, com <code>http://</code></label>
+<label><input type="radio" name="q3"> Trocar de navegador</label>
+<label><input type="radio" name="q3"> Validar o HTML</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. No registro aparece <code>"GET /img/Bolo.jpg HTTP/1.1" 404 -</code>. O que isso conta?</p>
+<label><input type="radio" name="q4"> O servidor caiu</label>
+<label><input type="radio" name="q4"> A imagem é grande demais</label>
+<label><input type="radio" name="q4"> O HTML tem um erro de validação</label>
+<label><input type="radio" name="q4"> O navegador pediu <code>/img/Bolo.jpg</code> e o servidor não achou esse arquivo (talvez ele se chame <code>bolo.jpg</code>)</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Para que serve o <code>--bind 127.0.0.1</code>?</p>
+<label><input type="radio" name="q5"> Para o servidor atender só o próprio computador, e não os outros aparelhos da rede</label>
+<label><input type="radio" name="q5"> Para usar a porta 127</label>
+<label><input type="radio" name="q5"> Para recarregar a página sozinho</label>
+<label><input type="radio" name="q5"> Para publicar o site na internet</label>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Dois cliques abrem a página em <code>file://</code>, direto do disco. Na internet, quem entrega é um servidor, por <code>http://</code>.</li>
+  <li>No <code>file://</code>, caminhos com <code>/</code> no começo vão para a raiz do disco, e o Chromium bloqueia <code>fetch</code> e módulos (<code>blocked by CORS policy</code>, <code>origin 'null'</code>).</li>
+  <li><code>python3 -m http.server</code> serve a pasta atual em <code>http://localhost:8000/</code>. Porta no fim, <code>--bind 127.0.0.1</code> para atender só você, <code>-d</code> para outra pasta, <kbd>Ctrl</kbd>+<kbd>C</kbd> para desligar.</li>
+  <li>O registro mostra cada pedido com o código: <code>200</code> achou, <code>404</code> não achou. O <code>curl -I</code> mostra o cabeçalho da resposta.</li>
+  <li><code>Address already in use</code>: a porta já tem um servidor; desligue-o ou use outra porta.</li>
+  <li>No VS Code, a extensão Live Server faz o mesmo com um botão (porta 5500) e recarrega a página ao salvar.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
