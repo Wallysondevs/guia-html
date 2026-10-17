@@ -225,7 +225,7 @@ $ vnu tel.html
 
 <div class="cenario">
 <strong>Esqueceu o <code>mailto:</code>: o link vira um arquivo</strong>
-<p><strong>O que acontece:</strong> com <code>&lt;a href="ana@example.com"&gt;</code>, o navegador lê o endereço como o <strong>nome de um arquivo</strong> na pasta do site (aula <a href="caminhos.html">Caminhos</a>), e o clique dá 404. No editor, aparece a página "404: página não encontrada".</p>
+<p><strong>O que acontece:</strong> com <code>&lt;a href="ana@example.com"&gt;</code>, o navegador lê o endereço como o <strong>nome de um arquivo</strong> na pasta do site (aula <a href="caminhos.html">Caminhos</a>), e o clique dá 404. No editor, o quadro mostra a página de erro 404 do servidor que hospeda o guia (a resposta para um arquivo <code>ana@example.com</code>, que não existe).</p>
 <p><strong>O que o validador diz:</strong> nada: <code>ana@example.com</code> é um nome de arquivo válido.</p>
 <p><strong>Como consertar:</strong> <code>href="mailto:ana@example.com"</code>.</p>
 </div>
