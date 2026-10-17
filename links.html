@@ -173,7 +173,7 @@ index.html  sobre.html</pre>
 <p>Uma imagem dentro do <code>&lt;a&gt;</code> vira clicável (imagens têm aula própria, <a href="imagens.html">Imagens</a>). Como a imagem é o único conteúdo, o texto alternativo, o <code>alt</code>, passa a ser o texto do link: ele deve dizer <strong>aonde o link leva</strong>, e não só o que a foto mostra (aula <a href="imagens-alt.html">Texto Alternativo</a>).</p>
 
 <pre class="file" data-file="index.html" data-resultado>&lt;a href="bolo.html"&gt;
-  &lt;img src="assets/midia/bolo-400.jpg" alt="Receita do bolo de fubá" width="200" height="150"&gt;
+  &lt;img src="assets/midia/bolo-400.jpg" alt="Receita do bolo de cenoura" width="200" height="150"&gt;
 &lt;/a&gt;
 </pre>
 
@@ -240,7 +240,7 @@ index.html  sobre.html</pre>
 <strong>Esqueceu o <code>https://</code>: o link vai para dentro do seu site</strong>
 <pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="www.example.com"&gt;Site de exemplo&lt;/a&gt;&lt;/p&gt;
 </pre>
-<p><strong>O que o navegador faz:</strong> sem o <code>https://</code>, o endereço é lido como o <strong>nome de um arquivo</strong> na pasta atual, um arquivo chamado <code>www.example.com</code>. Num site publicado, o link vai para algo como <code>https://site-da-ana.example/www.example.com</code> e dá erro 404. Clique no resultado: o editor mostra a página "404: página não encontrada".</p>
+<p><strong>O que o navegador faz:</strong> sem o <code>https://</code>, o endereço é lido como o <strong>nome de um arquivo</strong> na pasta atual, um arquivo chamado <code>www.example.com</code>. Num site publicado, o link vai para algo como <code>https://site-da-ana.example/www.example.com</code> e dá erro 404. Clique no resultado: o quadro mostra uma página de erro 404. Não é a página do editor: como o nome termina em <code>.com</code>, e não em <code>.html</code>, o editor deixa o pedido seguir até o servidor que hospeda o guia, e quem responde "não encontrado" é ele, como aconteceria no site da Ana. O botão <strong>↻</strong> da barra do quadro volta ao exemplo.</p>
 <p><strong>O que o validador diz:</strong> nada. Para ele, <code>www.example.com</code> é um nome de arquivo tão válido quanto <code>sobre.html</code>. Só testando o link você descobre.</p>
 <p><strong>Como consertar:</strong> endereço de outro site sempre começa com <code>https://</code> (ou <code>http://</code>, nos sites antigos).</p>
 </div>
