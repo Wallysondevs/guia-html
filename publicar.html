@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Publicar no GitHub Pages — o site na internet, de graça | Guia HTML</title>
+<meta name="description" content="Publicar um site HTML no GitHub Pages para quem nunca fez isso: preparar a pasta (index.html, caminhos relativos, nomes em minúsculas), o passo a passo pelo site do GitHub, o mesmo caminho pelo git (git init, add, commit, remote, com saídas reais), o endereço usuario.github.io/repositorio/, atualizar o site e os erros mais comuns, como o 404 e o CSS que some.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Publicar no GitHub Pages</span></h1>
+
+<p class="intro">Até agora, o site da Ana só existia no computador dela. <strong>Publicar</strong> é colocá-lo num servidor ligado na internet o dia inteiro, com um endereço que qualquer pessoa pode abrir. Existem muitos serviços para isso; nesta aula você vai usar o <strong>GitHub Pages</strong>, que publica sites de HTML, CSS e JavaScript de graça. Você vai ver dois caminhos: pelo <strong>site do GitHub</strong>, só com cliques, e pelo <strong>git</strong>, no terminal, que é como os profissionais trabalham.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que conferir na pasta antes de publicar.</li>
+  <li>O que são o GitHub, um repositório e o GitHub Pages.</li>
+  <li>A publicar pelo site do GitHub: criar o repositório, enviar os arquivos e ligar o Pages.</li>
+  <li>O mesmo trabalho pelo git: <code>git init</code>, <code>git add</code>, <code>git commit</code> e <code>git remote</code>, com as saídas reais.</li>
+  <li>Qual é o endereço do site e por que ele tem o nome do repositório no fim.</li>
+  <li>A atualizar o site e a resolver os erros mais comuns.</li>
+</ul>
+</div>
+
+<p>Os comandos desta aula rodaram na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>, Ubuntu 26.04), com o <strong>git 2.53.0</strong> do Ubuntu, na pasta do site de receitas das aulas <a href="organizar-arquivos.html">Organizar os Arquivos</a> e <a href="servidor-local.html">Servidor Local</a>. O último passo, o envio para o GitHub (<code>git push</code>), é descrito, mas não aparece rodando: ele precisa de uma conta e de uma senha especial, e cada leitor vai usar a sua. Onde aparecer <code>SEU-USUARIO</code>, troque pelo seu nome de usuário no GitHub.</p>
+
+<hr>
+
+<h2>A ideia: a vitrine da loja</h2>
+<p>A Ana faz bolos em casa. Para vender, ela precisa de uma <strong>vitrine</strong> numa rua movimentada. O GitHub é um prédio cheio de depósitos (os <strong>repositórios</strong>), um para cada projeto. O GitHub Pages é a vitrine: ele pega o que está num depósito e expõe na rua, com um endereço.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Loja</th><th>Site</th></tr>
+<tr><td>A cozinha de casa</td><td>a pasta do site no seu computador</td></tr>
+<tr><td>O prédio de depósitos</td><td>o <strong>GitHub</strong> (github.com)</td></tr>
+<tr><td>O seu depósito, com etiqueta</td><td>um <strong>repositório</strong> (<em>repository</em>, "repo"): uma pasta guardada no GitHub, com todo o histórico de mudanças</td></tr>
+<tr><td>A vitrine na rua</td><td>o <strong>GitHub Pages</strong>: serve os arquivos do repositório como um site</td></tr>
+<tr><td>O endereço da vitrine</td><td><code>https://SEU-USUARIO.github.io/receitas/</code></td></tr>
+<tr><td>A caderneta onde a Ana anota cada receita nova</td><td>o <strong>git</strong>: o programa que guarda as versões dos arquivos</td></tr>
+</table>
+</div>
+
+<p>Pense no git como um álbum de fotos da pasta: cada vez que você "tira uma foto" (um <strong>commit</strong>), ele guarda como todos os arquivos estavam naquele momento. O GitHub guarda uma cópia desse álbum na internet, e o Pages mostra a foto mais recente como site.</p>
+
+<hr>
+
+<h2>1. Antes de publicar: a lista de conferência</h2>
+<p>O GitHub Pages é um servidor como o da aula <a href="servidor-local.html">Servidor Local</a>, rodando em Linux. Tudo o que quebra num servidor quebra lá. Confira:</p>
+
+<ol class="passo">
+  <li><strong>A página inicial se chama <code>index.html</code></strong>, em minúsculas, na raiz da pasta.</li>
+  <li><strong>Nomes de arquivo em minúsculas</strong>, sem espaços nem acentos: o servidor diferencia <code>Foto.jpg</code> de <code>foto.jpg</code>.</li>
+  <li><strong>Caminhos relativos</strong>: <code>css/estilo.css</code> e <code>../img/pudim.jpg</code>. Nada de <code>C:\…</code>, de <code>file:///</code>, nem de caminho começando com <code>/</code> (seção 5 explica por quê).</li>
+  <li><strong>O HTML valida</strong>: <code>vnu --skip-non-html .</code> na pasta.</li>
+  <li><strong>Testou num servidor local</strong> e o registro não mostrou nenhum <code>404</code>.</li>
+  <li><strong>Nada secreto na pasta</strong>: o site será público, e os arquivos do repositório também. Nada de senhas, planilhas pessoais, documentos.</li>
+</ol>
+
+<p>Na pasta da Ana, o validador não disse nada, que é o que se espera:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ vnu --skip-non-html --errors-only . ; echo "saida=$?"
+saida=0</pre>
+
+<p><code>--errors-only</code> mostra só os erros, e o código de saída <code>0</code> confirma: nenhum.</p>
+
+<div class="tryhtml" data-goal="css:h1{color}=rgb(178, 34, 34),attr:a[href]=sobre.html,nsrc:file:,nsrc:Users">
+<p class="try-task"><strong>Missão:</strong> o editor que a Ana usava escreveu caminhos com a pasta do computador dela. No computador da Ana funciona; publicado, nenhum visitante tem um <code>C:\Users\Ana</code>. Troque os dois caminhos por caminhos <strong>relativos</strong> aos arquivos das abas. O título deve ficar vermelho-tijolo e o link deve abrir a página Sobre.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="file:///C:/Users/Ana/Desktop/site/css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="file:///C:/Users/Ana/Desktop/site/sobre.html"&gt;Sobre a Ana&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="sobre.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Sobre | Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Sobre a Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="css/estilo.css">h1 {
+  color: firebrick;
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;link rel="stylesheet" href="css/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="sobre.html"&gt;Sobre a Ana&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Criar a conta e o repositório</h2>
+<p>A interface do GitHub é em inglês, e os nomes e a posição dos botões mudam de tempos em tempos. Os passos abaixo dizem <strong>o que</strong> procurar; se um botão estiver em outro lugar, procure pela mesma palavra.</p>
+
+<ol class="passo">
+  <li>Crie uma conta grátis em <strong>github.com</strong> (botão <em>Sign up</em>, "cadastrar-se"). O <strong>nome de usuário</strong> que você escolher vai aparecer no endereço do site: <code>https://SEU-USUARIO.github.io/</code>. Escolha um que você não tenha vergonha de mostrar.</li>
+  <li>Já logado, procure o botão <strong>+</strong> no alto da página e escolha <strong>New repository</strong> ("novo repositório").</li>
+  <li>Em <em>Repository name</em> ("nome do repositório"), escreva <code>receitas</code>. As mesmas regras dos nomes de arquivo valem aqui: minúsculas e hífen. Esse nome vai virar parte do endereço.</li>
+  <li>Deixe o repositório como <strong>Public</strong> ("público"). Na conta grátis, o GitHub Pages só funciona com repositórios públicos.</li>
+  <li>Clique no botão de criar (<em>Create repository</em>). O repositório nasce vazio.</li>
+</ol>
+
+<hr>
+
+<h2>3. Caminho A: enviar os arquivos pelo site</h2>
+<p>O jeito mais simples, sem instalar nada:</p>
+
+<ol class="passo">
+  <li>Na página do repositório vazio, procure o link <strong>uploading an existing file</strong> ("enviar um arquivo existente"). Num repositório que já tem arquivos, o mesmo fica no botão <strong>Add file</strong> → <strong>Upload files</strong>.</li>
+  <li>Abra a pasta do site no seu computador, selecione <strong>o que está dentro dela</strong> (o <code>index.html</code>, o <code>sobre.html</code> e as pastas <code>css</code>, <code>js</code>, <code>img</code>, <code>receitas</code>) e arraste para a área indicada na página. Não arraste a pasta <code>receitas</code> de fora, a que contém tudo: o <code>index.html</code> precisa ficar na <strong>raiz</strong> do repositório, e não dentro de uma pasta.</li>
+  <li>Embaixo, no campo da mensagem, escreva o que mudou, como "Primeira versão do site", e clique em <strong>Commit changes</strong> ("registrar as mudanças"). Isso é um <strong>commit</strong>: uma "foto" dos arquivos.</li>
+  <li>Confira a lista de arquivos do repositório: o <code>index.html</code> deve aparecer ali, ao lado das pastas.</li>
+</ol>
+
+<div class="note">
+<strong>Arrastar pastas</strong>
+<p>Os navegadores atuais deixam arrastar pastas inteiras para a página de envio, e o GitHub recria as subpastas. Se o seu não deixar, envie as pastas uma de cada vez, ou use o caminho B.</p>
+</div>
+
+<hr>
+
+<h2>4. Ligar o GitHub Pages</h2>
+<p>Os arquivos estão no depósito. Falta abrir a vitrine:</p>
+
+<ol class="passo">
+  <li>No repositório, abra a aba <strong>Settings</strong> ("configurações").</li>
+  <li>No menu da esquerda, clique em <strong>Pages</strong>.</li>
+  <li>Em <em>Build and deployment</em> ("construção e publicação"), na opção <em>Source</em> ("origem"), escolha <strong>Deploy from a branch</strong> ("publicar a partir de um ramo").</li>
+  <li>Em <em>Branch</em>, escolha <strong><code>main</code></strong> e a pasta <strong><code>/ (root)</code></strong> (a raiz), e clique em <strong>Save</strong> ("salvar").</li>
+  <li>Espere um ou dois minutos e recarregue a página de configurações. Quando o site estiver no ar, aparece no alto o endereço dele, com um botão para visitá-lo.</li>
+</ol>
+
+<dl class="anatomy">
+  <dt>branch (ramo)</dt><dd>Uma linha de versões dentro do repositório. Todo repositório começa com um ramo, hoje quase sempre chamado <code>main</code> ("principal").</dd>
+  <dt>/ (root)</dt><dd>"Publique a partir da raiz do repositório". A outra opção, <code>/docs</code>, é para quem guarda o site numa pasta <code>docs</code>, ao lado de outros arquivos do projeto.</dd>
+</dl>
+
+<p>Na aba <strong>Actions</strong> do repositório, você vê o GitHub trabalhando: cada publicação aparece como uma tarefa, com um ícone que fica verde quando termina. Se ficar vermelho, clique para ver o motivo.</p>
+
+<hr>
+
+<h2>5. O endereço do site</h2>
+<p>O endereço de um repositório comum segue sempre a mesma forma:</p>
+
+<pre class="file" data-file="endereço">https://SEU-USUARIO.github.io/receitas/
+</pre>
+
+<dl class="anatomy">
+  <dt>https://</dt><dd>Com cadeado: o GitHub Pages usa conexão segura sozinho, sem você configurar nada.</dd>
+  <dt>SEU-USUARIO.github.io</dt><dd>O "terreno" da sua conta no GitHub Pages. O GitHub escreve o nome de usuário em minúsculas nesse endereço.</dd>
+  <dt>/receitas/</dt><dd>O nome do repositório, como se fosse uma <strong>pasta</strong>. O <code>index.html</code> da raiz do repositório aparece aqui.</dd>
+</dl>
+
+<p>Esse <code>/receitas/</code> explica o item 3 da lista de conferência. No site publicado, a raiz do <strong>servidor</strong> é <code>https://SEU-USUARIO.github.io/</code>, e o site da Ana mora uma pasta abaixo. Um caminho com barra no começo vai para a raiz do servidor, fora do site:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na página <code>https://SEU-USUARIO.github.io/receitas/index.html</code></th><th>o navegador pede</th><th>resultado</th></tr>
+<tr><td><code>href="css/estilo.css"</code></td><td><code>https://SEU-USUARIO.github.io/receitas/css/estilo.css</code></td><td>acha</td></tr>
+<tr><td><code>href="/css/estilo.css"</code></td><td><code>https://SEU-USUARIO.github.io/css/estilo.css</code></td><td><strong>404</strong>: o CSS some</td></tr>
+</table>
+</div>
+
+<div class="tip">
+<strong>Um site sem o nome do repositório no endereço</strong>
+<p>Se você der ao repositório o nome exato <code>SEU-USUARIO.github.io</code>, ele vira o seu <strong>site pessoal</strong>, publicado direto em <code>https://SEU-USUARIO.github.io/</code>, sem pasta no fim. Cada conta tem um só desse tipo. E, se você comprar um domínio próprio (como <code>receitasdaana.com.br</code>), dá para apontá-lo para o GitHub Pages na mesma tela de configurações, no campo <em>Custom domain</em> ("domínio personalizado").</p>
+</div>
+
+<hr>
+
+<h2>6. Caminho B: o git, no terminal</h2>
+<p>Enviar pelo site é ótimo para começar, mas a cada mudança você teria de arrastar os arquivos de novo. Com o <strong>git</strong>, você registra as mudanças no seu computador e manda tudo com um comando. Primeiro, instale: no Ubuntu, <code>sudo apt install git</code>; no Windows e no macOS, há instaladores em <strong>git-scm.com</strong>. Confira:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ git --version
+git version 2.53.0</pre>
+
+<div class="note">
+<strong>Português e inglês misturados</strong>
+<p>O git do Ubuntu fala português quando o sistema está em português, mas a tradução não está completa: as mensagens mais novas aparecem em inglês. As saídas abaixo são exatamente o que ele mostrou na máquina da Ana, mistura e tudo.</p>
+</div>
+
+<h3>6.1 <code>git init</code>: começar o álbum</h3>
+<pre class="term" data-cwd="~/sites/receitas">$ git init -b main
+Repositório vazio Git inicializado em  /home/ana/sites/receitas/.git/</pre>
+
+<dl class="anatomy">
+  <dt>git init</dt><dd>"Inicie": transforma a pasta atual num repositório. Faça isso uma vez só, na raiz do site.</dd>
+  <dt>-b main</dt><dd>Já cria o ramo com o nome <code>main</code>, o mesmo que o GitHub usa. Sem o <code>-b main</code>, o git 2.53 cria um ramo chamado <code>master</code> e mostra um aviso longo (em inglês) sugerindo trocar.</dd>
+  <dt>.git/</dt><dd>Uma pasta <strong>escondida</strong> (o ponto no começo do nome a esconde) onde o git guarda o álbum inteiro. Não mexa nela; apagá-la apaga o histórico.</dd>
+</dl>
+
+<h3>6.2 <code>git status</code>: o que o git está vendo</h3>
+<pre class="term" data-cwd="~/sites/receitas">$ git status
+No ramo main
+
+No commits yet
+
+Arquivos não monitorados:
+  (utilize "git add &lt;arquivo&gt;..." para incluir o que será submetido)
+	css/
+	img/
+	index.html
+	js/
+	receitas/
+	sobre.html
+
+nada adicionado ao envio mas arquivos não registrados estão presentes (use "git add" to registrar)</pre>
+
+<p>"Nenhum commit ainda" e seis itens "não monitorados": o git vê os arquivos, mas ainda não cuida deles. O <code>git status</code> é o comando que você mais vai usar: na dúvida, rode-o.</p>
+
+<h3>6.3 <code>git add</code>: escolher o que entra na foto</h3>
+<pre class="term" data-cwd="~/sites/receitas">$ git add .
+$ git status
+No ramo main
+
+No commits yet
+
+Mudanças a serem submetidas:
+  (utilize "git rm --cached &lt;arquivo&gt;..." para não apresentar)
+	new file:   css/estilo.css
+	new file:   img/bolo-de-cenoura.jpg
+	new file:   img/logo.svg
+	new file:   img/pudim.jpg
+	new file:   index.html
+	new file:   js/script.js
+	new file:   receitas/bolo-de-cenoura.html
+	new file:   receitas/pudim.html
+	new file:   sobre.html
+</pre>
+
+<p>O <code>.</code> quer dizer "tudo nesta pasta". Agora os nove arquivos estão na lista de "mudanças a serem submetidas", marcados como <code>new file</code> ("arquivo novo"). Ainda não há foto: o <code>add</code> só arruma quem vai aparecer nela.</p>
+
+<h3>6.4 <code>git commit</code>: tirar a foto</h3>
+<p>Na primeira vez, o git não sabe quem você é:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ git commit -m "Primeira versão do site de receitas"
+Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'ana@notebook.(none)')</pre>
+
+<p>"Identidade do autor desconhecida. Por favor, diga quem você é." Todo commit leva o nome e o e-mail de quem o fez. O git até sugere os comandos. A Ana se apresentou (faça isso uma vez por computador) e tentou de novo:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ git config --global user.name "Ana"
+$ git config --global user.email "ana@example.com"
+$ git commit -m "Primeira versão do site de receitas"
+[main (root-commit) 9c3e761] Primeira versão do site de receitas
+ 9 files changed, 64 insertions(+)
+ create mode 100644 css/estilo.css
+ create mode 100644 img/bolo-de-cenoura.jpg
+ create mode 100644 img/logo.svg
+ create mode 100644 img/pudim.jpg
+ create mode 100644 index.html
+ create mode 100644 js/script.js
+ create mode 100644 receitas/bolo-de-cenoura.html
+ create mode 100644 receitas/pudim.html
+ create mode 100644 sobre.html</pre>
+
+<dl class="anatomy">
+  <dt>-m "…"</dt><dd>A <strong>mensagem</strong> do commit: o que mudou, em poucas palavras. Ela aparece no histórico e no GitHub.</dd>
+  <dt>[main (root-commit) 9c3e761]</dt><dd>No ramo <code>main</code>, o primeiro commit de todos (<em>root-commit</em>, "commit raiz"). O <code>9c3e761</code> é o começo do <strong>código</strong> que identifica esta foto; o seu será outro.</dd>
+  <dt>9 files changed, 64 insertions(+)</dt><dd>"9 arquivos mudaram, 64 linhas acrescentadas".</dd>
+  <dt>create mode 100644</dt><dd>Cada arquivo criado. O <code>100644</code> é o tipo de permissão de um arquivo comum; pode ignorar.</dd>
+</dl>
+
+<p>Use no <code>user.email</code> o mesmo e-mail da sua conta do GitHub (ou o e-mail "privado" que o GitHub oferece nas configurações da conta, se não quiser mostrar o seu): é assim que o GitHub liga os commits ao seu perfil. E lembre que o nome e o e-mail ficam <strong>públicos</strong> no histórico do repositório.</p>
+
+<h3>6.5 <code>git log</code>: o álbum</h3>
+<pre class="term" data-cwd="~/sites/receitas">$ git log
+commit 9c3e7610c04d6920354f63a7837ac8733cd3b826
+Author: Ana &lt;ana@example.com&gt;
+Date:   Sat Oct 17 16:08:16 2026 -0300
+
+    Primeira versão do site de receitas
+$ git log --oneline
+9c3e761 Primeira versão do site de receitas</pre>
+
+<p>O código completo do commit tem 40 letras e números; o <code>--oneline</code> ("uma linha") mostra só o começo e a mensagem. O <code>-0300</code> é o fuso horário: 3 horas antes de Greenwich.</p>
+
+<h3>6.6 Uma mudança: <code>status</code>, <code>diff</code>, <code>add</code>, <code>commit</code></h3>
+<p>A Ana trocou a cor do título no <code>css/estilo.css</code> e perguntou ao git o que mudou:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ git status
+No ramo main
+Changes not staged for commit:
+  (utilize "git add &lt;arquivo&gt;..." para atualizar o que será submetido)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   css/estilo.css
+
+nenhuma modificação adicionada à submissão (utilize "git add" e/ou "git commit -a")
+$ git diff
+diff --git a/css/estilo.css b/css/estilo.css
+index 1ffbf2d..4083fc1 100644
+--- a/css/estilo.css
++++ b/css/estilo.css
+@@ -1,3 +1,3 @@
+ h1 {
+-  color: firebrick;
++  color: darkgreen;
+ }
+$ git add css/estilo.css
+$ git commit -m "Título verde"
+[main 8ab0fc7] Título verde
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+$ git log --oneline
+8ab0fc7 Título verde
+9c3e761 Primeira versão do site de receitas</pre>
+
+<dl class="anatomy">
+  <dt>modified: css/estilo.css</dt><dd>"Modificado": o git percebeu sozinho qual arquivo mudou desde a última foto.</dd>
+  <dt>git diff</dt><dd>"Diferença": mostra as linhas que mudaram. A linha com <code>-</code> saiu; a com <code>+</code> entrou.</dd>
+  <dt>git log --oneline</dt><dd>Agora o álbum tem duas fotos, a mais nova em cima.</dd>
+</dl>
+
+<p>Esse é o ciclo do dia a dia: <strong>editar → <code>git status</code> → <code>git add</code> → <code>git commit</code></strong>. Cada commit é um ponto para onde você pode voltar se estragar alguma coisa.</p>
+
+<h3>6.7 Ligar ao GitHub e enviar</h3>
+<p>Crie o repositório no GitHub como na seção 2, mas <strong>vazio</strong> (sem enviar arquivos nem criar README). Depois, diga ao git onde ele fica:</p>
+
+<pre class="term" data-cwd="~/sites/receitas">$ git remote add origin https://github.com/SEU-USUARIO/receitas.git
+$ git remote -v
+origin	https://github.com/SEU-USUARIO/receitas.git (fetch)
+origin	https://github.com/SEU-USUARIO/receitas.git (push)</pre>
+
+<dl class="anatomy">
+  <dt>git remote add origin …</dt><dd>"Acrescente um repositório remoto chamado <code>origin</code>" ("origem", o nome de costume) com este endereço. O endereço aparece na página do repositório vazio, no GitHub.</dd>
+  <dt>(fetch) / (push)</dt><dd>O mesmo endereço serve para <strong>trazer</strong> (<em>fetch</em>) e para <strong>enviar</strong> (<em>push</em>, "empurrar").</dd>
+</dl>
+
+<p>O envio é o comando <code>git push -u origin main</code> ("empurre o ramo <code>main</code> para o <code>origin</code>"; o <code>-u</code> faz o git lembrar disso, e nas próximas vezes basta <code>git push</code>). Ele não aparece rodando aqui porque precisa da <strong>sua</strong> conta. O que você precisa saber:</p>
+<ul>
+  <li>O GitHub <strong>não aceita a senha da conta</strong> no <code>git push</code>. No lugar dela, ele pede uma "senha de aplicativo", o <strong>token de acesso pessoal</strong> (<em>personal access token</em>), criado nas configurações de desenvolvedor da conta. Outras saídas: o programa <strong>GitHub CLI</strong> (comando <code>gh auth login</code>), o <strong>Git Credential Manager</strong> (que vem com o git no Windows e abre uma janela de login) ou uma chave SSH.</li>
+  <li>Um token é como uma senha: <strong>nunca</strong> o coloque num arquivo do site, num print ou numa mensagem. Quem tem o token pode mexer nos seus repositórios.</li>
+  <li>Depois do primeiro <code>push</code>, ligue o GitHub Pages como na seção 4.</li>
+</ul>
+
+<hr>
+
+<h2>7. Atualizar o site</h2>
+<p>O site publicado sempre mostra a <strong>última versão</strong> do ramo <code>main</code>. Para mudar o site:</p>
+<ul>
+  <li><strong>Pelo site do GitHub:</strong> envie de novo os arquivos mudados (<em>Add file</em> → <em>Upload files</em>; os de mesmo nome são substituídos) ou abra um arquivo e clique no ícone de lápis para editar ali mesmo. Cada envio termina com <em>Commit changes</em>.</li>
+  <li><strong>Pelo git:</strong> o ciclo da seção 6.6 e, no fim, <code>git push</code>.</li>
+</ul>
+<p>Em poucos minutos, o Pages publica a versão nova (acompanhe na aba <em>Actions</em>). Se o navegador continuar mostrando a antiga, recarregue ignorando a memória dele com <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>.</p>
+
+<hr>
+
+<h2>Caminhos para publicar: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Caminho</th><th>Bom para</th><th>Cuidado</th></tr>
+<tr><td>Enviar pelo site do GitHub</td><td>O primeiro site, poucos arquivos, sem instalar nada</td><td>Cada mudança é um envio à mão; é fácil esquecer um arquivo</td></tr>
+<tr><td>git no terminal</td><td>Qualquer site que vai crescer: histórico, voltar atrás, um comando para enviar</td><td>Instalar o git e configurar o acesso (token, <code>gh</code> ou SSH)</td></tr>
+<tr><td>O controle de código do VS Code</td><td>Quem já usa o VS Code: botões para <code>add</code>, <code>commit</code> e <code>push</code></td><td>Por baixo, é o mesmo git; ajuda saber os comandos</td></tr>
+</table>
+</div>
+
+<p><strong>Qual usar?</strong> Publique o primeiro site pelo navegador, para ver o resultado rápido. Na segunda ou terceira atualização, passe para o git: o histórico de commits vai salvar você no dia em que uma mudança der errado.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>O endereço mostra "404" do GitHub</strong>
+<p><strong>O que significa:</strong> o GitHub Pages não achou o que entregar. Causas, da mais comum para a menos: o Pages ainda está publicando (espere alguns minutos e veja a aba <em>Actions</em>); o <code>index.html</code> não está na raiz (ficou dentro de uma pasta, porque você arrastou a pasta de fora); o arquivo se chama <code>Index.html</code> ou <code>index.htm</code>; o Pages não foi ligado (seção 4); ou o endereço está com o nome do repositório errado.</p>
+<p><strong>Como consertar:</strong> abra o repositório e confira se o <code>index.html</code> aparece na primeira lista de arquivos, com esse nome exato.</p>
+</div>
+
+<div class="cenario">
+<strong>O site abre, mas sem estilo (ou sem imagens)</strong>
+<p><strong>O que significa:</strong> o HTML chegou, o CSS não. Quase sempre é um caminho: começa com <code>/</code> (vai para fora do <code>/receitas/</code>, seção 5), aponta para o seu computador (<code>C:\</code>, <code>file:///</code>), ou tem uma maiúscula diferente do nome do arquivo.</p>
+<p><strong>Como consertar:</strong> use caminhos relativos e nomes em minúsculas. O F12, na aba de rede, mostra em vermelho o endereço que deu 404 (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>).</p>
+</div>
+
+<div class="cenario">
+<strong><code>fatal: unable to auto-detect email address</code></strong>
+<p><strong>O que significa:</strong> "não foi possível descobrir o endereço de e-mail sozinho". O commit precisa de um autor.</p>
+<p><strong>Como consertar:</strong> <code>git config --global user.name "Seu Nome"</code> e <code>git config --global user.email "seu@email"</code>, e repita o commit.</p>
+</div>
+
+<div class="cenario">
+<strong><code>fatal: not a git repository (or any of the parent directories): .git</code></strong>
+<p><strong>O que significa:</strong> "não é um repositório git (nem nenhuma das pastas acima)": você rodou um comando do git fora da pasta do site (ou esqueceu o <code>git init</code>).</p>
+<p><strong>Como consertar:</strong> entre na pasta com <code>cd ~/sites/receitas</code>. Confira com <code>ls -a</code> se a pasta <code>.git</code> está lá.</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>git push</code> pede usuário e senha, e a senha é recusada</strong>
+<p><strong>O que significa:</strong> o GitHub não aceita a senha da conta para o git (desde 2021).</p>
+<p><strong>Como consertar:</strong> use um token de acesso pessoal no lugar da senha, ou faça o login com <code>gh auth login</code> ou com o Git Credential Manager (seção 6.7).</p>
+</div>
+
+<div class="cenario">
+<strong>Uma pasta que começa com <code>_</code> não aparece no site</strong>
+<p><strong>O que significa:</strong> por padrão, o GitHub Pages passa os arquivos por um programa chamado <strong>Jekyll</strong>, que ignora pastas e arquivos cujo nome começa com <code>_</code> (como <code>_imagens/</code>).</p>
+<p><strong>Como consertar:</strong> renomeie a pasta (mais uma razão para seguir as regras de nomes), ou crie na raiz do repositório um arquivo vazio chamado <code>.nojekyll</code>, que desliga o Jekyll.</p>
+</div>
+
+<hr>
+
+<h2>Referência</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Comando ou lugar</th><th>O que faz</th></tr>
+<tr><td><code>git init -b main</code></td><td>Transforma a pasta num repositório, com o ramo <code>main</code></td></tr>
+<tr><td><code>git status</code></td><td>Mostra o que mudou e o que vai entrar no próximo commit</td></tr>
+<tr><td><code>git add .</code> / <code>git add arquivo</code></td><td>Põe tudo (ou um arquivo) no próximo commit</td></tr>
+<tr><td><code>git commit -m "mensagem"</code></td><td>Registra a versão ("tira a foto")</td></tr>
+<tr><td><code>git log --oneline</code></td><td>Lista os commits, um por linha</td></tr>
+<tr><td><code>git diff</code></td><td>Mostra as linhas que mudaram e ainda não foram adicionadas</td></tr>
+<tr><td><code>git config --global user.name / user.email</code></td><td>Diz ao git quem você é (uma vez por computador)</td></tr>
+<tr><td><code>git remote add origin URL</code></td><td>Liga a pasta a um repositório no GitHub</td></tr>
+<tr><td><code>git push -u origin main</code> (depois, <code>git push</code>)</td><td>Envia os commits para o GitHub</td></tr>
+<tr><td>Settings → Pages → Deploy from a branch → main, / (root)</td><td>Liga o GitHub Pages</td></tr>
+<tr><td><code>https://SEU-USUARIO.github.io/REPOSITORIO/</code></td><td>O endereço do site</td></tr>
+<tr><td><code>.nojekyll</code> (arquivo vazio na raiz)</td><td>Desliga o Jekyll</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O endereço</h3>
+<p>A usuária <code>ana-doces</code> publicou o repositório <code>cardapio</code>. Qual é o endereço do site?</p>
+<div class="ex-code"><input data-answer="https://ana-doces.github.io/cardapio/|https://ana-doces.github.io/cardapio|ana-doces.github.io/cardapio/|ana-doces.github.io/cardapio" aria-label="endereço"></div>
+</div>
+
+<div class="exercise">
+<h3>2. Tirar a foto</h3>
+<p>Complete o comando que registra as mudanças com a mensagem "Receita de pudim":</p>
+<div class="ex-code">git <input data-answer="commit -m" aria-label="comando"> "Receita de pudim"</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. No site publicado em <code>https://ana-doces.github.io/cardapio/</code>, o <code>&lt;link href="/estilo.css"&gt;</code> não funciona. Por quê?</p>
+<label><input type="radio" name="q3"> O GitHub Pages não aceita CSS</label>
+<label><input type="radio" name="q3"> Falta o <code>https://</code></label>
+<label><input type="radio" name="q3"> A barra no começo leva à raiz do servidor (<code>ana-doces.github.io/estilo.css</code>), fora da pasta <code>/cardapio/</code></label>
+<label><input type="radio" name="q3"> O arquivo precisa ficar numa pasta <code>css</code></label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Qual a ordem do ciclo do dia a dia com o git?</p>
+<label><input type="radio" name="q4"> <code>commit</code>, <code>add</code>, editar</label>
+<label><input type="radio" name="q4"> editar, <code>add</code>, <code>commit</code> (e <code>push</code> para publicar)</label>
+<label><input type="radio" name="q4"> <code>init</code> antes de cada mudança</label>
+<label><input type="radio" name="q4"> <code>push</code>, <code>commit</code>, <code>add</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. O que pode ir para a pasta do site que vai ser publicada?</p>
+<label><input type="radio" name="q5"> O token do GitHub, para facilitar o envio</label>
+<label><input type="radio" name="q5"> A planilha de clientes da lojinha</label>
+<label><input type="radio" name="q5"> Uma cópia dos documentos pessoais da Ana</label>
+<label><input type="radio" name="q5"> Só o que o site precisa: páginas, CSS, JS e imagens</label>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Antes de publicar: <code>index.html</code> na raiz, nomes em minúsculas, caminhos relativos, HTML validado, teste no servidor local e nada secreto na pasta.</li>
+  <li>GitHub = depósito de repositórios; GitHub Pages = vitrine que serve um repositório como site, de graça, com <code>https://</code>.</li>
+  <li>Pelo site: criar o repositório público, enviar os arquivos (o <strong>conteúdo</strong> da pasta), <em>Commit changes</em>, e ligar em <em>Settings → Pages → Deploy from a branch → main, / (root)</em>.</li>
+  <li>Pelo git: <code>git init -b main</code>, <code>git add .</code>, <code>git commit -m "…"</code> (depois de <code>git config</code> com nome e e-mail), <code>git remote add origin …</code> e <code>git push -u origin main</code>, com um token ou <code>gh auth login</code> no lugar da senha.</li>
+  <li>O endereço é <code>https://SEU-USUARIO.github.io/REPOSITORIO/</code>: por isso caminhos com <code>/</code> no começo quebram.</li>
+  <li>Para atualizar, um novo commit (e <code>push</code>); o Pages publica em poucos minutos.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
