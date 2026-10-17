@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML class e id — dar nome aos elementos | Guia HTML</title>
+<meta name="description" content="Os atributos class e id do HTML para quem nunca fez um site: a classe que se repete e o id que é único, várias classes no mesmo elemento, os seletores .classe e #id do CSS, para que mais serve o id, e o erro real do validador W3C para id repetido (Duplicate ID), com o que o navegador faz e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">class e id</span></h1>
+
+<p class="intro">Uma regra de CSS como <code>p { color: crimson; }</code> pinta <strong>todos</strong> os parágrafos. Mas a Ana quer pintar só os parágrafos de promoção, e deixar o "bolo do dia" em destaque. Para isso, o HTML deixa você dar <strong>nomes</strong> aos elementos, com dois atributos: o <code>class</code>, um nome de <strong>grupo</strong>, que vários elementos podem ter, e o <code>id</code>, um nome <strong>único</strong>, que só um elemento da página pode ter. Nesta aula você vai usar os dois, ligá-los ao CSS e ver o erro que o validador mostra quando um <code>id</code> se repete.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O atributo <code>class</code> e o seletor <code>.nome</code> do CSS.</li>
+  <li>Como dar várias classes ao mesmo elemento.</li>
+  <li>O atributo <code>id</code> e o seletor <code>#nome</code>.</li>
+  <li>A diferença entre os dois e qual usar.</li>
+  <li>Para que mais o <code>id</code> serve: links para um trecho da página, formulários, JavaScript.</li>
+  <li>Os erros reais do validador W3C: <code>Duplicate ID</code>, espaço no <code>id</code>, <code>id</code> vazio.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/classe</code>. As cores que o navegador aplicou foram conferidas no Chrome.</p>
+
+<hr>
+
+<h2>A ideia: a turma e o número de matrícula</h2>
+<p>Numa escola, cada aluno está numa <strong>turma</strong> ("3º B") e tem um <strong>número de matrícula</strong>. A turma tem trinta alunos; o número de matrícula é só daquele aluno. Quando a diretora diz "a turma 3º B vai ao pátio", trinta pessoas se levantam. Quando ela chama a matrícula 2026-0153, levanta uma pessoa só.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escola</th><th>HTML</th><th>No CSS</th><th>Quantos elementos</th></tr>
+<tr><td>A turma</td><td><code>class="promo"</code></td><td><code>.promo</code></td><td>Quantos você quiser</td></tr>
+<tr><td>O número de matrícula</td><td><code>id="receita-do-dia"</code></td><td><code>#receita-do-dia</code></td><td><strong>Um só</strong> por página</td></tr>
+<tr><td>Um aluno em duas turmas (o coral e o 3º B)</td><td><code>class="promo destaque"</code></td><td><code>.promo</code> e <code>.destaque</code></td><td>Um elemento, vários grupos</td></tr>
+</table>
+</div>
+
+<p>Os nomes você inventa: o HTML não tem uma lista de classes ou de <code>id</code>s. Escolha nomes que digam <strong>o que</strong> o elemento é (<code>promo</code>, <code>preco</code>, <code>receita-do-dia</code>), e não como ele fica (<code>vermelho</code>, <code>grande</code>): se um dia a promoção ficar laranja, uma classe <code>vermelho</code> vai mentir.</p>
+
+<hr>
+
+<h2>1. class: um nome de grupo</h2>
+<p>A Ana marca os parágrafos de promoção com <code>class="promo"</code> e escreve <strong>uma</strong> regra de CSS para todos eles:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;style&gt;
+    .promo {
+      color: crimson;
+      font-weight: bold;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p class="promo"&gt;Bolo de cenoura pela metade do preço!&lt;/p&gt;
+  &lt;p&gt;O bolo de cenoura leva três cenouras médias.&lt;/p&gt;
+  &lt;p class="promo"&gt;Brigadeiro: leve 10, pague 8!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>class="promo"</dt><dd>No HTML: o atributo <code>class</code> ("classe", no sentido de "categoria", "grupo") com o nome que você escolheu. Dois parágrafos estão no grupo <code>promo</code>; o do meio, não.</dd>
+  <dt>.promo</dt><dd>No CSS: o <strong>ponto</strong> antes do nome quer dizer "todo elemento com a classe <code>promo</code>". O ponto fica só no CSS, nunca no HTML.</dd>
+  <dt>{ color: crimson; font-weight: bold; }</dt><dd>Os ajustes, como na aula <a href="ligar-css.html">Ligar CSS</a>.</dd>
+</dl>
+
+<p>Os dois parágrafos da classe ficaram vermelho-escuros e em negrito; o do meio, normal. Compare com a aula anterior, <a href="atributo-style.html">O Atributo style</a>: em vez de repetir <code>style="color: crimson; font-weight: bold;"</code> em cada parágrafo, a Ana escreveu o estilo <strong>uma vez</strong>. Para mudar todas as promoções para laranja, basta mudar uma linha.</p>
+
+<p>A classe não é só para <code>p</code>: qualquer elemento pode ter <code>class</code>, e elementos diferentes podem ter a mesma classe (<code>&lt;h2 class="promo"&gt;</code> também ficaria vermelho). Se você quiser só os parágrafos da classe, o CSS aceita <code>p.promo</code> (sem espaço): "parágrafos com a classe <code>promo</code>".</p>
+
+<div class="tryhtml" data-goal="nsel:p.promo=2,css:p.promo{color}=rgb(220, 20, 60),nsel:.promo=2">
+<p class="try-task"><strong>Missão:</strong> a regra <code>.promo</code> já está no <code>head</code>. Ponha a classe <code>promo</code> nos <strong>dois</strong> parágrafos que falam de desconto, e só neles.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Lojinha da Ana&lt;/title&gt;
+  &lt;style&gt;
+    .promo {
+      color: crimson;
+      font-weight: bold;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+  &lt;p&gt;Cadernos com 30% de desconto!&lt;/p&gt;
+  &lt;p&gt;Aberta de segunda a sábado.&lt;/p&gt;
+  &lt;p&gt;Canetas: leve 3, pague 2!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Lojinha da Ana&lt;/title&gt;
+  &lt;style&gt;
+    .promo {
+      color: crimson;
+      font-weight: bold;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+  &lt;p class="promo"&gt;Cadernos com 30% de desconto!&lt;/p&gt;
+  &lt;p&gt;Aberta de segunda a sábado.&lt;/p&gt;
+  &lt;p class="promo"&gt;Canetas: leve 3, pague 2!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<h3>Várias classes no mesmo elemento</h3>
+<p>Um elemento pode estar em vários grupos ao mesmo tempo: escreva os nomes no mesmo <code>class</code>, separados por <strong>espaço</strong>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;style&gt;
+    .promo { color: crimson; }
+    .destaque { font-size: 1.5em; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p class="promo destaque"&gt;Bolo de cenoura pela metade do preço!&lt;/p&gt;
+  &lt;p class="promo"&gt;Brigadeiro: leve 10, pague 8!&lt;/p&gt;
+  &lt;p class="destaque"&gt;Novidade: torta de limão.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O primeiro parágrafo está nos dois grupos: ficou vermelho (de <code>.promo</code>) <strong>e</strong> maior (de <code>.destaque</code>; <code>1.5em</code> = uma vez e meia o tamanho normal). O segundo é só <code>promo</code>, e o terceiro, só <code>destaque</code>. A ordem dos nomes no <code>class</code> não importa: <code>class="destaque promo"</code> dá o mesmo resultado.</p>
+
+<div class="warning">
+<strong>Espaço, e não vírgula</strong>
+<p>O espaço separa as classes. Por isso uma classe não pode ter espaço no nome: <code>class="receita do dia"</code> são <strong>três</strong> classes (<code>receita</code>, <code>do</code> e <code>dia</code>). Para nomes compostos, use hífen: <code>receita-do-dia</code>. E nada de vírgula: <code>class="promo,destaque"</code> é <strong>uma</strong> classe só, chamada "promo,destaque", que nenhuma regra de CSS acha.</p>
+</div>
+
+<hr>
+
+<h2>2. id: um nome único</h2>
+<p>O <code>id</code> (de <em>identifier</em>, "identificador") dá a um elemento um nome que <strong>só ele</strong> tem na página. No CSS, o <code>id</code> é escrito com <code>#</code> (o "jogo da velha", ou "cerquilha"):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;style&gt;
+    #receita-do-dia {
+      color: green;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;h2 id="receita-do-dia"&gt;Receita do dia: bolo de cenoura&lt;/h2&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;h2&gt;Brigadeiro&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>id="receita-do-dia"</dt><dd>No HTML: o nome único. Sem espaços (use hífen) e não pode ser vazio.</dd>
+  <dt>#receita-do-dia</dt><dd>No CSS: o <code>#</code> antes do nome quer dizer "o elemento com este <code>id</code>". Como o ponto da classe, o <code>#</code> fica só no CSS.</dd>
+</dl>
+
+<p>Se é para pintar um elemento só, por que não um <code>id</code> sempre? Porque o <code>id</code> tem outros empregos, mais importantes que o CSS, e todos dependem de ele ser único:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Para que serve o <code>id</code></th><th>Exemplo</th><th>Aula</th></tr>
+<tr><td>Um link que pula para um trecho da página</td><td><code>&lt;a href="#receita-do-dia"&gt;Ver a receita do dia&lt;/a&gt;</code></td><td><a href="ancoras.html">Âncoras na Mesma Página</a></td></tr>
+<tr><td>Ligar o rótulo ao campo de um formulário</td><td><code>&lt;label for="email"&gt;</code> + <code>&lt;input id="email"&gt;</code></td><td><a href="label.html">label</a></td></tr>
+<tr><td>O JavaScript achar um elemento</td><td><code>document.getElementById("receita-do-dia")</code></td><td><a href="script.html">O Elemento script</a></td></tr>
+<tr><td>Ligar elementos para a acessibilidade</td><td><code>aria-describedby="dica-senha"</code></td><td><a href="aria.html">ARIA</a></td></tr>
+</table>
+</div>
+
+<p>Em todos esses casos, o <code>id</code> é um endereço: "vá até <strong>aquele</strong> elemento". Um endereço que leva a duas casas não serve para nada, como a próxima seção mostra.</p>
+
+<div class="tryhtml" data-goal="sel:h2#receita-do-dia,css:#receita-do-dia{color}=rgb(0, 128, 0),texto:#receita-do-dia=Pão de queijo,nsel:[id]=1">
+<p class="try-task"><strong>Missão:</strong> hoje a receita do dia mudou. Tire o <code>id="receita-do-dia"</code> do bolo de cenoura e ponha-o no título do pão de queijo. Repare no link do alto da página: clique nele depois da troca.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;style&gt;
+    #receita-do-dia {
+      color: green;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;&lt;a href="#receita-do-dia"&gt;Ir para a receita do dia&lt;/a&gt;&lt;/p&gt;
+  &lt;h2 id="receita-do-dia"&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Três cenouras, três ovos e uma xícara de óleo.&lt;/p&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Polvilho, queijo, leite, óleo e ovos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;style&gt;
+    #receita-do-dia {
+      color: green;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;&lt;a href="#receita-do-dia"&gt;Ir para a receita do dia&lt;/a&gt;&lt;/p&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Três cenouras, três ovos e uma xícara de óleo.&lt;/p&gt;
+  &lt;h2 id="receita-do-dia"&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Polvilho, queijo, leite, óleo e ovos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. O id repetido</h2>
+<p>A Ana queria dois bolos do dia e copiou o <code>id</code>:</p>
+
+<pre class="file" data-file="id-repetido.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;style&gt;
+    .promo { color: crimson; }
+    #receita-do-dia { color: green; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;h2 id="receita-do-dia"&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p class="promo"&gt;Pela metade do preço!&lt;/p&gt;
+  &lt;h2 id="receita-do-dia"&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p class="promo"&gt;Leve 10, pague 8!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Olhe o Resultado: os <strong>dois</strong> títulos ficaram verdes. O CSS não se importa com a repetição, e é por isso que o erro passa despercebido. O validador se importa:</p>
+
+<pre class="term" data-cwd="~/classe">$ vnu id-repetido.html
+"file:/home/ana/classe/id-repetido.html":15.3-15.26: error: Duplicate ID “receita-do-dia”.
+"file:/home/ana/classe/id-repetido.html":13.3-13.26: info warning: The first occurrence of ID “receita-do-dia” was here.
+$ echo $?
+1</pre>
+
+<dl class="anatomy">
+  <dt>15.3-15.26: error: Duplicate ID “receita-do-dia”.</dt><dd>"<code>id</code> repetido". A linha 15 é o segundo <code>&lt;h2&gt;</code>: o validador acusa a <strong>repetição</strong>, e não o primeiro.</dd>
+  <dt>13.3-13.26: info warning: The first occurrence of ID “receita-do-dia” was here.</dt><dd>"A primeira vez que esse <code>id</code> apareceu foi aqui", na linha 13. Não é um segundo erro: é uma pista, para você achar as duas linhas.</dd>
+  <dt>$? = 1</dt><dd>É um <code>error</code> de verdade: o código de saída do <code>vnu</code> é 1.</dd>
+</dl>
+
+<p>E as outras coisas que dependem do <code>id</code>? O Chrome confirmou:</p>
+<ul>
+  <li>o link <code>href="#receita-do-dia"</code> leva sempre ao <strong>primeiro</strong>, o bolo de cenoura: o pão de queijo nunca é alcançado;</li>
+  <li><code>document.getElementById("receita-do-dia")</code>, no JavaScript, devolveu só o primeiro (o texto "Bolo de cenoura");</li>
+  <li>num formulário, um <code>&lt;label for="…"&gt;</code> com <code>id</code> repetido fica ligado só ao primeiro campo, e o segundo fica sem rótulo para o leitor de tela.</li>
+</ul>
+
+<p>O conserto depende do que você queria. Se são dois elementos do <strong>mesmo grupo</strong>, use uma <strong>classe</strong>. Se cada um precisa do seu endereço, dê <code>id</code>s diferentes (<code>receita-do-dia</code>, <code>receita-de-ontem</code>).</p>
+
+<div class="tryhtml" data-goal="nsel:#bolo=1,nsel:.sabor=3,css:.sabor{color}=rgb(0, 128, 0),nsrc:id=&quot;sabor">
+<p class="try-task"><strong>Missão:</strong> a Ana usou <code>id="sabor"</code> nos três sabores para pintá-los de verde, e o validador reclama de <code>Duplicate ID “sabor”</code>. Troque o <code>id</code> por uma <strong>classe</strong> <code>sabor</code> nos três, e mude o CSS para usar a classe. O <code>id="bolo"</code> do título está certo: ele é único.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Bolos | Receitas da Ana&lt;/title&gt;
+  &lt;style&gt;
+    #sabor { color: green; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1 id="bolo"&gt;Bolos da Ana&lt;/h1&gt;
+  &lt;p id="sabor"&gt;Cenoura com chocolate&lt;/p&gt;
+  &lt;p id="sabor"&gt;Fubá com goiabada&lt;/p&gt;
+  &lt;p id="sabor"&gt;Laranja&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Bolos | Receitas da Ana&lt;/title&gt;
+  &lt;style&gt;
+    .sabor { color: green; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1 id="bolo"&gt;Bolos da Ana&lt;/h1&gt;
+  &lt;p class="sabor"&gt;Cenoura com chocolate&lt;/p&gt;
+  &lt;p class="sabor"&gt;Fubá com goiabada&lt;/p&gt;
+  &lt;p class="sabor"&gt;Laranja&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Regras para os nomes</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Nome</th><th>Válido?</th><th>O que acontece</th></tr>
+<tr><td><code>id="receita-do-dia"</code></td><td>Sim</td><td>A forma recomendada: minúsculas, palavras separadas por hífen.</td></tr>
+<tr><td><code>id="receita do dia"</code></td><td>Não</td><td><code>error: Bad value “receita do dia” for attribute “id” on element “h2”: An ID must not contain whitespace.</code> ("Um ID não pode conter espaço.")</td></tr>
+<tr><td><code>id=""</code></td><td>Não</td><td><code>error: Bad value “” for attribute “id” on element “h2”: An ID must not be the empty string.</code> ("Um ID não pode ser vazio.")</td></tr>
+<tr><td><code>id="1receita"</code></td><td>Sim, no HTML</td><td>Mas no CSS, <code>#1receita</code> não funciona: um seletor não pode começar com número. O validador acusou no <code>&lt;style&gt;</code>: <code>error: CSS: Invalid ID selector.</code>, e o Chrome deixou o título preto. Comece com uma letra.</td></tr>
+<tr><td><code>id="Bolo"</code> e <code>id="bolo"</code></td><td>Sim</td><td>São dois <code>id</code>s <strong>diferentes</strong>: maiúsculas contam. Fácil de confundir: prefira tudo em minúsculas.</td></tr>
+<tr><td><code>class=".promo"</code></td><td>Sim (!)</td><td>Passa no validador, mas a classe se chama ".promo", com ponto, e a regra <code>.promo</code> não a encontra (no Chrome, o texto ficou preto). O ponto é só do CSS.</td></tr>
+<tr><td><code>class="Promo"</code></td><td>Sim</td><td>Mas <code>.promo</code> não a encontra: maiúsculas contam também nas classes (no Chrome, preto).</td></tr>
+<tr><td><code>class="promo,destaque"</code></td><td>Sim</td><td>Uma classe só, com vírgula no nome. Nenhuma das regras a encontra (preto).</td></tr>
+<tr><td><code>class=""</code></td><td>Sim</td><td>Vazio: não faz nada.</td></tr>
+<tr><td><code>id="bolo" class="bolo"</code></td><td>Sim</td><td>O mesmo nome como <code>id</code> e como classe não dá conflito: <code>#bolo</code> e <code>.bolo</code> são coisas diferentes. Mas confunde quem lê.</td></tr>
+</table>
+</div>
+
+<p>Repare quantos "sim" com um resultado errado: o validador confere se o nome é <strong>permitido</strong>, mas não se ele bate com o seu CSS. Quando uma classe "não funciona", compare letra por letra o nome no HTML e no CSS.</p>
+
+<hr>
+
+<h2>5. Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>class</code></th><th><code>id</code></th></tr>
+<tr><td>Quantos elementos podem ter o mesmo nome</td><td>Quantos você quiser</td><td><strong>Um</strong> por página</td></tr>
+<tr><td>Quantos nomes um elemento pode ter</td><td>Vários, separados por espaço</td><td>Um</td></tr>
+<tr><td>No CSS</td><td><code>.promo</code></td><td><code>#receita-do-dia</code></td></tr>
+<tr><td>Link para o trecho (<code>href="#…"</code>), <code>label for</code>, <code>getElementById</code></td><td>Não</td><td>Sim</td></tr>
+<tr><td>Use para…</td><td><strong>A aparência</strong> (quase sempre)</td><td><strong>O endereço</strong> de um elemento</td></tr>
+</table>
+</div>
+
+<p>A regra prática: estilo vai em <code>class</code>, endereço vai em <code>id</code>. Mesmo um elemento único (o rodapé, o menu) costuma receber uma classe para o CSS, porque amanhã pode aparecer um segundo, e porque uma regra com <code>#</code> "pesa" mais que uma com <code>.</code> e fica difícil de vencer depois (a "força" dos seletores é assunto do futuro Guia CSS).</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: Duplicate ID “receita-do-dia”.</code> + <code>info warning: The first occurrence of ID “receita-do-dia” was here.</code></strong>
+<p><strong>O que significa:</strong> dois elementos com o mesmo <code>id</code>. O CSS pinta os dois, e por isso parece funcionar; mas o link <code>#receita-do-dia</code>, o <code>label for</code> e o <code>getElementById</code> só enxergam o primeiro.</p>
+<p><strong>Como consertar:</strong> se são do mesmo grupo, troque por uma <code>class</code>; se cada um precisa de endereço próprio, dê nomes diferentes. Quem costuma causar esse erro é o copiar e colar de um bloco inteiro: depois de colar, procure os <code>id=</code> do pedaço colado.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “receita do dia” for attribute “id” on element “h2”: An ID must not contain whitespace.</code></strong>
+<p><strong>O que significa:</strong> "valor ruim para o atributo <code>id</code>: um ID não pode ter espaço".</p>
+<p><strong>Como consertar:</strong> troque os espaços por hífens: <code>receita-do-dia</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “” for attribute “id” on element “h2”: An ID must not be the empty string.</code></strong>
+<p><strong>O que significa:</strong> um <code>id=""</code>, muitas vezes sobra de um modelo que você não preencheu.</p>
+<p><strong>Como consertar:</strong> dê um nome ou apague o atributo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Duplicate attribute “class”.</code> / <code>Duplicate attribute “id”.</code></strong>
+<p><strong>O que significa:</strong> o mesmo atributo duas vezes na mesma tag: <code>&lt;p class="promo" class="destaque"&gt;</code>. O navegador fica com o <strong>primeiro</strong> e ignora o segundo, então o parágrafo fica só com <code>promo</code>.</p>
+<p><strong>Como consertar:</strong> várias classes vão num <code>class</code> só: <code>class="promo destaque"</code>. Um elemento tem um <code>id</code> só.</p>
+</div>
+
+<div class="cenario">
+<strong>O validador não diz nada, mas a classe "não pega"</strong>
+<p><strong>O que significa:</strong> o nome no HTML e o nome no CSS não são iguais: ponto no HTML (<code>class=".promo"</code>), maiúscula (<code>Promo</code> × <code>.promo</code>), vírgula entre as classes, letra trocada (<code>.promoo</code>), ou o <code>.</code> esquecido no CSS (<code>promo { … }</code> procura um elemento <code>&lt;promo&gt;</code>, que não existe).</p>
+<p><strong>Como consertar:</strong> copie o nome do HTML e cole no CSS. No F12, o painel de elementos mostra as classes de cada elemento e as regras que ele recebeu: se a sua regra não está na lista, o nome não bateu.</p>
+</div>
+
+<div class="cenario">
+<strong>Um link <code>href="#receita-do-di"</code> não pula para lugar nenhum</strong>
+<p><strong>O que significa:</strong> o <code>id</code> do link não existe na página (aqui, faltou uma letra). O validador não confere isso, e o navegador simplesmente não rola a página.</p>
+<p><strong>Como consertar:</strong> o texto depois do <code>#</code> tem de ser idêntico ao <code>id</code>. Mais em <a href="ancoras.html">Âncoras na Mesma Página</a>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;p class="promo"&gt;</code></td><td>Põe o elemento no grupo <code>promo</code>.</td></tr>
+<tr><td><code>&lt;p class="promo destaque"&gt;</code></td><td>Dois grupos, separados por espaço.</td></tr>
+<tr><td><code>.promo { … }</code></td><td>CSS para todo elemento com a classe <code>promo</code>.</td></tr>
+<tr><td><code>p.promo { … }</code></td><td>Só os parágrafos com a classe <code>promo</code>.</td></tr>
+<tr><td><code>&lt;h2 id="receita-do-dia"&gt;</code></td><td>Nome único do elemento.</td></tr>
+<tr><td><code>#receita-do-dia { … }</code></td><td>CSS para o elemento com esse <code>id</code>.</td></tr>
+<tr><td><code>&lt;a href="#receita-do-dia"&gt;</code></td><td>Link que pula até o elemento com esse <code>id</code>.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O seletor de classe</h3>
+<p>Complete o CSS para pintar todo elemento com <code>class="preco"</code>:</p>
+<div class="ex-code"><input data-answer=".preco" aria-label="seletor"> { color: crimson; }</div>
+</div>
+
+<div class="exercise">
+<h3>2. O seletor de id</h3>
+<p>Complete o CSS para pintar o elemento com <code>id="rodape"</code>:</p>
+<div class="ex-code"><input data-answer="#rodape" aria-label="seletor"> { color: gray; }</div>
+</div>
+
+<div class="exercise">
+<h3>3. Duas classes</h3>
+<p>Complete para o parágrafo ficar nas classes <code>promo</code> e <code>destaque</code>:</p>
+<div class="ex-code">&lt;p class="<input data-answer="promo destaque|destaque promo" aria-label="classes">"&gt;Bolo pela metade do preço!&lt;/p&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Uma página tem dois <code>&lt;h2 id="contato"&gt;</code>, e o CSS tem <code>#contato { color: green; }</code>. O que acontece?</p>
+<label><input type="radio" name="q4"> Só o primeiro fica verde, e o validador não diz nada</label>
+<label><input type="radio" name="q4"> Nenhum fica verde, porque o navegador rejeita a página</label>
+<label><input type="radio" name="q4"> Os dois ficam verdes, mas o validador acusa <code>Duplicate ID “contato”</code> e o link <code>#contato</code> só leva ao primeiro</label>
+<label><input type="radio" name="q4"> O segundo apaga o primeiro</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. O HTML tem <code>class=".destaque"</code> e o CSS tem <code>.destaque { … }</code>. Por que não funciona?</p>
+<label><input type="radio" name="q5"> O ponto é só do CSS: no HTML, a classe ficou com o nome ".destaque"</label>
+<label><input type="radio" name="q5"> Faltou o <code>#</code></label>
+<label><input type="radio" name="q5"> Classes só funcionam em <code>&lt;div&gt;</code></label>
+<label><input type="radio" name="q5"> O validador bloqueou a classe</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">6. Qual destes casos pede um <code>id</code>, e não uma classe?</p>
+<label><input type="radio" name="q6"> Pintar de vermelho todos os preços da página</label>
+<label><input type="radio" name="q6"> Um link "Ir para a receita do dia" que pula até aquele título</label>
+<label><input type="radio" name="q6"> Deixar em negrito todas as promoções</label>
+<label><input type="radio" name="q6"> Dar a mesma cor a três títulos</label>
+</div>
+
+<h3>Missão final: do style para a classe</h3>
+
+<div class="tryhtml" data-goal="nsel:p.promo=3,css:p.promo{color}=rgb(220, 20, 60),css:p.promo{font-weight}=700,nsrc:style=,css:#receita-do-dia{color}=rgb(0, 128, 0),texto:#receita-do-dia=Bolo de cenoura,nsel:#receita-do-dia=1">
+<p class="try-task"><strong>Missão:</strong> a página repete o mesmo <code>style</code> em três parágrafos. Apague os três <code>style="…"</code>, dê a eles a classe <code>promo</code> e escreva a regra <code>.promo</code> (vermelho-escuro <code>crimson</code> e negrito) no <code>estilo.css</code>. Depois, dê ao título do bolo de cenoura o <code>id</code> <code>receita-do-dia</code>, que já tem regra no CSS.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Promoções | Receitas da Ana&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Promoções da semana&lt;/h1&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p style="color: crimson; font-weight: bold;"&gt;Pela metade do preço!&lt;/p&gt;
+  &lt;h2&gt;Brigadeiro&lt;/h2&gt;
+  &lt;p style="color: crimson; font-weight: bold;"&gt;Leve 10, pague 8!&lt;/p&gt;
+  &lt;h2&gt;Torta de limão&lt;/h2&gt;
+  &lt;p style="color: crimson; font-weight: bold;"&gt;20% de desconto!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="estilo.css">#receita-do-dia {
+  color: green;
+}
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Promoções | Receitas da Ana&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Promoções da semana&lt;/h1&gt;
+  &lt;h2 id="receita-do-dia"&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p class="promo"&gt;Pela metade do preço!&lt;/p&gt;
+  &lt;h2&gt;Brigadeiro&lt;/h2&gt;
+  &lt;p class="promo"&gt;Leve 10, pague 8!&lt;/p&gt;
+  &lt;h2&gt;Torta de limão&lt;/h2&gt;
+  &lt;p class="promo"&gt;20% de desconto!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="estilo.css">#receita-do-dia {
+  color: green;
+}
+
+.promo {
+  color: crimson;
+  font-weight: bold;
+}
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>class</code> é um nome de <strong>grupo</strong>: vários elementos podem ter a mesma classe, e um elemento pode ter várias (<code>class="promo destaque"</code>, separadas por espaço). No CSS: <code>.promo</code>.</li>
+  <li><code>id</code> é um nome <strong>único</strong> na página. No CSS: <code>#receita-do-dia</code>. Também serve de endereço: <code>href="#…"</code>, <code>label for</code>, <code>getElementById</code>.</li>
+  <li><code>id</code> repetido: <code>error: Duplicate ID “…”.</code> O CSS pinta todos, mas o link e o JavaScript só acham o primeiro. Para um grupo, use classe.</li>
+  <li>Nomes sem espaço (use hífen), não vazios, começando com letra, de preferência em minúsculas. O ponto e o <code>#</code> ficam só no CSS. Maiúsculas contam.</li>
+  <li>Regra prática: estilo vai em <code>class</code>; endereço vai em <code>id</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
