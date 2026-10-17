@@ -68,14 +68,15 @@
 
 <h2>1. Como escrever o <code>alt</code> de uma foto</h2>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate, numa travessa branca"&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura de duas camadas, com cobertura de chocolate escorrendo pelos lados" width="400" height="300"&gt;
 </pre>
 
 <dl class="anatomy">
   <dt>alt=</dt><dd>O atributo. Vai dentro do <code>&lt;img&gt;</code>, como o <code>src</code>, em qualquer ordem.</dd>
   <dt>"Bolo de cenoura</dt><dd>Comece pelo <strong>principal</strong>: o que é. Se a pessoa só ouvir as primeiras palavras, já entendeu.</dd>
-  <dt>com cobertura de chocolate,</dt><dd>Depois, o detalhe que <strong>importa</strong> nesta página. Num site de receitas, a cobertura importa.</dd>
-  <dt>numa travessa branca"</dt><dd>Um detalhe a mais, se ajudar. Aqui é opcional.</dd>
+  <dt>de duas camadas,</dt><dd>Depois, o detalhe que <strong>importa</strong> nesta página. Num site de receitas, as duas camadas contam como montar o bolo.</dd>
+  <dt>com cobertura de chocolate escorrendo pelos lados"</dt><dd>Mais um detalhe que ajuda a imaginar o bolo. O prato branco, a mesa de madeira e as cenourinhas de enfeite ficaram de fora: dá para viver sem eles.</dd>
+  <dt>width="400" height="300"</dt><dd>O tamanho em que a foto aparece (aula <a href="imagens-tamanho.html">Largura e Altura</a>). Nada a ver com o <code>alt</code>; está aqui só para a foto caber bem no exemplo.</dd>
 </dl>
 
 <h3>As regras de bolso</h3>
@@ -117,13 +118,10 @@
 <hr>
 
 <h2>3. Imagem de enfeite: <code>alt=""</code></h2>
-<p>Algumas imagens não contam nada: um arabesco entre duas seções, uma bolinha colorida antes do título, uma textura de fundo. Se elas sumirem, ninguém perde informação. Para essas, o <code>alt</code> fica <strong>vazio</strong>, de propósito:</p>
+<p>Algumas imagens não contam nada: um arabesco entre duas seções, um desenhinho ao lado de um título que já diz tudo, uma textura de fundo. Se elas sumirem, ninguém perde informação. Para essas, o <code>alt</code> fica <strong>vazio</strong>, de propósito. Aqui, o bolinho desenhado ao lado do título "Bolos" é só enfeite: o título já diz que a seção é de bolos.</p>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Bolos&lt;/h2&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;&lt;img src="assets/midia/favicon.svg" alt="" width="32" height="32"&gt; Bolos&lt;/h2&gt;
 &lt;p&gt;Cenoura, chocolate, fubá e laranja.&lt;/p&gt;
-&lt;img src="assets/midia/enfeite.svg" alt="" width="200" height="20"&gt;
-&lt;h2&gt;Tortas&lt;/h2&gt;
-&lt;p&gt;Limão, maçã e frango.&lt;/p&gt;
 </pre>
 
 <p><code>alt=""</code> quer dizer: "esta imagem é só enfeite, pode pular". O leitor de tela não fala nada sobre ela. É bem diferente de <strong>não ter</strong> <code>alt</code>:</p>
@@ -133,7 +131,7 @@
 <tr><th>Escrita</th><th>O que o leitor de tela faz</th><th>O validador</th></tr>
 <tr><td><code>alt="Bolo de cenoura"</code></td><td>Anuncia uma imagem e lê "Bolo de cenoura"</td><td>aprova</td></tr>
 <tr><td><code>alt=""</code></td><td>Pula a imagem, em silêncio</td><td>aprova</td></tr>
-<tr><td>sem <code>alt</code></td><td>Anuncia uma imagem e, sem nada para ler, muitos leitores de tela leem o <strong>nome do arquivo</strong>: "enfeite ponto svg", "IMG underline zero zero quatro dois"</td><td><code>error: An “img” element must have an “alt” attribute…</code></td></tr>
+<tr><td>sem <code>alt</code></td><td>Anuncia uma imagem e, sem nada para ler, muitos leitores de tela leem o <strong>nome do arquivo</strong>: "favicon ponto svg", "IMG underline zero zero quatro dois"</td><td><code>error: An “img” element must have an “alt” attribute…</code></td></tr>
 </table>
 </div>
 
@@ -144,21 +142,19 @@
 <p>Na dúvida entre "enfeite" e "informação", escolha informação. Uma foto do bolo na página da receita nunca é enfeite, mesmo que seja bonita. <code>alt=""</code> é para imagens que, se sumissem, ninguém notaria a falta.</p>
 </div>
 
-<div class="tryhtml" data-goal="sel:img[src$=&quot;enfeite.svg&quot;][alt=&quot;&quot;],sel:img[src$=&quot;bolo-800.jpg&quot;]:not([alt=&quot;&quot;])[alt]">
+<div class="tryhtml" data-goal="sel:img[src$=&quot;favicon.svg&quot;][alt=&quot;&quot;],sel:img[src$=&quot;bolo-800.jpg&quot;]:not([alt=&quot;&quot;])[alt]">
 <p class="try-task"><strong>Missão:</strong> esta página tem duas imagens. Uma conta algo e a outra é só enfeite. Dê a cada uma o <code>alt</code> certo: texto para a que informa, vazio para a de enfeite.</p>
-<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
-&lt;img src="assets/midia/bolo-800.jpg" width="400" height="267"&gt;
-&lt;img src="assets/midia/enfeite.svg" alt="Enfeite" width="200" height="20"&gt;
+<pre class="script" data-file="index.html">&lt;h1&gt;&lt;img src="assets/midia/favicon.svg" alt="Enfeite" width="32" height="32"&gt; Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" width="400" height="300"&gt;
 &lt;p&gt;Rende 12 fatias.&lt;/p&gt;
 </pre>
-<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
-&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="267"&gt;
-&lt;img src="assets/midia/enfeite.svg" alt="" width="200" height="20"&gt;
+<pre class="solucao" data-file="index.html">&lt;h1&gt;&lt;img src="assets/midia/favicon.svg" alt="" width="32" height="32"&gt; Bolo de cenoura&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="300"&gt;
 &lt;p&gt;Rende 12 fatias.&lt;/p&gt;
 </pre>
 </div>
 
-<p>Repare no <code>alt="Enfeite"</code> do código inicial: ele obrigava quem usa leitor de tela a ouvir "imagem, Enfeite" no meio da receita, sem ganhar nada com isso.</p>
+<p>Repare no <code>alt="Enfeite"</code> do código inicial: ele fazia o título virar "Enfeite Bolo de cenoura" para quem usa leitor de tela. O <code>alt</code> de uma imagem dentro de um título entra no texto do título.</p>
 
 <hr>
 
@@ -168,10 +164,10 @@
 <h3>Imagem que é um link (ou um botão)</h3>
 <p>Quando a imagem é o <strong>único conteúdo</strong> de um link, o <code>alt</code> vira o nome do link. Ele deve dizer <strong>para onde o link leva</strong> (ou o que o botão faz), e não como a imagem é:</p>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo.svg" alt="Bolos da Ana, página inicial" width="160" height="48"&gt;&lt;/a&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha.svg" alt="Lojinha da Ana, página inicial" width="200" height="80"&gt;&lt;/a&gt;
 </pre>
 
-<p>Um <code>alt="Logotipo com um bolo rosa"</code> descreveria o desenho, mas quem ouve "link, logotipo com um bolo rosa" não sabe que ele leva à página inicial.</p>
+<p>Um <code>alt="Desenho de uma lojinha com toldo vermelho"</code> descreveria o desenho, mas quem ouve "link, desenho de uma lojinha com toldo vermelho" não sabe que ele leva à página inicial.</p>
 
 <div class="warning">
 <strong>O erro que o validador não vê</strong>
@@ -184,23 +180,23 @@ link-vazio.html                                     « nenhum erro, e mesmo assi
 </div>
 
 <h3>Imagem com texto escrito</h3>
-<p>Se a imagem tem palavras (um logotipo com o nome, um cartaz "Promoção de Páscoa: 20% off"), o <code>alt</code> repete <strong>as palavras</strong>. Quem não vê a imagem precisa receber o mesmo texto:</p>
+<p>Se a imagem tem palavras (um logotipo com o nome, um cartaz de promoção), o <code>alt</code> repete <strong>as palavras</strong>. Quem não vê a imagem precisa receber o mesmo texto. O logotipo da lojinha, fora de um link, no rodapé:</p>
 
-<pre class="file" data-file="index.html">&lt;img src="assets/midia/cartaz-pascoa.png" alt="Promoção de Páscoa: 20% de desconto em todos os bolos até domingo"&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;img src="assets/midia/logo-lojinha.svg" alt="Lojinha da Ana" width="200" height="80"&gt;&lt;/p&gt;
+&lt;p&gt;Bolos caseiros desde 2020.&lt;/p&gt;
 </pre>
 
 <p>Melhor ainda: sempre que puder, escreva o texto <strong>em HTML</strong>, e não dentro de uma imagem. Texto em HTML aumenta com o zoom sem borrar, pode ser traduzido, copiado e encontrado pelo Google.</p>
 
 <h3>Imagem complexa: gráficos e mapas</h3>
-<p>Um gráfico com as vendas do ano não cabe numa frase. Dê ao <code>alt</code> o resumo (o que o gráfico mostra e a conclusão) e coloque os números <strong>no texto da página</strong>, numa tabela ou num parágrafo ao lado:</p>
+<p>Um mapa ou um gráfico não cabe numa frase. Dê ao <code>alt</code> o resumo (o que a imagem mostra e a conclusão) e coloque os detalhes <strong>no texto da página</strong>, num parágrafo ou numa tabela ao lado:</p>
 
-<pre class="file" data-file="index.html">&lt;img src="assets/midia/vendas-2026.png" alt="Gráfico de barras: as vendas de bolo dobraram entre janeiro e outubro de 2026. Os números estão na tabela abaixo."&gt;
-&lt;table&gt;
-  …                                 (a tabela, da aula Tabelas)
-&lt;/table&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Como chegar&lt;/h2&gt;
+&lt;img src="assets/midia/mapa-800.png" alt="Mapa: a Lojinha da Ana fica na esquina da Rua das Flores com a Avenida Central, em frente à Praça da Árvore." width="400" height="250"&gt;
+&lt;p&gt;Endereço: Rua das Flores, esquina com a Avenida Central. A lojinha fica em frente à Praça da Árvore, perto do Rio Azul.&lt;/p&gt;
 </pre>
 
-<p>Aqui o tipo importa, então o <code>alt</code> pode começar com "Gráfico de barras". O jeito de juntar imagem e explicação com uma legenda é o <code>&lt;figure&gt;</code> da aula <a href="figure.html">figure e figcaption</a>.</p>
+<p>Aqui o tipo importa, então o <code>alt</code> começa com "Mapa:". O mapa tem muito mais coisa (a Rua do Sol, os quarteirões, a escala), mas quem precisa chegar à lojinha só precisa da esquina e de um ponto de referência. O jeito de juntar imagem e explicação com uma legenda é o <code>&lt;figure&gt;</code> da aula <a href="figure.html">figure e figcaption</a>.</p>
 
 <h3>Imagem com legenda que já diz tudo</h3>
 <p>Se o texto bem ao lado (uma legenda, o parágrafo de baixo) já descreve a imagem, o <code>alt</code> não precisa repetir: senão a pessoa ouve a mesma frase duas vezes. Use um <code>alt</code> curto que complete a informação, ou, se a legenda diz tudo, veja a exceção da seção 5.</p>
@@ -295,9 +291,9 @@ $ vnu vazio-role.html
 <tr><th>Tipo de imagem</th><th>O que vai no <code>alt</code></th><th>Exemplo</th></tr>
 <tr><td>Foto ou desenho que informa</td><td>O que ela mostra que importa nesta página</td><td><code>alt="Bolo de cenoura com cobertura de chocolate"</code></td></tr>
 <tr><td>Enfeite</td><td>Nada: <code>alt=""</code></td><td><code>alt=""</code></td></tr>
-<tr><td>Imagem que é link ou botão</td><td>Para onde leva / o que faz</td><td><code>alt="Bolos da Ana, página inicial"</code></td></tr>
-<tr><td>Imagem com texto (logotipo, cartaz)</td><td>As palavras da imagem</td><td><code>alt="Promoção de Páscoa: 20% de desconto"</code></td></tr>
-<tr><td>Gráfico, mapa</td><td>O resumo; os dados vão no texto da página</td><td><code>alt="Gráfico de barras: as vendas dobraram em 2026"</code></td></tr>
+<tr><td>Imagem que é link ou botão</td><td>Para onde leva / o que faz</td><td><code>alt="Lojinha da Ana, página inicial"</code></td></tr>
+<tr><td>Imagem com texto (logotipo, cartaz)</td><td>As palavras da imagem</td><td><code>alt="Lojinha da Ana"</code></td></tr>
+<tr><td>Gráfico, mapa</td><td>O resumo; os detalhes vão no texto da página</td><td><code>alt="Mapa: a lojinha fica na esquina da Rua das Flores com a Avenida Central"</code></td></tr>
 <tr><td>Obra de arte, captura de tela</td><td>O tipo também importa</td><td><code>alt="Captura de tela do editor com o erro em vermelho"</code></td></tr>
 </table>
 </div>
@@ -322,8 +318,8 @@ $ vnu vazio-role.html
 
 <div class="mc" data-answer="2">
 <p class="mc-q">3. O logotipo da lojinha é um link para a página inicial. Qual <code>alt</code> usar?</p>
-<label><input type="radio" name="q3"> <code>alt="Logotipo rosa com um desenho de bolo"</code></label>
-<label><input type="radio" name="q3"> <code>alt="Bolos da Ana, página inicial"</code></label>
+<label><input type="radio" name="q3"> <code>alt="Desenho de uma lojinha com toldo vermelho"</code></label>
+<label><input type="radio" name="q3"> <code>alt="Lojinha da Ana, página inicial"</code></label>
 <label><input type="radio" name="q3"> <code>alt=""</code>, porque logotipo é enfeite</label>
 <label><input type="radio" name="q3"> <code>alt="link"</code></label>
 </div>
@@ -346,23 +342,21 @@ $ vnu vazio-role.html
 
 <h3>Missão final: o topo da lojinha</h3>
 
-<div class="tryhtml" data-goal="sel:a[href=&quot;index.html&quot;] img[src$=&quot;logo.svg&quot;][alt],nsel:img[alt]=3,sel:img[src$=&quot;enfeite.svg&quot;][alt=&quot;&quot;],sel:img[src$=&quot;logo.svg&quot;][alt*=&quot;inicial&quot; i]\, img[src$=&quot;logo.svg&quot;][alt*=&quot;início&quot; i],sel:img[src$=&quot;bolo-800.jpg&quot;][alt*=&quot;bolo&quot; i]">
-<p class="try-task"><strong>Missão:</strong> o topo da lojinha tem três imagens, todas sem <code>alt</code>. Dê a cada uma o <code>alt</code> do papel dela: (1) o logotipo é um link para a página inicial: o <code>alt</code> deve dizer isso (use a palavra "inicial" ou "início"); (2) o enfeite não conta nada; (3) a foto mostra o bolo da semana: descreva o bolo.</p>
-<pre class="script" data-file="index.html">&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo.svg" width="160" height="48"&gt;&lt;/a&gt;
-&lt;img src="assets/midia/enfeite.svg" width="200" height="20"&gt;
-&lt;h1&gt;Bolo da semana&lt;/h1&gt;
-&lt;img src="assets/midia/bolo-800.jpg" width="400" height="267"&gt;
+<div class="tryhtml" data-goal="sel:a[href=&quot;index.html&quot;] img[src$=&quot;logo-lojinha.svg&quot;][alt],nsel:img[alt]=3,sel:img[src$=&quot;favicon.svg&quot;][alt=&quot;&quot;],sel:img[src$=&quot;logo-lojinha.svg&quot;][alt*=&quot;inicial&quot; i]\, img[src$=&quot;logo-lojinha.svg&quot;][alt*=&quot;início&quot; i],sel:img[src$=&quot;bolo-800.jpg&quot;][alt*=&quot;bolo&quot; i]">
+<p class="try-task"><strong>Missão:</strong> o topo da lojinha tem três imagens, todas sem <code>alt</code>. Dê a cada uma o <code>alt</code> do papel dela: (1) o logotipo é um link para a página inicial: o <code>alt</code> deve dizer isso (use a palavra "inicial" ou "início"); (2) o bolinho ao lado do título é só enfeite; (3) a foto mostra o bolo da semana: descreva o bolo.</p>
+<pre class="script" data-file="index.html">&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha.svg" width="200" height="80"&gt;&lt;/a&gt;
+&lt;h1&gt;&lt;img src="assets/midia/favicon.svg" width="32" height="32"&gt; Bolo da semana&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" width="400" height="300"&gt;
 &lt;p&gt;Encomendas até quinta-feira.&lt;/p&gt;
 </pre>
-<pre class="solucao" data-file="index.html">&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo.svg" alt="Bolos da Ana, página inicial" width="160" height="48"&gt;&lt;/a&gt;
-&lt;img src="assets/midia/enfeite.svg" alt="" width="200" height="20"&gt;
-&lt;h1&gt;Bolo da semana&lt;/h1&gt;
-&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura com cobertura de chocolate" width="400" height="267"&gt;
+<pre class="solucao" data-file="index.html">&lt;a href="index.html"&gt;&lt;img src="assets/midia/logo-lojinha.svg" alt="Lojinha da Ana, página inicial" width="200" height="80"&gt;&lt;/a&gt;
+&lt;h1&gt;&lt;img src="assets/midia/favicon.svg" alt="" width="32" height="32"&gt; Bolo da semana&lt;/h1&gt;
+&lt;img src="assets/midia/bolo-800.jpg" alt="Bolo de cenoura de duas camadas com cobertura de chocolate" width="400" height="300"&gt;
 &lt;p&gt;Encomendas até quinta-feira.&lt;/p&gt;
 </pre>
 </div>
 
-<p>Para conferir do jeito de quem não vê as imagens, troque, na sua solução, cada <code>assets/midia/</code> por <code>quebrada/</code>: sobram o nome da loja, o título e a descrição do bolo. O enfeite some sem deixar rastro, que é exatamente o que ele devia fazer.</p>
+<p>Para conferir do jeito de quem não vê as imagens, troque, na sua solução, cada <code>assets/midia/</code> por <code>quebrada/</code>: sobram o nome da loja, o título e a descrição do bolo. O bolinho de enfeite some sem deixar rastro, que é exatamente o que ele devia fazer.</p>
 
 <hr>
 
