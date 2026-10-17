@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Como Funciona — do arquivo à tela: pedir, ler, montar o DOM e desenhar | Guia HTML</title>
+<meta name="description" content="Como o navegador lê HTML, para quem nunca fez um site: o pedido do arquivo (file:// e http://), a resposta com Content-Type text/html, a leitura das tags, a árvore do DOM, os elementos que o navegador cria sozinho, o desenho na tela e como ele conserta código errado, com servidor local, curl, o DOM real e as mensagens do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Como Funciona</span></h1>
+
+<p class="intro">Você dá dois cliques num arquivo, ou digita um endereço, e a página aparece. Parece instantâneo, mas no meio do caminho o navegador faz quatro trabalhos, um depois do outro: <strong>pede</strong> o arquivo, <strong>lê</strong> o texto, <strong>monta</strong> uma árvore com os elementos e <strong>desenha</strong> a tela. Nesta aula você acompanha esse caminho com a página de receitas da Ana e descobre o que o navegador faz quando o HTML está errado. Spoiler: ele quase nunca reclama; ele conserta, do jeito dele.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>As quatro etapas: pedir, ler, montar e desenhar.</li>
+  <li>A diferença entre abrir um arquivo do disco (<code>file://</code>) e pedir a um servidor (<code>http://</code>).</li>
+  <li>O que o servidor responde, e por que o <code>Content-type: text/html</code> importa.</li>
+  <li>O que é o <strong>DOM</strong>, a árvore de elementos que o navegador monta, e as palavras pai, filho e irmão.</li>
+  <li>Os elementos que o navegador cria sozinho (<code>html</code>, <code>head</code>, <code>body</code>).</li>
+  <li>Como o navegador conserta HTML errado, e por que às vezes o "conserto" estraga a página.</li>
+</ul>
+</div>
+
+<p>Os comandos desta aula rodaram na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. O DOM mostrado em cada exemplo é o que um navegador de verdade (Chromium) montou com aquele arquivo. Os quadros <strong>Resultado</strong> são desenhados pelo seu navegador, na hora.</p>
+
+<hr>
+
+<h2>A ideia: montar um móvel pelo manual</h2>
+<p>Pense num guarda-roupa que chega desmontado, numa caixa, com um manual. Para ter o móvel no quarto, você faz quatro coisas:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Com o móvel</th><th>No navegador</th><th>Nome técnico</th></tr>
+<tr><td>Recebe a caixa da loja</td><td>Recebe o arquivo <code>.html</code>, do disco ou de um servidor</td><td>pedido e resposta (<em>request</em> e <em>response</em>)</td></tr>
+<tr><td>Lê o manual, passo a passo, separando as peças</td><td>Lê o texto do começo ao fim, separando as tags do conteúdo</td><td>análise (<em>parsing</em>)</td></tr>
+<tr><td>Encaixa as peças: a gaveta dentro do armário, o puxador na gaveta</td><td>Monta a árvore de elementos: o <code>strong</code> dentro do <code>p</code>, o <code>p</code> dentro do <code>body</code></td><td>o <strong>DOM</strong></td></tr>
+<tr><td>Põe o móvel no quarto, pinta, ajeita</td><td>Calcula tamanhos e posições e pinta os pixels na tela</td><td>desenho (<em>rendering</em>)</td></tr>
+</table>
+</div>
+
+<p>E se o manual tiver um erro, como uma peça que "fecha" antes de abrir? Uma pessoa daria um jeito. O navegador também dá, e com regras tão bem definidas que todos os navegadores dão <strong>o mesmo</strong> jeito. Você vai ver isso no fim da aula.</p>
+
+<hr>
+
+<h2>Etapa 1: pedir o arquivo</h2>
+<p>Existem dois jeitos de o navegador conseguir o arquivo. Você percebe qual foi pelo começo do endereço, na barra do navegador:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Endereço</th><th>De onde vem</th><th>Quando acontece</th></tr>
+<tr><td><code>file:///home/ana/site/index.html</code></td><td>Do <strong>disco</strong> do seu computador. O navegador lê o arquivo direto, como qualquer programa.</td><td>Quando você dá dois cliques num <code>.html</code> ou arrasta o arquivo para o navegador (aula <a href="primeiro-arquivo.html">Criar e Abrir um Arquivo .html</a>).</td></tr>
+<tr><td><code>https://exemplo.com/index.html</code><br><code>http://localhost:8000/index.html</code></td><td>De um <strong>servidor</strong>: um programa, em outro computador ou no seu, que entrega arquivos quando alguém pede.</td><td>Em todo site publicado na internet, e quando você testa o site com um servidor local.</td></tr>
+</table>
+</div>
+
+<p>O <code>http</code> é o <strong>HTTP</strong> (<em>HyperText Transfer Protocol</em>, "protocolo de transferência de hipertexto"): as regras da conversa entre o navegador e o servidor. O <code>https</code> é a mesma conversa, só que protegida (o <code>s</code> é de <em>secure</em>, "seguro"). Pedir e receber pela rede é a forma normal de a Web funcionar, então vale ver essa conversa de perto.</p>
+
+<p>O Python, que vem instalado no Linux da Ana, tem um servidor simples embutido. Na pasta do site, ela liga o servidor num terminal:</p>
+
+<pre class="term" data-cwd="~/site">$ python3 -m http.server
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...</pre>
+
+<p>"Servindo HTTP na porta 8000". A partir de agora, qualquer pedido para <code>http://localhost:8000/</code> é atendido com os arquivos da pasta <code>~/site</code> (<code>localhost</code> quer dizer "este computador"; a <code>8000</code> é a "porta", o número de atendimento que o servidor escolheu). O servidor fica rodando até a Ana apertar <kbd>Ctrl</kbd> + <kbd>C</kbd>. Como servidor local é assunto do Nível 3 (<a href="servidor-local.html">Servidor Local</a>), aqui ele só serve para mostrar a conversa.</p>
+
+<h3>A resposta do servidor</h3>
+<p>Em outro terminal, a Ana faz o papel do navegador com o <code>curl</code>, um programa que pede um endereço e mostra o que voltou. A opção <code>-i</code> (de <em>include</em>, "incluir") mostra também o cabeçalho da resposta, a parte que o navegador lê e não mostra; a <code>-s</code> (<em>silent</em>, "silencioso") esconde a barra de progresso:</p>
+
+<pre class="term" data-cwd="~/site">$ curl -s -i http://localhost:8000/index.html
+HTTP/1.0 200 OK                              « 200 = deu certo: o arquivo existe e está indo
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:49:31 GMT
+Content-type: text/html                      « o tipo do conteúdo: uma página HTML
+Content-Length: 194                          « o tamanho, em bytes
+Last-Modified: Sat, 17 Oct 2026 18:49:30 GMT
+                                             « a linha em branco separa o cabeçalho do corpo
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de &lt;strong&gt;cenoura&lt;/strong&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+<p>E, no terminal do servidor, apareceu uma linha para cada pedido atendido:</p>
+
+<pre class="term" data-cwd="~/site">$ python3 -m http.server
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+127.0.0.1 - - [17/Oct/2026 15:49:31] "GET /index.html HTTP/1.1" 200 -</pre>
+
+<dl class="anatomy">
+  <dt>HTTP/1.0 200 OK</dt><dd>A versão do HTTP e o <strong>código de status</strong>. <code>200</code> = "OK, aqui está". O mais famoso dos outros é o <code>404</code>, "não encontrado".</dd>
+  <dt>Content-type: text/html</dt><dd>O <strong>tipo do conteúdo</strong>. É esta linha que diz ao navegador "o que vem aí é uma página HTML; leia as tags e desenhe". O servidor escolheu esse tipo pela extensão <code>.html</code> do arquivo.</dd>
+  <dt>Content-Length: 194</dt><dd>O tamanho do corpo, em bytes: os 194 caracteres do arquivo.</dd>
+  <dt>a linha em branco</dt><dd>Separa o cabeçalho do <strong>corpo</strong>. Tudo o que vem depois dela é o arquivo, exatamente como está no disco.</dd>
+  <dt>"GET /index.html HTTP/1.1" 200</dt><dd>No terminal do servidor: o pedido que chegou. <code>GET</code> = "me dê"; <code>/index.html</code> = qual arquivo; <code>200</code> = o que ele respondeu.</dd>
+</dl>
+
+<p>Repare: o servidor não mandou uma página "desenhada". Mandou o <strong>mesmo texto</strong> que está no arquivo. Quem transforma esse texto em página é o navegador, nas próximas etapas. Quando o arquivo não existe, a resposta é outra:</p>
+
+<pre class="term" data-cwd="~/site">$ curl -s -I http://localhost:8000/nada.html      « -I: só o cabeçalho
+HTTP/1.0 404 File not found
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:49:31 GMT
+Connection: close
+Content-Type: text/html;charset=utf-8
+Content-Length: 460</pre>
+
+<p><code>404 File not found</code>, "arquivo não encontrado". Mesmo o erro vem com uma pequena página HTML (de 460 bytes) que o navegador mostra no lugar da sua.</p>
+
+<hr>
+
+<h2>Etapa 2: ler o texto</h2>
+<p>Com o texto na mão, o navegador começa a ler <strong>do começo ao fim</strong>, um caractere de cada vez, como você lê um livro. Cada vez que encontra um <code>&lt;</code>, ele sabe que começou uma tag; o que está fora das tags é texto. Esse trabalho se chama <strong>análise</strong> (em inglês, <em>parsing</em>; o pedaço do navegador que faz isso é o <em>parser</em>). Para a linha do parágrafo da Ana, a leitura dá esta sequência de peças:</p>
+
+<pre class="file" data-file="trecho" data-resultado>&lt;p&gt;Bolo de &lt;strong&gt;cenoura&lt;/strong&gt;.&lt;/p&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Ordem</th><th>Peça lida</th><th>O que o navegador entende</th></tr>
+<tr><td>1</td><td><code>&lt;p&gt;</code></td><td>Tag de abertura: começa um parágrafo</td></tr>
+<tr><td>2</td><td><code>Bolo de </code></td><td>Texto (com o espaço do fim)</td></tr>
+<tr><td>3</td><td><code>&lt;strong&gt;</code></td><td>Tag de abertura: começa um trecho importante, <strong>dentro</strong> do parágrafo (o parágrafo ainda está aberto)</td></tr>
+<tr><td>4</td><td><code>cenoura</code></td><td>Texto, dentro do <code>strong</code></td></tr>
+<tr><td>5</td><td><code>&lt;/strong&gt;</code></td><td>Tag de fechamento: acabou o trecho importante</td></tr>
+<tr><td>6</td><td><code>.</code></td><td>Texto, de novo direto no parágrafo</td></tr>
+<tr><td>7</td><td><code>&lt;/p&gt;</code></td><td>Tag de fechamento: acabou o parágrafo</td></tr>
+</table>
+</div>
+
+<p>A leitura de cima para baixo tem uma consequência prática: o navegador começa a montar e até a desenhar a página <strong>antes</strong> de o arquivo terminar de chegar. Numa internet lenta, você vê o começo da página aparecer primeiro. É por isso que a ordem das coisas no arquivo importa (o <code>head</code> vem antes do <code>body</code>, por exemplo).</p>
+
+<hr>
+
+<h2>Etapa 3: montar a árvore (o DOM)</h2>
+<p>Enquanto lê, o navegador encaixa cada peça no lugar, formando uma <strong>árvore</strong>: cada elemento é um "galho", e o que está dentro dele são os galhos menores. Essa árvore se chama <strong>DOM</strong> (<em>Document Object Model</em>, "modelo de objetos do documento"). Para a página da Ana, ela fica assim (o desenho é do guia; os textos entre aspas são os pedaços de texto):</p>
+
+<pre class="file" data-file="a árvore do DOM (desenho)">html
+├── head
+│   ├── meta
+│   └── title
+│       └── "Receitas da Ana"
+└── body
+    ├── h1
+    │   └── "Receitas da Ana"
+    └── p
+        ├── "Bolo de "
+        ├── strong
+        │   └── "cenoura"
+        └── "."
+</pre>
+
+<p>Para falar da árvore, todo mundo usa palavras de família:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Palavra</th><th>Quer dizer</th><th>Na árvore da Ana</th></tr>
+<tr><td><strong>pai</strong> (<em>parent</em>)</td><td>O elemento que está em volta</td><td><code>p</code> é o pai de <code>strong</code></td></tr>
+<tr><td><strong>filho</strong> (<em>child</em>)</td><td>O que está diretamente dentro</td><td><code>h1</code> e <code>p</code> são filhos de <code>body</code></td></tr>
+<tr><td><strong>irmãos</strong> (<em>siblings</em>)</td><td>Filhos do mesmo pai</td><td><code>h1</code> e <code>p</code> são irmãos; <code>head</code> e <code>body</code> também</td></tr>
+<tr><td><strong>raiz</strong> (<em>root</em>)</td><td>O elemento que contém todos os outros</td><td><code>html</code></td></tr>
+</table>
+</div>
+
+<p>Você já viu a palavra <em>child</em> numa mensagem do validador na aula anterior: <em>not allowed as child of element “body”</em>, "não permitido como filho do elemento <code>body</code>". As mensagens falam a língua da árvore. As regras de quem pode ficar dentro de quem estão em <a href="aninhamento.html">Aninhamento</a>.</p>
+
+<div class="tip">
+<strong>Por que a árvore importa</strong>
+<p>Tudo o que vem depois do HTML trabalha em cima do DOM, e não do texto do arquivo. O CSS escolhe os elementos pela posição na árvore ("todo <code>strong</code> dentro de um <code>p</code>"); o JavaScript muda a página mexendo na árvore; os leitores de tela usados por pessoas cegas leem a árvore. As missões deste guia também: elas olham o DOM que o seu navegador montou. Na aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a> você vai ver essa árvore de verdade, no seu navegador, com a tecla <kbd>F12</kbd>.</p>
+</div>
+
+<h3>Os elementos que o navegador cria sozinho</h3>
+<p>Toda árvore tem <code>html</code>, <code>head</code> e <code>body</code>, mesmo que o arquivo não tenha. Veja este arquivo com uma linha só, sem moldura nenhuma:</p>
+
+<pre class="file" data-file="oi.html" data-resultado>&lt;p&gt;Bolo de cenoura
+</pre>
+
+<p>A página aparece normalmente. Este é o DOM que o navegador montou para ela:</p>
+
+<pre class="file" data-file="DOM montado pelo navegador">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Bolo de cenoura
+&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</pre>
+
+<p>O navegador criou o <code>html</code>, o <code>head</code> (vazio) e o <code>body</code>, pôs o parágrafo dentro do <code>body</code> e ainda <strong>fechou o parágrafo</strong>, que no arquivo ficou aberto. A quebra de linha do fim do arquivo ficou dentro do <code>p</code>, porque ela veio antes do fechamento que o navegador inventou. O validador, claro, não deixa passar:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu oi.html
+"file:/home/ana/site/oi.html":1.1-1.3: error: Start tag seen without seeing a doctype first. Expected “&lt;!DOCTYPE html&gt;”.
+"file:/home/ana/site/oi.html":1.1-1.3: error: Element “head” is missing a required instance of child element “title”.
+"file:/home/ana/site/oi.html":1.1-1.3: info warning: Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.</pre>
+
+<p>As três mensagens falam da moldura, não do parágrafo: "vi uma tag antes do <code>&lt;!DOCTYPE html&gt;</code>", "o <code>head</code> precisa de um <code>title</code>" e o aviso "considere pôr o atributo <code>lang</code> no <code>html</code>". A moldura completa é o assunto de <a href="estrutura.html">Estrutura de uma Página</a>. Já o <code>&lt;/p&gt;</code> que faltou não gerou erro, porque a regra do HTML permite omitir o fechamento do parágrafo em vários casos. Permitir não é recomendar: o guia sempre fecha.</p>
+
+<div class="tryhtml" data-goal="nsel:p=2,src:Farinha&lt;/p&gt;,src:Ovos&lt;/p&gt;">
+<p class="try-task"><strong>Experimente:</strong> os dois parágrafos estão sem a tag de fechamento, e mesmo assim aparecem certinhos, porque o navegador fecha cada <code>p</code> sozinho quando começa o seguinte. Não dependa disso: escreva os dois <code>&lt;/p&gt;</code>, um depois de <code>Farinha</code> e outro depois de <code>Ovos</code>. O resultado não muda; o seu código fica claro para quem ler.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Farinha
+&lt;p&gt;Ovos
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Farinha&lt;/p&gt;
+&lt;p&gt;Ovos&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Etapa 4: desenhar na tela</h2>
+<p>Com a árvore pronta, o navegador decide como cada elemento aparece. De onde vem o título grande e em negrito, se ninguém escreveu "grande" em lugar nenhum? Todo navegador tem uma <strong>folha de estilo padrão</strong>, um CSS embutido que diz, por exemplo, "o <code>h1</code> tem letra grande e negrito" e "o <code>p</code> tem um espaço em cima e embaixo". Depois entra o CSS da própria página, se houver, que pode mudar tudo isso.</p>
+
+<p>Então o navegador calcula o tamanho e a posição de cada caixa (essa etapa se chama <em>layout</em>, "diagramação") e pinta os pixels. Quando você aumenta ou diminui a janela, ele refaz o <em>layout</em>: o texto se rearruma sozinho na nova largura. Por isso o guia nunca promete que uma frase vai quebrar num ponto exato: isso depende da sua tela.</p>
+
+<pre class="file" data-file="trecho" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Um título, um parágrafo e uma &lt;strong&gt;palavra importante&lt;/strong&gt;: tudo com o estilo padrão do seu navegador.&lt;/p&gt;
+</pre>
+
+<p>Se você abrir este guia em outro navegador, a fonte ou os espaços desse resultado podem mudar um pouquinho, porque cada um tem a sua folha padrão. A <strong>árvore</strong>, não: ela é sempre a mesma.</p>
+
+<hr>
+
+<h2>O navegador conserta o HTML errado</h2>
+<p>Durante muitos anos, cada navegador tinha o seu jeito de lidar com HTML errado, e uma página quebrada podia aparecer de um jeito no Internet Explorer e de outro no Firefox. O HTML5 resolveu isso: a especificação passou a descrever, passo a passo, o que fazer com <strong>qualquer</strong> sequência de caracteres, inclusive as erradas, e os navegadores adotaram essas regras no começo da década de 2010. Hoje todos as seguem, então o "conserto" é o mesmo em todos.</p>
+
+<p>Isso é ótimo para quem visita (a página sempre abre) e perigoso para quem escreve: o erro some da vista e o navegador nunca avisa. Três exemplos reais:</p>
+
+<h3>Um parágrafo não pode ter uma lista dentro</h3>
+<pre class="file" data-file="compras.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Compras&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Lista de compras:
+&lt;ul&gt;
+&lt;li&gt;Farinha&lt;/li&gt;
+&lt;li&gt;Ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Parece certo. Mas o DOM conta outra história:</p>
+
+<pre class="file" data-file="DOM montado pelo navegador (só o body)">&lt;body&gt;
+&lt;p&gt;Lista de compras:
+&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;Farinha&lt;/li&gt;
+&lt;li&gt;Ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;</pre>
+
+<p>Um parágrafo só pode conter texto e elementos "de frase" (como <code>strong</code> e <code>a</code>), nunca uma lista. Então, quando o <code>&lt;ul&gt;</code> chegou, o navegador <strong>fechou o parágrafo</strong> antes dele. A lista ficou fora, como irmã do <code>p</code>. Depois veio o <code>&lt;/p&gt;</code> do arquivo, sem nenhum parágrafo aberto para fechar, e o navegador criou um parágrafo <strong>vazio</strong> para ele. O validador aponta justamente esse <code>&lt;/p&gt;</code> da linha 13:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu compras.html
+"file:/home/ana/site/compras.html":13.1-13.4: error: No “p” element in scope but a “p” end tag seen.</pre>
+
+<p>"Nenhum elemento <code>p</code> aberto, mas vi uma tag de fechamento <code>p</code>." O conserto é tirar a lista de dentro do parágrafo: <code>&lt;p&gt;Lista de compras:&lt;/p&gt;</code> e, depois, o <code>&lt;ul&gt;</code>.</p>
+
+<h3>Uma tag esquecida aberta "vaza"</h3>
+<pre class="file" data-file="receita.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Bolo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Bolo &lt;strong&gt;de cenoura&lt;/p&gt;
+&lt;p&gt;Rende 8 fatias.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>A Ana esqueceu o <code>&lt;/strong&gt;</code>, e o segundo parágrafo, que não tinha nada a ver, saiu em negrito. O DOM mostra por quê:</p>
+
+<pre class="file" data-file="DOM montado pelo navegador (só o body)">&lt;body&gt;
+&lt;p&gt;Bolo &lt;strong&gt;de cenoura&lt;/strong&gt;&lt;/p&gt;&lt;strong&gt;
+&lt;p&gt;Rende 8 fatias.&lt;/p&gt;
+
+
+&lt;/strong&gt;&lt;/body&gt;</pre>
+
+<p>Quando o <code>&lt;/p&gt;</code> chegou com o <code>strong</code> ainda aberto, o navegador fechou os dois. Mas ele "lembra" que o <code>strong</code> não tinha sido fechado de propósito e o <strong>reabre</strong> logo depois, agora envolvendo o resto da página. Num arquivo grande, um único <code>&lt;/strong&gt;</code> esquecido deixa tudo em negrito até o fim. O validador dá quatro mensagens, todas sobre o mesmo erro:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu receita.html
+"file:/home/ana/site/receita.html":8.27-8.30: error: End tag “p” seen, but there were open elements.
+"file:/home/ana/site/receita.html":8.9-8.16: error: Unclosed element “strong”.
+"file:/home/ana/site/receita.html":9.1-9.3: error: Element “p” not allowed as child of element “strong” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/receita.html":10.1-10.7: error: End tag for  “body” seen, but there were unclosed elements.</pre>
+
+<dl class="anatomy">
+  <dt>End tag “p” seen, but there were open elements.</dt><dd>"Vi o fechamento do <code>p</code>, mas havia elementos abertos" (o <code>strong</code>). Linha 8, coluna 27: o <code>&lt;/p&gt;</code>.</dd>
+  <dt>Unclosed element “strong”.</dt><dd>"Elemento <code>strong</code> não fechado". A posição <code>8.9-8.16</code> aponta o <code>&lt;strong&gt;</code> que ficou aberto: é ali que está o conserto.</dd>
+  <dt>Element “p” not allowed as child of element “strong”…</dt><dd>Consequência do vazamento: o segundo <code>p</code> ficou <em>dentro</em> do <code>strong</code> reaberto, e isso não é permitido.</dd>
+  <dt>End tag for “body” seen, but there were unclosed elements.</dt><dd>No <code>&lt;/body&gt;</code>, o <code>strong</code> ainda estava aberto. (O espaço duplo antes de “body” está assim na mensagem original.)</dd>
+</dl>
+
+<p>Quatro mensagens, um erro só. Isso é comum: um engano no começo provoca vários avisos depois. A regra é consertar o <strong>primeiro</strong> problema real e validar de novo (a aula <a href="validar.html">Validar o HTML</a> mostra essa rotina).</p>
+
+<h3>Um comentário sem fim esconde a página</h3>
+<p>Um <strong>comentário</strong> é um texto que o navegador não mostra, entre <code>&lt;!--</code> e <code>--&gt;</code> (aula <a href="comentarios.html">Comentários</a>). Se o <code>--&gt;</code> for esquecido:</p>
+
+<pre class="file" data-file="receitas.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;!-- lembrar de pôr a foto
+&lt;p&gt;Bolo de cenoura&lt;/p&gt;
+&lt;p&gt;Pudim de leite&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Só o título aparece. O navegador leu <code>&lt;!--</code> e passou a tratar <strong>tudo</strong> como comentário, até o fim do arquivo, porque o <code>--&gt;</code> nunca chegou. As duas receitas sumiram. O validador:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu receitas.html
+"file:/home/ana/site/receitas.html":9.1-13.8: error: End of file inside comment.</pre>
+
+<p>"Fim do arquivo dentro de um comentário", e a posição <code>9.1-13.8</code> mostra o tamanho do estrago: da linha 9 até o fim. O conserto é fechar o comentário na mesma linha: <code>&lt;!-- lembrar de pôr a foto --&gt;</code>.</p>
+
+<h3>Navegador × validador</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>Navegador</th><th>Validador (<code>vnu</code>, validator.w3.org)</th></tr>
+<tr><td>Diante de um erro</td><td>Conserta em silêncio, seguindo as regras da especificação</td><td>Aponta o erro, com linha e coluna</td></tr>
+<tr><td>Objetivo</td><td>Mostrar a página de qualquer jeito, para quem está visitando</td><td>Ajudar quem escreve a deixar o código certo</td></tr>
+<tr><td>Quando usar</td><td>Para ver como a página ficou</td><td>Sempre que terminar ou mudar uma página</td></tr>
+</table>
+</div>
+
+<p>Os dois se completam. "No meu navegador está aparecendo certo" é um bom começo, mas não prova nada: os três exemplos acima "apareciam" e estavam errados.</p>
+
+<hr>
+
+<h2>Quando dá errado</h2>
+
+<div class="cenario">
+<strong>O navegador mostra o código, com as tags à vista</strong>
+<p><strong>O que significa:</strong> o navegador não recebeu o arquivo como HTML. Do disco, ele decide pela extensão (<code>.txt</code> em vez de <code>.html</code>). De um servidor, ele decide pelo <code>Content-type</code>, e com <code>.txt</code> o servidor responde que é texto simples:</p>
+<pre class="term" data-cwd="~/site">$ curl -s -I http://localhost:8000/notas.txt
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:49:31 GMT
+Content-type: text/plain                     « texto simples: o navegador não procura tags
+Content-Length: 32
+Last-Modified: Sat, 17 Oct 2026 18:49:30 GMT</pre>
+<p><strong>Como consertar:</strong> dê ao arquivo a extensão <code>.html</code>. Num site publicado, o servidor escolhe o tipo do mesmo jeito, pela extensão.</p>
+</div>
+
+<div class="cenario">
+<strong>Um trecho da página "sumiu"</strong>
+<p><strong>O que significa:</strong> quase sempre é um comentário sem <code>--&gt;</code> (<code>End of file inside comment</code>) ou uma tag que engole o texto, como um <code>&lt;title&gt;</code> ou um <code>&lt;textarea&gt;</code> sem fechamento.</p>
+<p><strong>Como consertar:</strong> rode o validador e vá direto à primeira mensagem. A posição inicial dela mostra onde o trecho começou a sumir.</p>
+</div>
+
+<div class="cenario">
+<strong>Um estilo "vazou" para o resto da página</strong>
+<p><strong>O que significa:</strong> uma tag como <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code> ou <code>&lt;a&gt;</code> ficou aberta, e o navegador a reabriu nos elementos seguintes (<code>Unclosed element “strong”</code>).</p>
+<p><strong>Como consertar:</strong> procure a tag apontada em <code>Unclosed element</code> e feche-a no lugar certo. Escrever a tag de fechamento logo depois de abrir, e só então digitar o conteúdo no meio, evita esse erro; os editores de código fazem isso por você (aula <a href="editores.html">Editores</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>Apareceu um espaço a mais, ou um parágrafo vazio</strong>
+<p><strong>O que significa:</strong> um elemento ficou num lugar proibido (como a lista dentro do parágrafo) e o navegador o tirou de lá, deixando um <code>&lt;p&gt;&lt;/p&gt;</code> vazio para trás (<code>No “p” element in scope but a “p” end tag seen</code>).</p>
+<p><strong>Como consertar:</strong> veja no validador qual elemento não pode estar onde está e reorganize. Na dúvida, abra o <kbd>F12</kbd> e compare a árvore com o que você escreveu (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>).</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Etapa ou termo</th><th>O que é</th></tr>
+<tr><td><strong>pedido / resposta</strong></td><td>O navegador pede o arquivo; o disco (<code>file://</code>) ou o servidor (<code>http://</code>, <code>https://</code>) entrega</td></tr>
+<tr><td><code>200 OK</code> / <code>404</code></td><td>Códigos de status do HTTP: "aqui está" / "não encontrado"</td></tr>
+<tr><td><code>Content-type: text/html</code></td><td>O cabeçalho que diz "isto é HTML". Com <code>text/plain</code>, o navegador mostra o texto como está</td></tr>
+<tr><td><strong>análise</strong> (<em>parsing</em>)</td><td>A leitura do texto, do começo ao fim, separando tags e conteúdo</td></tr>
+<tr><td><strong>DOM</strong></td><td><em>Document Object Model</em>: a árvore de elementos montada pelo navegador</td></tr>
+<tr><td><strong>pai, filho, irmão, raiz</strong></td><td>As relações entre os elementos na árvore</td></tr>
+<tr><td><strong>folha de estilo padrão</strong></td><td>O CSS embutido no navegador, que dá a cara inicial de cada elemento</td></tr>
+<tr><td><strong>desenho</strong> (<em>rendering</em>)</td><td>Calcular posições e tamanhos (<em>layout</em>) e pintar a tela</td></tr>
+<tr><td><code>python3 -m http.server</code></td><td>Liga um servidor simples na pasta atual, na porta 8000</td></tr>
+<tr><td><code>curl -s -i ENDEREÇO</code></td><td>Pede o endereço e mostra o cabeçalho e o corpo da resposta (<code>-I</code>: só o cabeçalho)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O tipo do conteúdo</h3>
+<p>Complete o cabeçalho que um servidor manda junto com uma página HTML:</p>
+<div class="ex-code">Content-type: <input data-answer="text/html" aria-label="tipo do conteúdo"></div>
+</div>
+
+<div class="exercise">
+<h3>2. A sigla da árvore</h3>
+<p>Como se chama, em sigla, a árvore de elementos que o navegador monta?</p>
+<div class="ex-code"><input data-answer="DOM|dom" aria-label="sigla"></div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Qual é a ordem certa das etapas?</p>
+<label><input type="radio" name="q3"> Desenhar, pedir, ler, montar a árvore</label>
+<label><input type="radio" name="q3"> Pedir, ler, montar a árvore, desenhar</label>
+<label><input type="radio" name="q3"> Ler, pedir, desenhar, montar a árvore</label>
+<label><input type="radio" name="q3"> Montar a árvore, pedir, ler, desenhar</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. Um arquivo tem só a linha <code>&lt;h1&gt;Oi&lt;/h1&gt;</code>. Que elementos existem no DOM?</p>
+<label><input type="radio" name="q4"> Só o <code>h1</code></label>
+<label><input type="radio" name="q4"> Nenhum: sem <code>&lt;html&gt;</code>, o navegador não monta nada</label>
+<label><input type="radio" name="q4"> <code>body</code> e <code>h1</code></label>
+<label><input type="radio" name="q4"> <code>html</code>, <code>head</code>, <code>body</code> e <code>h1</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Em <code>&lt;p&gt;Bolo de &lt;strong&gt;cenoura&lt;/strong&gt;&lt;/p&gt;</code>, qual é o pai do <code>strong</code>?</p>
+<label><input type="radio" name="q5"> O <code>p</code></label>
+<label><input type="radio" name="q5"> O texto "Bolo de "</label>
+<label><input type="radio" name="q5"> O <code>html</code>, porque é a raiz</label>
+<label><input type="radio" name="q5"> O <code>strong</code> não tem pai</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">6. A página parece certa no seu navegador. O que isso garante?</p>
+<label><input type="radio" name="q6"> Que o HTML está certo</label>
+<label><input type="radio" name="q6"> Que o validador não vai achar nada</label>
+<label><input type="radio" name="q6"> Nada sobre o código: o navegador pode ter consertado erros em silêncio</label>
+<label><input type="radio" name="q6"> Que ela vai aparecer igual, pixel por pixel, em qualquer tela</label>
+</div>
+
+<h3>Missão final: o negrito que vazou</h3>
+
+<div class="tryhtml" data-goal="nsel:strong=1,texto:strong=de cenoura,nsel:p strong=1">
+<p class="try-task"><strong>Missão:</strong> o segundo parágrafo saiu em negrito sem ninguém pedir. Descubra qual tag ficou aberta e feche-a no lugar certo, para que só <code>de cenoura</code> fique em negrito. A missão confere o DOM: no fim, deve existir um <code>strong</code> só.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Bolo &lt;strong&gt;de cenoura&lt;/p&gt;
+&lt;p&gt;Rende 8 fatias.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Bolo &lt;strong&gt;de cenoura&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Rende 8 fatias.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Repare que, no código errado, o DOM tinha <strong>dois</strong> <code>strong</code>: o original, fechado pelo navegador dentro do primeiro parágrafo, e o reaberto, em volta do segundo. É por isso que a missão conta os <code>strong</code>: ela vê a árvore, e não o seu texto.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O navegador faz quatro trabalhos: <strong>pede</strong> o arquivo, <strong>lê</strong> o texto, <strong>monta</strong> a árvore (o DOM) e <strong>desenha</strong> a tela.</li>
+  <li><code>file://</code> = arquivo do disco; <code>http://</code> e <code>https://</code> = arquivo entregue por um servidor. O servidor manda o mesmo texto do arquivo, com um cabeçalho; o <code>Content-type: text/html</code> diz que é uma página.</li>
+  <li>O navegador lê de cima para baixo e monta o <strong>DOM</strong>: uma árvore de elementos com pai, filhos e irmãos, que o CSS, o JavaScript, os leitores de tela e as missões do guia usam.</li>
+  <li>Ele cria sozinho o <code>html</code>, o <code>head</code> e o <code>body</code> quando faltam, e fecha elementos que ficaram abertos.</li>
+  <li>A aparência inicial vem da folha de estilo padrão do navegador; o <em>layout</em> se refaz quando a janela muda.</li>
+  <li>HTML errado nunca dá erro na tela: o navegador conserta seguindo regras iguais em todos os navegadores. Às vezes o conserto estraga a página (parágrafo vazio, negrito que vaza, conteúdo sumido). O validador mostra o que aconteceu.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
