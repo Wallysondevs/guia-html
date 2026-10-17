@@ -107,6 +107,21 @@
 &lt;label for="cartao"&gt;Cartão&lt;/label&gt;
 </pre>
 
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> marque Granulado e Cartão e clique em <strong>Enviar</strong>. O editor do guia não tem servidor: ele mostra uma página "Formulário enviado" com o que seria enviado. Veja as duas linhas com o mesmo nome, <code>adicionais</code>. Volte, desmarque tudo e envie de novo: a tabela não tem nenhum <code>adicionais</code>.</p>
+<pre class="script" data-file="index.html">&lt;form action="enviar.php"&gt;
+  &lt;p&gt;Adicionais:&lt;/p&gt;
+  &lt;input type="checkbox" id="granulado" name="adicionais" value="granulado"&gt;
+  &lt;label for="granulado"&gt;Granulado&lt;/label&gt;
+  &lt;input type="checkbox" id="morango" name="adicionais" value="morango"&gt;
+  &lt;label for="morango"&gt;Morangos&lt;/label&gt;
+  &lt;input type="checkbox" id="cartao" name="adicionais" value="cartao"&gt;
+  &lt;label for="cartao"&gt;Cartão&lt;/label&gt;
+  &lt;p&gt;&lt;button type="submit"&gt;Enviar&lt;/button&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
 <p>Repare: o <code>name</code> se repete, mas cada <code>id</code> é diferente. O <code>id</code> nunca pode repetir na página (veja em <a href="#errado">Quando dá errado</a>). Cada caixa marcada vira um par, todos com o mesmo nome. Testamos no Chromium 155 com Granulado e Morangos marcados: <code>adicionais=granulado&amp;adicionais=morango</code>. Mesmo com o mesmo nome, as caixas continuam <strong>independentes</strong>: marcar uma não desmarca a outra.</p>
 
 <hr>

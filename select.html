@@ -110,6 +110,20 @@
 </table>
 </div>
 
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> escolha um sabor e clique em <strong>Enviar</strong>. O editor do guia não tem servidor, então ele mostra uma página "Formulário enviado" com o que <strong>seria</strong> enviado: a tabela <code>name → value</code>. Escolha "Chocolate belga" e confira que vai <code>chocolate</code>. Depois apague o <code>value="laranja"</code>, escolha Laranja e envie de novo.</p>
+<pre class="script" data-file="index.html">&lt;form action="enviar.php"&gt;
+  &lt;label for="sabor"&gt;Sabor do bolo:&lt;/label&gt;
+  &lt;select id="sabor" name="sabor"&gt;
+    &lt;option value="cenoura"&gt;Cenoura com cobertura&lt;/option&gt;
+    &lt;option value="chocolate"&gt;Chocolate belga&lt;/option&gt;
+    &lt;option value="laranja"&gt;Laranja com calda&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
 <p>Se o select <strong>não tem</strong> <code>name</code>, nada dele é enviado, nem o nome nem o valor. Esse é um esquecimento comum, e o validador não avisa (o select sem <code>name</code> é válido, porque um script pode usá-lo sem enviar nada). Você vai ver o envio de verdade, com cada par aparecendo no endereço, em <a href="enviar-formulario.html">Enviar</a>.</p>
 
 <div class="note">

@@ -181,13 +181,16 @@
 <h2>5. Dois botões de enviar: <code>name</code> e <code>value</code></h2>
 <p>A ficha da Ana tem dois botões de enviar: um manda o pedido para a cozinha; o outro só guarda a ficha para a cliente terminar depois. Os dois enviam o mesmo formulário. Como quem recebe sabe qual foi clicado? Dê ao botão um <code>name</code> e um <code>value</code>, como um campo:</p>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;form&gt;
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> clique em <strong>Salvar rascunho</strong>. O editor não tem servidor e mostra uma página "Formulário enviado", com a tabela do que seria enviado. Volte ao formulário e clique em <strong>Enviar pedido</strong>: muda só a linha <code>acao</code>.</p>
+<pre class="script" data-file="index.html">&lt;form action="enviar.php"&gt;
   &lt;label for="nome"&gt;Seu nome:&lt;/label&gt;
   &lt;input type="text" id="nome" name="nome" value="Ana"&gt;
   &lt;button type="submit" name="acao" value="enviar"&gt;Enviar pedido&lt;/button&gt;
   &lt;button type="submit" name="acao" value="rascunho"&gt;Salvar rascunho&lt;/button&gt;
 &lt;/form&gt;
 </pre>
+</div>
 
 <p>Só o botão <strong>clicado</strong> entra no envio. Testamos no Chromium 155: clicando em "Salvar rascunho", os dados enviados foram <code>nome=Ana&amp;acao=rascunho</code>; clicando em "Enviar pedido", seriam <code>nome=Ana&amp;acao=enviar</code>. Um botão sem <code>name</code> não manda nada de si mesmo, só dispara o envio.</p>
 
