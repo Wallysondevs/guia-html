@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Web Components — criar a sua própria tag com customElements.define | Guia HTML</title>
+<meta name="description" content="Web Components para quem nunca fez um site: o nome com hífen de um elemento personalizado, customElements.define, a classe que estende HTMLElement, connectedCallback, ler atributos, shadow DOM com template e slot, e os erros reais do validador W3C e do console.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Web Components</span></h1>
+
+<p class="intro">O HTML tem mais de cem elementos prontos, mas nenhum se chama <code>&lt;cartao-receita&gt;</code>. Com os <strong>Web Components</strong>, você mesmo cria essa tag: escreve uma vez como ela funciona e depois usa quantas vezes quiser, como se fosse um elemento do HTML. Nesta aula você vai criar um <strong>elemento personalizado</strong> simples com <code>customElements.define</code>, fazê-lo ler atributos e, no fim, juntar tudo o que viu na aula <a href="template.html">template e slot</a> num cartão de receita de verdade. O JavaScript é pouco, e cada linha é explicada.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que são os Web Components e as três peças deles.</li>
+  <li>A regra do nome: <strong>sempre</strong> com hífen (<code>cartao-receita</code>).</li>
+  <li>O que o navegador faz com uma tag personalizada antes de ela ser definida.</li>
+  <li>Como definir o elemento: <code>class … extends HTMLElement</code>, <code>connectedCallback</code> e <code>customElements.define</code>.</li>
+  <li>Como ler um atributo seu (<code>nome="Bia"</code>) com <code>getAttribute</code>.</li>
+  <li>Como dar ao elemento um shadow DOM com <code>attachShadow</code>, um <code>&lt;template&gt;</code> e slots.</li>
+  <li>Os erros reais: nome sem hífen, nome repetido, <code>super()</code> esquecido e <code>&lt;cartao-receita /&gt;</code>.</li>
+</ul>
+</div>
+
+<p>As mensagens do validador desta aula saíram do <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. As do console foram conferidas no Chromium; os editores da página mostram as do seu navegador.</p>
+
+<hr>
+
+<h2>A ideia: o carimbo personalizado</h2>
+<p>A papelaria vende carimbos prontos: "PAGO", "URGENTE", "CÓPIA". Mas a Ana quis um carimbo com o logo da lojinha, e mandou fazer um <strong>sob medida</strong>. Depois de pronto, ela usa o carimbo dela do mesmo jeito que usa os outros: pega e carimba.</p>
+<p>Os elementos do HTML são os carimbos prontos (<code>&lt;p&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;table&gt;</code>). Um elemento personalizado é o carimbo sob medida: você o "fabrica" uma vez, com JavaScript, e depois escreve <code>&lt;cartao-receita&gt;</code> no HTML como se fosse uma tag qualquer.</p>
+
+<p>"Web Components" é o nome do conjunto de três peças, que funcionam juntas ou separadas:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Peça</th><th>O que faz</th><th>Onde aprender</th></tr>
+<tr><td><strong>Elementos personalizados</strong> (<em>custom elements</em>)</td><td>Criam uma tag nova, com comportamento seu</td><td>nesta aula</td></tr>
+<tr><td><strong>Shadow DOM</strong></td><td>Dá ao elemento um HTML e um CSS próprios, isolados da página</td><td><a href="template.html">template e slot</a> e a seção 5 desta aula</td></tr>
+<tr><td><strong><code>&lt;template&gt;</code> e <code>&lt;slot&gt;</code></strong></td><td>O molde do elemento e os espaços onde o conteúdo encaixa</td><td><a href="template.html">template e slot</a></td></tr>
+</table>
+</div>
+
+<p>Os três funcionam em todos os navegadores atuais desde 2020, quando o Edge passou a usar o mesmo motor do Chrome; o Chrome, o Firefox e o Safari já aceitavam antes.</p>
+
+<hr>
+
+<h2>1. O nome: sempre com hífen</h2>
+<p>O nome de um elemento personalizado tem regras:</p>
+<ul>
+  <li>tem de ter pelo menos um <strong>hífen</strong>: <code>cartao-receita</code>, <code>saudacao-ana</code>, <code>meu-botao</code>;</li>
+  <li>começa com uma letra minúscula e é escrito em minúsculas;</li>
+  <li>não pode ser um dos poucos nomes com hífen que já existem em outras linguagens, como <code>font-face</code>.</li>
+</ul>
+<p>O hífen é uma promessa: <strong>nenhum elemento oficial do HTML tem hífen</strong>, e nunca vai ter. Assim, a sua <code>&lt;cartao-receita&gt;</code> nunca vai brigar com uma tag nova do HTML do futuro.</p>
+
+<h3>Antes de ser definida</h3>
+<p>Uma tag com hífen já é aceita pelo navegador e pelo validador, mesmo <strong>sem</strong> nenhum JavaScript. Ela só não faz nada de especial: o navegador mostra o conteúdo como texto em linha, como faria com um <code>&lt;span&gt;</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Receita do dia: &lt;cartao-receita&gt;Bolo de cenoura&lt;/cartao-receita&gt;, feita em casa.&lt;/p&gt;
+</pre>
+
+<p>Esse código passa no validador sem erros. Já uma tag inventada <strong>sem</strong> hífen, como <code>&lt;cartao&gt;</code>, aparece igualzinha na tela, mas o validador recusa (veja em <a href="#errado">Quando dá errado</a>): para ele, é um elemento "completamente desconhecido".</p>
+
+<hr>
+
+<h2>2. Definir o elemento: customElements.define</h2>
+<p>Para a tag ganhar vida, o JavaScript precisa dizer ao navegador <strong>como</strong> ela funciona. O exemplo mais simples possível: uma tag <code>&lt;ola-mundo&gt;</code> que escreve "Olá, mundo!" dentro de si mesma.</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;h1&gt;Meu primeiro elemento&lt;/h1&gt;
+&lt;p&gt;&lt;ola-mundo&gt;&lt;/ola-mundo&gt;&lt;/p&gt;
+&lt;p&gt;&lt;ola-mundo&gt;&lt;/ola-mundo&gt;&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">class OlaMundo extends HTMLElement {
+  connectedCallback() {
+    this.textContent = "Olá, mundo!";
+  }
+}
+
+customElements.define("ola-mundo", OlaMundo);
+</pre>
+</div>
+
+<p>As duas tags vazias viraram "Olá, mundo!". Linha por linha:</p>
+
+<dl class="anatomy">
+  <dt>class OlaMundo</dt><dd>Uma <strong>classe</strong> é a "receita" de um tipo de objeto. Esta receita se chama <code>OlaMundo</code> (o costume é escrever com maiúsculas, sem hífen).</dd>
+  <dt>extends HTMLElement</dt><dd>"Estende o elemento HTML": a receita começa de tudo o que um elemento comum já sabe fazer (ter atributos, filhos, texto) e acrescenta o que vem entre as chaves. É a fôrma de carimbo pronta, que você só grava.</dd>
+  <dt>connectedCallback() { … }</dt><dd><em>Connected callback</em> = "aviso de conectado". O navegador chama esse bloco sozinho, cada vez que um elemento desse tipo <strong>entra na página</strong>.</dd>
+  <dt>this.textContent = "Olá, mundo!"</dt><dd><code>this</code> ("este") é o próprio elemento, cada <code>&lt;ola-mundo&gt;</code> da vez. A linha troca o texto dele.</dd>
+  <dt>customElements.define("ola-mundo", OlaMundo)</dt><dd>"Elementos personalizados, definam": liga o nome da tag (com hífen, entre aspas) à classe. A partir desta linha, toda <code>&lt;ola-mundo&gt;</code> da página segue a receita <code>OlaMundo</code>.</dd>
+</dl>
+
+<div class="note">
+<strong>O script pode vir antes ou depois</strong>
+<p>Na aula de <a href="canvas.html">canvas</a>, o script tinha de vir depois do <code>&lt;canvas&gt;</code>. Aqui, tanto faz: se o navegador encontra a tag antes da definição, ele a mostra como uma tag comum e, quando o <code>define</code> roda, <strong>atualiza</strong> todas as que já existem. Se a definição vem antes, cada tag nova já nasce pronta.</p>
+</div>
+
+<hr>
+
+<h2>3. Ler um atributo seu</h2>
+<p>Um elemento personalizado pode ter atributos inventados por você (o validador aceita qualquer atributo numa tag com hífen). Dentro da classe, o <code>this.getAttribute("nome")</code> lê o valor:</p>
+
+<pre class="file" data-file="script.js">class SaudacaoAna extends HTMLElement {
+  connectedCallback() {
+    const nome = this.getAttribute("nome");
+    this.textContent = "Olá, " + nome + "!";
+  }
+}
+
+customElements.define("saudacao-ana", SaudacaoAna);
+</pre>
+
+<dl class="anatomy">
+  <dt>const nome = this.getAttribute("nome")</dt><dd>Lê o atributo <code>nome</code> <strong>deste</strong> elemento e guarda o valor numa constante. Com <code>&lt;saudacao-ana nome="Bia"&gt;</code>, ela vale <code>"Bia"</code>.</dd>
+  <dt>"Olá, " + nome + "!"</dt><dd>Junta três textos: <code>"Olá, "</code>, o nome e <code>"!"</code>.</dd>
+</dl>
+
+<div class="tryhtml" data-goal="texto:saudacao-ana=Olá, Bia!,src:getAttribute\(\s*[&quot;']nome[&quot;']\s*\)">
+<p class="try-task"><strong>Missão:</strong> o elemento <code>&lt;saudacao-ana nome="Bia"&gt;</code> está mostrando só "Olá!". Mude o <code>script.js</code> para que ele leia o atributo <code>nome</code> e mostre <code>Olá, Bia!</code>. Depois, acrescente no HTML uma segunda saudação, com outro nome, e veja as duas funcionarem.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Clientes da lojinha&lt;/h1&gt;
+&lt;p&gt;&lt;saudacao-ana nome="Bia"&gt;&lt;/saudacao-ana&gt;&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">class SaudacaoAna extends HTMLElement {
+  connectedCallback() {
+    this.textContent = "Olá!";
+  }
+}
+
+customElements.define("saudacao-ana", SaudacaoAna);
+</pre>
+<pre class="solucao" data-file="script.js">class SaudacaoAna extends HTMLElement {
+  connectedCallback() {
+    const nome = this.getAttribute("nome");
+    this.textContent = "Olá, " + nome + "!";
+  }
+}
+
+customElements.define("saudacao-ana", SaudacaoAna);
+</pre>
+</div>
+
+<p>Se uma saudação não tiver o atributo <code>nome</code>, o <code>getAttribute</code> devolve <code>null</code>, e a tela mostra "Olá, null!". Num elemento de verdade, você trataria esse caso (por exemplo, com um nome padrão); aqui, basta saber de onde vem o <code>null</code>.</p>
+
+<hr>
+
+<h2>4. Quando o navegador avisa o elemento</h2>
+<p>O <code>connectedCallback</code> é um dos "avisos" que o navegador manda para a classe. Os principais:</p>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Bloco da classe</th><th>Quando o navegador chama</th></tr>
+<tr><td><code>constructor() { super(); … }</code></td><td>Quando o elemento é <strong>criado</strong> (antes de entrar na página). O <code>super()</code> é obrigatório e vem primeiro.</td></tr>
+<tr><td><code>connectedCallback()</code></td><td>Cada vez que o elemento <strong>entra</strong> na página</td></tr>
+<tr><td><code>disconnectedCallback()</code></td><td>Cada vez que ele <strong>sai</strong> da página</td></tr>
+<tr><td><code>attributeChangedCallback(nome, antigo, novo)</code></td><td>Quando um atributo da lista <code>static observedAttributes = ["nome"]</code> muda</td></tr>
+</table>
+</div>
+<p>Para começar, o <code>connectedCallback</code> basta. Os outros servem para elementos que mudam enquanto a página está aberta, um assunto do JavaScript.</p>
+
+<hr>
+
+<h2>5. O cartão de receita: shadow DOM, template e slot</h2>
+<p>Na aula <a href="template.html">template e slot</a>, o cartão de receita com shadow DOM tinha um problema: o molde era <strong>repetido</strong> em cada cartão. Agora o molde fica escrito <strong>uma vez</strong>, num <code>&lt;template&gt;</code> comum, e a classe do elemento faz o resto:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+
+&lt;template id="molde-cartao"&gt;
+  &lt;style&gt;
+    div { border: 2px solid darkred; padding: 8px; margin-bottom: 8px; }
+    h2 { color: darkred; margin: 0; }
+  &lt;/style&gt;
+  &lt;div&gt;
+    &lt;h2&gt;&lt;slot name="titulo"&gt;Receita sem nome&lt;/slot&gt;&lt;/h2&gt;
+    &lt;slot name="descricao"&gt;Ainda sem descrição.&lt;/slot&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;cartao-receita&gt;
+  &lt;span slot="titulo"&gt;Bolo de cenoura&lt;/span&gt;
+  &lt;p slot="descricao"&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;/cartao-receita&gt;
+
+&lt;cartao-receita&gt;
+  &lt;span slot="titulo"&gt;Brigadeiro&lt;/span&gt;
+&lt;/cartao-receita&gt;
+
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">class CartaoReceita extends HTMLElement {
+  constructor() {
+    super();
+    const molde = document.getElementById("molde-cartao");
+    const sombra = this.attachShadow({ mode: "open" });
+    sombra.append(molde.content.cloneNode(true));
+  }
+}
+
+customElements.define("cartao-receita", CartaoReceita);
+</pre>
+</div>
+
+<dl class="anatomy">
+  <dt>constructor() { super(); … }</dt><dd>O bloco que roda quando cada cartão é <strong>criado</strong>. O <code>super()</code> manda o <code>HTMLElement</code> preparar a parte "elemento comum" primeiro; sem ele, o navegador dá erro (veja abaixo).</dd>
+  <dt>this.attachShadow({ mode: "open" })</dt><dd>"Prenda uma sombra": cria o shadow DOM deste cartão, o mesmo que o <code>shadowrootmode="open"</code> fazia sem JavaScript. Devolve a raiz da sombra, guardada em <code>sombra</code>.</dd>
+  <dt>molde.content.cloneNode(true)</dt><dd>Copia o conteúdo do molde, como na aula anterior.</dd>
+  <dt>sombra.append(…)</dt><dd>Põe a cópia <strong>dentro da sombra</strong>, e não na página. Por isso o <code>&lt;style&gt;</code> do molde vale só dentro de cada cartão.</dd>
+  <dt>&lt;span slot="titulo"&gt;</dt><dd>Os filhos de cada <code>&lt;cartao-receita&gt;</code> encaixam nos slots do molde. O segundo cartão não tem descrição, então mostra o conteúdo padrão: "Ainda sem descrição."</dd>
+</dl>
+
+<p>Agora, um terceiro cartão custa só três linhas de HTML: o molde, o estilo e o comportamento são compartilhados. É assim que bibliotecas de componentes inteiras são feitas: botões, menus e calendários prontos, que você usa escrevendo tags.</p>
+
+<div class="warning">
+<strong>Acessibilidade continua sendo trabalho seu</strong>
+<p>Uma tag personalizada não tem significado nenhum para o leitor de tela: <code>&lt;cartao-receita&gt;</code> é tão "mudo" quanto um <code>&lt;span&gt;</code>. Use dentro dela os elementos certos (<code>&lt;h2&gt;</code>, <code>&lt;button&gt;</code>, <code>&lt;a&gt;</code>), que já trazem o significado e o teclado. Um "botão" feito de <code>&lt;meu-botao&gt;</code> sem um <code>&lt;button&gt;</code> dentro não recebe o foco do <kbd>Tab</kbd> nem responde ao <kbd>Enter</kbd>.</p>
+</div>
+
+<div class="note">
+<strong>E o atributo <code>is</code>?</strong>
+<p>Existe um segundo tipo de elemento personalizado, que "turbina" um elemento comum: <code>&lt;button is="botao-fofo"&gt;</code>, definido com <code>extends HTMLButtonElement</code>. O validador aceita, e o Chrome e o Firefox também, mas o <strong>Safari não aceita</strong>: lá, o botão fica um botão comum. Por isso, prefira as tags com hífen desta aula.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>No console: <code>"cartao" is not a valid custom element name</code></strong>
+<p><strong>O que significa:</strong> o nome do <code>define</code> não tem hífen (ou tem maiúscula). O elemento não é definido, e as tags continuam paradas. Veja o erro no console:</p>
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;cartao&gt;&lt;/cartao&gt;&lt;/p&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">class Cartao extends HTMLElement {
+  connectedCallback() {
+    this.textContent = "Sou um cartão!";
+  }
+}
+
+customElements.define("cartao", Cartao);
+</pre>
+</div>
+<p>No Chrome, a mensagem completa é <code>SyntaxError: Failed to execute 'define' on 'CustomElementRegistry': "cartao" is not a valid custom element name</code>: "falha ao executar o <code>define</code>: “cartao” não é um nome válido de elemento personalizado". Com <code>"Cartao-Receita"</code>, com maiúsculas, o erro é o mesmo. O Firefox e o Safari dizem a mesma coisa com outras palavras.</p>
+<p><strong>O validador</strong> também reclama da tag <code>&lt;cartao&gt;</code> no HTML (com <code>&lt;cartao&gt;Bolo&lt;/cartao&gt;</code> na linha 8):</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.8: error: Element “cartao” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/site/index.html":8.1-8.8: error: The “cartao” element is a completely-unknown element that is not allowed anywhere in any HTML content.</pre>
+<p>"O elemento <code>cartao</code> não é permitido aqui" e "é um elemento completamente desconhecido, que não é permitido em lugar nenhum". O "(Suppressing further errors from this subtree.)" quer dizer que ele não vai procurar mais erros dentro dessa tag. <strong>Como consertar:</strong> ponha um hífen no nome, no HTML e no <code>define</code>: <code>cartao-receita</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>No console: <code>the name "saudacao-ana" has already been used with this registry</code></strong>
+<p><strong>O que significa:</strong> o mesmo nome foi definido duas vezes, por exemplo porque o <code>script.js</code> foi ligado duas vezes na página. ("O nome já foi usado neste registro"; o erro se chama <code>NotSupportedError</code>.) Cada nome só pode ser definido uma vez por página.</p>
+<p><strong>Como consertar:</strong> procure um <code>&lt;script src&gt;</code> repetido ou um segundo <code>define</code> com o mesmo nome.</p>
+</div>
+
+<div class="cenario">
+<strong>No console: <code>Must call super constructor in derived class before accessing 'this'</code></strong>
+<p><strong>O que significa:</strong> a classe tem um <code>constructor()</code> sem o <code>super()</code> no começo. "É preciso chamar o construtor de cima (<code>super</code>) antes de usar o <code>this</code>." O erro (um <code>ReferenceError</code>) aparece quando o primeiro elemento é criado.</p>
+<p><strong>Como consertar:</strong> a primeira linha do <code>constructor</code> é sempre <code>super();</code>. Se você não precisa de <code>constructor</code>, não escreva um: o <code>connectedCallback</code> sozinho funciona, como na seção 2.</p>
+</div>
+
+<div class="cenario">
+<strong>No console: <code>Shadow root cannot be created on a host which already hosts a shadow tree</code></strong>
+<p><strong>O que significa:</strong> o <code>attachShadow</code> rodou duas vezes no mesmo elemento. "Não dá para criar uma raiz de sombra num elemento que já tem uma." Acontece quando ele está no <code>connectedCallback</code> e o elemento sai e volta para a página.</p>
+<p><strong>Como consertar:</strong> crie o shadow DOM no <code>constructor</code>, como na seção 5, que roda uma vez só por elemento.</p>
+</div>
+
+<div class="cenario">
+<strong>Fechar com <code>&lt;cartao-receita /&gt;</code></strong>
+<p><strong>O que o navegador faz:</strong> como no <code>&lt;canvas /&gt;</code> e no <code>&lt;template /&gt;</code>, a barra é ignorada e a tag fica <strong>aberta</strong>: tudo o que vem depois vira filho do cartão. Com o shadow DOM, esses filhos só aparecem se encaixarem num slot, e o resto da página pode sumir. O validador (com a tag na linha 8 e um parágrafo na linha 9):</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":8.1-8.18: error: Self-closing syntax (“/&gt;”) used on a non-void HTML element. Ignoring the slash and treating as a start tag.
+"file:/home/ana/site/index.html":10.1-10.7: error: End tag for  “body” seen, but there were unclosed elements.
+"file:/home/ana/site/index.html":8.1-8.18: error: Unclosed element “cartao-receita”.</pre>
+<p><strong>Como consertar:</strong> elementos personalizados <strong>sempre</strong> têm a tag de fechamento: <code>&lt;cartao-receita&gt;&lt;/cartao-receita&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Element “cartao-item” not allowed as child of element “ul”</code></strong>
+<p><strong>O que significa:</strong> as regras de quem pode ficar dentro de quem continuam valendo. Dentro de um <code>&lt;ul&gt;</code> só cabem <code>&lt;li&gt;</code>, e uma tag sua não é um <code>&lt;li&gt;</code>:</p>
+<pre class="term" data-cwd="~/site">$ vnu index.html
+"file:/home/ana/site/index.html":9.5-9.17: error: Element “cartao-item” not allowed as child of element “ul” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>(Com <code>&lt;ul&gt;&lt;cartao-item&gt;x&lt;/cartao-item&gt;&lt;/ul&gt;</code> na linha 9.) <strong>Como consertar:</strong> ponha a tag <strong>dentro</strong> do item: <code>&lt;li&gt;&lt;cartao-item&gt;…&lt;/cartao-item&gt;&lt;/li&gt;</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;cartao-receita&gt;…&lt;/cartao-receita&gt;</code></td><td>Usa um elemento personalizado (nome com hífen, em minúsculas, com tag de fechamento)</td></tr>
+<tr><td><code>class Cartao extends HTMLElement { … }</code></td><td>A "receita" do elemento</td></tr>
+<tr><td><code>connectedCallback() { … }</code></td><td>Roda quando o elemento entra na página</td></tr>
+<tr><td><code>constructor() { super(); … }</code></td><td>Roda quando o elemento é criado; <code>super()</code> primeiro</td></tr>
+<tr><td><code>this</code></td><td>O próprio elemento</td></tr>
+<tr><td><code>this.getAttribute("nome")</code></td><td>Lê um atributo do elemento (<code>null</code> se não existe)</td></tr>
+<tr><td><code>this.attachShadow({ mode: "open" })</code></td><td>Cria o shadow DOM do elemento</td></tr>
+<tr><td><code>customElements.define("cartao-receita", Cartao)</code></td><td>Liga o nome da tag à classe (uma vez por nome)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Definir</h3>
+<p>Complete a linha que liga a tag <code>&lt;meu-relogio&gt;</code> à classe <code>MeuRelogio</code>:</p>
+<div class="ex-code">customElements.<input data-answer="define" aria-label="método">("meu-relogio", MeuRelogio);</div>
+</div>
+
+<div class="exercise">
+<h3>2. Estender</h3>
+<p>Complete o começo da classe:</p>
+<div class="ex-code">class MeuRelogio <input data-answer="extends" aria-label="palavra">  <input data-answer="HTMLElement" aria-label="classe de base"> {</div>
+</div>
+
+<div class="exercise">
+<h3>3. Entrou na página</h3>
+<p>Complete o nome do bloco que o navegador chama quando o elemento entra na página:</p>
+<div class="ex-code"><input data-answer="connectedCallback" aria-label="nome do bloco">() {</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Qual destes nomes pode ser um elemento personalizado?</p>
+<label><input type="radio" name="q4"> <code>cartao</code></label>
+<label><input type="radio" name="q4"> <code>CartaoReceita</code></label>
+<label><input type="radio" name="q4"> <code>cartao-receita</code></label>
+<label><input type="radio" name="q4"> <code>font-face</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. A página tem <code>&lt;saudacao-ana&gt;</code>, e o <code>define</code> só roda no fim. O que acontece com a tag?</p>
+<label><input type="radio" name="q5"> Ela aparece como texto comum e é atualizada quando o <code>define</code> roda</label>
+<label><input type="radio" name="q5"> Ela nunca funciona: o script tinha de vir antes</label>
+<label><input type="radio" name="q5"> O navegador mostra um erro na tela</label>
+<label><input type="radio" name="q5"> O validador recusa a página</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Para que serve o hífen obrigatório no nome?</p>
+<label><input type="radio" name="q6"> Para o CSS funcionar</label>
+<label><input type="radio" name="q6"> Para o leitor de tela ler a tag</label>
+<label><input type="radio" name="q6"> Para a tag ficar mais curta</label>
+<label><input type="radio" name="q6"> Para nunca coincidir com um elemento oficial do HTML, que nunca tem hífen</label>
+</div>
+
+<h3>Missão final: os cartões da Ana</h3>
+
+<div class="tryhtml" data-goal="nsel:cartao-receita=2,texto:cartao-receita span[slot=titulo]=Bolo de cenoura,nsel:cartao-receita span[slot=titulo]=2,css:cartao-receita span[slot=titulo]{color}=rgb(139\, 0\, 0),src:customElements\.define\(\s*[&quot;']cartao-receita[&quot;']">
+<p class="try-task"><strong>Missão:</strong> o molde e a classe estão prontos, mas falta ligar tudo.</p>
+<ol>
+  <li>No fim do <code>script.js</code>, defina a tag <code>cartao-receita</code> com a classe <code>CartaoReceita</code>.</li>
+  <li>No <code>index.html</code>, use <strong>dois</strong> cartões: o primeiro com o título <code>Bolo de cenoura</code>, o segundo com outro doce (cada título num <code>&lt;span slot="titulo"&gt;</code>).</li>
+</ol>
+<p>Quando der certo, os títulos aparecem em vermelho-escuro: é o CSS do molde, chegando até o seu <code>&lt;span&gt;</code> pelo slot.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+
+&lt;template id="molde-cartao"&gt;
+  &lt;style&gt;
+    div { border: 2px solid darkred; padding: 8px; margin-bottom: 8px; }
+    h2 { color: darkred; margin: 0; }
+  &lt;/style&gt;
+  &lt;div&gt;
+    &lt;h2&gt;&lt;slot name="titulo"&gt;Receita sem nome&lt;/slot&gt;&lt;/h2&gt;
+    &lt;slot name="descricao"&gt;Ainda sem descrição.&lt;/slot&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;!-- use os cartões aqui --&gt;
+
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">class CartaoReceita extends HTMLElement {
+  constructor() {
+    super();
+    const molde = document.getElementById("molde-cartao");
+    const sombra = this.attachShadow({ mode: "open" });
+    sombra.append(molde.content.cloneNode(true));
+  }
+}
+
+// defina a tag aqui
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+
+&lt;template id="molde-cartao"&gt;
+  &lt;style&gt;
+    div { border: 2px solid darkred; padding: 8px; margin-bottom: 8px; }
+    h2 { color: darkred; margin: 0; }
+  &lt;/style&gt;
+  &lt;div&gt;
+    &lt;h2&gt;&lt;slot name="titulo"&gt;Receita sem nome&lt;/slot&gt;&lt;/h2&gt;
+    &lt;slot name="descricao"&gt;Ainda sem descrição.&lt;/slot&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;cartao-receita&gt;
+  &lt;span slot="titulo"&gt;Bolo de cenoura&lt;/span&gt;
+  &lt;p slot="descricao"&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;/cartao-receita&gt;
+
+&lt;cartao-receita&gt;
+  &lt;span slot="titulo"&gt;Pudim de leite&lt;/span&gt;
+&lt;/cartao-receita&gt;
+
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="solucao" data-file="script.js">class CartaoReceita extends HTMLElement {
+  constructor() {
+    super();
+    const molde = document.getElementById("molde-cartao");
+    const sombra = this.attachShadow({ mode: "open" });
+    sombra.append(molde.content.cloneNode(true));
+  }
+}
+
+customElements.define("cartao-receita", CartaoReceita);
+</pre>
+</div>
+
+<p>Experimente usar os cartões <strong>sem</strong> o <code>define</code>: os títulos e a descrição aparecem soltos, em preto e sem borda. É a tag "antes de ser definida" da seção 1. A linha do <code>define</code> é o que transforma texto solto em componente.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Web Components = elementos personalizados + shadow DOM + <code>&lt;template&gt;</code>/<code>&lt;slot&gt;</code>. Funcionam em todos os navegadores atuais.</li>
+  <li>O nome de um elemento personalizado tem <strong>hífen</strong>, é minúsculo e sempre tem tag de fechamento. Sem hífen, o validador recusa a tag e o <code>define</code> dá <code>is not a valid custom element name</code>.</li>
+  <li>Antes de definida, a tag aparece como texto comum; o <code>define</code> atualiza as que já existem.</li>
+  <li><code>class X extends HTMLElement { connectedCallback() { … } }</code> + <code>customElements.define("meu-nome", X)</code>. O <code>this</code> é o elemento; <code>this.getAttribute</code> lê os atributos dele.</li>
+  <li>No <code>constructor</code>, <code>super()</code> vem primeiro; <code>this.attachShadow({ mode: "open" })</code> cria o shadow DOM, que recebe a cópia de um <code>&lt;template&gt;</code> com slots.</li>
+  <li>Uma tag sua não traz significado para leitores de tela: use os elementos certos dentro dela.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
