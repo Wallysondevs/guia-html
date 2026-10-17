@@ -187,6 +187,7 @@ No `.exercise`, `data-answer="a|b"` aceita respostas alternativas (`\|` é uma b
   - o CSS e o JS das abas entram embutidos: o `href` do `<link>` muda, e as metas `attr:` em `link`/`script` podem falhar;
   - os links entre as abas e os formulários continuam funcionando;
   - um `href="#x"` navega de verdade para o fragmento do próprio quadro, como no modo completo: rola, liga o `:target` e move o ponto de partida do foco (o próximo <kbd>Tab</kbd> parte dali);
+  - `href="#"` e `href="#top"` (sem elemento com esse id) voltam ao topo, como no navegador; o foco fica no link clicado;
   - um link para uma página que não existe só dá um aviso no console;
   - um GET para outra aba não leva os dados no `location.search`;
   - o documento **nunca** fica em modo quirks (é a regra do `srcdoc`);

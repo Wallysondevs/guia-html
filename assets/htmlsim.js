@@ -562,11 +562,20 @@
     if (this.modoAtual !== "sw") {
       // srcdoc: os endereços relativos apontam para a página do guia; refaz com as abas
       var rel = new URL(location.href);
-      if (url.href.split("#")[0] === rel.href.split("#")[0] && url.hash) {
+      // "#" sozinho tem hash vazio (url.hash === ""), mas é navegação para o fragmento (volta ao topo)
+      if (url.href.split("#")[0] === rel.href.split("#")[0] && url.href.indexOf("#") >= 0) {
         // o href="#x" resolve contra a página do guia; navega de verdade para o fragmento do próprio
         // quadro (rola, muda o :target e o ponto de partida do foco, como num site)
         e.preventDefault();
-        try { win.location.hash = url.hash; } catch (x) { var d = win.document, t = d.getElementById(decodeURIComponent(url.hash.slice(1))); if (t) t.scrollIntoView(); }
+        // "#" (fragmento vazio) e "#top" sem elemento com esse id: o navegador rola para o topo
+        var d = win.document;
+        if (url.hash) {
+          try { win.location.hash = url.hash; } catch (x) { var t = d.getElementById(decodeURIComponent(url.hash.slice(1))); if (t) t.scrollIntoView(); else win.scrollTo(0, 0); }
+        } else {
+          // "#" sozinho: no srcdoc o Chromium ignora location.hash = "#". Faz o que o Chromium faz num
+          // site (conferido no modo completo): rola para o topo e deixa o foco no link clicado
+          win.scrollTo(0, 0);
+        }
         this.endereco = (this.atual || "") + url.hash; if (this.opts.aoEndereco) this.opts.aoEndereco(this.endereco); return;
       }
       var nomeRel = url.origin === location.origin ? decodeURIComponent(url.pathname.slice(new URL("./", location.href).pathname.length)) : null;
