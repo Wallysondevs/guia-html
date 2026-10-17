@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML section e article — partes com título e conteúdos completos | Guia HTML</title>
+<meta name="description" content="section e article em HTML para quem nunca fez um site: article para um conteúdo completo e independente (receita, post, comentário), section para uma parte com título (Ingredientes, Modo de preparo), um dentro do outro, como escolher entre section, article e div, os níveis dos títulos e os avisos reais do validador W3C (Section lacks heading, Article lacks heading, h1 em toda parte, título pulando nível), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">section e article</span></h1>
+
+<p class="intro">Dentro do <code>main</code>, o conteúdo da página ainda precisa ser organizado. Uma receita da Ana tem partes: os ingredientes, o modo de preparo, os comentários. E a página de doces tem várias receitas, cada uma completa. Para essas duas ideias, o HTML tem dois elementos: o <code>section</code>, para uma <strong>parte</strong> com título, e o <code>article</code>, para um <strong>conteúdo completo</strong>, que faz sentido sozinho. Nesta aula você vai usar os dois, um dentro do outro, aprender a escolher entre <code>section</code>, <code>article</code> e <code>div</code> e entender os avisos reais que o validador dá quando falta um título.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é um <code>article</code> e o teste para saber se algo é um: "faz sentido sozinho?".</li>
+  <li>O que é uma <code>section</code> e por que ela quase sempre tem um título.</li>
+  <li>Como colocar <code>section</code> dentro de <code>article</code> e <code>article</code> dentro de <code>section</code>.</li>
+  <li>Como escolher entre <code>article</code>, <code>section</code> e <code>div</code>.</li>
+  <li>Como escolher o nível dos títulos (<code>h2</code>, <code>h3</code>…) dentro deles.</li>
+  <li>Os avisos e erros reais: <code>Section lacks heading</code>, <code>Article lacks heading</code>, <code>h1</code> em toda parte e título pulando nível.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/receitas</code>. Ela continua a aula <a href="main.html">main</a>, onde cada receita já virou um <code>article</code>.</p>
+
+<hr>
+
+<h2>A ideia: o recorte e o capítulo</h2>
+<p>Pense numa revista de culinária. Você pode <strong>recortar</strong> uma receita e colar na porta da geladeira: ela continua fazendo sentido sozinha, com título, ingredientes e modo de preparo. Isso é um <code>article</code> (em inglês, "artigo"): um conteúdo completo, que pode sair da página e ir para outro lugar sem perder o sentido.</p>
+
+<p>Agora pense num livro de receitas, dividido em <strong>capítulos</strong>: "Doces", "Salgados", "Bebidas". O capítulo "Doces" não é uma receita; é uma <strong>parte</strong> do livro, com um título, que junta várias receitas. Isso é uma <code>section</code> (em inglês, "seção"): um pedaço de algo maior, sobre um tema, com um título.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na revista ou no livro</th><th>Em HTML</th><th>No site da Ana</th></tr>
+<tr><td>A receita recortada, que vai para a geladeira</td><td><code>article</code></td><td>"Bolo de cenoura", completa</td></tr>
+<tr><td>O capítulo "Doces"</td><td><code>section</code></td><td>a parte da página com as receitas de doces</td></tr>
+<tr><td>A parte "Ingredientes" dentro da receita</td><td><code>section</code></td><td>a lista de ingredientes, com o título "Ingredientes"</td></tr>
+<tr><td>Um cartão de leitor no fim da receita</td><td><code>article</code></td><td>um comentário: completo, com autor e texto</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O <code>article</code>: um conteúdo completo</h2>
+<p>O padrão do HTML define o <code>article</code> como uma parte da página que é <strong>completa</strong> e que, a princípio, poderia ser <strong>distribuída sozinha</strong>: num leitor de notícias, num compartilhamento, numa outra página. Exemplos: um post de blog, uma notícia, uma receita, um produto da loja, um comentário.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+  &lt;p&gt;Tempo: 40 minutos. Rende 12 fatias.&lt;/p&gt;
+&lt;/article&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;article&gt;</dt><dd>Começa a receita. É um bloco invisível, como todos os elementos de página.</dd>
+  <dt>&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;</dt><dd>O título do artigo. Ele diz do que o artigo trata. Um <code>article</code> sem título dá um aviso no validador (veja <a href="#errado">Quando dá errado</a>).</dd>
+  <dt>&lt;p&gt; …</dt><dd>O conteúdo da receita.</dd>
+  <dt>&lt;/article&gt;</dt><dd>Termina a receita.</dd>
+</dl>
+
+<div class="tip">
+<strong>O teste da geladeira</strong>
+<p>Para saber se algo é um <code>article</code>, imagine que você copiou só aquele pedaço e mandou para uma amiga. Ele faz sentido sozinho? Uma receita, sim. Um post, sim. Um comentário, sim (quem escreveu, o que disse). A lista "Ingredientes" sozinha, não: ingredientes de quê? Então ela não é um <code>article</code>.</p>
+</div>
+
+<p>Um <code>article</code> pode ter o seu próprio <code>header</code> e <code>footer</code>, como você viu na aula <a href="header-footer.html">header e footer</a>: o título e a data em cima, a autora e a categoria embaixo. Para o leitor de tela, cada <code>article</code> tem o papel <code>article</code>, e alguns leitores de tela deixam a pessoa pular de artigo em artigo.</p>
+
+<hr>
+
+<h2>2. A <code>section</code>: uma parte com título</h2>
+<p>O padrão define a <code>section</code> como uma seção <strong>genérica</strong> de um documento: um agrupamento de conteúdo <strong>sobre um tema</strong>, normalmente <strong>com um título</strong>. A receita do bolo tem duas partes assim:</p>
+
+<pre class="file" data-file="bolo.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+  &lt;section&gt;
+    &lt;h3&gt;Ingredientes&lt;/h3&gt;
+    &lt;ul&gt;
+      &lt;li&gt;3 cenouras&lt;/li&gt;
+      &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/section&gt;
+  &lt;section&gt;
+    &lt;h3&gt;Modo de preparo&lt;/h3&gt;
+    &lt;ol&gt;
+      &lt;li&gt;Bata tudo no liquidificador.&lt;/li&gt;
+      &lt;li&gt;Asse por 40 minutos.&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/section&gt;
+&lt;/article&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;section&gt;</dt><dd>Começa uma parte da receita.</dd>
+  <dt>&lt;h3&gt;Ingredientes&lt;/h3&gt;</dt><dd>O título da parte. É ele que faz da caixa uma <strong>seção</strong>: um tema com nome. Repare no nível: <code>h1</code> é o site, <code>h2</code> é a receita, <code>h3</code> é a parte da receita.</dd>
+  <dt>&lt;ul&gt; / &lt;ol&gt;</dt><dd>O conteúdo da parte: a lista de ingredientes (sem ordem) e os passos (em ordem, aula <a href="listas-ordenadas.html">Listas Numeradas</a>).</dd>
+  <dt>&lt;/section&gt;</dt><dd>Termina a parte.</dd>
+</dl>
+
+<p>Pense numa <code>section</code> como um título <strong>mais</strong> tudo o que pertence a ele, embrulhados juntos. Sem a <code>section</code>, o <code>h3</code> "Ingredientes" e a lista estão apenas um depois do outro; com ela, ficam num grupo que começa e termina num lugar claro.</p>
+
+<div class="tryhtml" data-goal="nsel:article section=2,texto:article section:first-of-type h3=Ingredientes,texto:article section:last-of-type h3=Modo de preparo,sel:section h3 + ul,sel:section h3 + ol">
+<p class="try-task"><strong>Missão:</strong> a receita do pão de queijo já tem os títulos e as listas, mas falta embrulhar cada parte. Coloque o <code>h3</code> "Ingredientes" e a lista dele numa <code>&lt;section&gt;</code>, e o <code>h3</code> "Modo de preparo" e a lista dele noutra <code>&lt;section&gt;</code>, as duas dentro do <code>article</code>.</p>
+<pre class="script" data-file="pao-de-queijo.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;h3&gt;Ingredientes&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;500 g de polvilho&lt;/li&gt;
+    &lt;li&gt;2 ovos&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h3&gt;Modo de preparo&lt;/h3&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Misture tudo até dar liga.&lt;/li&gt;
+    &lt;li&gt;Asse por 25 minutos.&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/article&gt;
+</pre>
+<pre class="solucao" data-file="pao-de-queijo.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;section&gt;
+    &lt;h3&gt;Ingredientes&lt;/h3&gt;
+    &lt;ul&gt;
+      &lt;li&gt;500 g de polvilho&lt;/li&gt;
+      &lt;li&gt;2 ovos&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/section&gt;
+  &lt;section&gt;
+    &lt;h3&gt;Modo de preparo&lt;/h3&gt;
+    &lt;ol&gt;
+      &lt;li&gt;Misture tudo até dar liga.&lt;/li&gt;
+      &lt;li&gt;Asse por 25 minutos.&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/section&gt;
+&lt;/article&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Um dentro do outro</h2>
+<p>Nenhum dos dois é "maior" que o outro. Os dois aninhamentos estão certos, e cada um tem o seu uso.</p>
+
+<h3>Uma <code>section</code> com vários <code>article</code>: a página de categoria</h3>
+<p>A página inicial da Ana mostra as receitas por categoria. A categoria "Doces" é uma parte da página (uma <code>section</code>), e cada receita dentro dela é completa (um <code>article</code>):</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;section&gt;
+  &lt;h2&gt;Doces&lt;/h2&gt;
+  &lt;article&gt;
+    &lt;h3&gt;Bolo de cenoura&lt;/h3&gt;
+    &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;article&gt;
+    &lt;h3&gt;Brigadeiro&lt;/h3&gt;
+    &lt;p&gt;O doce de toda festa.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/section&gt;
+&lt;section&gt;
+  &lt;h2&gt;Salgados&lt;/h2&gt;
+  &lt;article&gt;
+    &lt;h3&gt;Pão de queijo&lt;/h3&gt;
+    &lt;p&gt;Crocante por fora.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/section&gt;
+</pre>
+
+<h3>Um <code>article</code> com <code>section</code> e outros <code>article</code>: a receita com comentários</h3>
+<p>Dentro da receita (um <code>article</code>), as partes são <code>section</code>. E os comentários dos leitores? Cada comentário faz sentido sozinho (quem escreveu, o que disse), então cada um é um <code>article</code>, dentro da seção "Comentários":</p>
+
+<pre class="file" data-file="bolo.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;section&gt;
+    &lt;h3&gt;Ingredientes&lt;/h3&gt;
+    &lt;ul&gt;
+      &lt;li&gt;3 cenouras&lt;/li&gt;
+      &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/section&gt;
+  &lt;section&gt;
+    &lt;h3&gt;Comentários&lt;/h3&gt;
+    &lt;article&gt;
+      &lt;h4&gt;Lia&lt;/h4&gt;
+      &lt;p&gt;Fiz e deu certo!&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;article&gt;
+      &lt;h4&gt;Rui&lt;/h4&gt;
+      &lt;p&gt;Usei farinha integral e ficou ótimo.&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/section&gt;
+&lt;/article&gt;
+</pre>
+
+<p>O padrão diz que, quando um <code>article</code> fica dentro de outro, o de dentro é <strong>relacionado</strong> ao de fora: um comentário sobre <em>esta</em> receita. Repare de novo nos níveis dos títulos: cada caixa nova desce um nível (<code>h2</code> → <code>h3</code> → <code>h4</code>).</p>
+
+<div class="tryhtml" data-goal="nsel:article=3,nsel:section article=3,texto:section &gt; h2=Doces,nsel:article &gt; h3=3">
+<p class="try-task"><strong>Missão:</strong> monte o capítulo de doces. Dentro da <code>section</code>, logo depois do <code>h2</code>, crie <strong>três</strong> <code>&lt;article&gt;</code>: um para cada receita da lista abaixo. Cada <code>article</code> tem um <code>h3</code> com o nome da receita e um parágrafo. Depois, apague o parágrafo com a lista de nomes.</p>
+<pre class="script" data-file="doces.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;section&gt;
+  &lt;h2&gt;Doces&lt;/h2&gt;
+  &lt;p&gt;Bolo de cenoura, brigadeiro e pudim.&lt;/p&gt;
+&lt;/section&gt;
+</pre>
+<pre class="solucao" data-file="doces.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;section&gt;
+  &lt;h2&gt;Doces&lt;/h2&gt;
+  &lt;article&gt;
+    &lt;h3&gt;Bolo de cenoura&lt;/h3&gt;
+    &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;article&gt;
+    &lt;h3&gt;Brigadeiro&lt;/h3&gt;
+    &lt;p&gt;O doce de toda festa.&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;article&gt;
+    &lt;h3&gt;Pudim&lt;/h3&gt;
+    &lt;p&gt;Liso e sem furinhos.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/section&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. <code>article</code>, <code>section</code> ou <code>div</code>?</h2>
+<p>Esta é a dúvida mais comum de toda a semântica. Responda às perguntas na ordem; a primeira resposta "sim" dá o elemento:</p>
+
+<ol class="passo">
+  <li><strong>Faz sentido sozinho</strong>, fora da página (o teste da geladeira)? → <code>article</code>.</li>
+  <li>É uma <strong>parte sobre um tema</strong>, que merece um <strong>título</strong> próprio? → <code>section</code>.</li>
+  <li>É só uma caixa para o <strong>CSS</strong> (uma borda, uma cor, colocar coisas lado a lado)? → <code>div</code>.</li>
+</ol>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O que é</th><th>Elemento</th><th>Por quê</th></tr>
+<tr><td>Uma receita completa</td><td><code>article</code></td><td>faz sentido sozinha</td></tr>
+<tr><td>Um comentário de leitor</td><td><code>article</code></td><td>tem autor e texto; faz sentido sozinho</td></tr>
+<tr><td>Um produto da lojinha, com nome, foto e preço</td><td><code>article</code></td><td>poderia ser compartilhado sozinho</td></tr>
+<tr><td>"Ingredientes" e "Modo de preparo"</td><td><code>section</code></td><td>partes da receita, cada uma com título</td></tr>
+<tr><td>O capítulo "Doces" da página inicial</td><td><code>section</code></td><td>um tema, com título, que junta várias receitas</td></tr>
+<tr><td>"Sobre a Ana", "Contato" numa página única</td><td><code>section</code></td><td>partes da página, cada uma com título</td></tr>
+<tr><td>Uma caixa em volta da foto, para dar borda</td><td><code>div</code></td><td>só aparência, sem título</td></tr>
+<tr><td>Uma caixa para colocar duas colunas lado a lado</td><td><code>div</code></td><td>só aparência</td></tr>
+</table>
+</div>
+
+<div class="warning">
+<strong>A <code>section</code> não é um <code>div</code> "mais chique"</strong>
+<p>O próprio padrão avisa: a <code>section</code> não é um elemento genérico para caixas de estilo; para isso existe o <code>div</code>. A pista é o título. Se você não consegue pensar num título para a caixa, ela provavelmente é um <code>div</code>. O validador ajuda a perceber, com o aviso <code>Section lacks heading</code>.</p>
+</div>
+
+<hr>
+
+<h2>5. Os títulos dentro de <code>section</code> e <code>article</code></h2>
+<p>A regra é a da aula <a href="titulos.html">Títulos</a>: o nível do título depende da <strong>posição</strong> na página, e não se pula nível. Na prática:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Onde está o título</th><th>Nível</th></tr>
+<tr><td>O nome do site ou da página</td><td><code>h1</code> (um só)</td></tr>
+<tr><td>Uma <code>section</code> ou um <code>article</code> direto no <code>main</code></td><td><code>h2</code></td></tr>
+<tr><td>Uma caixa dentro dessa</td><td><code>h3</code></td></tr>
+<tr><td>Mais uma caixa para dentro</td><td><code>h4</code>, e assim por diante</td></tr>
+</table>
+</div>
+
+<div class="note">
+<strong>E o <code>h1</code> em toda <code>section</code>?</strong>
+<p>Você pode encontrar tutoriais antigos dizendo que cada <code>section</code> pode começar com um <code>h1</code> e que o navegador "ajusta" o nível sozinho. Essa ideia (o "algoritmo de outline") esteve no padrão por anos, mas <strong>nenhum navegador nem leitor de tela</strong> chegou a usá-la, e ela foi tirada do padrão. Hoje, um <code>h1</code> é nível 1 em qualquer lugar, e o validador avisa (veja abaixo). O padrão ganhou há pouco um atributo, <code>headingoffset</code>, para "descer" os níveis dos títulos de um trecho; ele é muito novo e não é preciso para as páginas deste guia. Use <code>h2</code>…<code>h6</code> conforme a posição e pronto.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os dois primeiros casos são <strong>avisos</strong> (<code>info warning</code>): o validador termina com código de saída 0, como se estivesse tudo certo. Mas eles quase sempre mostram uma escolha errada de elemento.</p>
+
+<div class="cenario">
+<strong><code>info warning: Section lacks heading.</code></strong>
+<p>A Ana embrulhou a lista de ingredientes numa <code>section</code>, mas esqueceu o título dela:</p>
+<pre class="file" data-file="section-sem-titulo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;section&gt;
+    &lt;ul&gt;
+      &lt;li&gt;3 cenouras&lt;/li&gt;
+      &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/section&gt;
+&lt;/article&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu section-sem-titulo.html
+"file:/home/ana/receitas/section-sem-titulo.html":11.3-11.11: info warning: Section lacks heading. Consider using “h2”-“h6” elements to add identifying headings to all sections, or else use a “div” element instead for any cases where no heading is needed.
+$ echo $?
+0                                 « só um aviso: o código de saída é 0</pre>
+<dl class="anatomy">
+  <dt>Section lacks heading.</dt><dd>"A seção não tem título."</dd>
+  <dt>Consider using “h2”-“h6” elements to add identifying headings to all sections,</dt><dd>"Considere usar elementos de <code>h2</code> a <code>h6</code> para dar a todas as seções títulos que as identifiquem,"</dd>
+  <dt>or else use a “div” element instead for any cases where no heading is needed.</dt><dd>"ou então use um <code>div</code> no lugar, nos casos em que nenhum título é necessário." O validador oferece os <strong>dois</strong> consertos.</dd>
+</dl>
+<p><strong>Como consertar:</strong> pergunte se a parte merece um título. Aqui merece: <code>&lt;h3&gt;Ingredientes&lt;/h3&gt;</code> logo no começo da <code>section</code>. Se for só uma caixa para o CSS, troque por <code>div</code>.</p>
+<p>Um detalhe: dar um nome à seção com <code>aria-label</code> (<code>&lt;section aria-label="Ingredientes"&gt;</code>) também faz o aviso sumir, porque a seção passa a ter um nome para o leitor de tela. Mas esse nome é invisível; um título visível ajuda todo mundo, e é o que o guia recomenda.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: Article lacks heading.</code></strong>
+<pre class="term" data-cwd="~/receitas">$ vnu article-sem-titulo.html
+"file:/home/ana/receitas/article-sem-titulo.html":9.1-9.9: info warning: Article lacks heading. Consider using “h2”-“h6” elements to add identifying headings to all articles.</pre>
+<p>Aqui o <code>article</code> da linha 9 só tinha um parágrafo: <code>&lt;p&gt;Bolo de cenoura: fofinho e fácil.&lt;/p&gt;</code>. "O artigo não tem título. Considere usar elementos de <code>h2</code> a <code>h6</code> para dar a todos os artigos títulos que os identifiquem." Desta vez o validador não sugere o <code>div</code>: um conteúdo completo quase sempre tem um nome.</p>
+<p><strong>Como consertar:</strong> transforme o nome da receita em título: <code>&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;</code> e, embaixo, <code>&lt;p&gt;Fofinho e fácil.&lt;/p&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: Consider using the “h1” element as a top-level heading only…</code></strong>
+<p>Seguindo um tutorial antigo, a Ana começou cada <code>section</code> com um <code>h1</code> (linhas 10 e 14):</p>
+<pre class="file" data-file="h1-em-tudo.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;section&gt;
+  &lt;h1&gt;Doces&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura e brigadeiro.&lt;/p&gt;
+&lt;/section&gt;
+&lt;section&gt;
+  &lt;h1&gt;Salgados&lt;/h1&gt;
+  &lt;p&gt;Pão de queijo e coxinha.&lt;/p&gt;
+&lt;/section&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu h1-em-tudo.html
+"file:/home/ana/receitas/h1-em-tudo.html":10.3-10.6: info warning: Consider using the “h1” element as a top-level heading only — or else use the “headingoffset” attribute (otherwise, all “h1” elements are treated as top-level headings by many screen readers and other tools).
+"file:/home/ana/receitas/h1-em-tudo.html":14.3-14.6: info warning: Consider using the “h1” element as a top-level heading only — or else use the “headingoffset” attribute (otherwise, all “h1” elements are treated as top-level headings by many screen readers and other tools).</pre>
+<p>"Considere usar o <code>h1</code> só como título de nível mais alto, ou então use o atributo <code>headingoffset</code> (senão, todos os <code>h1</code> são tratados como títulos de nível mais alto por muitos leitores de tela e outras ferramentas)." Ou seja: para o leitor de tela, a página tem três títulos principais lado a lado, e "Doces" fica no mesmo nível que "Receitas da Ana".</p>
+<p><strong>Como consertar:</strong> um <code>h1</code> só, para o site; "Doces" e "Salgados" viram <code>h2</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: The heading “h3” (with computed level 3) follows the heading “h1”…</code></strong>
+<p>Aqui não é aviso, é <strong>erro</strong>. A Ana achou o <code>h2</code> grande demais para o nome da receita e usou um <code>h3</code>, logo depois do <code>h1</code> do site (linha 10):</p>
+<pre class="term" data-cwd="~/receitas">$ vnu pula-h3.html
+"file:/home/ana/receitas/pula-h3.html":10.3-10.6: error: The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.</pre>
+<p>"O título <code>h3</code> (de nível calculado 3) vem depois do título <code>h1</code> (de nível 1), pulando 1 nível." Estar dentro de um <code>article</code> não muda o nível: o <code>h3</code> continua sendo nível 3.</p>
+<p><strong>Como consertar:</strong> use o nível da posição (<code>h2</code>) e, se quiser a letra menor, mude o tamanho com CSS.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:section=1,texto:section &gt; h3:first-child=Ingredientes,nsel:article div=1,sel:article &gt; div p">
+<p class="try-task"><strong>Missão:</strong> esta receita dá o aviso <code>Section lacks heading</code> <strong>duas</strong> vezes. A primeira <code>section</code> é só uma caixa com borda em volta da foto: troque-a por <code>div</code>. A segunda é a parte dos ingredientes: dê a ela o título <code>&lt;h3&gt;Ingredientes&lt;/h3&gt;</code>, como primeira coisa dentro dela.</p>
+<pre class="script" data-file="bolo.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;section style="border: 2px dashed gray; padding: 8px;"&gt;
+    &lt;p&gt;(foto do bolo)&lt;/p&gt;
+  &lt;/section&gt;
+  &lt;section&gt;
+    &lt;ul&gt;
+      &lt;li&gt;3 cenouras&lt;/li&gt;
+      &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/section&gt;
+&lt;/article&gt;
+</pre>
+<pre class="solucao" data-file="bolo.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;div style="border: 2px dashed gray; padding: 8px;"&gt;
+    &lt;p&gt;(foto do bolo)&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;section&gt;
+    &lt;h3&gt;Ingredientes&lt;/h3&gt;
+    &lt;ul&gt;
+      &lt;li&gt;3 cenouras&lt;/li&gt;
+      &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/section&gt;
+&lt;/article&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>O que é</th><th>Título</th><th>Papel para o leitor de tela</th></tr>
+<tr><td><code>article</code></td><td>conteúdo completo, que faz sentido sozinho (receita, post, produto, comentário)</td><td>quase sempre; sem título, <code>Article lacks heading</code></td><td><code>article</code></td></tr>
+<tr><td><code>section</code></td><td>parte de algo maior, sobre um tema</td><td>sim; sem título, <code>Section lacks heading</code></td><td><code>region</code>, se tiver nome; senão, nenhum</td></tr>
+<tr><td><code>div</code></td><td>caixa só para o CSS</td><td>não precisa</td><td>nenhum</td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Estrutura</th><th>Quando usar</th></tr>
+<tr><td><code>&lt;section&gt;&lt;h2&gt;Doces&lt;/h2&gt;&lt;article&gt;…&lt;/article&gt;&lt;article&gt;…&lt;/article&gt;&lt;/section&gt;</code></td><td>Um tema com vários conteúdos completos</td></tr>
+<tr><td><code>&lt;article&gt;&lt;h2&gt;Bolo&lt;/h2&gt;&lt;section&gt;&lt;h3&gt;Ingredientes&lt;/h3&gt;…&lt;/section&gt;&lt;/article&gt;</code></td><td>Um conteúdo completo dividido em partes</td></tr>
+<tr><td><code>&lt;article&gt;…&lt;section&gt;&lt;h3&gt;Comentários&lt;/h3&gt;&lt;article&gt;…&lt;/article&gt;&lt;/section&gt;&lt;/article&gt;</code></td><td>Conteúdos relacionados (comentários) dentro de um conteúdo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A receita completa</h3>
+<p>Complete com o elemento de um conteúdo que faz sentido sozinho:</p>
+<div class="ex-code">&lt;<input data-answer="article" aria-label="abertura">&gt;&lt;h2&gt;Brigadeiro&lt;/h2&gt;&lt;p&gt;O doce de toda festa.&lt;/p&gt;&lt;/<input data-answer="article" aria-label="fechamento">&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A parte com título</h3>
+<p>Complete com o elemento de uma parte da receita:</p>
+<div class="ex-code">&lt;<input data-answer="section" aria-label="abertura">&gt;&lt;h3&gt;Modo de preparo&lt;/h3&gt;&lt;ol&gt;…&lt;/ol&gt;&lt;/<input data-answer="section" aria-label="fechamento">&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Na página de um produto da lojinha da Ana, qual é o melhor elemento para cada avaliação de cliente (nome, nota e texto)?</p>
+<label><input type="radio" name="q3"> <code>section</code></label>
+<label><input type="radio" name="q3"> <code>article</code></label>
+<label><input type="radio" name="q3"> <code>div</code></label>
+<label><input type="radio" name="q3"> <code>main</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. O validador mostrou <code>Section lacks heading</code> numa caixa que existe só para pôr uma borda em volta de uma foto. Qual é o conserto certo?</p>
+<label><input type="radio" name="q4"> Pôr um <code>h1</code> invisível dentro dela</label>
+<label><input type="radio" name="q4"> Trocar por <code>article</code></label>
+<label><input type="radio" name="q4"> Trocar por <code>div</code></label>
+<label><input type="radio" name="q4"> Ignorar: é só um aviso</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. A página tem <code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code> e, logo depois, <code>&lt;article&gt;&lt;h3&gt;Bolo&lt;/h3&gt;…</code>. O que o validador diz?</p>
+<label><input type="radio" name="q5"> Erro: o <code>h3</code> pula um nível depois do <code>h1</code></label>
+<label><input type="radio" name="q5"> Nada: dentro de <code>article</code> qualquer nível serve</label>
+<label><input type="radio" name="q5"> <code>Article lacks heading</code></label>
+<label><input type="radio" name="q5"> Que o <code>article</code> precisa estar num <code>main</code></label>
+</div>
+
+<h3>Missão final: a página de salgados</h3>
+
+<div class="tryhtml" data-goal="sel:main &gt; section &gt; h2,nsel:main section &gt; article=2,nsel:article &gt; h3=2,nsel:article section=2,texto:article section &gt; h4=Ingredientes,nsel:h1=1">
+<p class="try-task"><strong>Missão:</strong> monte o conteúdo do <code>main</code>. (1) Uma <code>section</code> com o título <code>&lt;h2&gt;Salgados&lt;/h2&gt;</code>. (2) Dentro dela, dois <code>article</code>, cada um com um <code>h3</code>: "Pão de queijo" e "Coxinha". (3) Só no artigo do pão de queijo, depois do <code>h3</code>, uma <code>section</code> com o título <code>&lt;h4&gt;Ingredientes&lt;/h4&gt;</code> e uma lista; no da coxinha, uma <code>section</code> com <code>&lt;h4&gt;Modo de preparo&lt;/h4&gt;</code> e uma lista. Sem pular nível de título e com um <code>h1</code> só.</p>
+<pre class="script" data-file="salgados.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;!-- a seção de salgados aqui --&gt;
+&lt;/main&gt;
+</pre>
+<pre class="solucao" data-file="salgados.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;section&gt;
+    &lt;h2&gt;Salgados&lt;/h2&gt;
+    &lt;article&gt;
+      &lt;h3&gt;Pão de queijo&lt;/h3&gt;
+      &lt;section&gt;
+        &lt;h4&gt;Ingredientes&lt;/h4&gt;
+        &lt;ul&gt;
+          &lt;li&gt;500 g de polvilho&lt;/li&gt;
+          &lt;li&gt;2 ovos&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/section&gt;
+    &lt;/article&gt;
+    &lt;article&gt;
+      &lt;h3&gt;Coxinha&lt;/h3&gt;
+      &lt;section&gt;
+        &lt;h4&gt;Modo de preparo&lt;/h4&gt;
+        &lt;ol&gt;
+          &lt;li&gt;Faça a massa e o recheio.&lt;/li&gt;
+          &lt;li&gt;Modele, empane e frite.&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/section&gt;
+    &lt;/article&gt;
+  &lt;/section&gt;
+&lt;/main&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>article</code> é um conteúdo <strong>completo</strong>, que faz sentido sozinho (o teste da geladeira): receita, post, produto, comentário.</li>
+  <li><code>section</code> é uma <strong>parte</strong> de algo maior, sobre um tema, <strong>com título</strong>: "Ingredientes", "Doces", "Contato".</li>
+  <li>Os dois podem ficar um dentro do outro: uma <code>section</code> com vários <code>article</code> (uma categoria), um <code>article</code> com várias <code>section</code> (as partes da receita) e <code>article</code> dentro de <code>article</code> (comentários).</li>
+  <li>Para escolher: faz sentido sozinho → <code>article</code>; parte com título → <code>section</code>; só para o CSS → <code>div</code>.</li>
+  <li>Os títulos seguem a posição (<code>h2</code> → <code>h3</code> → <code>h4</code>), sem pular nível (é <code>error</code>) e com um <code>h1</code> só (<code>h1</code> em cada seção dá <code>info warning</code>).</li>
+  <li>Sem título, o validador avisa: <code>Section lacks heading</code> (e sugere o <code>div</code>) e <code>Article lacks heading</code>. São <code>info warning</code>: o código de saída continua 0, mas o aviso aponta uma escolha errada.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
