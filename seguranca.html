@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Segurança — rel, target, sandbox e CSP | Guia HTML</title>
+<meta name="description" content="Segurança no HTML para quem está começando: o que o HTML mostra a todo mundo, target=_blank com rel=noopener e noreferrer, o atributo sandbox do iframe e as permissões allow-*, a Content Security Policy num meta http-equiv, com as mensagens reais do console do Chromium 155 e do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Segurança</span></h1>
+
+<p class="intro">Um site de HTML puro não guarda senhas nem tem banco de dados, então parece que não há nada a proteger. Mas toda página <strong>abre outras páginas</strong>, <strong>mostra conteúdo de outros sites</strong> e <strong>roda scripts</strong>, e cada uma dessas portas pode ser usada contra o visitante. Nesta aula a Ana aprende quatro ferramentas do próprio HTML para fechar essas portas: o <code>rel</code> dos links que abrem em outra aba, o <code>sandbox</code> do <code>&lt;iframe&gt;</code> e a <strong>Política de Segurança de Conteúdo</strong> (CSP), escrita num <code>&lt;meta&gt;</code>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Por que nada no HTML é segredo.</li>
+  <li>O que <code>target="_blank"</code> fazia de perigoso, o que mudou nos navegadores e para que servem <code>rel="noopener"</code>, <code>rel="noreferrer"</code> e <code>rel="opener"</code>.</li>
+  <li>A prender um <code>&lt;iframe&gt;</code> numa "caixa de areia" com <code>sandbox</code> e a liberar só o necessário com <code>allow-scripts</code>, <code>allow-forms</code> e companhia.</li>
+  <li>A escrever uma CSP com <code>&lt;meta http-equiv="Content-Security-Policy"&gt;</code> e a ler o que o navegador bloqueou.</li>
+  <li>O que o <code>&lt;meta&gt;</code> não consegue fazer, e as mensagens do validador para cada erro.</li>
+</ul>
+</div>
+
+<p>Os testes desta aula rodaram no <strong>Chromium 155</strong>, com as páginas servidas pelo servidor local da Ana (<code>http://localhost:8000</code>, aula <a href="servidor-local.html">Servidor Local</a>), e no <strong>validador W3C</strong> (<code>vnu</code> 26.10.12), na pasta <code>~/seguranca</code> da máquina fictícia da Ana. As mensagens do console estão em inglês, como o navegador as escreveu.</p>
+
+<hr>
+
+<h2>A ideia: a casa que recebe visitas</h2>
+<p>A Ana recebe muita gente em casa. Ela não esconde nada na sala (quem entra vê tudo), acompanha a visita até o portão e fecha o portão depois que ela sai, deixa o encanador trabalhar só na cozinha, e tem na porta uma lista de quem pode entrar.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na casa</th><th>No HTML</th><th>Seção</th></tr>
+<tr><td>Nada de segredo na sala: quem entra vê tudo</td><td>Todo o HTML, CSS e JS chega inteiro ao visitante</td><td>1</td></tr>
+<tr><td>Fechar o portão depois que a visita sai</td><td><code>rel="noopener"</code> nos links que abrem outra aba</td><td>2</td></tr>
+<tr><td>O encanador trabalha só na cozinha</td><td><code>&lt;iframe sandbox&gt;</code>: o site incorporado fica preso</td><td>3</td></tr>
+<tr><td>A lista de quem pode entrar</td><td>A CSP: de onde a página aceita scripts, imagens, estilos</td><td>4</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. Nada no HTML é segredo</h2>
+<p>Para mostrar uma página, o navegador precisa receber o arquivo <strong>inteiro</strong>: o HTML, o CSS, o JavaScript, até os comentários. Qualquer visitante pode ver tudo isso com <kbd>Ctrl</kbd>+<kbd>U</kbd> (o "código-fonte" da página) ou com o F12 (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>).</p>
+
+<pre class="file" data-file="index.html">&lt;!-- senha do painel: bolo123 --&gt;
+&lt;script&gt;
+  const CHAVE_DA_LOJA = "a8f3-...";
+&lt;/script&gt;
+</pre>
+
+<p>Esse comentário e essa "chave" não aparecem na tela, mas estão no arquivo que o visitante baixou. Regras que nenhum atributo substitui:</p>
+<ul>
+  <li><strong>Nunca</strong> escreva senhas, chaves de acesso ou tokens no HTML, no CSS ou no JavaScript de um site (aula <a href="publicar.html">Publicar</a>: o repositório também é público).</li>
+  <li>Esconder com CSS (<code>display: none</code>) ou com o atributo <code>hidden</code> só esconde da <strong>tela</strong>, não do código.</li>
+  <li>Validação de formulário no HTML (<code>required</code>, <code>pattern</code>) ajuda o visitante honesto; quem quer burlar, burla. A conferência de verdade é no servidor que recebe os dados (aula <a href="validacao.html">Validação</a>).</li>
+</ul>
+
+<hr>
+
+<h2>2. Links que abrem outra aba: <code>target</code> e <code>rel</code></h2>
+<p>Com <code>target="_blank"</code>, o link abre numa aba nova (aula <a href="links-target.html">Nova Aba</a>). Durante muitos anos, isso tinha um efeito escondido: a página nova recebia uma referência à aba de origem, a propriedade <code>window.opener</code> ("quem me abriu"). Com ela, um site mal-intencionado podia <strong>trocar a página da sua aba original</strong> por uma falsa, enquanto você olhava a aba nova. Quando você voltava, via uma tela de login idêntica à do site em que estava, e digitava a senha. O golpe ganhou o nome de <em>tabnabbing</em> ("sequestro de aba").</p>
+
+<p>O remédio é o <code>rel="noopener"</code> ("sem quem abriu"): a aba nova recebe <code>window.opener</code> vazio, e não alcança a de origem.</p>
+
+<h3>O que os navegadores fazem hoje</h3>
+<p>Desde por volta de 2021, os navegadores principais aplicam o <code>noopener</code> <strong>sozinhos</strong> em todo link com <code>target="_blank"</code>. A Ana conferiu no Chromium 155, clicando em quatro links para a mesma página e perguntando, na aba nova, quem a abriu e de onde o visitante veio (<code>document.referrer</code>, "quem indicou"):</p>
+
+<pre class="file" data-file="index.html">&lt;a href="destino.html" target="_blank"&gt;sem rel&lt;/a&gt;
+&lt;a href="destino.html" target="_blank" rel="opener"&gt;rel=opener&lt;/a&gt;
+&lt;a href="destino.html" target="_blank" rel="noopener"&gt;rel=noopener&lt;/a&gt;
+&lt;a href="destino.html" target="_blank" rel="noreferrer"&gt;rel=noreferrer&lt;/a&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Link</th><th><code>window.opener</code> na aba nova</th><th><code>document.referrer</code> na aba nova</th></tr>
+<tr><td><code>target="_blank"</code> sem <code>rel</code></td><td><code>null</code> (sem acesso)</td><td><code>http://localhost:8000/index.html</code></td></tr>
+<tr><td><code>rel="opener"</code></td><td><strong>tem acesso</strong> à aba de origem</td><td><code>http://localhost:8000/index.html</code></td></tr>
+<tr><td><code>rel="noopener"</code></td><td><code>null</code></td><td><code>http://localhost:8000/index.html</code></td></tr>
+<tr><td><code>rel="noreferrer"</code></td><td><code>null</code></td><td><code>""</code> (vazio)</td></tr>
+</table>
+</div>
+
+<dl class="anatomy">
+  <dt>rel="noopener"</dt><dd>"Sem <code>opener</code>": a aba nova não alcança a de origem. Hoje já é o padrão do <code>_blank</code>, mas escrever não custa nada e protege quem usa um navegador antigo.</dd>
+  <dt>rel="noreferrer"</dt><dd>"Sem <em>referrer</em>": além do <code>noopener</code>, o site de destino <strong>não fica sabendo</strong> de que página o visitante veio. Útil quando o endereço da sua página é particular (um link de um painel interno, por exemplo).</dd>
+  <dt>rel="opener"</dt><dd>O contrário: devolve o acesso à aba de origem. Só existe para os raros casos em que as duas páginas precisam conversar, e as duas são suas.</dd>
+</dl>
+
+<p>Os valores podem ser combinados, separados por espaço: <code>rel="noopener noreferrer"</code>. É o que muitos sites usam em todo link externo.</p>
+
+<div class="tryhtml" data-goal="attr:a[target]=_blank,attr:a[rel]=noopener noreferrer">
+<p class="try-task"><strong>Missão:</strong> a Ana quer que o link para o fornecedor abra numa aba nova, sem que o fornecedor alcance a aba dela nem saiba de que página o visitante veio. Acrescente o <code>target</code> e o <code>rel</code> (escreva <code>noopener noreferrer</code>, nessa ordem).</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Compro a farinha no &lt;a href="https://example.com/"&gt;Moinho Exemplo&lt;/a&gt;.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Compro a farinha no &lt;a href="https://example.com/" target="_blank" rel="noopener noreferrer"&gt;Moinho Exemplo&lt;/a&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<h3>O que o validador diz</h3>
+<pre class="file" data-file="links.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Links&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;a href="https://example.com/" target="_blank"&gt;1&lt;/a&gt;
+&lt;a href="https://example.com/" target="_blank" rel="noopener"&gt;2&lt;/a&gt;
+&lt;a href="https://example.com/" target="_blank" rel="noopener noreferrer"&gt;3&lt;/a&gt;
+&lt;a href="https://example.com/" target="_blank" rel="opener"&gt;4&lt;/a&gt;
+&lt;a href="https://example.com/" target="_blank" rel="noopenner"&gt;5&lt;/a&gt;
+&lt;a href="https://example.com/" target="blank"&gt;6&lt;/a&gt;
+&lt;a href="https://example.com/" target="_new"&gt;7&lt;/a&gt;
+&lt;a href="https://example.com/" target="_Blank"&gt;8&lt;/a&gt;
+&lt;a href="https://example.com/" target=""&gt;9&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/seguranca">$ vnu links.html
+"file:/home/ana/seguranca/links.html":12.1-12.63: info: Potentially bad value “noopenner” for attribute “rel” on element “a” Typo for “noopener”?
+"file:/home/ana/seguranca/links.html":14.1-14.45: error: Bad value “_new” for attribute “target” on element “a”: Reserved keyword “new” used.
+"file:/home/ana/seguranca/links.html":16.1-16.41: error: Bad value “” for attribute “target” on element “a”: Browsing context name must be at least one character long.</pre>
+
+<ul>
+  <li><strong>Linha 12</strong>, <code>noopenner</code> com dois "n": só um <code>info</code> ("talvez um valor ruim… erro de digitação de <code>noopener</code>?"). O <code>rel</code> aceita palavras inventadas, por isso não é <code>error</code>. Mas o navegador ignora a palavra errada: a proteção que você queria não foi pedida.</li>
+  <li><strong>Linha 13</strong>, <code>target="blank"</code> sem o sublinhado: <strong>passou</strong>, e é uma armadilha. Sem o <code>_</code>, <code>blank</code> não é a palavra especial "aba nova", e sim o <strong>nome</strong> de uma aba. O primeiro clique abre uma aba chamada "blank"; os seguintes reaproveitam essa mesma aba.</li>
+  <li><strong>Linha 14</strong>, <code>_new</code>: erro. Os nomes começados com <code>_</code> são reservados (<code>_blank</code>, <code>_self</code>, <code>_parent</code>, <code>_top</code>), e <code>_new</code> não é um deles.</li>
+  <li><strong>Linha 15</strong>, <code>_Blank</code> com maiúscula: passou; a palavra especial não diferencia maiúsculas.</li>
+  <li><strong>Linha 16</strong>, <code>target=""</code>: erro, "o nome precisa ter pelo menos um caractere".</li>
+</ul>
+
+<hr>
+
+<h2>3. O <code>&lt;iframe&gt;</code> na caixa de areia: <code>sandbox</code></h2>
+<p>Um <code>&lt;iframe&gt;</code> mostra outra página dentro da sua (aula <a href="iframes.html">iframe</a>): um mapa, um vídeo, um formulário de outro serviço. Essa página roda scripts, abre janelas, envia formulários, e você não controla o código dela. O atributo <code>sandbox</code> ("caixa de areia", o cercadinho onde a criança brinca sem sair) prende o conteúdo do <code>&lt;iframe&gt;</code>.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;iframe title="Sem sandbox" srcdoc="&lt;p id=t&gt;Script não rodou&lt;/p&gt;&lt;script&gt;document.getElementById('t').textContent='Script rodou'&lt;/script&gt;"&gt;&lt;/iframe&gt;
+&lt;iframe title="Com sandbox" sandbox srcdoc="&lt;p id=t&gt;Script não rodou&lt;/p&gt;&lt;script&gt;document.getElementById('t').textContent='Script rodou'&lt;/script&gt;"&gt;&lt;/iframe&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>srcdoc="…"</dt><dd>Em vez de um endereço (<code>src</code>), o próprio HTML da página de dentro, escrito no atributo. Aqui é só para o exemplo caber num arquivo: um parágrafo e um script que troca o texto dele.</dd>
+  <dt>sandbox</dt><dd>Sozinho, sem valor: <strong>tudo</strong> fica bloqueado. No segundo quadro, o script não rodou.</dd>
+</dl>
+
+<p>Olhe o Resultado: o primeiro quadro diz "Script rodou"; o segundo, "Script não rodou". No Chromium 155, o console explicou o bloqueio:</p>
+
+<pre class="file" data-file="Console (Chromium 155)">Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.
+</pre>
+
+<p>"Execução de script bloqueada em <code>about:srcdoc</code> porque o quadro do documento está em sandbox e a permissão <code>allow-scripts</code> não foi dada."</p>
+
+<h3>O que o <code>sandbox</code> bloqueia, e como liberar</h3>
+<p>Cada bloqueio tem uma permissão que o desfaz. Você escreve as permissões no valor, separadas por <strong>espaço</strong>, e libera só o que o conteúdo precisa:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Bloqueado com <code>sandbox</code></th><th>Mensagem no console (Chromium 155)</th><th>Permissão que libera</th></tr>
+<tr><td>Scripts</td><td><code>Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.</code></td><td><code>allow-scripts</code></td></tr>
+<tr><td>Enviar formulários</td><td><code>Blocked form submission to 'destino.html' because the form's frame is sandboxed and the 'allow-forms' permission is not set.</code></td><td><code>allow-forms</code></td></tr>
+<tr><td>Abrir janelas e abas</td><td><code>Blocked opening 'http://localhost:8000/destino.html' in a new window because the request was made in a sandboxed frame whose 'allow-popups' permission is not set.</code></td><td><code>allow-popups</code></td></tr>
+<tr><td>Trocar a página de fora (a aba inteira)</td><td><code>Unsafe attempt to initiate navigation for frame with origin 'http://localhost:8000' from frame with URL 'about:srcdoc'. The frame attempting navigation of the top-level window is sandboxed, but the flag of 'allow-top-navigation' or 'allow-top-navigation-by-user-activation' is not set.</code></td><td><code>allow-top-navigation-by-user-activation</code> (só depois de um clique) ou <code>allow-top-navigation</code></td></tr>
+<tr><td>Ser tratado como o próprio site (cookies, armazenamento)</td><td>(sem mensagem: o conteúdo ganha uma origem "anônima")</td><td><code>allow-same-origin</code></td></tr>
+<tr><td>Baixar arquivos, abrir <code>alert()</code>, tela cheia…</td><td>(uma mensagem para cada)</td><td><code>allow-downloads</code>, <code>allow-modals</code>…</td></tr>
+</table>
+</div>
+
+<p>Os testes de janela nova e de troca de página usaram <code>sandbox="allow-scripts"</code>: o script rodou, mas não conseguiu abrir uma aba (<code>window.open</code>) nem trocar a página de fora (<code>top.location</code>). O do formulário usou <code>sandbox</code> sozinho, e o clique em "Enviar" não enviou nada. A origem "anônima" também vale para a sua página: um script <strong>de fora</strong> do <code>&lt;iframe&gt;</code> tentou ler o conteúdo dos quadros com sandbox e recebeu <code>null</code> no lugar do documento.</p>
+
+<div class="warning">
+<strong><code>allow-scripts</code> + <code>allow-same-origin</code> juntos</strong>
+<p>Se o conteúdo do <code>&lt;iframe&gt;</code> vem do <strong>seu próprio site</strong>, essa dupla deixa o script de dentro alcançar o <code>&lt;iframe&gt;</code> e simplesmente apagar o atributo <code>sandbox</code>. O validador avisa, como <code>info warning</code>: <code>Setting both “allow-scripts” and “allow-same-origin” is not recommended, because it effectively enables an embedded page to break out of all sandboxing.</code> ("não é recomendado, porque na prática deixa a página incorporada escapar de todo o sandbox"). Para conteúdo de <strong>outro</strong> site (um vídeo, um mapa), a dupla é comum e necessária.</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:iframe[sandbox]=allow-forms">
+<p class="try-task"><strong>Missão:</strong> a Ana incorporou o formulário de inscrição de um curso de confeitaria, feito por outra pessoa. Ela quer o formulário funcionando, mas sem scripts, sem janelas novas e sem poder trocar a página dela. Prenda o <code>&lt;iframe&gt;</code> na caixa de areia, liberando <strong>só</strong> o envio de formulários.</p>
+<pre class="script" data-file="index.html">&lt;iframe title="Inscrição no curso" srcdoc="&lt;form&gt;&lt;label&gt;Nome &lt;input name=nome&gt;&lt;/label&gt; &lt;button&gt;Inscrever&lt;/button&gt;&lt;/form&gt;"&gt;&lt;/iframe&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;iframe title="Inscrição no curso" sandbox="allow-forms" srcdoc="&lt;form&gt;&lt;label&gt;Nome &lt;input name=nome&gt;&lt;/label&gt; &lt;button&gt;Inscrever&lt;/button&gt;&lt;/form&gt;"&gt;&lt;/iframe&gt;
+</pre>
+</div>
+
+<h3>Os erros de digitação do <code>sandbox</code></h3>
+<pre class="file" data-file="sandbox.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Sandbox&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;iframe src="https://example.com/" title="a" sandbox&gt;&lt;/iframe&gt;
+&lt;iframe src="https://example.com/" title="b" sandbox="allow-scripts"&gt;&lt;/iframe&gt;
+&lt;iframe src="https://example.com/" title="c" sandbox="allow-scripts allow-same-origin"&gt;&lt;/iframe&gt;
+&lt;iframe src="https://example.com/" title="d" sandbox="allow-forms allow-popups"&gt;&lt;/iframe&gt;
+&lt;iframe src="https://example.com/" title="e" sandbox="allow-javascript"&gt;&lt;/iframe&gt;
+&lt;iframe src="https://example.com/" title="f" sandbox="allow-scripts,allow-forms"&gt;&lt;/iframe&gt;
+&lt;iframe src="https://example.com/" title="g" sandbox="true"&gt;&lt;/iframe&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/seguranca">$ vnu sandbox.html
+"file:/home/ana/seguranca/sandbox.html":10.1-10.87: info warning: Potentially bad value “allow-scripts allow-same-origin” for attribute “sandbox” on element “iframe”: Setting both “allow-scripts” and “allow-same-origin” is not recommended, because it effectively enables an embedded page to break out of all sandboxing.
+"file:/home/ana/seguranca/sandbox.html":12.1-12.72: error: Bad value “allow-javascript” for attribute “sandbox” on element “iframe”: The string “allow-javascript” is not a valid keyword.
+"file:/home/ana/seguranca/sandbox.html":13.1-13.81: error: Bad value “allow-scripts,allow-forms” for attribute “sandbox” on element “iframe”: The string “allow-scripts,allow-forms” is not a valid keyword.
+"file:/home/ana/seguranca/sandbox.html":14.1-14.60: error: Bad value “true” for attribute “sandbox” on element “iframe”: The string “true” is not a valid keyword.</pre>
+
+<p>A linha 10 é a dupla perigosa (só um aviso). As linhas 12 a 14 são <code>sandbox="allow-javascript"</code> (permissão que não existe), <code>sandbox="allow-scripts,allow-forms"</code> (vírgula no lugar do espaço: virou uma palavra só, desconhecida) e <code>sandbox="true"</code>. Nos três casos, o navegador ignora a palavra desconhecida, e o <code>&lt;iframe&gt;</code> fica com <strong>tudo bloqueado</strong>: o erro é para o lado seguro, mas o conteúdo deixa de funcionar.</p>
+
+<hr>
+
+<h2>4. A lista de quem pode entrar: CSP</h2>
+<p>A <strong>Política de Segurança de Conteúdo</strong> (<em>Content Security Policy</em>, CSP) é uma lista que diz ao navegador <strong>de onde</strong> a página aceita carregar cada tipo de coisa: scripts, imagens, estilos, fontes, <code>&lt;iframe&gt;</code>s. O resto é bloqueado. Ela é a melhor defesa contra o ataque mais comum da web, o <strong>XSS</strong> (<em>cross-site scripting</em>): alguém consegue colocar um <code>&lt;script&gt;</code> numa página sua (num comentário, num recado), e esse script roda no navegador dos seus visitantes.</p>
+
+<p>Normalmente, a CSP vem num <strong>cabeçalho</strong> que o servidor manda com a página (como os da aula <a href="servidor-local.html">Servidor Local</a>). Quando você não controla o servidor, como no GitHub Pages, dá para escrever a mesma política num <code>&lt;meta&gt;</code>, no <code>&lt;head&gt;</code>:</p>
+
+<pre class="file" data-file="csp.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://example.com"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p id="aviso"&gt;O script de dentro da página não rodou.&lt;/p&gt;
+&lt;script&gt;
+  document.getElementById("aviso").textContent = "O script de dentro da página rodou.";
+&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;img src="https://imagens.example.net/bolo.jpg" alt="Bolo de cenoura" width="400" height="300"&gt;
+&lt;button onclick="alert('oi')"&gt;Clique&lt;/button&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>http-equiv="Content-Security-Policy"</dt><dd>"Equivalente ao cabeçalho HTTP" chamado <code>Content-Security-Policy</code>: o <code>&lt;meta&gt;</code> finge ser o cabeçalho que o servidor não mandou.</dd>
+  <dt>content="…"</dt><dd>A política: uma lista de <strong>diretivas</strong> separadas por <code>;</code>. Cada diretiva é um nome e as origens permitidas, separadas por espaço.</dd>
+  <dt>default-src 'self'</dt><dd>A regra padrão, para tudo que não tiver regra própria: só do <strong>próprio site</strong> (<code>'self'</code>, "eu mesmo", <strong>com</strong> as aspas simples). E, como não há <code>'unsafe-inline'</code>, nada de script escrito dentro da página.</dd>
+  <dt>img-src 'self' https://example.com</dt><dd>Imagens: do próprio site e de <code>https://example.com</code>.</dd>
+</dl>
+
+<p>A Ana abriu essa página pelo servidor local no Chromium 155. Na tela, o parágrafo continuou dizendo "O script de dentro da página <strong>não</strong> rodou", a imagem não apareceu, e o botão não fez nada. O console contou tudo:</p>
+
+<pre class="file" data-file="Console (Chromium 155)">Executing inline script violates the following Content Security Policy directive 'default-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-hBLGZXdnjiZaK9Zd2Oty+QR6JRSTn9JR+JUC+/jD9AA='), or a nonce ('nonce-...') is required to enable inline execution. Note also that 'script-src' was not explicitly set, so 'default-src' is used as a fallback. The action has been blocked.
+O script.js rodou.
+Loading the image 'https://imagens.example.net/bolo.jpg' violates the following Content Security Policy directive: "img-src 'self' https://example.com". The action has been blocked.
+Executing inline event handler violates the following Content Security Policy directive 'default-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. Note also that 'script-src' was not explicitly set, so 'default-src' is used as a fallback. The action has been blocked.
+</pre>
+
+<dl class="anatomy">
+  <dt>Executing inline script violates…</dt><dd>"Executar script <strong>dentro da página</strong> (<em>inline</em>) viola a diretiva <code>default-src 'self'</code>". Para liberar, seria preciso <code>'unsafe-inline'</code> ("dentro da página, inseguro"), um <em>hash</em> (a "impressão digital" daquele script exato, que o navegador até calculou para você) ou um <em>nonce</em> (um código que muda a cada carregamento, coisa de servidor). Como não havia <code>script-src</code>, valeu o <code>default-src</code>. "A ação foi bloqueada."</dd>
+  <dt>O script.js rodou.</dt><dd>O <code>script.js</code> veio do próprio site (<code>'self'</code>): passou.</dd>
+  <dt>Loading the image … violates … "img-src 'self' https://example.com"</dt><dd>A imagem vinha de <code>imagens.example.net</code>, que não está na lista.</dd>
+  <dt>Executing inline event handler violates…</dt><dd>O <code>onclick="…"</code> do botão também é script dentro da página, e foi bloqueado.</dd>
+</dl>
+
+<p>É exatamente isso que protege contra o XSS: se alguém conseguir enfiar um <code>&lt;script&gt;</code> ou um <code>onclick</code> no meio da sua página, ele é "script dentro da página" e não roda. O preço: <strong>os seus</strong> scripts também têm de morar em arquivos <code>.js</code>, ligados com <code>&lt;script src&gt;</code>, e os eventos, em <code>addEventListener</code> dentro desses arquivos.</p>
+
+<h3>O validador também avisa</h3>
+<p>O <code>vnu</code> lê a política do <code>&lt;meta&gt;</code> e confere a página contra ela:</p>
+
+<pre class="term" data-cwd="~/seguranca">$ vnu csp.html
+"file:/home/ana/seguranca/csp.html":10.1-10.8: info warning: Inline script violates Content Security Policy (meta tag): blocked by “script-src” directive (missing “‘unsafe-inline’” or nonce/hash).
+"file:/home/ana/seguranca/csp.html":13.1-13.24: info warning: Resource violates Content Security Policy (meta tag): external script “script.js” blocked by “script-src” directive.
+"file:/home/ana/seguranca/csp.html":14.1-14.95: info warning: Resource violates Content Security Policy (meta tag): image “https://imagens.example.net/bolo.jpg” blocked by “img-src” directive.
+"file:/home/ana/seguranca/csp.html":15.1-15.30: info warning: Event handler attribute “onclick” violates Content Security Policy (meta tag): blocked by “script-src” directive.</pre>
+
+<p>São avisos (<code>info warning</code>), não erros: a página é HTML válido, só não vai funcionar como parece. Três deles batem com o console. O da <strong>linha 13</strong> é um <strong>alarme falso</strong>: o validador leu o arquivo direto do disco (<code>file:</code>), onde o <code>script.js</code> não conta como "o próprio site"; no navegador, pela página servida em <code>http://localhost:8000</code>, o <code>script.js</code> rodou. Na dúvida, quem decide é o console do navegador, com a página servida como no site publicado.</p>
+
+<h3>As diretivas mais usadas</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Diretiva</th><th>Controla</th></tr>
+<tr><td><code>default-src</code></td><td>Tudo que não tiver regra própria</td></tr>
+<tr><td><code>script-src</code></td><td>Scripts</td></tr>
+<tr><td><code>style-src</code></td><td>CSS (inclusive <code>&lt;style&gt;</code> e o atributo <code>style</code>, que também são "dentro da página")</td></tr>
+<tr><td><code>img-src</code></td><td>Imagens</td></tr>
+<tr><td><code>font-src</code></td><td>Fontes</td></tr>
+<tr><td><code>frame-src</code></td><td>O que pode aparecer em <code>&lt;iframe&gt;</code></td></tr>
+<tr><td><code>connect-src</code></td><td>O que o JavaScript pode buscar com <code>fetch</code></td></tr>
+<tr><td><code>form-action</code></td><td>Para onde os formulários podem ser enviados</td></tr>
+</table>
+</div>
+
+<p>E os valores: <code>'self'</code> (o próprio site), <code>'none'</code> (nada), um endereço (<code>https://example.com</code>), <code>https:</code> (qualquer site com <code>https</code>) e <code>'unsafe-inline'</code> (libera o que está dentro da página: evite, porque desfaz a proteção contra XSS). As palavras-chave vão <strong>entre aspas simples</strong>; os endereços, sem.</p>
+
+<h3>O que o <code>&lt;meta&gt;</code> não consegue</h3>
+<p>A Ana testou duas coisas que funcionam no cabeçalho, mas não no <code>&lt;meta&gt;</code>:</p>
+
+<pre class="file" data-file="Console (Chromium 155)">The Content Security Policy directive 'frame-ancestors' is ignored when delivered via a &lt;meta&gt; element.
+The Content Security Policy 'script-src 'none'' was delivered via a &lt;meta&gt; element outside the document's &lt;head&gt;, which is disallowed. The policy has been ignored.
+</pre>
+
+<ul>
+  <li><strong><code>frame-ancestors</code></strong> (quem pode mostrar a <strong>sua</strong> página dentro de um <code>&lt;iframe&gt;</code>) é ignorada no <code>&lt;meta&gt;</code>: "é ignorada quando entregue por um elemento <code>&lt;meta&gt;</code>". O mesmo vale para <code>report-uri</code> e <code>sandbox</code>. Só o servidor consegue mandá-las.</li>
+  <li>Um <code>&lt;meta&gt;</code> de CSP <strong>fora do <code>&lt;head&gt;</code></strong> é jogado fora: "foi entregue fora do <code>&lt;head&gt;</code>, o que não é permitido. A política foi ignorada." Nesse teste, o script que ela devia bloquear rodou.</li>
+  <li>A política só vale para o que vem <strong>depois</strong> do <code>&lt;meta&gt;</code>. Ponha-o logo depois do <code>&lt;meta charset&gt;</code>, antes de qualquer <code>&lt;script&gt;</code>, <code>&lt;link&gt;</code> ou <code>&lt;style&gt;</code>.</li>
+</ul>
+
+<h3>O validador confere a política</h3>
+<pre class="file" data-file="csp2.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;meta http-equiv="Content-Security-Policy" content="default-src self; script-src 'self'"&gt;
+&lt;meta http-equiv="Content-Security-Policy" content="script-src: 'self'"&gt;
+&lt;meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'"&gt;
+&lt;meta http-equiv="content-security-policy" content="default-src 'self'"&gt;
+&lt;title&gt;CSP&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;meta http-equiv="Content-Security-Policy" content="default-src 'self'"&gt;
+&lt;p&gt;ok&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/seguranca">$ vnu csp2.html
+"file:/home/ana/seguranca/csp2.html":5.1-5.89: info warning: Potentially bad value “default-src self; script-src 'self'” for attribute “content” on element “meta”: This host name is unusual, and likely meant to be a keyword that is missing the required quotes: 'self'.
+"file:/home/ana/seguranca/csp2.html":6.1-6.72: error: Bad value “script-src: 'self'” for attribute “content” on element “meta”: Directive name “script-src” : contains characters outside the range ALPHA / DIGIT / "-"
+"file:/home/ana/seguranca/csp2.html":12.1-12.72: error: Attribute “http-equiv” not allowed on element “meta” at this point.
+"file:/home/ana/seguranca/csp2.html":12.1-12.72: error: Element “meta” is missing one or more of the following attributes: “itemprop”, “property”.</pre>
+
+<ul>
+  <li><strong>Linha 5</strong>, <code>self</code> sem aspas: o validador desconfia (<code>info warning</code>): "esse nome de site é estranho, e provavelmente era a palavra-chave <code>'self'</code> sem as aspas obrigatórias". Sem aspas, o navegador entende um <strong>site</strong> chamado "self", e não o seu.</li>
+  <li><strong>Linha 6</strong>, <code>script-src:</code> com dois-pontos: erro, "o nome da diretiva tem caracteres fora de letras, números e hífen". Na CSP não há dois-pontos depois do nome.</li>
+  <li><strong>Linha 7</strong>, <code>frame-ancestors</code> no <code>&lt;meta&gt;</code>: o validador <strong>aceita</strong>, mas o navegador ignora, como você viu acima.</li>
+  <li><strong>Linha 8</strong>, o nome em minúsculas: aceito.</li>
+  <li><strong>Linha 12</strong>, o <code>&lt;meta&gt;</code> no <code>&lt;body&gt;</code>: erro, "o atributo <code>http-equiv</code> não é permitido neste ponto".</li>
+</ul>
+
+<hr>
+
+<h2>5. Outros cuidados que cabem no HTML</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Cuidado</th><th>Como</th></tr>
+<tr><td>Scripts de outros sites (CDN) sem surpresas</td><td><code>&lt;script src="https://cdn…/biblioteca.js" integrity="sha384-…" crossorigin="anonymous"&gt;</code>: o <code>integrity</code> ("integridade") é a impressão digital do arquivo; se o CDN entregar outro arquivo, o navegador não roda</td></tr>
+<tr><td>Formulários que enviam dados</td><td>Sempre para um endereço <code>https://</code> (aula <a href="enviar-formulario.html">Enviar</a>)</td></tr>
+<tr><td>Não contar de onde o visitante veio</td><td><code>rel="noreferrer"</code> num link, ou <code>referrerpolicy="no-referrer"</code> num <code>&lt;a&gt;</code>, <code>&lt;img&gt;</code> ou <code>&lt;iframe&gt;</code></td></tr>
+<tr><td>Texto que o visitante escreveu</td><td>Nunca coloque direto no HTML de outras pessoas sem limpar no servidor (aula <a href="contenteditable.html">contenteditable</a>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Ferramentas de segurança: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>Link para outro site, em aba nova</td><td><code>target="_blank" rel="noopener"</code> (ou <code>noopener noreferrer</code>)</td></tr>
+<tr><td>Link para outro site, na mesma aba</td><td>Nada especial: sem <code>target</code>, não há <code>opener</code></td></tr>
+<tr><td>Mostrar conteúdo de terceiros num <code>&lt;iframe&gt;</code></td><td><code>sandbox</code> com o mínimo de <code>allow-*</code> que ainda deixe o conteúdo funcionar</td></tr>
+<tr><td>Site no GitHub Pages ou em outro serviço sem acesso aos cabeçalhos</td><td>CSP num <code>&lt;meta&gt;</code> no começo do <code>&lt;head&gt;</code>, com os scripts em arquivos <code>.js</code></td></tr>
+<tr><td>Servidor seu, com acesso aos cabeçalhos</td><td>CSP no cabeçalho (inclui <code>frame-ancestors</code>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>info: Potentially bad value “noopenner” for attribute “rel” on element “a” Typo for “noopener”?</code></strong>
+<p><strong>O que significa:</strong> uma palavra do <code>rel</code> escrita errado. Não é <code>error</code>, então é fácil deixar passar, mas o navegador ignora a palavra.</p>
+<p><strong>Como consertar:</strong> <code>noopener</code>, com um "n" só no meio. Leia também as linhas <code>info</code> do validador.</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>&lt;iframe&gt;</code> com <code>sandbox</code> ficou em branco ou "morto"</strong>
+<p><strong>O que significa:</strong> o conteúdo precisa de algo que o <code>sandbox</code> bloqueou: quase sempre <code>allow-scripts</code> (vídeos e mapas dependem de JavaScript), às vezes <code>allow-same-origin</code> ou <code>allow-popups</code>. O console diz qual, com a frase <code>permission is not set</code>.</p>
+<p><strong>Como consertar:</strong> leia a mensagem do console e acrescente só a permissão citada, separada por espaço.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Executing inline script violates the following Content Security Policy directive…</code></strong>
+<p><strong>O que significa:</strong> a sua CSP bloqueou um script escrito dentro da página, talvez um seu.</p>
+<p><strong>Como consertar:</strong> mova o código para um arquivo <code>.js</code> e ligue com <code>&lt;script src&gt;</code>; troque <code>onclick="…"</code> por <code>addEventListener</code> dentro do arquivo. Evite resolver com <code>'unsafe-inline'</code>, que desliga a proteção.</p>
+</div>
+
+<div class="cenario">
+<strong>A CSP no <code>&lt;meta&gt;</code> "não faz nada"</strong>
+<p><strong>O que significa:</strong> ou o <code>&lt;meta&gt;</code> está fora do <code>&lt;head&gt;</code> (o console avisa: <code>outside the document's &lt;head&gt;, which is disallowed</code>), ou está depois dos scripts que deveria bloquear, ou a diretiva é uma das que o <code>&lt;meta&gt;</code> não aceita (<code>frame-ancestors</code>).</p>
+<p><strong>Como consertar:</strong> ponha o <code>&lt;meta&gt;</code> logo depois do <code>&lt;meta charset&gt;</code>. Para <code>frame-ancestors</code>, só com o cabeçalho do servidor.</p>
+</div>
+
+<hr>
+
+<h2>Referência</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>target="_blank"</code></td><td>Abre em aba nova (hoje já com <code>noopener</code> automático)</td></tr>
+<tr><td><code>rel="noopener"</code></td><td>A aba nova não alcança a de origem</td></tr>
+<tr><td><code>rel="noreferrer"</code></td><td>Também esconde de onde o visitante veio</td></tr>
+<tr><td><code>rel="opener"</code></td><td>Devolve o acesso à aba de origem</td></tr>
+<tr><td><code>&lt;iframe sandbox&gt;</code></td><td>Bloqueia tudo no conteúdo incorporado</td></tr>
+<tr><td><code>sandbox="allow-scripts allow-forms"</code></td><td>Libera só scripts e formulários</td></tr>
+<tr><td><code>allow-popups</code>, <code>allow-same-origin</code>, <code>allow-top-navigation-by-user-activation</code>, <code>allow-downloads</code>, <code>allow-modals</code></td><td>Outras permissões do <code>sandbox</code></td></tr>
+<tr><td><code>&lt;meta http-equiv="Content-Security-Policy" content="…"&gt;</code></td><td>A CSP no HTML, no começo do <code>&lt;head&gt;</code></td></tr>
+<tr><td><code>default-src 'self'</code></td><td>Tudo só do próprio site, nada dentro da página</td></tr>
+<tr><td><code>integrity="sha384-…" crossorigin="anonymous"</code></td><td>Confere a impressão digital de um script ou CSS de outro site</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Fechar o portão</h3>
+<p>Complete o valor que impede a aba nova de alcançar a de origem:</p>
+<div class="ex-code">&lt;a href="https://example.com/" target="_blank" rel="<input data-answer="noopener|noopener noreferrer|noreferrer" aria-label="valor do rel">"&gt;Fornecedor&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Só scripts</h3>
+<p>Complete para que o <code>&lt;iframe&gt;</code> rode scripts, e nada mais:</p>
+<div class="ex-code">&lt;iframe src="mapa.html" title="Mapa" sandbox="<input data-answer="allow-scripts" aria-label="permissão">"&gt;&lt;/iframe&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. A Ana escreveu <code>target="blank"</code>, sem o sublinhado. O que acontece?</p>
+<label><input type="radio" name="q3"> O validador acusa erro e o link não funciona</label>
+<label><input type="radio" name="q3"> É igual a <code>_blank</code></label>
+<label><input type="radio" name="q3"> Abre numa aba chamada "blank", e os próximos cliques reaproveitam essa aba</label>
+<label><input type="radio" name="q3"> Abre na mesma aba</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Com <code>default-src 'self'</code> no <code>&lt;meta&gt;</code> de CSP, o que acontece com <code>&lt;button onclick="comprar()"&gt;</code>?</p>
+<label><input type="radio" name="q4"> Funciona, porque está no próprio site</label>
+<label><input type="radio" name="q4"> É bloqueado: é script dentro da página (<em>inline event handler</em>)</label>
+<label><input type="radio" name="q4"> O validador acusa erro</label>
+<label><input type="radio" name="q4"> O botão some da tela</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Onde colocar o <code>&lt;meta http-equiv="Content-Security-Policy"&gt;</code>?</p>
+<label><input type="radio" name="q5"> No fim do <code>&lt;body&gt;</code></label>
+<label><input type="radio" name="q5"> Em qualquer lugar: o navegador procura</label>
+<label><input type="radio" name="q5"> Num arquivo <code>.css</code></label>
+<label><input type="radio" name="q5"> No <code>&lt;head&gt;</code>, logo depois do <code>&lt;meta charset&gt;</code>, antes dos scripts</label>
+</div>
+
+<h3>Missão final: o recado intruso</h3>
+
+<div class="tryhtml" data-goal="sel:head meta[http-equiv=Content-Security-Policy],nsel:p.intruso=0,src:intruso">
+<p class="try-task"><strong>Missão:</strong> alguém conseguiu enfiar um <code>&lt;script&gt;</code> no mural de recados da Ana, e ele acrescenta um parágrafo falso de "prêmio". Sem apagar o script (finja que você não sabe onde ele está), acrescente no <code>&lt;head&gt;</code> uma CSP que só aceite conteúdo do próprio site, para que o script de dentro da página não rode. O parágrafo falso deve sumir do resultado.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Recados da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Recados&lt;/h1&gt;
+&lt;p&gt;O bolo fica pronto às 16h.&lt;/p&gt;
+&lt;script&gt;
+  document.body.insertAdjacentHTML("beforeend", '&lt;p class="intruso"&gt;Você ganhou um prêmio! Digite sua senha aqui.&lt;/p&gt;');
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;meta http-equiv="Content-Security-Policy" content="default-src 'self'"&gt;
+&lt;title&gt;Recados da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Recados&lt;/h1&gt;
+&lt;p&gt;O bolo fica pronto às 16h.&lt;/p&gt;
+&lt;script&gt;
+  document.body.insertAdjacentHTML("beforeend", '&lt;p class="intruso"&gt;Você ganhou um prêmio! Digite sua senha aqui.&lt;/p&gt;');
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Na vida real, o conserto completo também tira o script do mural e impede que ele volte (limpando no servidor o que os visitantes escrevem). A CSP é a <strong>segunda</strong> tranca: ela segura o estrago enquanto a primeira falha.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Tudo que está no HTML, no CSS e no JS chega ao visitante: nada de senhas ou chaves no código.</li>
+  <li><code>target="_blank"</code> já ganha <code>noopener</code> automático nos navegadores atuais; <code>rel="noopener"</code> deixa isso explícito, <code>rel="noreferrer"</code> esconde também a origem do visitante, e <code>rel="opener"</code> desfaz a proteção.</li>
+  <li><code>&lt;iframe sandbox&gt;</code> bloqueia scripts, formulários, janelas e a troca da página de fora; libere só o necessário com <code>allow-*</code>, separados por espaço. Evite <code>allow-scripts</code> + <code>allow-same-origin</code> para conteúdo do seu próprio site.</li>
+  <li>A CSP lista de onde a página aceita conteúdo. No <code>&lt;meta http-equiv="Content-Security-Policy"&gt;</code>, ela vai no começo do <code>&lt;head&gt;</code>; <code>default-src 'self'</code> bloqueia scripts dentro da página, inclusive <code>onclick</code>.</li>
+  <li>O <code>&lt;meta&gt;</code> não aceita <code>frame-ancestors</code> e é ignorado fora do <code>&lt;head&gt;</code>. O console do navegador diz o que foi bloqueado e por quê; o validador confere a escrita da política.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
