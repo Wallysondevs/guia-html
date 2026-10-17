@@ -57,7 +57,7 @@
 </dl>
 
 <h3>Uma diferença do áudio: o vídeo aparece mesmo sem <code>controls</code></h3>
-<p>Um <code>&lt;audio&gt;</code> sem <code>controls</code> some. Um <code>&lt;video&gt;</code> sem <code>controls</code> continua ocupando o seu retângulo e mostra a primeira imagem do vídeo, mas sem nenhum botão. A pessoa vê o bolo parado e não tem como dar play:</p>
+<p>Um <code>&lt;audio&gt;</code> sem <code>controls</code> some. Um <code>&lt;video&gt;</code> sem <code>controls</code> continua ocupando o seu retângulo e mostra a primeira imagem do vídeo, mas sem nenhum botão. A pessoa vê a primeira cena parada (a tigela com a massa) e não tem como dar play:</p>
 
 <pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/video-bolo.mp4" width="320" height="180"&gt;&lt;/video&gt;
 &lt;p&gt;O vídeo acima não tem controls: tente tocá-lo.&lt;/p&gt;
@@ -94,14 +94,14 @@
 <hr>
 
 <h2>3. A capa: <code>poster</code></h2>
-<p>Antes do play, o vídeo mostra a primeira imagem do arquivo, que muitas vezes é uma tela preta ou um quadro sem graça. O <code>poster</code> ("cartaz") troca isso por uma imagem escolhida por você, como a capa de um filme:</p>
+<p>Antes do play, o vídeo mostra a primeira imagem do arquivo, que muitas vezes é uma tela preta ou um quadro sem graça (no vídeo do bolo, a tigela com a massa). O <code>poster</code> ("cartaz") troca isso por uma imagem escolhida por você, como a capa de um filme:</p>
 
 <pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/video-bolo.mp4" controls width="640" height="360"
        poster="assets/midia/video-bolo-poster.jpg"&gt;&lt;/video&gt;
 </pre>
 
 <dl class="anatomy">
-  <dt>poster="…/video-bolo-poster.jpg"</dt><dd>O endereço de uma <strong>imagem</strong> (JPG, PNG, WebP…). Ela aparece até a pessoa dar play e some quando o vídeo começa.</dd>
+  <dt>poster="…/video-bolo-poster.jpg"</dt><dd>O endereço de uma <strong>imagem</strong> (JPG, PNG, WebP…). Ela aparece até a pessoa dar play e some quando o vídeo começa. Aqui, a capa é o fim do vídeo: o bolo pronto, com a cobertura de chocolate e as cenourinhas em cima.</dd>
 </dl>
 
 <ul>
