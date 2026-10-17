@@ -78,6 +78,8 @@ As metas olham a **página já desenhada pelo navegador** (o DOM), e não o text
 
 **Regras exatas (decididas antes de escrever; não invente outras):**
 - **Regex** (`src:`, `nsrc:`): é a regex do JavaScript. `|` é alternativa e `\|` é uma barra vertical literal.
+- **`texto:`** usa o texto como o leitor vê: um `<br>` e o fim de cada bloco (`p`, `li`, `div`…) contam como espaço.
+- **`src:`/`nsrc:` usam a flag `i`**, que junta maiúsculas e minúsculas também com acento: `Ã` casa com `ã`. Para letras exatas, use classes de caracteres (ex.: `nsrc:Ã[£§¡]`).
 - **Seletor:** é o CSS normal do `querySelector`. Para vírgula dentro de um seletor (`h1, h2`), escreva `\,`.
 - **Escapes no `data-goal`:** `\,` é vírgula literal; `\\` é uma barra invertida literal. Uma vírgula sem escape só separa metas quando vem seguida do nome de uma meta. Dentro do atributo, `&lt;` e `&gt;` são `<` e `>`.
 - O **código inicial não pode cumprir a meta**, e a **solução tem de cumprir** (o testador confere).
