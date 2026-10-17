@@ -374,7 +374,7 @@ $ vnu dentro.html
 
 <h3>Missão final: confirmar o pedido</h3>
 
-<div class="tryhtml" data-goal="sel:dialog#confirma form[method='dialog'],nsel:dialog#confirma button=2,nsel:dialog[open]=0,src:\.showModal\(\)">
+<div class="tryhtml" data-goal="sel:dialog#confirma form[method='dialog'],nsel:dialog#confirma button=2,nsel:dialog[open]=0,src:[.]showModal[(][)]">
 <p class="try-task"><strong>Missão:</strong> na lojinha, o botão "Finalizar pedido" deve abrir uma janela <strong>modal</strong> perguntando "Confirmar o pedido?", com dois botões: "Voltar" (<code>value="nao"</code>) e "Confirmar" (<code>value="sim"</code>), dentro de um <code>&lt;form method="dialog"&gt;</code>. A janela começa fechada (sem <code>open</code>). Complete o <code>&lt;dialog&gt;</code> e a terceira linha do script. Depois teste: abrir, <kbd>Esc</kbd>, os dois botões.</p>
 <pre class="script" data-file="index.html">&lt;h1&gt;Seu carrinho&lt;/h1&gt;
 &lt;p&gt;1 bolo de cenoura: R$ 30,00&lt;/p&gt;
