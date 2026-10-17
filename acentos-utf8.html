@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Acentos, UTF-8 e Emoji — o meta charset e o AÃ§Ã£o | Guia HTML</title>
+<meta name="description" content="Acentos e emojis em HTML para quem nunca fez um site: o que são Unicode e UTF-8, para que serve o meta charset, o que acontece sem ele (AÃ§Ã£o) e com um arquivo salvo em Latin-1 (o �), como conferir com file, xxd e iconv, emojis compostos e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Acentos, UTF-8 e Emoji</span></h1>
+
+<p class="intro">A Ana abriu o site de receitas no computador da vizinha e levou um susto: no lugar de "Ação rápida", apareceu <strong>"AÃ§Ã£o rÃ¡pida"</strong>. Em outro arquivo, antigo, os acentos viraram losangos com interrogação: <strong>"A�o"</strong>. Os dois sustos têm a mesma causa: o computador guarda letras como <strong>números</strong> (bytes), e quem lê precisa saber <strong>qual tabela</strong> usar para transformá-los de volta em letras. Nesta aula você vai entender essa tabela, o <strong>UTF-8</strong>, e a linha que evita o problema: <code>&lt;meta charset="utf-8"&gt;</code>. No fim, vai colocar emojis no site, inclusive os compostos, como 👩‍🍳.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que são o <strong>Unicode</strong> (o catálogo de caracteres) e o <strong>UTF-8</strong> (o jeito de guardá-los em bytes).</li>
+  <li>Para que serve o <code>&lt;meta charset="utf-8"&gt;</code>, onde ele fica e por que deve ser a primeira coisa do <code>&lt;head&gt;</code>.</li>
+  <li>De onde vem o <code>AÃ§Ã£o</code>: bytes UTF-8 lidos com a tabela errada.</li>
+  <li>De onde vem o <code>�</code>: um arquivo salvo em Latin-1, e como descobrir e consertar com <code>file</code>, <code>xxd</code> e <code>iconv</code>.</li>
+  <li>Emojis: quantos bytes têm, como escrever, e os emojis "compostos" (👩‍🍳, 🇧🇷, 👍🏽).</li>
+  <li>Os erros reais do validador: <code>utf8</code> sem hífen, outras codificações, a declaração atrasada e a declaração dupla.</li>
+</ul>
+</div>
+
+<p>Os comandos desta aula rodaram na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>, Linux em português), na pasta <code>~/site</code>. As mensagens de erro são do validador W3C (<code>vnu</code>, a mesma ferramenta do <a href="validar.html">validator.w3.org</a>). Antes desta aula, veja <a href="entidades.html">Entidades</a>.</p>
+
+<hr>
+
+<h2>A ideia: o catálogo e a embalagem</h2>
+<p>O computador não guarda letras: guarda <strong>bytes</strong>, números de 0 a 255. Para transformar letras em números, e de volta, existem duas peças:</p>
+<ul>
+  <li><strong>Unicode</strong> é um <strong>catálogo</strong>: uma lista enorme, com mais de 150 mil caracteres, em que cada um tem um número fixo. O <code>A</code> é o 65, o <code>ç</code> é o 231, o <code>€</code> é o 8364, o 🎂 é o 127874. Esse é o número que você usou nas referências numéricas da aula <a href="entidades.html">Entidades</a> (<code>&amp;#127874;</code>).</li>
+  <li><strong>UTF-8</strong> é a <strong>embalagem</strong>: a regra que diz como guardar esses números em bytes. Número pequeno vai numa caixa de 1 byte; número maior, em 2, 3 ou 4 bytes.</li>
+</ul>
+<p>Pense numa mudança: o catálogo diz <strong>o que</strong> é cada objeto; a embalagem decide <strong>quantas caixas</strong> ele ocupa no caminhão. Quem desembala precisa saber como as coisas foram embaladas. Se a Ana embalou em UTF-8 e a vizinha desembala achando que é outro sistema, as coisas saem trocadas.</p>
+
+<p>O comando <code>xxd</code> mostra os bytes de verdade de um texto, em hexadecimal (base 16: cada byte vira dois dígitos de <code>00</code> a <code>ff</code>):</p>
+
+<pre class="term" data-cwd="~/site">$ printf 'a' | xxd
+00000000: 61                                       a
+$ printf 'ç' | xxd
+00000000: c3a7                                     ..       « 2 bytes: c3 a7
+$ printf '€' | xxd
+00000000: e282 ac                                  ...      « 3 bytes
+$ printf '🎂' | xxd
+00000000: f09f 8e82                                ....     « 4 bytes</pre>
+
+<dl class="anatomy">
+  <dt>00000000:</dt><dd>A posição do primeiro byte da linha (zero, o começo).</dd>
+  <dt>c3a7</dt><dd>Os bytes, em pares de dígitos: <code>c3</code> e <code>a7</code>. Juntos, em UTF-8, eles são o <code>ç</code>.</dd>
+  <dt>..</dt><dd>A coluna da direita mostra cada byte como letra quando ele é ASCII (a tabela antiga, só com letras sem acento). Os bytes de um caractere acentuado não são ASCII, e aparecem como ponto.</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Caractere</th><th>Número no Unicode</th><th>Bytes em UTF-8</th></tr>
+<tr><td><code>a</code>, <code>7</code>, <code>!</code>, espaço</td><td>de 0 a 127</td><td>1 (igual ao ASCII)</td></tr>
+<tr><td><code>ç ã é Ç</code> e todas as letras do português</td><td>de 128 a 2047</td><td>2</td></tr>
+<tr><td><code>€</code>, <code>→</code>, chinês, japonês</td><td>até 65535</td><td>3</td></tr>
+<tr><td>emojis 🎂</td><td>acima de 65535</td><td>4</td></tr>
+</table>
+</div>
+
+<p>Hoje, quase toda página da web (bem mais de 90%) usa UTF-8, e o HTML atual <strong>exige</strong> UTF-8 em páginas novas.</p>
+
+<hr>
+
+<h2>1. A linha que avisa: <code>&lt;meta charset="utf-8"&gt;</code></h2>
+<p>O arquivo HTML é uma fileira de bytes. Para o navegador saber que embalagem você usou, a página avisa logo no começo:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pão de queijo&lt;/h1&gt;
+&lt;p&gt;Ação rápida: 30 minutos de forno.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;meta&gt;</dt><dd>Um elemento de "informação sobre a página" (aula <a href="meta.html">title e meta</a>). Não aparece na tela e não tem tag de fechamento.</dd>
+  <dt>charset</dt><dd>De <em>character set</em>, "conjunto de caracteres". Na prática, diz qual <strong>codificação</strong> (embalagem) o arquivo usa.</dd>
+  <dt>"utf-8"</dt><dd>O único valor permitido hoje. Maiúsculas ou minúsculas tanto faz (<code>UTF-8</code> também vale), mas o <strong>hífen</strong> é obrigatório (veja <a href="#errado">Quando dá errado</a>).</dd>
+  <dt>logo depois do &lt;head&gt;</dt><dd>O navegador procura essa linha nos primeiros <strong>1024 bytes</strong> do arquivo. Colocada como primeira coisa do <code>head</code>, antes do <code>&lt;title&gt;</code> (que já tem letras acentuadas em muitos sites), ela chega a tempo.</dd>
+</dl>
+
+<p>O <code>meta charset</code> é um aviso, e não uma conversão: ele diz "estes bytes são UTF-8". Para o aviso ser verdade, o arquivo também precisa estar <strong>salvo</strong> em UTF-8. Todo editor moderno, como o VS Code, salva em UTF-8 por padrão e mostra a codificação na barra de baixo (aula <a href="editores.html">Editores</a>).</p>
+
+<h3>Por que não deixar o servidor avisar?</h3>
+<p>Quando uma página vem pela internet, o servidor pode dizer a codificação no <strong>cabeçalho</strong> da resposta. Mas muitos não dizem. O servidor de teste do Python, que você vai usar em <a href="servidor-local.html">Servidor Local</a>, é um deles:</p>
+
+<pre class="term" data-cwd="~/site">$ python3 -m http.server &gt; /dev/null 2&gt;&amp;1 &amp;
+[1] 127
+$ curl -sI http://localhost:8000/index.html | grep -i content-type
+Content-type: text/html            « diz que é HTML, mas não diz a codificação
+$ kill %1</pre>
+
+<p>Sem <code>charset=utf-8</code> no cabeçalho e sem o <code>meta</code> na página, o navegador tem de <strong>adivinhar</strong>. Os navegadores atuais analisam os bytes e muitas vezes acertam, mas não é garantido: quando não acertam, usam uma tabela antiga, em geral a <strong>Windows-1252</strong> nos computadores em português. E é aí que aparece o <code>AÃ§Ã£o</code>. Abrindo o arquivo direto do disco (com dois cliques), também não há servidor nenhum para avisar. Por isso a regra: <strong>toda página leva o <code>meta charset</code></strong>.</p>
+
+<div class="note">
+<strong>No editor do guia</strong>
+<p>Nos quadros "Experimente", o que você digita já chega ao navegador como texto, sem passar por bytes de um arquivo. Por isso, lá, tirar o <code>meta charset</code> não muda o resultado. O problema aparece com arquivos de verdade, no seu computador ou num site publicado. A seção 2 mostra o efeito real, com bytes de verdade.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:head &gt; meta[charset='utf-8' i]:first-child">
+<p class="try-task"><strong>Missão:</strong> a página da Ana esqueceu de dizer a codificação. Coloque <code>&lt;meta charset="utf-8"&gt;</code> como <strong>primeira</strong> linha dentro do <code>&lt;head&gt;</code>, antes do <code>&lt;title&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pão de queijo&lt;/h1&gt;
+&lt;p&gt;Ação rápida: 30 minutos de forno.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pão de queijo&lt;/h1&gt;
+&lt;p&gt;Ação rápida: 30 minutos de forno.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Os mesmos bytes, tabelas diferentes</h2>
+<p>Agora o efeito real, desenhado pelo seu navegador. A demonstração abaixo usa três janelinhas (<code>&lt;iframe&gt;</code>, aula <a href="iframes.html">iframe</a>). Cada uma carrega uma página minúscula escrita direto no endereço, com o esquema <code>data:</code>: depois da vírgula vêm os <strong>bytes</strong> do texto, e cada <code>%C3</code>, <code>%A7</code> é um byte em hexadecimal. O <code>charset=</code> diz ao navegador com qual tabela ler. Você não precisa escrever páginas assim; olhe só os bytes e as tabelas:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;1. Bytes UTF-8, lidos como UTF-8:&lt;/p&gt;
+&lt;iframe title="UTF-8 lido como UTF-8" width="300" height="50"
+  src="data:text/html;charset=utf-8,A%C3%A7%C3%A3o%20r%C3%A1pida"&gt;&lt;/iframe&gt;
+
+&lt;p&gt;2. Os mesmos bytes UTF-8, lidos como Windows-1252:&lt;/p&gt;
+&lt;iframe title="UTF-8 lido como Windows-1252" width="300" height="50"
+  src="data:text/html;charset=windows-1252,A%C3%A7%C3%A3o%20r%C3%A1pida"&gt;&lt;/iframe&gt;
+
+&lt;p&gt;3. Bytes Latin-1, lidos como UTF-8:&lt;/p&gt;
+&lt;iframe title="Latin-1 lido como UTF-8" width="300" height="50"
+  src="data:text/html;charset=utf-8,A%E7%E3o%20r%E1pida"&gt;&lt;/iframe&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Janela</th><th>Bytes do <code>ç</code></th><th>Tabela de leitura</th><th>O que aparece</th></tr>
+<tr><td>1</td><td><code>C3 A7</code> (UTF-8)</td><td>UTF-8</td><td><code>Ação rápida</code>: certo</td></tr>
+<tr><td>2</td><td><code>C3 A7</code> (UTF-8)</td><td>Windows-1252</td><td><code>AÃ§Ã£o rÃ¡pida</code>: nessa tabela, <code>C3</code> é o <code>Ã</code> e <code>A7</code> é o <code>§</code></td></tr>
+<tr><td>3</td><td><code>E7</code> (Latin-1)</td><td>UTF-8</td><td><code>A��o r�pida</code>: <code>E7</code> sozinho não forma nenhum caractere em UTF-8</td></tr>
+</table>
+</div>
+
+<p>Os bytes nunca mudaram. Mudou só a tabela de quem lê. Um <code>Ã</code> seguido de outro símbolo, no lugar de cada acento, é a "assinatura" do caso 2: <strong>UTF-8 lido como se fosse Windows-1252</strong>. O <code>�</code> (o <strong>caractere de substituição</strong>, o "não sei o que é isto" do Unicode) é a assinatura do caso 3: <strong>bytes que não são UTF-8</strong>, lidos como UTF-8.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> troque o <code>charset=windows-1252</code> por <code>charset=utf-8</code> e veja o texto se consertar. Depois tente <code>charset=iso-8859-5</code> (uma tabela antiga do russo): os mesmos bytes viram outras letras. Os bytes <code>%F0%9F%8E%82</code> são um emoji: em qual tabela ele aparece?</p>
+<pre class="script" data-file="index.html">&lt;iframe title="demonstração" width="300" height="60"
+  src="data:text/html;charset=windows-1252,A%C3%A7%C3%A3o%20%F0%9F%8E%82"&gt;&lt;/iframe&gt;
+</pre>
+</div>
+
+<p>No terminal, o programa <code>iconv</code> (de <em>international conversion</em>, que converte entre codificações) reproduz o caso 2: ele lê o arquivo UTF-8 da Ana <strong>como se</strong> fosse Windows-1252.</p>
+
+<pre class="term" data-cwd="~/site">$ iconv -f WINDOWS-1252 -t UTF-8 index.html | sed -n 9p
+&lt;p&gt;AÃ§Ã£o rÃ¡pida: 30 minutos de forno.&lt;/p&gt;</pre>
+
+<dl class="anatomy">
+  <dt>-f WINDOWS-1252</dt><dd>De <em>from</em>: "leia os bytes com a tabela Windows-1252". Aqui, de propósito, a tabela errada.</dd>
+  <dt>-t UTF-8</dt><dd>De <em>to</em>: "escreva o resultado em UTF-8", para o terminal mostrar.</dd>
+  <dt>| sed -n 9p</dt><dd>Mostra só a linha 9 do resultado, a do parágrafo.</dd>
+</dl>
+
+<hr>
+
+<h2>3. Um arquivo salvo em Latin-1</h2>
+<p>Antes do UTF-8, cada região usava a sua tabela de 1 byte. No Brasil, a mais comum era a <strong>Latin-1</strong> (o nome oficial é ISO-8859-1) e a sua prima do Windows, a <strong>Windows-1252</strong>. Nelas, o <code>ç</code> é um byte só, o <code>E7</code>. Sites e arquivos antigos ainda aparecem nessas tabelas.</p>
+
+<p>Para ver o problema, a Ana fez uma cópia do <code>index.html</code> convertida para Latin-1, como se fosse um arquivo de 2005:</p>
+
+<pre class="term" data-cwd="~/site">$ file index.html
+index.html: HTML document, Unicode text, UTF-8 text
+$ iconv -f UTF-8 -t ISO-8859-1 index.html &gt; velho.html
+$ file velho.html
+velho.html: HTML document, ISO-8859 text
+$ ls -l index.html velho.html
+-rw-rw-r-- 1 ana ana 196 out 17 15:49 index.html
+-rw-rw-r-- 1 ana ana 192 out 17 15:50 velho.html     « 4 bytes a menos: 4 letras acentuadas</pre>
+
+<dl class="anatomy">
+  <dt>file index.html</dt><dd>O comando <code>file</code> olha os bytes e <strong>adivinha</strong> o tipo do arquivo: "documento HTML, texto Unicode, texto UTF-8".</dd>
+  <dt>ISO-8859 text</dt><dd>Para o <code>velho.html</code>, o <code>file</code> reconheceu uma tabela antiga de 1 byte por letra (a família ISO-8859, da qual o Latin-1 faz parte).</dd>
+  <dt>196 e 192</dt><dd>Em UTF-8, cada letra acentuada (<code>ã</code> de "Pão", <code>ç</code>, <code>ã</code>, <code>á</code>) ocupa 2 bytes; em Latin-1, 1 byte. Quatro acentos, quatro bytes a menos.</dd>
+</dl>
+
+<p>Os bytes da linha do parágrafo, lado a lado:</p>
+
+<pre class="term" data-cwd="~/site">$ sed -n 9p index.html | xxd
+00000000: 3c70 3e41 c3a7 c3a3 6f20 72c3 a170 6964  &lt;p&gt;A....o r..pid
+00000010: 613a 2033 3020 6d69 6e75 746f 7320 6465  a: 30 minutos de
+00000020: 2066 6f72 6e6f 2e3c 2f70 3e0a             forno.&lt;/p&gt;.
+$ sed -n 9p velho.html | xxd
+00000000: 3c70 3e41 e7e3 6f20 72e1 7069 6461 3a20  &lt;p&gt;A..o r.pida:
+00000010: 3330 206d 696e 7574 6f73 2064 6520 666f  30 minutos de fo
+00000020: 726e 6f2e 3c2f 703e 0a                   rno.&lt;/p&gt;.</pre>
+
+<p>No UTF-8, "Ação" é <code>41 c3a7 c3a3 6f</code>; no Latin-1, <code>41 e7 e3 6f</code>. O resto (letras sem acento, tags) é igual nas duas tabelas. O pior: o <code>velho.html</code> continua com <code>&lt;meta charset="utf-8"&gt;</code> lá dentro, porque o <code>iconv</code> converte os bytes, não o texto da página. O arquivo agora <strong>mente</strong>: diz UTF-8 e está em Latin-1. O navegador acredita no aviso e mostra <code>P�o de queijo</code> e <code>A��o r�pida</code>, como a janela 3 da seção 2.</p>
+
+<h3>O validador e o <code>iconv</code> percebem</h3>
+
+<pre class="term" data-cwd="~/site">$ vnu velho.html
+"file:/home/ana/site/velho.html":8.6-8.6: error: Malformed byte sequence: “e3”.
+"file:/home/ana/site/velho.html":9.5-9.5: error: Malformed byte sequence: “e7”.
+"file:/home/ana/site/velho.html":9.6-9.6: error: Malformed byte sequence: “e3”.
+"file:/home/ana/site/velho.html":9.10-9.10: error: Malformed byte sequence: “e1”.
+$ iconv -f UTF-8 -t UTF-8 velho.html &gt; /dev/null
+iconv: sequência de entrada ilegal na posição 117</pre>
+
+<ul>
+  <li><em>Malformed byte sequence: “e3”</em> = "sequência de bytes malformada: <code>e3</code>". O validador lê o arquivo como UTF-8 e aponta cada byte que não faz sentido nessa embalagem, com linha e coluna: o <code>e3</code> do "Pão" (linha 8) e os três acentos do parágrafo (linha 9).</li>
+  <li>O <code>iconv -f UTF-8 -t UTF-8</code> é um truque para <strong>conferir</strong> se um arquivo é UTF-8 válido: ele "converte" de UTF-8 para UTF-8 e para no primeiro byte inválido. O <code>&gt; /dev/null</code> joga fora o resultado; só interessa a mensagem. A posição 117 é o byte do <code>ã</code> de "Pão", contando do zero.</li>
+</ul>
+
+<h3>O conserto: converter para UTF-8</h3>
+
+<pre class="term" data-cwd="~/site">$ iconv -f ISO-8859-1 -t UTF-8 velho.html &gt; novo.html
+$ file novo.html
+novo.html: HTML document, Unicode text, UTF-8 text
+$ vnu --verbose novo.html
+novo.html                                    « só o nome: nenhum erro</pre>
+
+<p>Agora a tabela de leitura (<code>-f ISO-8859-1</code>) é a certa, e o <code>iconv</code> escreve o resultado em UTF-8. O <code>meta charset</code>, que já dizia <code>utf-8</code>, volta a dizer a verdade. Se o arquivo antigo não tinha o <code>meta</code>, ou tinha outro valor, troque essa linha também. Nunca mande o <code>&gt;</code> para o próprio arquivo de entrada (<code>iconv … velho.html &gt; velho.html</code>): o terminal apaga o arquivo antes de o <code>iconv</code> começar a ler.</p>
+
+<div class="tip">
+<strong>No VS Code</strong>
+<p>A codificação do arquivo aberto aparece na barra azul de baixo, à direita (por exemplo, <code>UTF-8</code>). Clicando nela, o editor oferece <strong>reabrir</strong> o arquivo com outra codificação (para ler um arquivo antigo do jeito certo) ou <strong>salvar</strong> com outra codificação (para convertê-lo). Para consertar um arquivo Latin-1: reabra como ISO-8859-1 (os acentos aparecem certos) e salve como UTF-8.</p>
+</div>
+
+<hr>
+
+<h2>4. Emojis</h2>
+<p>Para o HTML, um emoji é só mais um caractere do catálogo Unicode, com 4 bytes em UTF-8. Com o <code>meta charset="utf-8"</code>, você pode digitá-lo direto ou usar a referência numérica:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolo de aniversário 🎂&lt;/h1&gt;
+&lt;p&gt;Também com número: &amp;#x1F382; (hexadecimal) e &amp;#127874; (decimal).&lt;/p&gt;
+</pre>
+
+<p>O desenho do emoji vem da <strong>fonte do sistema</strong>: o mesmo 🎂 tem uma cara no Android, outra no iPhone, outra no Windows. Um sistema antigo, sem aquele emoji na fonte, mostra um quadradinho vazio.</p>
+
+<h3>Emojis compostos</h3>
+<p>Muitos emojis são <strong>vários caracteres colados</strong>, que o sistema desenha como uma figura só:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Cozinheira: &amp;#x1F469;&amp;#x200D;&amp;#x1F373; = &amp;#x1F469; + &amp;#x1F373;&lt;/p&gt;
+&lt;p&gt;Bandeira: &amp;#x1F1E7;&amp;#x1F1F7; = letra B + letra R&lt;/p&gt;
+&lt;p&gt;Tom de pele: &amp;#x1F44D;&amp;#x1F3FD; = &amp;#x1F44D; + tom médio&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&amp;#x1F469;&amp;#x200D;&amp;#x1F373;</dt><dd>Mulher (👩) + um caractere invisível, o <strong>ZWJ</strong> (<code>U+200D</code>, <em>zero width joiner</em>, "juntador de largura zero") + frigideira (🍳). O ZWJ diz: "desenhe os dois como uma figura só". Se o sistema não conhece a combinação, mostra as duas figuras separadas.</dd>
+  <dt>&amp;#x1F1E7;&amp;#x1F1F7;</dt><dd>Bandeiras são duas "letras regionais" (B e R, de Brasil). Alguns sistemas, como o Windows, não desenham bandeiras e mostram as duas letras.</dd>
+  <dt>&amp;#x1F3FD;</dt><dd>Um modificador de tom de pele, colado logo depois do emoji de pessoa ou de mão.</dd>
+</dl>
+
+<p>Esses emojis ocupam bem mais bytes do que parecem. A cozinheira são 3 caracteres e 11 bytes:</p>
+
+<pre class="term" data-cwd="~/site">$ printf '👩‍🍳' | xxd
+00000000: f09f 91a9 e280 8df0 9f8d b3              ...........
+$ printf '👩‍🍳' | wc -c
+11</pre>
+
+<p><code>f09f91a9</code> é a mulher (4 bytes), <code>e2808d</code> é o ZWJ (3 bytes) e <code>f09f8db3</code> é a frigideira (4 bytes).</p>
+
+<div class="warning">
+<strong>Emojis e acessibilidade</strong>
+<p>Leitores de tela (programas que leem a página em voz alta para quem não enxerga) <strong>falam o nome</strong> de cada emoji: "bolo de aniversário". Um título com cinco emojis vira uma frase comprida e cansativa. Use poucos, e nunca para substituir uma palavra importante: "Forno a 180 graus 🔥" é melhor que "🔥 a 180". Mais em <a href="leitores-tela.html">Leitores de Tela</a>.</p>
+</div>
+
+<div class="tryhtml" data-goal="texto:h1=🎂,texto:p=&#x1F469;&#x200D;&#x1F373;">
+<p class="try-task"><strong>Missão:</strong> coloque o emoji de bolo 🎂 no fim do título (digitado ou com <code>&amp;#x1F382;</code>) e a cozinheira 👩‍🍳 no fim do parágrafo, montada com <code>&amp;#x1F469;&amp;#x200D;&amp;#x1F373;</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de aniversário&lt;/h1&gt;
+&lt;p&gt;Receita testada pela Ana&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de aniversário &amp;#x1F382;&lt;/h1&gt;
+&lt;p&gt;Receita testada pela Ana &amp;#x1F469;&amp;#x200D;&amp;#x1F373;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. Digitar direto ou usar entidade?</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Caractere</th><th>Recomendado</th><th>Por quê</th></tr>
+<tr><td>Acentos (<code>ç ã é</code>)</td><td>Digite direto</td><td>Com UTF-8, funciona; o código fica legível. <code>&amp;ccedil;</code> é coisa de sites antigos.</td></tr>
+<tr><td>Símbolos do teclado ou fáceis de colar (<code>© € °</code>)</td><td>Digite direto</td><td>Mesmo motivo</td></tr>
+<tr><td>Emojis simples (🎂)</td><td>Digite direto (ou cole)</td><td>Use o número (<code>&amp;#x1F382;</code>) se o seu editor não mostrar o emoji</td></tr>
+<tr><td>Invisíveis (<code>&amp;nbsp;</code>, ZWJ <code>&amp;#x200D;</code>)</td><td>Entidade</td><td>Digitados, ninguém vê que estão no código</td></tr>
+<tr><td><code>&lt;</code> e <code>&amp;</code></td><td>Entidade, sempre</td><td>São reservados (aula <a href="entidades.html">Entidades</a>)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Na tela: <code>AÃ§Ã£o</code>, <code>Ã©</code>, <code>Ã£</code></strong>
+<p><strong>O que significa:</strong> o arquivo está em UTF-8 (certo), mas o navegador o leu como Windows-1252. Quase sempre falta o <code>&lt;meta charset="utf-8"&gt;</code>, ou ele está depois dos primeiros 1024 bytes, ou o servidor anuncia outra codificação no cabeçalho (o cabeçalho ganha do <code>meta</code>).</p>
+<p><strong>Como consertar:</strong> ponha o <code>meta charset</code> como primeira linha do <code>head</code>. Se o site está num servidor, confira o cabeçalho com <code>curl -sI endereço | grep -i content-type</code>: ele deve dizer <code>charset=utf-8</code> ou não dizer codificação nenhuma.</p>
+</div>
+
+<div class="cenario">
+<strong>Na tela: <code>A��o</code>, e o validador diz <code>Malformed byte sequence</code></strong>
+<p><strong>O que significa:</strong> o arquivo está salvo em Latin-1 (ou Windows-1252), mas foi lido como UTF-8. O <code>file</code> confirma: <code>ISO-8859 text</code>.</p>
+<p><strong>Como consertar:</strong> <code>iconv -f ISO-8859-1 -t UTF-8 velho.html &gt; novo.html</code>, ou "reabrir com codificação" e "salvar com codificação" no editor. Não adianta trocar o <code>meta</code> para outra codificação (veja o cenário seguinte).</p>
+</div>
+
+<div class="cenario">
+<strong>Declarar outra codificação: <code>The only allowed value … is “utf-8”</code></strong>
+<p>A Ana tentou "consertar" o arquivo antigo trocando o aviso por <code>&lt;meta charset="iso-8859-1"&gt;</code>, sem converter os bytes:</p>
+<pre class="term" data-cwd="~/site">$ vnu latin1.html
+"file:/home/ana/site/latin1.html":8.5-8.5: error: Malformed byte sequence: “e7”.
+"file:/home/ana/site/latin1.html":8.6-8.6: error: Malformed byte sequence: “e3”.
+"file:/home/ana/site/latin1.html":4.1-4.27: error: Internal encoding declaration “iso-8859-1” disagrees with the actual encoding of the document (“utf-8”).
+"file:/home/ana/site/latin1.html":4.1-4.27: error: The only allowed value for the “charset” attribute for the “meta” element is “utf-8”.</pre>
+<p><strong>O que significa:</strong> a última linha é a regra: "o único valor permitido para o atributo <code>charset</code> do elemento <code>meta</code> é <code>utf-8</code>". O HTML atual não aceita páginas novas em outras codificações. A terceira linha diz que a "declaração interna" (o <code>meta</code>) "discorda da codificação real" com que o validador leu o arquivo, e as duas primeiras são os bytes Latin-1 do "Ação", que não são UTF-8. (Um navegador obedeceria ao <code>iso-8859-1</code> e mostraria os acentos certos, mas a página continua fora da regra.)</p>
+<p><strong>Como consertar:</strong> converta o arquivo para UTF-8 com o <code>iconv</code> e use <code>&lt;meta charset="utf-8"&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>charset="utf8"</code>, sem o hífen</strong>
+<pre class="term" data-cwd="~/site">$ vnu utf8.html
+"file:/home/ana/site/utf8.html":4.1-4.21: error: The only allowed value for the “charset” attribute for the “meta” element is “utf-8”.</pre>
+<p><strong>O que significa:</strong> os navegadores até entendem <code>utf8</code>, mas o valor oficial tem hífen. A mesma mensagem do cenário anterior, por um caractere.</p>
+<p><strong>Como consertar:</strong> <code>&lt;meta charset="utf-8"&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>meta</code> depois de um comentário comprido: <code>found after the first 1024 bytes</code></strong>
+<p>A Ana pôs no começo do <code>head</code> um comentário enorme, com a história do site, e o <code>meta charset</code> embaixo dele:</p>
+<pre class="term" data-cwd="~/site">$ vnu tarde.html
+"file:/home/ana/site/tarde.html":5.1-5.21: error: A “charset” attribute on a “meta” element found after the first 1024 bytes.</pre>
+<p><strong>O que significa:</strong> "um atributo <code>charset</code> num elemento <code>meta</code> encontrado depois dos primeiros 1024 bytes". O navegador procura o aviso só no começo do arquivo; se ele vem tarde, o navegador já começou a adivinhar.</p>
+<p><strong>Como consertar:</strong> o <code>meta charset</code> é sempre a primeira linha dentro do <code>&lt;head&gt;</code>. Comentários vêm depois.</p>
+</div>
+
+<div class="cenario">
+<strong>As duas formas juntas: <code>must not include both</code></strong>
+<p>Páginas antigas declaravam a codificação com uma forma comprida, <code>&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"&gt;</code>. Ela ainda é válida sozinha, mas com as duas formas juntas:</p>
+<pre class="term" data-cwd="~/site">$ vnu dois.html
+"file:/home/ana/site/dois.html":5.1-5.67: error: A document must not include both a “meta” element with an “http-equiv” attribute whose value is “content-type”, and a “meta” element with a “charset” attribute.</pre>
+<p><strong>O que significa:</strong> "um documento não pode ter, ao mesmo tempo, um <code>meta</code> com <code>http-equiv="content-type"</code> e um <code>meta</code> com <code>charset</code>".</p>
+<p><strong>Como consertar:</strong> apague a forma comprida e fique com <code>&lt;meta charset="utf-8"&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O <code>iconv</code> não converte um emoji para Latin-1</strong>
+<pre class="term" data-cwd="~/site">$ iconv -f UTF-8 -t ISO-8859-1 bolo.html &gt; bolo-velho.html
+iconv: sequência de entrada ilegal na posição 126</pre>
+<p><strong>O que significa:</strong> a tabela Latin-1 tem só 256 caracteres, e o 🎂 não está entre eles. O <code>iconv</code> parou no emoji (o byte 126 do <code>bolo.html</code>). É mais um motivo para usar UTF-8, que tem lugar para todos.</p>
+<p><strong>Como consertar:</strong> não converta para Latin-1. Se um sistema antigo exigir, troque o emoji por uma palavra antes.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Item</th><th>O que é / faz</th></tr>
+<tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>Avisa que o arquivo está em UTF-8. Primeira linha do <code>head</code>, nos primeiros 1024 bytes.</td></tr>
+<tr><td>Unicode</td><td>O catálogo: um número para cada caractere (<code>ç</code> = 231 = <code>U+00E7</code>)</td></tr>
+<tr><td>UTF-8</td><td>A embalagem: 1 a 4 bytes por caractere. A única permitida no HTML atual.</td></tr>
+<tr><td>Latin-1 (ISO-8859-1), Windows-1252</td><td>Tabelas antigas, de 1 byte por caractere, só 256 caracteres</td></tr>
+<tr><td><code>AÃ§Ã£o</code></td><td>UTF-8 lido como Windows-1252: falta o <code>meta charset</code></td></tr>
+<tr><td><code>A��o</code></td><td>Latin-1 lido como UTF-8: o arquivo precisa ser convertido</td></tr>
+<tr><td><code>file arquivo.html</code></td><td>Adivinha a codificação do arquivo</td></tr>
+<tr><td><code>xxd</code></td><td>Mostra os bytes em hexadecimal</td></tr>
+<tr><td><code>iconv -f UTF-8 -t UTF-8 a.html &gt; /dev/null</code></td><td>Confere se o arquivo é UTF-8 válido</td></tr>
+<tr><td><code>iconv -f ISO-8859-1 -t UTF-8 velho.html &gt; novo.html</code></td><td>Converte de Latin-1 para UTF-8</td></tr>
+<tr><td><code>&amp;#x200D;</code></td><td>ZWJ: cola emojis numa figura só (👩‍🍳)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A linha do aviso</h3>
+<p>Complete a linha que avisa a codificação:</p>
+<div class="ex-code">&lt;meta <input data-answer="charset" aria-label="atributo">="<input data-answer="utf-8|UTF-8" aria-label="valor">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Quantos bytes?</h3>
+<p>Em UTF-8, quantos bytes tem a palavra <code>pão</code>?</p>
+<div class="ex-code"><input data-answer="4" aria-label="bytes"> bytes</div>
+</div>
+
+<div class="exercise">
+<h3>3. Converter</h3>
+<p>Complete o comando que converte o arquivo antigo, em Latin-1, para UTF-8:</p>
+<div class="ex-code">iconv -f <input data-answer="ISO-8859-1|iso-8859-1|LATIN1|latin1" aria-label="de"> -t UTF-8 velho.html &gt; novo.html</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O site aparece com <code>Ã§</code> no lugar de cada <code>ç</code>. Qual é a causa mais provável?</p>
+<label><input type="radio" name="q4"> O arquivo foi salvo em Latin-1</label>
+<label><input type="radio" name="q4"> O arquivo está em UTF-8, mas faltou o <code>meta charset</code> e o navegador leu com Windows-1252</label>
+<label><input type="radio" name="q4"> A fonte do computador não tem o <code>ç</code></label>
+<label><input type="radio" name="q4"> Faltou o <code>lang="pt-BR"</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. O validador mostra <code>Malformed byte sequence: “e7”</code>. O que o <code>file</code> provavelmente diz desse arquivo?</p>
+<label><input type="radio" name="q5"> <code>Unicode text, UTF-8 text</code></label>
+<label><input type="radio" name="q5"> <code>ASCII text</code></label>
+<label><input type="radio" name="q5"> <code>ISO-8859 text</code></label>
+<label><input type="radio" name="q5"> <code>empty</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">6. O emoji 👩‍🍳 é feito de quais caracteres?</p>
+<label><input type="radio" name="q6"> 👩, um ZWJ invisível e 🍳</label>
+<label><input type="radio" name="q6"> Um caractere só, de 4 bytes</label>
+<label><input type="radio" name="q6"> As letras C e Z</label>
+<label><input type="radio" name="q6"> Uma imagem guardada no HTML</label>
+</div>
+
+<h3>Missão final: consertar a página antiga</h3>
+
+<div class="tryhtml" data-goal="sel:head &gt; meta[charset='utf-8' i]:first-child,texto:h1=Pão de queijo,texto:p=Ação rápida,nsrc:Ã[£§¡]">
+<p class="try-task"><strong>Missão:</strong> a Ana copiou uma página antiga que já estava quebrada. Conserte três coisas: o <code>meta charset</code> está com o valor errado e depois do <code>&lt;title&gt;</code> (ele deve ser o primeiro do <code>head</code>, com <code>utf-8</code>); e o título e o parágrafo têm os acentos estragados (<code>Ã£</code>, <code>Ã§</code>, <code>Ã¡</code>): escreva <code>Pão de queijo</code> e <code>Ação rápida</code> de novo, com os acentos certos.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;meta charset="utf8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;PÃ£o de queijo&lt;/h1&gt;
+&lt;p&gt;AÃ§Ã£o rÃ¡pida: 30 minutos de forno.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Pão de queijo&lt;/h1&gt;
+&lt;p&gt;Ação rápida: 30 minutos de forno.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Repare que corrigir o <code>meta</code> não conserta o <code>PÃ£o</code> sozinho: esse texto foi <strong>salvo</strong> estragado (alguém copiou da tela errada e colou), e agora os bytes são mesmo de um <code>Ã</code> e de um <code>£</code>. Texto estragado e salvo assim precisa ser reescrito (ou convertido de volta com <code>iconv -f UTF-8 -t WINDOWS-1252</code>, o caminho inverso do estrago, se for um arquivo inteiro).</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><strong>Unicode</strong> é o catálogo (um número por caractere); <strong>UTF-8</strong> é a embalagem (1 a 4 bytes). Letras sem acento: 1 byte; acentos do português: 2; emojis: 4.</li>
+  <li>Toda página leva <code>&lt;meta charset="utf-8"&gt;</code> como primeira linha do <code>head</code>, e o arquivo é salvo em UTF-8. O único valor aceito é <code>utf-8</code>, com hífen.</li>
+  <li><code>AÃ§Ã£o</code> = UTF-8 lido como Windows-1252 (falta o aviso). <code>A��o</code> = Latin-1 lido como UTF-8 (o arquivo precisa ser convertido).</li>
+  <li>Para investigar: <code>file</code> (adivinha a codificação), <code>xxd</code> (mostra os bytes), <code>vnu</code> (<code>Malformed byte sequence</code>). Para converter: <code>iconv -f ISO-8859-1 -t UTF-8 velho.html &gt; novo.html</code>.</li>
+  <li>Emojis são caracteres: digite direto ou use <code>&amp;#x1F382;</code>. Alguns são compostos (ZWJ <code>&amp;#x200D;</code>, bandeiras, tons de pele). Leitores de tela falam o nome de cada um: use com moderação.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
