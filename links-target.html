@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML target e rel — abrir em nova aba com segurança | Guia HTML</title>
+<meta name="description" content="Abrir links em nova aba em HTML para quem nunca fez um site: o atributo target (_blank, _self, _top, nomes), quando vale a pena, como avisar o leitor, o perigo do window.opener, rel=&quot;noopener&quot; e rel=&quot;noreferrer&quot;, o que os navegadores fazem sozinhos hoje, e os erros reais (target=&quot;blank&quot;, _new, no-opener, vírgula no rel), conferidos num Chromium e no validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Nova Aba (target e rel)</span></h1>
+
+<p class="intro">Por padrão, um link abre o destino <strong>na mesma aba</strong>: a página atual sai e a nova entra. Às vezes a Ana quer que a receita continue aberta enquanto o leitor consulta outro site. Para isso existe o atributo <code>target</code> ("alvo"), que escolhe <strong>onde</strong> o link abre. Junto com ele vem o atributo <code>rel</code>, que diz <strong>que relação</strong> a página tem com o destino, e que fecha uma porta de segurança. Nesta aula você vai abrir links em nova aba, decidir quando isso vale a pena e entender o que <code>noopener</code> e <code>noreferrer</code> fazem.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como abrir um link em nova aba com <code>target="_blank"</code>.</li>
+  <li>Quando isso ajuda e quando atrapalha, e como avisar o leitor.</li>
+  <li>O perigo da aba aberta "controlar" a sua (o <code>window.opener</code>) e o que os navegadores fazem sozinhos hoje.</li>
+  <li><code>rel="noopener"</code> e <code>rel="noreferrer"</code>: o que cada um desliga.</li>
+  <li>Os outros valores de <code>target</code>: <code>_self</code>, <code>_top</code>, <code>_parent</code> e os nomes.</li>
+  <li>Os erros reais: <code>target="blank"</code> sem o sublinhado, <code>_new</code>, <code>no-opener</code> e a vírgula no <code>rel</code>.</li>
+</ul>
+</div>
+
+<p>O que acontece em cada caso (aba nova ou não, acesso à aba de origem, endereço de origem) foi conferido num <strong>Chromium</strong> de verdade, o navegador por trás do Chrome e do Edge, com páginas servidas por <code>python3 -m http.server</code>. As mensagens de erro são do validador W3C (<code>vnu</code>), rodado na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. Antes desta aula, veja <a href="links.html">Links</a>.</p>
+
+<hr>
+
+<h2>A ideia: trocar de sala ou abrir outra porta</h2>
+<p>Numa casa, você pode <strong>passar</strong> da cozinha para a sala (a cozinha fica para trás), ou <strong>abrir a janela</strong> da cozinha e espiar o quintal sem sair dela. O link comum é passar de sala; o link com <code>target="_blank"</code> abre uma janela nova, e a página de antes continua lá, na aba de trás.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Link</th><th>O que acontece</th><th>Para voltar</th></tr>
+<tr><td>Comum (sem <code>target</code>)</td><td>O destino substitui a página, na mesma aba</td><td>O botão Voltar do navegador</td></tr>
+<tr><td>Com <code>target="_blank"</code></td><td>O destino abre numa <strong>aba nova</strong>; a página continua na aba antiga</td><td>Fechar a aba nova ou trocar de aba (o Voltar não funciona)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. Abrir em nova aba: <code>target="_blank"</code></h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;
+  Receita adaptada do
+  &lt;a href="https://example.com" target="_blank"&gt;site de exemplo (abre em nova aba)&lt;/a&gt;.
+&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>target</dt><dd>"Alvo": o lugar onde o destino do link vai abrir. Sem ele, o alvo é a própria aba.</dd>
+  <dt>"_blank"</dt><dd>De <em>blank</em>, "em branco": "abra numa aba (ou janela) nova, vazia". O <strong>sublinhado</strong> do começo faz parte do valor e é obrigatório (veja <a href="#errado">Quando dá errado</a>).</dd>
+  <dt>(abre em nova aba)</dt><dd>Um aviso no próprio texto do link. Quem enxerga a tela vê; quem usa leitor de tela ouve. Sem o aviso, a pessoa pode não perceber que mudou de aba e procurar o botão Voltar, que não funciona na aba nova.</dd>
+</dl>
+
+<p>Clique no link do resultado: ele abre numa aba nova. (No editor do guia, links para <strong>outros sites</strong> sempre abrem numa aba nova, com ou sem <code>target</code>, e o editor avisa no console do quadro. Numa página de verdade, só o <code>target="_blank"</code> faz isso.)</p>
+
+<h3>Vale a pena abrir em nova aba?</h3>
+<p>Na maioria das vezes, <strong>não</strong>. Quem decide onde abrir é o leitor: com o botão do meio do mouse, com <kbd>Ctrl</kbd>+clique (<kbd>Cmd</kbd>+clique no Mac) ou segurando o dedo no celular, qualquer link abre em nova aba, se ele quiser. Forçar a aba nova tira essa escolha, enche o navegador de abas e confunde quem usa leitor de tela ou celular.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Nova aba?</th></tr>
+<tr><td>Links entre as páginas do seu site</td><td><strong>Não</strong></td></tr>
+<tr><td>Link para outro site, no meio de um texto</td><td>Em geral não: o leitor volta com o botão Voltar</td></tr>
+<tr><td>Ajuda ou regras ao lado de um <strong>formulário</strong> sendo preenchido</td><td><strong>Sim</strong>: sair da página perderia o que foi digitado</td></tr>
+<tr><td>Um documento para consultar <strong>enquanto</strong> lê (uma tabela de medidas, um PDF)</td><td>Pode ser, com aviso</td></tr>
+</table>
+</div>
+
+<div class="tryhtml" data-goal="sel:a[href^='https://example.com'][target='_blank'],texto:a=nova aba">
+<p class="try-task"><strong>Missão:</strong> a Ana está preenchendo um formulário e quer que o link das regras abra numa aba nova, sem perder o que foi digitado. Faça o link abrir em nova aba e acrescente "(abre em nova aba)" ao texto dele.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Antes de enviar sua receita, leia as
+&lt;a href="https://example.com"&gt;regras do concurso&lt;/a&gt;.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Antes de enviar sua receita, leia as
+&lt;a href="https://example.com" target="_blank"&gt;regras do concurso (abre em nova aba)&lt;/a&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O perigo: a aba nova "segura" a sua</h2>
+<p>Quando uma página é aberta a partir de um link, o navegador pode deixar com ela uma espécie de <strong>controle remoto</strong> da aba de origem, chamado <code>window.opener</code> ("a janela que me abriu"). Com ele, o JavaScript da página nova consegue, por exemplo, <strong>trocar a página da aba antiga</strong> por outra.</p>
+
+<p>O golpe conhecido funciona assim: o leitor clica num link do blog da Ana para um site desconhecido, que abre numa aba nova. Enquanto ele lê, o site usa o controle remoto e troca, escondido, a aba do blog por uma cópia falsa da tela de login. Quando o leitor volta à aba de trás, acha que precisa entrar de novo e digita a senha no lugar errado. O nome do golpe em inglês é <em>tabnabbing</em> (algo como "sequestro de aba").</p>
+
+<div class="note">
+<strong>O que os navegadores fazem sozinhos hoje</strong>
+<p>Por causa desse golpe, os navegadores atuais (Chrome e Edge desde 2021, Firefox desde 2020, Safari desde 2019) tratam todo <code>target="_blank"</code> como se tivesse <code>rel="noopener"</code>: a aba nova nasce <strong>sem</strong> o controle remoto. No teste com o Chromium, a página aberta por um <code>target="_blank"</code> simples recebeu <code>window.opener</code> = <code>null</code> ("nada").</p>
+</div>
+
+<p>Veja no seu navegador. A página <code>aberta.html</code> desta caixa tem um script de uma linha que escreve na tela se ela recebeu o controle remoto (você não precisa entender o script; o JavaScript fica para outro guia):</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> clique no primeiro link: a aba nova mostra "Controle remoto: não". Volte, clique no segundo, que pede o controle de volta com <code>rel="opener"</code>: agora aparece "sim". Feche as abas novas depois do teste.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;a href="aberta.html" target="_blank"&gt;1. target="_blank"&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="aberta.html" target="_blank" rel="opener"&gt;2. target="_blank" rel="opener"&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="script" data-file="aberta.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Página aberta&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Página aberta pelo link&lt;/h1&gt;
+&lt;p id="r"&gt;&lt;/p&gt;
+&lt;script&gt;document.getElementById("r").textContent = "Controle remoto: " + (window.opener ? "sim" : "não");&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. <code>rel="noopener"</code> e <code>rel="noreferrer"</code></h2>
+<p>O atributo <code>rel</code> (de <em>relationship</em>, "relação") descreve a relação entre a sua página e o destino do link. Dois valores interessam aqui:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="https://example.com" target="_blank" rel="noopener"&gt;Sem controle remoto (abre em nova aba)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://example.com" target="_blank" rel="noreferrer"&gt;Sem controle e sem origem (abre em nova aba)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://example.com" target="_blank" rel="noopener noreferrer"&gt;Os dois, escritos por extenso (abre em nova aba)&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>noopener</dt><dd>"Sem <em>opener</em>": a aba nova não recebe o controle remoto (<code>window.opener</code> fica <code>null</code>). Hoje os navegadores já fazem isso sozinhos para <code>_blank</code>; escrever deixa a intenção clara e protege quem usa um navegador antigo.</dd>
+  <dt>noreferrer</dt><dd>"Sem <em>referrer</em>": o navegador não conta ao site de destino <strong>de onde</strong> o leitor veio. Normalmente ele conta: é o <strong>Referer</strong> (assim mesmo, com um "r" só, um erro de digitação antigo que virou padrão), que diz "esta visita veio de https://ana.example/". O <code>noreferrer</code> também desliga o controle remoto: ele inclui o <code>noopener</code>.</dd>
+  <dt>"noopener noreferrer"</dt><dd>Vários valores no mesmo <code>rel</code> são separados por <strong>espaço</strong>, nunca por vírgula.</dd>
+</dl>
+
+<p>O resultado do teste no Chromium, com uma página que mostrava o controle remoto e a origem recebida:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Link</th><th>Aba nova recebe o controle remoto?</th><th>Destino sabe de onde veio?</th></tr>
+<tr><td><code>target="_blank"</code></td><td>Não (o navegador põe o <code>noopener</code> sozinho)</td><td>Sim</td></tr>
+<tr><td><code>target="_blank" rel="noopener"</code></td><td>Não</td><td>Sim</td></tr>
+<tr><td><code>target="_blank" rel="noreferrer"</code></td><td>Não</td><td><strong>Não</strong></td></tr>
+<tr><td><code>target="_blank" rel="opener"</code></td><td><strong>Sim</strong> (pedido de propósito)</td><td>Sim</td></tr>
+<tr><td><code>target="receitas"</code> (um nome, seção 4)</td><td><strong>Sim</strong>: o <code>noopener</code> automático vale só para <code>_blank</code></td><td>Sim</td></tr>
+</table>
+</div>
+
+<p>Para um site diferente do seu, o navegador costuma mandar no Referer só o <strong>domínio</strong> (<code>https://ana.example/</code>), e não o endereço completo da página. Mesmo assim, há casos em que nem isso deve sair: um link numa página privada, por exemplo. Aí entra o <code>noreferrer</code>. Ele também vale sem <code>target</code>, num link comum.</p>
+
+<div class="tip">
+<strong>A regra do guia</strong>
+<p>Link para <strong>outro site</strong> com <code>target="_blank"</code>: escreva <code>rel="noopener"</code> (ou <code>rel="noopener noreferrer"</code>, se não quiser revelar a origem). Para as suas próprias páginas, não precisa: a página aberta é sua. Mais sobre segurança em <a href="seguranca.html">Segurança (rel, sandbox, CSP)</a>.</p>
+</div>
+
+<hr>
+
+<h2>4. Os outros valores de <code>target</code></h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Valor</th><th>Onde o destino abre</th></tr>
+<tr><td><code>_self</code></td><td>Na mesma aba (o padrão; escrever não muda nada)</td></tr>
+<tr><td><code>_blank</code></td><td>Numa aba nova, a cada clique</td></tr>
+<tr><td><code>_parent</code></td><td>Na página "mãe", quando o link está dentro de um <code>&lt;iframe&gt;</code> (aula <a href="iframes.html">iframe</a>)</td></tr>
+<tr><td><code>_top</code></td><td>Na aba inteira, saindo de todos os <code>iframe</code></td></tr>
+<tr><td>um nome qualquer, como <code>receitas</code></td><td>Numa aba com esse nome: a primeira vez cria a aba; as seguintes <strong>reaproveitam a mesma</strong></td></tr>
+</table>
+</div>
+
+<p>O nome é útil quando vários links devem abrir sempre no mesmo lugar, sem multiplicar abas. No teste com o Chromium, dois cliques num link com <code>target="_blank"</code> abriram <strong>duas</strong> abas novas; dois cliques em links com <code>target="receitas"</code> abriram <strong>uma</strong>, e o segundo trocou a página dela. Mas lembre da tabela da seção 3: com um nome, o navegador não põe o <code>noopener</code> sozinho. Se o destino for outro site, escreva o <code>rel="noopener"</code>.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> clique em "Bolo" e depois em "Pão": as duas receitas abrem na <strong>mesma</strong> aba nova, chamada <code>receitas</code>. Troque os dois <code>target</code> por <code>_blank</code> e repita: agora cada clique abre outra aba.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;a href="bolo.html" target="receitas"&gt;Bolo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="pao.html" target="receitas"&gt;Pão&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="script" data-file="bolo.html">&lt;h1&gt;Bolo de fubá&lt;/h1&gt;
+</pre>
+<pre class="script" data-file="pao.html">&lt;h1&gt;Pão de queijo&lt;/h1&gt;
+</pre>
+</div>
+
+<div class="note">
+<strong>No editor do guia</strong>
+<p>Cada quadro de resultado é um <code>iframe</code> dentro desta página. Por isso o editor segura os links para os arquivos da caixa com <code>target="_top"</code> e <code>target="_parent"</code>: em vez de trocar a página do guia inteira, ele abre o destino dentro do próprio quadro e explica, no console, o que aconteceria num site de verdade.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>target="blank"</code>, sem o sublinhado: o validador não avisa</strong>
+<p><strong>O que acontece:</strong> sem o <code>_</code>, <code>blank</code> não é a palavra especial: é um <strong>nome</strong> de aba, como o <code>receitas</code> da seção 4. O primeiro clique até abre uma aba nova (chamada "blank"), mas os seguintes reaproveitam a mesma, e, no teste com o Chromium, a aba aberta <strong>recebeu o controle remoto</strong> da página de origem: o <code>noopener</code> automático não vale para nomes.</p>
+<pre class="term" data-cwd="~/site">$ grep target blank.html
+&lt;p&gt;&lt;a href="https://example.com" target="blank"&gt;Exemplo&lt;/a&gt;&lt;/p&gt;
+$ vnu --verbose blank.html
+blank.html                     « nenhum erro: para o validador, é um nome válido</pre>
+<p><strong>Como consertar:</strong> <code>target="_blank"</code>, com o sublinhado, e <code>rel="noopener"</code> para outros sites.</p>
+</div>
+
+<div class="cenario">
+<strong><code>target="_new"</code>: <code>Reserved keyword “new” used</code></strong>
+<p>Tutoriais antigos inventaram o <code>_new</code>. Numa página com esse link na linha 8:</p>
+<pre class="term" data-cwd="~/site">$ vnu new.html
+"file:/home/ana/site/new.html":8.4-8.47: error: Bad value “_new” for attribute “target” on element “a”: Reserved keyword “new” used.</pre>
+<p><strong>O que significa:</strong> "valor inválido <code>_new</code>: palavra reservada <code>new</code> usada". Nomes que começam com <code>_</code> são reservados para as palavras especiais (<code>_blank</code>, <code>_self</code>, <code>_parent</code>, <code>_top</code>), e <code>_new</code> não é uma delas.</p>
+<p><strong>Como consertar:</strong> <code>target="_blank"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>rel="no-opener"</code>: só uma informação, e o código de saída é 0</strong>
+<pre class="term" data-cwd="~/site">$ vnu rel.html; echo "código de saída: $?"
+"file:/home/ana/site/rel.html":8.4-8.65: info: Potentially bad value “no-opener” for attribute “rel” on element “a” Typo for “noopener”?
+código de saída: 0</pre>
+<p><strong>O que significa:</strong> "valor possivelmente errado <code>no-opener</code>. Erro de digitação de <code>noopener</code>?" É só uma <code>info</code>, e não um <code>error</code>: o código de saída continua 0, como se estivesse tudo certo (aula <a href="validar.html">Validar o HTML</a>). Para o navegador, <code>no-opener</code> é uma palavra desconhecida, e ele a ignora.</p>
+<p><strong>Como consertar:</strong> <code>rel="noopener"</code>, tudo junto. Leia também as linhas <code>info</code> da saída do validador.</p>
+</div>
+
+<div class="cenario">
+<strong>Vírgula no <code>rel</code>: o <code>noreferrer</code> some em silêncio</strong>
+<pre class="term" data-cwd="~/site">$ grep rel virgula.html
+&lt;p&gt;&lt;a href="https://example.com" target="_blank" rel="noopener,noreferrer"&gt;Exemplo&lt;/a&gt;&lt;/p&gt;
+$ vnu --verbose virgula.html
+virgula.html</pre>
+<p><strong>O que acontece:</strong> o validador não reclama, mas o navegador separa os valores do <code>rel</code> só por <strong>espaços</strong>. Para ele, <code>noopener,noreferrer</code> é uma palavra só, desconhecida, e é ignorada inteira. No teste com o Chromium, esse link <strong>enviou a origem</strong> (o <code>noreferrer</code> não valeu); o controle remoto ficou desligado só porque o navegador põe o <code>noopener</code> sozinho em todo <code>_blank</code>.</p>
+<p><strong>Como consertar:</strong> <code>rel="noopener noreferrer"</code>, com espaço.</p>
+</div>
+
+<div class="cenario">
+<strong><code>target=""</code>: <code>Browsing context name must be at least one character long</code></strong>
+<pre class="term" data-cwd="~/site">$ vnu vazio.html
+"file:/home/ana/site/vazio.html":8.4-8.43: error: Bad value “” for attribute “target” on element “a”: Browsing context name must be at least one character long.</pre>
+<p><strong>O que significa:</strong> "o nome do contexto de navegação precisa ter pelo menos um caractere". <em>Contexto de navegação</em> é o nome técnico de "uma aba, janela ou <code>iframe</code>".</p>
+<p><strong>Como consertar:</strong> apague o <code>target</code> (para abrir na mesma aba) ou use <code>_blank</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>target="_blank"</code></td><td>Abre numa aba nova (e o navegador já desliga o <code>window.opener</code>)</td></tr>
+<tr><td><code>target="_self"</code></td><td>Mesma aba (o padrão)</td></tr>
+<tr><td><code>target="_parent"</code> / <code>target="_top"</code></td><td>Sai de um <code>iframe</code>: para a página mãe / para a aba inteira</td></tr>
+<tr><td><code>target="nome"</code></td><td>Abre numa aba com esse nome e a reaproveita; não tem <code>noopener</code> automático</td></tr>
+<tr><td><code>rel="noopener"</code></td><td>A aba aberta não recebe o controle remoto da sua</td></tr>
+<tr><td><code>rel="noreferrer"</code></td><td>Não conta ao destino de onde o leitor veio (e inclui o <code>noopener</code>)</td></tr>
+<tr><td><code>rel="noopener noreferrer"</code></td><td>Os dois; valores separados por espaço</td></tr>
+<tr><td><code>rel="opener"</code></td><td>Devolve o controle remoto de propósito (quase nunca é preciso)</td></tr>
+<tr><td>"(abre em nova aba)" no texto</td><td>Avisa o leitor; faça isso em todo link com <code>_blank</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Nova aba</h3>
+<p>Complete para o link abrir numa aba nova:</p>
+<div class="ex-code">&lt;a href="https://example.com" target="<input data-answer="_blank" aria-label="valor">"&gt;Exemplo (abre em nova aba)&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Sem origem</h3>
+<p>Complete o <code>rel</code> para o destino não saber de onde o leitor veio:</p>
+<div class="ex-code">&lt;a href="https://example.com" rel="<input data-answer="noreferrer" aria-label="valor">"&gt;Exemplo&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Sair do iframe</h3>
+<p>Complete para o link abrir na aba inteira, saindo de todos os <code>iframe</code>:</p>
+<div class="ex-code">&lt;a href="index.html" target="<input data-answer="_top" aria-label="valor">"&gt;Início&lt;/a&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. A Ana escreveu <code>target="blank"</code> (sem o sublinhado). O que acontece?</p>
+<label><input type="radio" name="q4"> O validador mostra um erro</label>
+<label><input type="radio" name="q4"> O link abre na mesma aba</label>
+<label><input type="radio" name="q4"> Abre numa aba chamada "blank", reaproveitada nos cliques seguintes, e sem o <code>noopener</code> automático</label>
+<label><input type="radio" name="q4"> Funciona igualzinho a <code>_blank</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. Qual destas situações justifica abrir um link em nova aba?</p>
+<label><input type="radio" name="q5"> O link das regras ao lado de um formulário que o leitor está preenchendo</label>
+<label><input type="radio" name="q5"> O menu do próprio site</label>
+<label><input type="radio" name="q5"> Todo link para outro site, sempre</label>
+<label><input type="radio" name="q5"> O "Voltar ao início"</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">6. Num navegador atual, o que o <code>target="_blank"</code> sozinho já faz?</p>
+<label><input type="radio" name="q6"> Esconde de onde o leitor veio</label>
+<label><input type="radio" name="q6"> Abre em aba nova sem dar o controle remoto (<code>window.opener</code>) à página aberta</label>
+<label><input type="radio" name="q6"> Avisa o leitor de tela que o link abre em nova aba</label>
+<label><input type="radio" name="q6"> Nada além de abrir a aba</label>
+</div>
+
+<h3>Missão final: a lista de links do blog</h3>
+
+<div class="tryhtml" data-goal="nsel:a[target='blank']=0,nsel:a[href='receitas.html'][target]=0,sel:a[href^='https://example.com'][target='_blank'][rel~='noopener'][rel~='noreferrer'],texto:a[target='_blank']=nova aba,nsrc:rel=[&quot;'][^&quot;']*\,">
+<p class="try-task"><strong>Missão:</strong> conserte os links do blog. (1) "Todas as receitas" é uma página do próprio site: ela deve abrir na <strong>mesma</strong> aba. (2) O link para o site de exemplo deve abrir numa aba nova de verdade (o <code>target</code> está sem o sublinhado), com <code>noopener</code> e <code>noreferrer</code> separados do jeito certo, e avisar "(abre em nova aba)" no texto.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Blog da Ana&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="receitas.html" target="_blank"&gt;Todas as receitas&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://example.com" target="blank" rel="noopener,noreferrer"&gt;Receitas do mundo&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="script" data-file="receitas.html">&lt;h1&gt;Todas as receitas&lt;/h1&gt;
+&lt;p&gt;&lt;a href="index.html"&gt;Voltar ao início&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Blog da Ana&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="receitas.html"&gt;Todas as receitas&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://example.com" target="_blank" rel="noopener noreferrer"&gt;Receitas do mundo (abre em nova aba)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>target</code> escolhe onde o link abre. <code>_blank</code> = aba nova; <code>_self</code> = a mesma (padrão); <code>_parent</code> e <code>_top</code> saem de <code>iframe</code>; um nome reaproveita sempre a mesma aba.</li>
+  <li>Use aba nova pouco: o leitor pode escolher sozinho (<kbd>Ctrl</kbd>+clique). Quando usar, avise no texto: "(abre em nova aba)".</li>
+  <li>A aba aberta pode receber um controle remoto da sua (<code>window.opener</code>) e trocar a sua página: o golpe <em>tabnabbing</em>. Os navegadores atuais desligam isso sozinhos para <code>_blank</code>, mas não para nomes.</li>
+  <li><code>rel="noopener"</code> desliga o controle remoto; <code>rel="noreferrer"</code> também esconde a origem. Valores do <code>rel</code> são separados por espaço.</li>
+  <li>Armadilhas que o validador não pega: <code>target="blank"</code> (sem <code>_</code>) e <code>rel="noopener,noreferrer"</code> (com vírgula). Ele pega <code>_new</code> e <code>target=""</code>, e dá só uma <code>info</code> para <code>no-opener</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
