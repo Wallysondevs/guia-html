@@ -512,7 +512,7 @@ var NIVEIS = [
     dl.parentNode.insertBefore(linha, dl);
     var caixa = el("div", { "class": "anat-box" });
     dl.parentNode.insertBefore(caixa, linha);
-    caixa.appendChild(el("p", { "class": "anat-label" }, "Anatomia do comando"));
+    caixa.appendChild(el("p", { "class": "anat-label" }, "Anatomia"));
     caixa.appendChild(linha);
     caixa.appendChild(dl);
   });
