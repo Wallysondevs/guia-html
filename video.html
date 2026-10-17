@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Vídeo — o elemento video, controls, poster e autoplay | Guia HTML</title>
+<meta name="description" content="O elemento video para quem nunca fez um site: tocar um MP4 com controls, reservar o espaço com width e height, a imagem de capa com poster, vários formatos com source (MP4 e WebM), o vídeo de fundo com autoplay, muted, loop e playsinline (e por que o som automático é bloqueado), acessibilidade e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Vídeo</span></h1>
+
+<p class="intro">Depois do podcast, a Ana quis mostrar as mãos na massa: gravou um vídeo curto do bolo de cenoura saindo do forno. Para ele tocar no site, existe o <code>&lt;video&gt;</code>, o irmão do <code>&lt;audio&gt;</code> que você viu na aula anterior. Quase tudo é igual (<code>src</code>, <code>controls</code>, <code>&lt;source&gt;</code>), mas o vídeo ocupa espaço na tela, e isso traz novidades: o tamanho, a imagem de capa e o vídeo que toca sozinho no fundo da página.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Colocar um vídeo com <code>&lt;video src controls&gt;</code>.</li>
+  <li>Reservar o espaço do vídeo com <code>width</code> e <code>height</code> (e por que é número sem <code>px</code>).</li>
+  <li>Mostrar uma imagem de capa com <code>poster</code>.</li>
+  <li>Oferecer MP4 e WebM com <code>&lt;source&gt;</code>.</li>
+  <li>Fazer um vídeo de fundo que toca sozinho: <code>autoplay</code> só funciona com <code>muted</code> (e o <code>playsinline</code> do iPhone).</li>
+  <li>Os erros comuns (<code>width="640px"</code>, <code>alt</code> no vídeo, <code>muted="false"</code>) e as mensagens reais do validador.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula estão na pasta <code>~/site</code> da máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>) e foram conferidos com o validador W3C (<code>vnu</code>). Nos exemplos que tocam de verdade, os vídeos e as imagens estão na pasta <code>assets/midia/</code> do guia. Se você ainda não viu a aula <a href="audio.html">Áudio</a>, vale passar por ela antes: esta aula parte de lá.</p>
+
+<hr>
+
+<h2>A ideia: uma TV na parede da página</h2>
+<p>O <code>&lt;audio&gt;</code> era um rádio: só botões. O <code>&lt;video&gt;</code> é uma TV pendurada na parede. Uma TV ocupa um <strong>espaço</strong> (você precisa saber o tamanho antes de furar a parede), mostra alguma coisa mesmo desligada (a capa do filme, no <code>poster</code>) e às vezes fica ligada sem som, como a TV de uma padaria (o vídeo de fundo, com <code>autoplay</code> e <code>muted</code>).</p>
+
+<hr>
+
+<h2>1. O primeiro vídeo</h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Bolo de cenoura saindo do forno&lt;/h2&gt;
+&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"&gt;&lt;/video&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;video</dt><dd>Abre o elemento de vídeo. Como o <code>&lt;audio&gt;</code>, ele <strong>sempre</strong> tem tag de fechamento.</dd>
+  <dt>src="…/bolo.mp4"</dt><dd>O endereço do arquivo de vídeo.</dd>
+  <dt>controls</dt><dd>Desenha os botões: tocar, tempo, volume e tela cheia. Atributo booleano: basta escrever.</dd>
+  <dt>width="640"</dt><dd>A <strong>largura</strong>, em pixels (os pontinhos da tela). Só o número, sem <code>px</code>.</dd>
+  <dt>height="360"</dt><dd>A <strong>altura</strong>, também em pixels. 640 × 360 é a proporção 16:9, a das TVs e do celular deitado.</dd>
+  <dt>&gt;&lt;/video&gt;</dt><dd>Fecha o elemento. Nada de <code>&lt;video … /&gt;</code> (veja <a href="#errado">Quando dá errado</a>).</dd>
+</dl>
+
+<h3>Uma diferença do áudio: o vídeo aparece mesmo sem <code>controls</code></h3>
+<p>Um <code>&lt;audio&gt;</code> sem <code>controls</code> some. Um <code>&lt;video&gt;</code> sem <code>controls</code> continua ocupando o seu retângulo e mostra a primeira imagem do vídeo, mas sem nenhum botão. A pessoa vê o bolo parado e não tem como dar play:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/bolo.mp4" width="320" height="180"&gt;&lt;/video&gt;
+&lt;p&gt;O vídeo acima não tem controls: tente tocá-lo.&lt;/p&gt;
+</pre>
+
+<p>Alguns navegadores ainda oferecem "Mostrar controles" ao clicar com o botão direito, mas quase ninguém sabe disso. Para um vídeo que a pessoa vai assistir, use <code>controls</code>.</p>
+
+<hr>
+
+<h2>2. O tamanho: <code>width</code> e <code>height</code></h2>
+<p>O navegador só descobre o tamanho do vídeo depois de baixar o começo do arquivo. Enquanto isso, ele não sabe quanto espaço reservar. Sem <code>width</code> e <code>height</code>, ele usa um tamanho padrão, e quando o vídeo chega a página <strong>pula</strong>: o texto de baixo é empurrado bem na hora em que a pessoa ia clicar num link. Com os dois atributos, o espaço fica reservado desde o começo.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que o navegador faz</th></tr>
+<tr><td>sem <code>width</code> e <code>height</code></td><td>Começa num tamanho padrão (300 × 150 no Chrome) e muda quando o vídeo carrega.</td></tr>
+<tr><td><code>width="640" height="360"</code></td><td>Reserva 640 × 360 desde o começo. A página não pula.</td></tr>
+<tr><td>só <code>width="320"</code></td><td>Usa a largura; a altura é calculada pela proporção do vídeo, quando ele carrega.</td></tr>
+</table>
+</div>
+
+<p>E se o vídeo for de outra proporção que a caixa? O navegador <strong>não estica</strong> o vídeo: ele cabe inteiro dentro da caixa, centralizado, e sobram faixas vazias dos lados ou em cima e embaixo. Por isso, escreva o tamanho na mesma proporção do arquivo.</p>
+
+<div class="tip">
+<strong>No celular, 640 pixels não cabem</strong>
+<p>Uma tela de celular tem uns 360 a 430 pixels de largura. Para o vídeo encolher em telas pequenas, mantendo a proporção, o jeito é um pouco de CSS: <code>style="max-width: 100%; height: auto;"</code> ("no máximo a largura disponível; altura automática"). Mantenha o <code>width</code> e o <code>height</code> no HTML: com eles, o navegador sabe a proporção antes de o vídeo carregar. O CSS em si é assunto do futuro Guia CSS; o atributo <code>style</code> é explicado em <a href="atributo-style.html">O Atributo style</a>.</p>
+</div>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"
+       style="max-width: 100%; height: auto;"&gt;&lt;/video&gt;
+&lt;p&gt;Diminua a janela: o vídeo encolhe junto.&lt;/p&gt;
+</pre>
+
+<hr>
+
+<h2>3. A capa: <code>poster</code></h2>
+<p>Antes do play, o vídeo mostra a primeira imagem do arquivo, que muitas vezes é uma tela preta ou um quadro sem graça. O <code>poster</code> ("cartaz") troca isso por uma imagem escolhida por você, como a capa de um filme:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360"
+       poster="assets/midia/bolo-capa.jpg"&gt;&lt;/video&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>poster="…/bolo-capa.jpg"</dt><dd>O endereço de uma <strong>imagem</strong> (JPG, PNG, WebP…). Ela aparece até a pessoa dar play e some quando o vídeo começa.</dd>
+</dl>
+
+<ul>
+  <li>Use uma imagem com a <strong>mesma proporção</strong> do vídeo (aqui, 16:9), para não sobrar faixa vazia.</li>
+  <li>O poster combina muito bem com <code>preload="none"</code> (o mesmo atributo do <a href="audio.html">áudio</a>): a página mostra a capa e não baixa nada do vídeo até alguém clicar. Sem poster, um vídeo com <code>preload="none"</code> mostra só um retângulo vazio.</li>
+  <li>O <code>poster</code> não substitui o texto alternativo: ele é decoração. O vídeo não tem <code>alt</code> (veja <a href="#errado">Quando dá errado</a>).</li>
+</ul>
+
+<div class="tryhtml" data-goal="sel:video[controls],attr:video[width]=640,attr:video[height]=360,sel:video[poster]">
+<p class="try-task"><strong>Missão:</strong> o vídeo não tem botões, nem tamanho, nem capa. Acrescente <code>controls</code>, o tamanho <code>640</code> × <code>360</code> e a capa <code>assets/midia/bolo-capa.jpg</code> no <code>poster</code>.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Bolo de cenoura saindo do forno&lt;/h2&gt;
+&lt;video src="assets/midia/bolo.mp4"&gt;&lt;/video&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Bolo de cenoura saindo do forno&lt;/h2&gt;
+&lt;video src="assets/midia/bolo.mp4" controls width="640" height="360" poster="assets/midia/bolo-capa.jpg"&gt;&lt;/video&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Vários formatos com <code>&lt;source&gt;</code></h2>
+<p>Funciona exatamente como no áudio: tire o <code>src</code> do <code>&lt;video&gt;</code>, coloque dentro dele um <code>&lt;source&gt;</code> por formato, e o navegador usa o <strong>primeiro</strong> que entende. Depois dos <code>&lt;source&gt;</code>, o texto reserva:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;video controls width="640" height="360" poster="assets/midia/bolo-capa.jpg"&gt;
+  &lt;source src="assets/midia/bolo.webm" type="video/webm"&gt;
+  &lt;source src="assets/midia/bolo.mp4" type="video/mp4"&gt;
+  &lt;p&gt;Seu navegador não mostra vídeos. &lt;a href="assets/midia/bolo.mp4"&gt;Baixe o vídeo em MP4&lt;/a&gt;.&lt;/p&gt;
+&lt;/video&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Formato</th><th>Extensão</th><th><code>type</code></th><th>Quando usar</th></tr>
+<tr><td>MP4 (com vídeo H.264)</td><td><code>.mp4</code></td><td><code>video/mp4</code></td><td>O mais garantido: toca em todos os navegadores atuais, inclusive no iPhone. Se for ter um só, que seja este.</td></tr>
+<tr><td>WebM (com vídeo VP9 ou AV1)</td><td><code>.webm</code></td><td><code>video/webm</code></td><td>Arquivos menores com a mesma qualidade. Bom como primeira opção, com o MP4 de reserva logo abaixo.</td></tr>
+<tr><td>Ogg (Theora)</td><td><code>.ogv</code></td><td><code>video/ogg</code></td><td>Antigo. Você vai vê-lo em tutoriais velhos; não precisa mais dele.</td></tr>
+</table>
+</div>
+
+<p>Vídeo pesa <strong>muito</strong> mais que áudio e imagem: um minuto em boa qualidade facilmente passa de 10 MB. Antes de publicar, diminua o arquivo (resolução menor, compressão). Para vídeos longos, um site de vídeos como o YouTube costuma ser a melhor casa (aula <a href="incorporar.html">Incorporar Vídeos e Mapas</a>).</p>
+
+<hr>
+
+<h2>5. O vídeo que toca sozinho: <code>autoplay</code> com <code>muted</code></h2>
+<p>Muitos sites têm, no topo, um vídeo curto rodando sem parar, sem som, como uma foto que se mexe. A Ana quer isso na página inicial: o bolo saindo do forno, em repetição. Quatro atributos booleanos fazem o serviço:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;video src="assets/midia/bolo.mp4" width="640" height="360"
+       autoplay muted loop playsinline&gt;&lt;/video&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>autoplay</dt><dd>"Tocar automaticamente": começa assim que der, sem ninguém clicar.</dd>
+  <dt>muted</dt><dd>"Mudo": começa sem som. É a <strong>chave</strong> do <code>autoplay</code>, veja abaixo.</dd>
+  <dt>loop</dt><dd>"Laço": quando acaba, recomeça.</dd>
+  <dt>playsinline</dt><dd>"Tocar em linha": no iPhone, o vídeo toca <strong>dentro</strong> da página. Sem ele, o Safari do iPhone pode não tocar o vídeo sozinho, ou abri-lo em tela cheia.</dd>
+</dl>
+
+<h3>Por que o <code>muted</code> é obrigatório</h3>
+<p>Os navegadores bloqueiam o som automático: ninguém gosta de um site que começa a falar sozinho. Mas um vídeo <strong>sem som</strong> não incomoda ninguém, então Chrome, Firefox, Safari e Edge deixam um vídeo com <code>autoplay</code> <strong>e</strong> <code>muted</code> tocar sozinho. Sem o <code>muted</code>, o <code>autoplay</code> quase nunca funciona: o vídeo fica parado na primeira imagem. O validador não percebe isso, porque cada atributo, sozinho, está correto.</p>
+
+<div class="tryhtml" data-goal="sel:video[autoplay][muted],sel:video[loop],sel:video[playsinline]">
+<p class="try-task"><strong>Missão:</strong> o vídeo de fundo da página inicial tem <code>autoplay</code>, mas não toca: falta a chave. Acrescente o que o faz tocar sozinho, o que o faz repetir e o que o deixa tocar dentro da página no iPhone.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;video src="assets/midia/bolo.mp4" width="640" height="360" autoplay&gt;&lt;/video&gt;
+&lt;p&gt;Bolos, brigadeiros e tortas feitos todo dia.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Doces da Ana&lt;/h1&gt;
+&lt;video src="assets/midia/bolo.mp4" width="640" height="360" autoplay muted loop playsinline&gt;&lt;/video&gt;
+&lt;p&gt;Bolos, brigadeiros e tortas feitos todo dia.&lt;/p&gt;
+</pre>
+</div>
+
+<div class="warning">
+<strong>Movimento sem fim também incomoda</strong>
+<p>Uma imagem que não para de se mexer distrai muito quem tem dificuldade de concentração, e pode até deixar algumas pessoas enjoadas. As regras de acessibilidade (aula <a href="acessibilidade.html">Acessibilidade</a>) pedem que todo movimento que começa sozinho e dura mais de 5 segundos tenha um jeito de ser <strong>pausado</strong>. O jeito mais simples: deixe o <code>controls</code> também no vídeo de fundo, ou use um vídeo curto, sem <code>loop</code>.</p>
+</div>
+
+<hr>
+
+<h2>6. Acessibilidade do vídeo</h2>
+<ul>
+  <li><strong>Legendas:</strong> quem não ouve precisa do texto do que é falado, na hora certa. O HTML tem o elemento <code>&lt;track&gt;</code> para isso, assunto da próxima aula: <a href="legendas.html">Legendas</a>.</li>
+  <li><strong>Transcrição ou descrição:</strong> quem não enxerga precisa saber o que <strong>aparece</strong> no vídeo. Um texto ao lado ("A Ana tira o bolo do forno e mostra a casquinha dourada") resolve, e ajuda os buscadores.</li>
+  <li><strong>Sem <code>autoplay</code> com som</strong> (o navegador já bloqueia) e com um jeito de pausar o que se mexe sozinho.</li>
+  <li><strong><code>controls</code></strong>: os controles do navegador funcionam com o teclado (Tab e espaço), o que nem sempre acontece com tocadores feitos à mão.</li>
+</ul>
+
+<hr>
+
+<h2>Formas diferentes: qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th></tr>
+<tr><td>Um vídeo para a pessoa assistir</td><td><code>&lt;video controls width height poster&gt;</code>, com <code>src</code> ou com <code>&lt;source&gt;</code></td></tr>
+<tr><td>Que a página abra rápido, mesmo com vários vídeos</td><td>Acrescente <code>preload="none"</code> e um <code>poster</code></td></tr>
+<tr><td>Um vídeo decorativo de fundo</td><td><code>autoplay muted loop playsinline</code>, curto, e de preferência com <code>controls</code></td></tr>
+<tr><td>Um vídeo longo, com muita gente assistindo</td><td>Publique num site de vídeos e incorpore com <code>&lt;iframe&gt;</code> (<a href="incorporar.html">Incorporar Vídeos e Mapas</a>)</td></tr>
+<tr><td>Uma animação curtinha, sem som, tipo "GIF"</td><td><code>&lt;video autoplay muted loop playsinline&gt;</code>: um MP4 pesa bem menos que o mesmo GIF</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Como na aula de áudio, os arquivos usam o mesmo esqueleto: as linhas 1 a 7 vão do <code>&lt;!DOCTYPE html&gt;</code> ao <code>&lt;body&gt;</code>, e o vídeo começa na <strong>linha 8</strong>:</p>
+
+<pre class="file" data-file="v-px.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Vídeos da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;video src="bolo.mp4" controls width="640px" height="360px"&gt;&lt;/video&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<div class="cenario">
+<strong><code>width="640px"</code>: unidade no atributo</strong>
+<p>No CSS se escreve <code>640px</code>; no atributo, só o número. O navegador é tolerante: lê o <code>640</code> e ignora o resto, então a página parece certa. Mas o validador reclama, uma vez para cada atributo:</p>
+<pre class="term" data-cwd="~/site">$ vnu v-px.html
+"file:/home/ana/site/v-px.html":8.1-8.60: error: Bad value “640px” for attribute “width” on element “video”: Expected a digit but saw “p” instead.
+"file:/home/ana/site/v-px.html":8.1-8.60: error: Bad value “360px” for attribute “height” on element “video”: Expected a digit but saw “p” instead.</pre>
+<p>"Valor ruim <code>640px</code> para o atributo <code>width</code>: esperava um algarismo, mas viu um <code>p</code>". E <code>width="100%"</code> dá <code>Expected a digit but saw “%” instead</code>; o Chrome até aceita a porcentagem, por compatibilidade com sites antigos, mas o HTML de hoje não. <strong>Como consertar:</strong> <code>width="640" height="360"</code>; para tamanhos flexíveis, use CSS (<code>max-width: 100%</code>).</p>
+</div>
+
+<div class="cenario">
+<strong><code>alt</code> no vídeo</strong>
+<p>Quem aprendeu que toda imagem tem <code>alt</code> tenta fazer o mesmo no vídeo:</p>
+<pre class="term" data-cwd="~/site">$ vnu v-alt.html
+"file:/home/ana/site/v-alt.html":8.1-8.67: error: Attribute “alt” not allowed on element “video” at this point.</pre>
+<p>"O atributo <code>alt</code> não é permitido no elemento <code>video</code>". O navegador simplesmente ignora o texto: ninguém o vê nem o ouve. <strong>Como consertar:</strong> a alternativa de um vídeo é uma <strong>legenda</strong> (<a href="legendas.html">Legendas</a>) e uma <strong>descrição em texto</strong> perto dele, na página.</p>
+</div>
+
+<div class="cenario">
+<strong><code>muted="false"</code> deixa o vídeo mudo</strong>
+<p>Como todo atributo booleano, o <code>muted</code> vale por estar escrito. <code>muted="false"</code> <strong>liga</strong> o mudo:</p>
+<pre class="term" data-cwd="~/site">$ vnu v-muted.html
+"file:/home/ana/site/v-muted.html":8.1-8.50: error: Bad value “false” for attribute “muted” on element “video”.</pre>
+<p><strong>Como consertar:</strong> para ter som, <strong>apague</strong> o <code>muted</code> (e lembre que, aí, o <code>autoplay</code> vai ser bloqueado).</p>
+</div>
+
+<div class="cenario">
+<strong><code>poster=""</code> vazio e <code>type="mp4"</code></strong>
+<pre class="term" data-cwd="~/site">$ vnu v-poster.html
+"file:/home/ana/site/v-poster.html":8.1-8.41: error: Bad value “” for attribute “poster” on element “video”: Must be non-empty.
+$ vnu v-tipo.html
+"file:/home/ana/site/v-tipo.html":9.3-9.36: error: Bad value “mp4” for attribute “type” on element “source”: Subtype missing.</pre>
+<p>O <code>poster</code>, se existir, precisa de um endereço ("não pode ser vazio"); sem capa, apague o atributo. O <code>type</code> é um tipo MIME com duas partes: <code>video/mp4</code>. Com <code>type="mp4"</code>, o navegador não reconhece o tipo e <strong>pula</strong> essa fonte.</p>
+</div>
+
+<div class="cenario">
+<strong>Uma imagem como texto reserva, sem <code>alt</code></strong>
+<pre class="file" data-file="v-img.html">&lt;video src="bolo.mp4" controls&gt;
+  &lt;img src="bolo-capa.jpg"&gt;
+&lt;/video&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu v-img.html
+"file:/home/ana/site/v-img.html":9.3-9.27: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
+<p>Colocar um <code>&lt;img&gt;</code> dentro do vídeo é permitido (ele é texto reserva), mas, como qualquer imagem, ele precisa de <code>alt</code> (aula <a href="imagens-alt.html">Texto Alternativo</a>). E repare: nos navegadores de hoje, essa imagem <strong>nunca</strong> aparece. Para mostrar uma capa, o certo é o <code>poster</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>&lt;video … /&gt;</code> e arquivo que não existe</strong>
+<p>Os mesmos problemas do áudio: com <code>/&gt;</code>, o validador dá <code>Self-closing syntax (“/&gt;”) used on a non-void HTML element</code> e o navegador esconde tudo o que vem depois, dentro do vídeo. Com o caminho errado, o validador não diz nada, e o navegador mostra um retângulo que não toca (o poster ainda aparece, se o caminho dele estiver certo). Veja os detalhes em <a href="audio.html#errado">Áudio: Quando dá errado</a>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo do <code>&lt;video&gt;</code></th><th>O que faz</th></tr>
+<tr><td><code>src</code></td><td>O arquivo de vídeo (quando é um só)</td></tr>
+<tr><td><code>controls</code></td><td>Mostra os botões (sem ele, o vídeo aparece, mas não dá para tocar)</td></tr>
+<tr><td><code>width</code> / <code>height</code></td><td>Largura e altura em pixels, só o número. Reservam o espaço.</td></tr>
+<tr><td><code>poster</code></td><td>Imagem de capa até o play</td></tr>
+<tr><td><code>preload="none|metadata|auto"</code></td><td>Dica de quanto baixar antes do play</td></tr>
+<tr><td><code>autoplay</code></td><td>Toca sozinho; só funciona junto com <code>muted</code></td></tr>
+<tr><td><code>muted</code></td><td>Começa sem som</td></tr>
+<tr><td><code>loop</code></td><td>Recomeça ao terminar</td></tr>
+<tr><td><code>playsinline</code></td><td>No iPhone, toca dentro da página (e não em tela cheia)</td></tr>
+<tr><td><code>&lt;source src type&gt;</code></td><td>Uma fonte; <code>video/mp4</code>, <code>video/webm</code></td></tr>
+<tr><td><code>&lt;track&gt;</code></td><td>Legendas (próxima aula)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A capa</h3>
+<p>Complete o atributo da imagem de capa:</p>
+<div class="ex-code">&lt;video src="bolo.mp4" controls <input data-answer="poster" aria-label="atributo">="bolo-capa.jpg"&gt;&lt;/video&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O tamanho</h3>
+<p>Complete a largura de 640 pixels do jeito que o validador aceita:</p>
+<div class="ex-code">&lt;video src="bolo.mp4" controls width="<input data-answer="640" aria-label="largura">" height="360"&gt;&lt;/video&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. A chave do autoplay</h3>
+<p>Complete o atributo sem o qual o vídeo não toca sozinho:</p>
+<div class="ex-code">&lt;video src="bolo.mp4" autoplay <input data-answer="muted" aria-label="atributo"> loop playsinline&gt;&lt;/video&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Um vídeo tem <code>autoplay loop</code>, mas não tem <code>muted</code>. O que acontece na maioria das visitas?</p>
+<label><input type="radio" name="q4"> Toca sozinho, com som</label>
+<label><input type="radio" name="q4"> O validador acusa erro</label>
+<label><input type="radio" name="q4"> O navegador bloqueia: o vídeo fica parado até a pessoa clicar</label>
+<label><input type="radio" name="q4"> Toca sozinho, mas sem som</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Para que servem <code>width</code> e <code>height</code> no vídeo, mesmo que o navegador descubra o tamanho sozinho?</p>
+<label><input type="radio" name="q5"> Para esticar o vídeo até ficar do tamanho pedido</label>
+<label><input type="radio" name="q5"> Para reservar o espaço antes de o vídeo carregar, e a página não pular</label>
+<label><input type="radio" name="q5"> Para diminuir o arquivo</label>
+<label><input type="radio" name="q5"> Para nada: são obrigatórios só por regra</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Qual é o texto alternativo de um vídeo?</p>
+<label><input type="radio" name="q6"> O atributo <code>alt</code></label>
+<label><input type="radio" name="q6"> O <code>poster</code></label>
+<label><input type="radio" name="q6"> O <code>title</code> do vídeo</label>
+<label><input type="radio" name="q6"> Legendas e uma descrição em texto na página</label>
+</div>
+
+<h3>Missão final: o vídeo da receita</h3>
+
+<div class="tryhtml" data-goal="sel:video[controls],attr:video[width]=640,attr:video[height]=360,sel:video[poster],attr:video[preload]=none,nsel:video source=2,attr:video source[type]=video/webm,attr:video source:last-of-type[type]=video/mp4,sel:video a[href],nsel:video[src]=0,nsel:video[autoplay]=0">
+<p class="try-task"><strong>Missão:</strong> monte o vídeo da página da receita. Ele deve ter <code>controls</code>, tamanho <code>640</code> × <code>360</code>, a capa <code>assets/midia/bolo-capa.jpg</code> e <code>preload="none"</code>, sem <code>autoplay</code>. Tire o <code>src</code> do <code>&lt;video&gt;</code> e use dois <code>&lt;source&gt;</code>: primeiro <code>assets/midia/bolo.webm</code> (<code>video/webm</code>), depois <code>assets/midia/bolo.mp4</code> (<code>video/mp4</code>). Por último, um texto reserva com um link para baixar o MP4.</p>
+<pre class="script" data-file="index.html">&lt;h2&gt;Bolo de cenoura: o vídeo&lt;/h2&gt;
+&lt;video src="assets/midia/bolo.mp4" autoplay&gt;&lt;/video&gt;
+&lt;p&gt;A Ana tira o bolo do forno e mostra a casquinha dourada.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h2&gt;Bolo de cenoura: o vídeo&lt;/h2&gt;
+&lt;video controls width="640" height="360" poster="assets/midia/bolo-capa.jpg" preload="none"&gt;
+  &lt;source src="assets/midia/bolo.webm" type="video/webm"&gt;
+  &lt;source src="assets/midia/bolo.mp4" type="video/mp4"&gt;
+  &lt;p&gt;Seu navegador não mostra vídeos. &lt;a href="assets/midia/bolo.mp4"&gt;Baixe o vídeo em MP4&lt;/a&gt;.&lt;/p&gt;
+&lt;/video&gt;
+&lt;p&gt;A Ana tira o bolo do forno e mostra a casquinha dourada.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;video src controls width height&gt;&lt;/video&gt;</code> coloca um vídeo na página. Sempre com tag de fechamento.</li>
+  <li>Sem <code>controls</code>, o vídeo aparece parado e ninguém consegue tocá-lo.</li>
+  <li><code>width</code> e <code>height</code> são números sem <code>px</code> e reservam o espaço, para a página não pular. Para encolher no celular, um pouco de CSS (<code>max-width: 100%; height: auto</code>).</li>
+  <li><code>poster</code> é a imagem de capa; com <code>preload="none"</code>, a página mostra a capa sem baixar o vídeo.</li>
+  <li>Vários formatos: <code>&lt;source&gt;</code> com <code>video/webm</code> e <code>video/mp4</code>; o MP4 toca em todo lugar.</li>
+  <li><code>autoplay</code> só funciona com <code>muted</code>; para um vídeo de fundo, use <code>autoplay muted loop playsinline</code> e dê um jeito de pausar.</li>
+  <li>Vídeo não tem <code>alt</code>: a alternativa é legenda (<code>&lt;track&gt;</code>) e descrição em texto.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
