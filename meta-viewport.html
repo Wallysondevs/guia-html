@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML meta viewport — a página do tamanho do celular | Guia HTML</title>
+<meta name="description" content="A meta viewport do HTML para quem nunca fez um site: por que, sem ela, o celular finge ter 980 pixels e encolhe a página, o que querem dizer width=device-width e initial-scale=1, os erros de digitação que o validador não vê e o zoom bloqueado, com medidas reais do Chrome no modo celular.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Celular: meta viewport</span></h1>
+
+<p class="intro">A Ana terminou a primeira página do site de receitas, abriu no computador e ficou orgulhosa. Depois mandou o link para a irmã, que abriu no celular e reclamou: "está tudo minúsculo, tenho de dar zoom para ler". A página não estava errada. Faltava uma linha no <code>head</code>, a <code>meta viewport</code>. Nesta aula você vai entender por que o celular encolhe as páginas, o que cada parte dessa linha faz e os erros mais comuns ao escrevê-la.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é a <strong>viewport</strong> e por que o celular finge ter 980 pixels de largura.</li>
+  <li>A linha que todo site precisa: <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>.</li>
+  <li>O que fazem <code>width=device-width</code> e <code>initial-scale=1</code>.</li>
+  <li>Como ver a página "no celular" pelo computador (F12).</li>
+  <li>Os erros de digitação que o validador não percebe e por que nunca bloquear o zoom.</li>
+</ul>
+</div>
+
+<p>As medidas desta aula foram tiradas no <strong>Chrome</strong> imitando um celular com tela de 390 pixels de largura (o tamanho de muitos celulares atuais), e os arquivos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/vp</code>.</p>
+
+<hr>
+
+<h2>A ideia: a foto do cartaz</h2>
+<p>Imagine que você quer ver um cartaz enorme num celular. Há dois jeitos:</p>
+<ol class="passo">
+  <li><strong>Tirar uma foto do cartaz inteiro</strong>: cabe tudo na tela, mas as letras ficam minúsculas, e você tem de ampliar com os dedos para ler.</li>
+  <li><strong>Reimprimir o cartaz no tamanho do celular</strong>: o texto é rearrumado em linhas mais curtas, e as letras ficam do tamanho normal.</li>
+</ol>
+<p>Sem a <code>meta viewport</code>, o celular faz a primeira coisa: monta a página como se a tela tivesse <strong>980 pixels</strong> de largura (o tamanho de uma tela de computador antiga) e depois encolhe tudo para caber. Com a <code>meta viewport</code>, ele faz a segunda: monta a página na largura <strong>de verdade</strong> da tela.</p>
+
+<p>A palavra <strong>viewport</strong> (algo como "janela de visão") é o nome da área da tela em que a página é desenhada. No computador, é o tamanho da janela do navegador. No celular, é o que esta aula ensina a controlar.</p>
+
+<div class="note">
+<strong>Por que 980?</strong>
+<p>Quando o primeiro iPhone saiu, em 2007, quase nenhum site tinha sido feito para celular. Os sites eram desenhados para telas de computador, e o navegador do celular passou a "fingir" uma tela de 980 pixels para que eles não quebrassem. A <code>meta viewport</code> foi criada junto, para que um site feito <strong>também</strong> para celular pudesse dizer: "não precisa fingir, eu caibo na tela". Os outros navegadores copiaram as duas coisas, e é assim até hoje.</p>
+</div>
+
+<hr>
+
+<h2>1. A página sem a meta viewport</h2>
+<p>Esta é a página da Ana, sem a linha:</p>
+
+<pre class="file" data-file="sem.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>No computador, o Resultado parece perfeito. No celular de 390 pixels, o Chrome informou isto (com um pequeno programa que pergunta a largura e o zoom da página; a aula <a href="script.html">O Elemento script</a> mostra como fazer perguntas assim):</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Medida</th><th>Sem a meta viewport</th><th>O que quer dizer</th></tr>
+<tr><td>Largura da página (<code>innerWidth</code>)</td><td><strong>980</strong> pixels</td><td>O celular montou a página para uma tela de 980 pixels.</td></tr>
+<tr><td>Zoom inicial (<code>visualViewport.scale</code>)</td><td><strong>0,398</strong></td><td>E encolheu tudo para 39,8% do tamanho, porque 390 ÷ 980 = 0,398.</td></tr>
+<tr><td>Tamanho aparente do parágrafo</td><td>cerca de <strong>6 pixels</strong></td><td>As letras de 16 pixels viraram 16 × 0,398 ≈ 6,4 pixels. Ilegível sem zoom.</td></tr>
+</table>
+</div>
+
+<p>O validador, por outro lado, não reclama de nada: a <code>meta viewport</code> não é obrigatória, e a página está correta.</p>
+
+<pre class="term" data-cwd="~/vp">$ vnu --verbose sem.html
+sem.html</pre>
+
+<hr>
+
+<h2>2. A linha que resolve</h2>
+<p>Uma linha no <code>head</code>, logo depois do <code>meta charset</code>:</p>
+
+<pre class="file" data-file="certo.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;meta name="viewport"</dt><dd>Um <code>meta</code> comum, na forma <code>name</code> + <code>content</code> (aula <a href="meta.html">title e meta</a>). O nome é <code>viewport</code>.</dd>
+  <dt>content="</dt><dd>O conteúdo é uma lista de ajustes no formato <code>chave=valor</code>, separados por <strong>vírgula</strong>.</dd>
+  <dt>width=device-width</dt><dd><em>width</em> = "largura"; <em>device-width</em> = "largura do aparelho". "Monte a página com a largura <strong>real</strong> da tela", e não com 980.</dd>
+  <dt>,</dt><dd>A vírgula separa um ajuste do outro. O espaço depois dela é opcional.</dd>
+  <dt>initial-scale=1</dt><dd><em>initial scale</em> = "escala inicial", o zoom com que a página abre. <code>1</code> = 100%, sem encolher nem ampliar.</dd>
+  <dt>"&gt;</dt><dd>Fecha o atributo e a tag. Como todo <code>meta</code>, não tem <code>&lt;/meta&gt;</code>.</dd>
+</dl>
+
+<p>As medidas no mesmo celular de 390 pixels:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Medida</th><th>Sem a meta viewport</th><th>Com a meta viewport</th></tr>
+<tr><td>Largura da página</td><td>980 pixels</td><td><strong>390</strong> pixels: a largura da tela</td></tr>
+<tr><td>Zoom inicial</td><td>0,398</td><td><strong>1</strong>: 100%</td></tr>
+<tr><td>Tamanho aparente do parágrafo</td><td>≈ 6,4 pixels</td><td><strong>16</strong> pixels: o tamanho normal</td></tr>
+</table>
+</div>
+
+<p>No computador, nada muda: a janela do navegador já tem a largura de verdade. Por isso, essa linha é fácil de esquecer: quem faz o site no computador nunca vê o problema.</p>
+
+<div class="note">
+<strong>Pixels de mentira, pixels de verdade</strong>
+<p>Um celular de "390 pixels" tem, na tela física, uns 1170 pontinhos de luz de largura. O navegador agrupa 3 × 3 pontinhos num <strong>pixel CSS</strong>, a medida que as páginas usam. Assim, um texto de 16 pixels tem o mesmo tamanho aparente no celular e no computador. É desses pixels CSS que o <code>device-width</code> fala.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:head meta[name=viewport][content*=device-width],sel:head meta[name=viewport][content*=initial-scale]">
+<p class="try-task"><strong>Missão:</strong> acrescente a <code>meta viewport</code> à página do bolo, logo depois do <code>meta charset</code>, com <code>width=device-width</code> e <code>initial-scale=1</code>. O Resultado não vai mudar (veja o aviso logo abaixo): o efeito aparece no celular.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Bolo de Cenoura | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de Cenoura&lt;/h1&gt;
+  &lt;p&gt;Rende 12 pedaços e fica pronto em 50 minutos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Bolo de Cenoura | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de Cenoura&lt;/h1&gt;
+  &lt;p&gt;Rende 12 pedaços e fica pronto em 50 minutos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<div class="warning">
+<strong>Por que o Resultado não muda</strong>
+<p>O quadro de Resultado é uma página dentro desta página. Os navegadores só aplicam a <code>meta viewport</code> à página principal da aba; dentro de um quadro, ela não tem efeito, porque o tamanho do quadro é decidido pela página de fora. Para ver a diferença de verdade, abra o seu arquivo no celular ou use o modo celular das ferramentas do desenvolvedor (próxima seção).</p>
+</div>
+
+<hr>
+
+<h2>3. Ver no celular sem ter um celular</h2>
+<p>O Chrome, o Edge e o Firefox imitam um celular nas <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>:</p>
+<ol class="passo">
+  <li>Abra a sua página no navegador do computador e aperte <kbd>F12</kbd>.</li>
+  <li>Aperte <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd>, ou clique no botão com o desenho de um celular e um tablet, no canto do painel.</li>
+  <li>A página passa a ser desenhada num retângulo do tamanho de um celular. No alto, você escolhe o aparelho ou digita a largura.</li>
+  <li>Recarregue a página (<kbd>F5</kbd>) depois de mudar o <code>head</code>: a <code>meta viewport</code> é lida quando a página abre.</li>
+</ol>
+<p>Teste a mesma página com e sem a linha: sem ela, o texto fica minúsculo, como na foto do cartaz. O modo celular é uma boa imitação, mas não é perfeito: antes de publicar, abra o site no seu próprio celular pelo menos uma vez (aula <a href="servidor-local.html">Servidor Local</a>).</p>
+
+<hr>
+
+<h2>4. Outros ajustes e qual usar</h2>
+<p>O <code>content</code> aceita outros ajustes. As medidas abaixo são do mesmo celular de 390 pixels:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>content="…"</code></th><th>Largura da página</th><th>Zoom inicial</th><th>Comentário</th></tr>
+<tr><td><code>width=device-width, initial-scale=1</code></td><td>390</td><td>1</td><td><strong>A forma recomendada.</strong> Use esta.</td></tr>
+<tr><td><code>width=device-width</code></td><td>390</td><td>1</td><td>Funciona no Chrome, mas o <code>initial-scale=1</code> evita diferenças entre navegadores quando o celular gira.</td></tr>
+<tr><td><code>initial-scale=1</code></td><td>390</td><td>1</td><td>Também funciona, pelo mesmo motivo. Escreva os dois.</td></tr>
+<tr><td><code>width=500</code></td><td>500</td><td>0,78</td><td>Uma largura fixa: a página é montada com 500 pixels e encolhida para caber (390 ÷ 500 = 0,78). Quase nunca é o que você quer.</td></tr>
+<tr><td><code>width=device-width, initial-scale=2</code></td><td>390</td><td>2</td><td>A página abre com 200% de zoom: tudo grande demais, cortado nas laterais.</td></tr>
+</table>
+</div>
+
+<p>Existem ainda <code>minimum-scale</code> e <code>maximum-scale</code> (o zoom mínimo e o máximo) e <code>user-scalable</code> ("o usuário pode dar zoom?"). Eles merecem uma seção própria, porque o uso mais comum deles é um erro.</p>
+
+<h3>Nunca bloqueie o zoom</h3>
+<p>Muitos sites copiam esta linha da internet:</p>
+
+<pre class="file" data-file="no-zoom.html">&lt;meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"&gt;
+</pre>
+
+<p>O <code>user-scalable=no</code> ("sem zoom do usuário") pede ao celular que <strong>não deixe</strong> a pessoa ampliar a página com os dedos. O <code>maximum-scale=1</code> faz o mesmo de outro jeito (zoom máximo de 100%). Para quem enxerga pouco, isso torna o site impossível de ler. Por isso, as regras de acessibilidade (aula <a href="acessibilidade.html">Acessibilidade</a>) pedem que o texto possa ser ampliado, e alguns navegadores de celular passaram a ignorar esse pedido. O validador também avisa:</p>
+
+<pre class="term" data-cwd="~/vp">$ vnu no-zoom.html
+"file:/home/ana/vp/no-zoom.html":5.3-5.88: info warning: Consider avoiding viewport values that prevent users from resizing documents.</pre>
+
+<p><em>info warning</em> é um aviso leve (não é <code>error</code>, e o código de saída continua <code>0</code>): "Considere evitar valores de viewport que impedem os usuários de redimensionar os documentos". Repare que ele avisou só do <code>user-scalable=no</code>: com <code>maximum-scale=1</code>, o validador não disse nada, mas o efeito é o mesmo. Não use nenhum dos dois.</p>
+
+<div class="tryhtml" data-goal="sel:head meta[name=viewport][content*=device-width],sel:head meta[name=viewport][content*=initial-scale],nsrc:user-scalable|maximum-scale">
+<p class="try-task"><strong>Missão:</strong> a Ana copiou uma <code>meta viewport</code> que bloqueia o zoom de duas formas. Deixe só <code>width=device-width, initial-scale=1</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Letra miúda? Dê zoom à vontade.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Letra miúda? Dê zoom à vontade.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. O que a meta viewport não faz</h2>
+<p>A <code>meta viewport</code> diz ao celular "use a largura de verdade". Ela não rearruma o conteúdo sozinha. Se a página tem algo <strong>mais largo</strong> que a tela, como uma imagem de 800 pixels ou uma tabela com muitas colunas, esse algo continua largo, e aparece a barra de rolagem para os lados. Para isso existem:</p>
+<ul>
+  <li>imagens que se ajustam à tela: <a href="imagens-responsivas.html">Imagens Responsivas (srcset)</a> e <a href="imagens-tamanho.html">Largura e Altura</a>;</li>
+  <li>o CSS, que muda o desenho conforme a largura da tela (as chamadas <em>media queries</em>, assunto do futuro Guia CSS).</li>
+</ul>
+<p>Mesmo assim, a <code>meta viewport</code> é o primeiro passo. Sem ela, nenhum desses truques funciona no celular, porque a página continua achando que tem 980 pixels.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O validador W3C confere se a <code>meta</code> está bem formada, mas <strong>não</strong> lê o que vai dentro do <code>content</code> (só o caso do zoom bloqueado). Os três primeiros arquivos desta seção passaram no <code>vnu</code> sem nenhum erro. Quem percebe é o navegador: o Chrome escreve um aviso no <strong>Console</strong> das ferramentas do desenvolvedor (F12). Os avisos abaixo foram copiados de lá.</p>
+
+<div class="cenario">
+<strong>Ponto e vírgula no lugar da vírgula: <code>width=device-width; initial-scale=1</code></strong>
+<p><strong>O que o Chrome diz:</strong> <code>Error parsing a meta element's content: ';' is not a valid key-value pair separator. Please use ',' instead.</code> ("Erro ao ler o conteúdo de um elemento meta: ';' não é um separador válido de pares chave-valor. Use ',' no lugar.")</p>
+<p><strong>O que acontece:</strong> o Chrome reclama, mas entende (a largura ficou 390). Não conte com isso em todo navegador.</p>
+<p><strong>Como consertar:</strong> separe com vírgula.</p>
+</div>
+
+<div class="cenario">
+<strong>Um erro de digitação no valor: <code>width=devicewidth</code></strong>
+<p><strong>O que o Chrome diz:</strong> <code>The value "devicewidth" for key "width" is invalid, and has been ignored.</code> ("O valor 'devicewidth' da chave 'width' é inválido e foi ignorado.")</p>
+<p><strong>O que acontece:</strong> o ajuste é jogado fora. Com <code>content="width=devicewidth"</code> sozinho, a página voltou a ter <strong>980</strong> pixels, como se a linha não existisse. Com <code>width=devicewidth, initial-scale=1</code>, o <code>initial-scale</code> salvou a página (390): mais um motivo para escrever os dois.</p>
+<p><strong>Como consertar:</strong> <code>device-width</code>, com hífen.</p>
+</div>
+
+<div class="cenario">
+<strong>Um erro no nome: <code>name="view-port"</code></strong>
+<p><strong>O que acontece:</strong> nenhum aviso, em lugar nenhum: nem do validador, nem do Console. O navegador simplesmente não reconhece o nome, e a página ficou com <strong>980</strong> pixels. (<code>name="Viewport"</code>, com maiúscula, funcionou: os nomes de <code>meta</code> não ligam para maiúsculas. Mas escreva em minúsculas, como todo mundo.)</p>
+<p><strong>Como consertar:</strong> copie a linha inteira de uma fonte confiável (esta aula, por exemplo) em vez de digitá-la.</p>
+</div>
+
+<div class="cenario">
+<strong>A meta viewport fora do head</strong>
+<p><strong>O que acontece:</strong> no <code>body</code>, ela não vale (o validador mostra <code>Attribute “name” not allowed on element “meta” at this point.</code>, como em <a href="head.html">O head</a>). E se um texto solto ou um elemento visível aparecer no <code>head</code> <strong>antes</strong> dela, ela vai parar no <code>body</code> junto com o resto.</p>
+<p><strong>Como consertar:</strong> deixe-a no <code>head</code>, logo depois do <code>meta charset</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O zoom não funciona no celular</strong>
+<p><strong>O que significa:</strong> a linha tem <code>user-scalable=no</code> ou <code>maximum-scale=1</code>. O validador avisa só do primeiro (<code>info warning: Consider avoiding viewport values that prevent users from resizing documents.</code>).</p>
+<p><strong>Como consertar:</strong> apague os dois ajustes.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Ajuste (no <code>content</code>)</th><th>O que faz</th></tr>
+<tr><td><code>width=device-width</code></td><td>A página tem a largura real da tela, em pixels CSS.</td></tr>
+<tr><td><code>initial-scale=1</code></td><td>A página abre com 100% de zoom.</td></tr>
+<tr><td><code>width=500</code></td><td>Largura fixa de 500 pixels, encolhida para caber (evite).</td></tr>
+<tr><td><code>minimum-scale</code> / <code>maximum-scale</code></td><td>O zoom mínimo e o máximo que a pessoa pode dar (não limite o máximo).</td></tr>
+<tr><td><code>user-scalable=no</code></td><td>Pede para bloquear o zoom (nunca use).</td></tr>
+<tr><td>Sem a <code>meta viewport</code></td><td>O celular finge uma tela de 980 pixels e encolhe a página.</td></tr>
+</table>
+</div>
+
+<p>A linha completa, para copiar: <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></p>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A largura</h3>
+<p>Complete o valor que diz "use a largura real da tela":</p>
+<div class="ex-code">&lt;meta name="viewport" content="width=<input data-answer="device-width" aria-label="valor">, initial-scale=1"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O zoom inicial</h3>
+<p>Complete o ajuste que faz a página abrir com 100% de zoom:</p>
+<div class="ex-code">&lt;meta name="viewport" content="width=device-width, <input data-answer="initial-scale=1|initial-scale=1.0" aria-label="ajuste">"&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Sem a <code>meta viewport</code>, com que largura um celular monta a página?</p>
+<label><input type="radio" name="q3"> Com a largura real da tela</label>
+<label><input type="radio" name="q3"> 980 pixels, e depois encolhe tudo para caber</label>
+<label><input type="radio" name="q3"> 320 pixels</label>
+<label><input type="radio" name="q3"> O celular se recusa a mostrar a página</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Por que o Resultado do editor não muda quando você acrescenta a <code>meta viewport</code>?</p>
+<label><input type="radio" name="q4"> Porque ela precisa de CSS para funcionar</label>
+<label><input type="radio" name="q4"> Porque a linha está errada</label>
+<label><input type="radio" name="q4"> Porque o Resultado é um quadro dentro da página, e a <code>meta viewport</code> só tem efeito na página principal</label>
+<label><input type="radio" name="q4"> Porque ela só funciona no Safari</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. A Ana escreveu <code>content="width=devicewidth"</code>. O que acontece?</p>
+<label><input type="radio" name="q5"> O validador W3C acusa um erro</label>
+<label><input type="radio" name="q5"> O celular monta a página com a largura real</label>
+<label><input type="radio" name="q5"> A página fica com zoom de 200%</label>
+<label><input type="radio" name="q5"> O valor é ignorado (o Chrome avisa no Console) e a página volta a ter 980 pixels</label>
+</div>
+
+<h3>Missão final: o head completo do celular</h3>
+
+<div class="tryhtml" data-goal="sel:head &gt; meta[charset]:first-child,sel:head meta[name=viewport][content*=device-width],sel:head meta[name=viewport][content*=initial-scale],nsrc:devicewidth|view-port|user-scalable|maximum-scale|device-width;,texto:head title=Contato">
+<p class="try-task"><strong>Missão:</strong> a página de contato da Ana tem três problemas na <code>meta viewport</code>: o nome errado, a vírgula trocada por ponto e vírgula e um erro de digitação no <code>device-width</code>. Conserte a linha. Aproveite para pôr o <code>meta charset</code> em primeiro lugar.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta name="view-port" content="width=devicewidth; initial-scale=1"&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Contato | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Contato&lt;/h1&gt;
+  &lt;p&gt;Mande a sua receita para a Ana!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Contato | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Contato&lt;/h1&gt;
+  &lt;p&gt;Mande a sua receita para a Ana!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Sem a <code>meta viewport</code>, o celular monta a página com <strong>980 pixels</strong> e a encolhe (no celular de 390 pixels, para 39,8%): letras minúsculas.</li>
+  <li>A linha de todo site: <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>, no <code>head</code>, logo depois do <code>meta charset</code>.</li>
+  <li><code>width=device-width</code> = a largura real da tela; <code>initial-scale=1</code> = abre com 100% de zoom. Ajustes separados por vírgula.</li>
+  <li>Ela não tem efeito dentro de um quadro (o Resultado do editor): teste no modo celular do F12 (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd>) ou no próprio celular.</li>
+  <li>Nunca bloqueie o zoom (<code>user-scalable=no</code>, <code>maximum-scale=1</code>).</li>
+  <li>O validador não confere o <code>content</code>: um <code>devicewidth</code> ou um <code>view-port</code> passam sem erro. O Console do navegador avisa de alguns.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
