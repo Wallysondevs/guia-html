@@ -1,0 +1,1236 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Projeto Cardápio — uma tabela completa com thead, tbody, caption e scope | Guia HTML</title>
+<meta name="description" content="Projeto passo a passo: o cardápio do café da Ana numa tabela HTML. Linhas e células (tr, td); cabeçalho com th, thead e caption; grupos de pratos com vários tbody, colspan e scope; rodapé com tfoot. Quatro versões, cada uma com uma missão, o que o navegador faz com tabelas erradas e as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>Projeto <span class="hl">Cardápio</span></h1>
+
+<p class="intro">A Ana abriu um café pequeno na frente da casa dela e quer o cardápio no site: o nome de cada item, uma descrição curta e o preço. Isso é uma <strong>tabela</strong>: linhas (os itens) e colunas (item, descrição, preço). Neste projeto você monta uma tabela completa, com cabeçalho, grupos, legenda e rodapé, do jeito que um leitor de tela consegue ler para quem não enxerga a tela.</p>
+
+<div class="note">
+<strong>Você vai praticar</strong>
+<ul>
+  <li>Montar uma tabela com <code>table</code>, <code>tr</code> e <code>td</code> (<a href="tabelas.html">Tabelas</a>).</li>
+  <li>Separar o cabeçalho com <code>th</code>, <code>thead</code> e <code>tbody</code> (<a href="tabelas-cabecalho.html">Cabeçalhos</a>).</li>
+  <li>Dar um nome à tabela com <code>caption</code> e dizer a quem cada cabeçalho se refere com <code>scope</code> (<a href="tabelas-legenda.html">Legenda e Acessibilidade</a>).</li>
+  <li>Juntar células com <code>colspan</code> (<a href="tabelas-mesclar.html">Mesclar Células</a>).</li>
+  <li>Fechar a tabela com um rodapé, o <code>tfoot</code>.</li>
+  <li>Ver como o navegador conserta uma tabela errada e o que o validador diz.</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>O que vamos construir</h2>
+<p>O cardápio pronto, desenhado pelo seu navegador:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;Item&lt;/th&gt;
+        &lt;th scope="col"&gt;Descrição&lt;/th&gt;
+        &lt;th scope="col"&gt;Preço&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Salgados&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Pão de queijo&lt;/th&gt;
+        &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+        &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Coxinha&lt;/th&gt;
+        &lt;td&gt;De frango com requeijão&lt;/td&gt;
+        &lt;td&gt;R$ 7,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Doces&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Bolo de cenoura&lt;/th&gt;
+        &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+        &lt;td&gt;R$ 8,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Brigadeiro&lt;/th&gt;
+        &lt;td&gt;Unidade&lt;/td&gt;
+        &lt;td&gt;R$ 3,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Bebidas&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Café coado&lt;/th&gt;
+        &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+        &lt;td&gt;R$ 5,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Suco de laranja&lt;/th&gt;
+        &lt;td&gt;Copo de 300 ml&lt;/td&gt;
+        &lt;td&gt;R$ 8,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tfoot&gt;
+      &lt;tr&gt;
+        &lt;td colspan="3"&gt;Combo do dia: café coado + fatia de bolo por R$ 11,00.&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tfoot&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<ol class="passo">
+  <li><a href="#versao1">A tabela mais simples</a> (<code>table</code>, <code>tr</code>, <code>td</code>).</li>
+  <li><a href="#versao2">O cabeçalho e a legenda</a> (<code>th</code>, <code>thead</code>, <code>tbody</code>, <code>caption</code>).</li>
+  <li><a href="#versao3">Os grupos: salgados, doces e bebidas</a> (vários <code>tbody</code>, <code>colspan</code> e <code>scope</code>).</li>
+  <li><a href="#versao4">O rodapé</a> (<code>tfoot</code>).</li>
+</ol>
+
+<h3>Antes de começar</h3>
+<p>Você precisa ter visto <a href="tabelas.html">Tabelas</a> e <a href="tabelas-cabecalho.html">Cabeçalhos</a>; para a versão 3, <a href="tabelas-mesclar.html">Mesclar Células</a> e <a href="tabelas-legenda.html">Legenda e Acessibilidade</a>. A pasta do projeto:</p>
+
+<pre class="term">$ mkdir -p sites/cardapio
+$ cd sites/cardapio</pre>
+
+<hr>
+
+<h2 id="versao1">Versão 1 · A tabela mais simples</h2>
+<p>Pense numa planilha: cada <strong>linha</strong> é um item do cardápio e cada <strong>célula</strong> da linha é uma informação dele. No HTML, você escreve a tabela linha por linha, da esquerda para a direita. As colunas não são escritas em lugar nenhum: elas aparecem sozinhas, porque toda linha tem três células.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Item&lt;/td&gt;
+      &lt;td&gt;Descrição&lt;/td&gt;
+      &lt;td&gt;Preço&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Pão de queijo&lt;/td&gt;
+      &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+      &lt;td&gt;R$ 9,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Bolo de cenoura&lt;/td&gt;
+      &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+      &lt;td&gt;R$ 8,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Café coado&lt;/td&gt;
+      &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+      &lt;td&gt;R$ 5,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Brigadeiro&lt;/td&gt;
+      &lt;td&gt;Unidade&lt;/td&gt;
+      &lt;td&gt;R$ 3,50&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;table&gt;</dt><dd>A tabela inteira.</dd>
+  <dt>&lt;tr&gt;</dt><dd><em>Table row</em>, "linha da tabela". Uma por item (e uma para os títulos, por enquanto).</dd>
+  <dt>&lt;td&gt;</dt><dd><em>Table data</em>, "dado da tabela": uma célula. Três por linha: item, descrição e preço.</dd>
+  <dt>&lt;style&gt;…&lt;/style&gt;</dt><dd>Duas linhas de CSS, só para desenhar as bordas. Sem elas, a tabela não tem linha nenhuma, e fica difícil ver as células. <code>border-collapse: collapse</code> junta as bordas vizinhas numa linha só. O assunto do projeto é o HTML; o CSS é explicado em <a href="ligar-css.html">Ligar CSS</a> (quer aprender mais? futuro Guia CSS).</dd>
+</dl>
+
+<div class="tip">
+<strong>Um <code>tbody</code> que você não escreveu</strong>
+<p>Abra as <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a> (<kbd>F12</kbd>) e olhe a tabela na aba dos elementos: entre o <code>table</code> e as linhas aparece um <code>tbody</code>. O navegador sempre coloca as linhas soltas dentro de um <code>tbody</code>, o "corpo da tabela". Na versão 2, você vai escrevê-lo você mesmo.</p>
+</div>
+
+<div class="cenario">
+<strong>Uma linha com uma célula a mais</strong>
+<p>A Ana quis avisar que o pão de queijo é novidade e acrescentou uma quarta célula só nessa linha:</p>
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Item&lt;/td&gt;
+      &lt;td&gt;Descrição&lt;/td&gt;
+      &lt;td&gt;Preço&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Pão de queijo&lt;/td&gt;
+      &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+      &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;td&gt;Novidade!&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Bolo de cenoura&lt;/td&gt;
+      &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+      &lt;td&gt;R$ 8,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Café coado&lt;/td&gt;
+      &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+      &lt;td&gt;R$ 5,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Brigadeiro&lt;/td&gt;
+      &lt;td&gt;Unidade&lt;/td&gt;
+      &lt;td&gt;R$ 3,50&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> cria uma quarta coluna para a tabela inteira. A célula "Novidade!" fica sobrando para fora, e as outras linhas ficam com um buraco no fim (sem borda, porque ali não existe célula). <strong>O que o validador diz:</strong></p>
+<pre class="term" data-cwd="~/sites/cardapio">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/cardapio/index.html":25.25-26.9: info warning: A table row was 4 columns wide and exceeded the column count established by the first row (3).
+$ echo $?
+0</pre>
+<p>"Uma linha da tabela tinha 4 colunas e passou do número de colunas definido pela primeira linha (3)." Repare que é um <code>info warning</code>, um conselho, e não um erro: o código de saída continua <code>0</code>. Mas a tabela ficou torta. <strong>Como consertar:</strong> toda linha com o mesmo número de células. A novidade pode ir dentro da descrição: <code>&lt;td&gt;Porção com 6 unidades. Novidade!&lt;/td&gt;</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:tr=5,texto:tr:last-child td=Brigadeiro">
+<p class="try-task"><strong>Missão (versão 1):</strong> o brigadeiro ficou de fora. Acrescente uma linha no fim da tabela com três células: <code>Brigadeiro</code>, <code>Unidade</code> e <code>R$ 3,50</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Item&lt;/td&gt;
+      &lt;td&gt;Descrição&lt;/td&gt;
+      &lt;td&gt;Preço&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Pão de queijo&lt;/td&gt;
+      &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+      &lt;td&gt;R$ 9,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Bolo de cenoura&lt;/td&gt;
+      &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+      &lt;td&gt;R$ 8,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Café coado&lt;/td&gt;
+      &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+      &lt;td&gt;R$ 5,00&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Item&lt;/td&gt;
+      &lt;td&gt;Descrição&lt;/td&gt;
+      &lt;td&gt;Preço&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Pão de queijo&lt;/td&gt;
+      &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+      &lt;td&gt;R$ 9,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Bolo de cenoura&lt;/td&gt;
+      &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+      &lt;td&gt;R$ 8,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Café coado&lt;/td&gt;
+      &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+      &lt;td&gt;R$ 5,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Brigadeiro&lt;/td&gt;
+      &lt;td&gt;Unidade&lt;/td&gt;
+      &lt;td&gt;R$ 3,50&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao2">Versão 2 · O cabeçalho e a legenda</h2>
+<p>Na versão 1, "Item", "Descrição" e "Preço" são células comuns: para o navegador, "Item" é um prato igual ao pão de queijo. Agora eles viram <strong>cabeçalhos</strong>. E a tabela ganha uma legenda, o nome dela, como a placa em cima do cardápio de uma lanchonete.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;Item&lt;/th&gt;
+        &lt;th scope="col"&gt;Descrição&lt;/th&gt;
+        &lt;th scope="col"&gt;Preço&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Pão de queijo&lt;/td&gt;
+        &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+        &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Bolo de cenoura&lt;/td&gt;
+        &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+        &lt;td&gt;R$ 8,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Café coado&lt;/td&gt;
+        &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+        &lt;td&gt;R$ 5,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Brigadeiro&lt;/td&gt;
+        &lt;td&gt;Unidade&lt;/td&gt;
+        &lt;td&gt;R$ 3,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;caption&gt;</dt><dd>A legenda: o nome da tabela. Tem de ser o <strong>primeiro</strong> filho do <code>table</code>. O navegador mostra centralizada, em cima. O leitor de tela costuma anunciar o nome da tabela antes de ler as células, e a pessoa já sabe do que se trata.</dd>
+  <dt>&lt;thead&gt;</dt><dd><em>Table head</em>, "cabeça da tabela": a linha dos títulos das colunas.</dd>
+  <dt>&lt;th scope="col"&gt;</dt><dd><em>Table header</em>, "célula de cabeçalho". O navegador mostra em negrito (e centralizada, se o CSS não disser outra coisa; aqui o <code>text-align: left</code> deixou à esquerda). <code>scope="col"</code> diz que ela é o título da <strong>coluna</strong> de baixo.</dd>
+  <dt>&lt;tbody&gt;</dt><dd><em>Table body</em>, "corpo da tabela": os itens.</dd>
+</dl>
+
+<p>Para que tudo isso, se a tela quase não mudou? Quem ouve a página num leitor de tela não vê as colunas. Com <code>th</code> e <code>scope</code>, ao chegar em "R$ 8,00", o leitor pode dizer "Preço, R$ 8,00": ele sabe qual cabeçalho pertence a cada célula. Sem eles, a pessoa ouve uma fila de palavras soltas.</p>
+
+<div class="cenario">
+<strong>Texto solto dentro da tabela</strong>
+<p>A Ana quis escrever um aviso entre as linhas, direto dentro do <code>table</code>, sem célula:</p>
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Item&lt;/td&gt;
+      &lt;td&gt;Descrição&lt;/td&gt;
+      &lt;td&gt;Preço&lt;/td&gt;
+    &lt;/tr&gt;
+    Salgados e doces
+    &lt;tr&gt;
+      &lt;td&gt;Pão de queijo&lt;/td&gt;
+      &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+      &lt;td&gt;R$ 9,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Bolo de cenoura&lt;/td&gt;
+      &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+      &lt;td&gt;R$ 8,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Café coado&lt;/td&gt;
+      &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+      &lt;td&gt;R$ 5,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Brigadeiro&lt;/td&gt;
+      &lt;td&gt;Unidade&lt;/td&gt;
+      &lt;td&gt;R$ 3,50&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><strong>O que o navegador faz:</strong> olhe o resultado. O texto "Salgados e doces" não ficou entre as linhas: ele foi parar <strong>em cima</strong> da tabela. Dentro de um <code>table</code>, só podem ficar partes de tabela; o navegador tira dali o que não é, e coloca antes da tabela. <strong>O que o validador diz:</strong></p>
+<pre class="term" data-cwd="~/sites/cardapio">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/cardapio/index.html":20.10-22.8: error: Misplaced non-space characters inside a table.
+"file:/home/ana/sites/cardapio/index.html":20.10-22.8: error fatal: Cannot recover after last error. Any further errors will be ignored.</pre>
+<p>"Caracteres (que não são espaço) fora do lugar dentro de uma tabela." O segundo, <code>error fatal</code>, avisa que o validador <strong>parou</strong> ali: "não consigo me recuperar; outros erros serão ignorados". Conserte esse e rode de novo, porque pode haver mais. <strong>Como consertar:</strong> texto só dentro de células (<code>td</code>, <code>th</code>) ou do <code>caption</code>. Para separar grupos de itens, use linhas de título, como na versão 3.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:thead th[scope]=3,sel:table > caption,nsel:tbody tr=4">
+<p class="try-task"><strong>Missão (versão 2):</strong> transforme a primeira linha num cabeçalho: troque os três <code>td</code> dela por <code>&lt;th scope="col"&gt;</code> e coloque a linha dentro de um <code>&lt;thead&gt;</code>. Ponha as outras linhas dentro de um <code>&lt;tbody&gt;</code> e dê à tabela a legenda <code>&lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;</code> (logo depois do <code>&lt;table&gt;</code>).</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Item&lt;/td&gt;
+      &lt;td&gt;Descrição&lt;/td&gt;
+      &lt;td&gt;Preço&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Pão de queijo&lt;/td&gt;
+      &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+      &lt;td&gt;R$ 9,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Bolo de cenoura&lt;/td&gt;
+      &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+      &lt;td&gt;R$ 8,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Café coado&lt;/td&gt;
+      &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+      &lt;td&gt;R$ 5,00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Brigadeiro&lt;/td&gt;
+      &lt;td&gt;Unidade&lt;/td&gt;
+      &lt;td&gt;R$ 3,50&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;Item&lt;/th&gt;
+        &lt;th scope="col"&gt;Descrição&lt;/th&gt;
+        &lt;th scope="col"&gt;Preço&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Pão de queijo&lt;/td&gt;
+        &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+        &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Bolo de cenoura&lt;/td&gt;
+        &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+        &lt;td&gt;R$ 8,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Café coado&lt;/td&gt;
+        &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+        &lt;td&gt;R$ 5,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Brigadeiro&lt;/td&gt;
+        &lt;td&gt;Unidade&lt;/td&gt;
+        &lt;td&gt;R$ 3,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao3">Versão 3 · Os grupos: salgados, doces e bebidas</h2>
+<p>O cardápio cresceu: agora tem coxinha e suco. Num cardápio de papel, os itens ficam em grupos, cada um com um título. Na tabela, cada grupo vira um <code>tbody</code> próprio (uma tabela pode ter vários), e o título do grupo é uma linha com <strong>uma</strong> célula que ocupa as três colunas. De quebra, o nome de cada item vira o cabeçalho da sua linha.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;Item&lt;/th&gt;
+        &lt;th scope="col"&gt;Descrição&lt;/th&gt;
+        &lt;th scope="col"&gt;Preço&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Salgados&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Pão de queijo&lt;/th&gt;
+        &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+        &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Coxinha&lt;/th&gt;
+        &lt;td&gt;De frango com requeijão&lt;/td&gt;
+        &lt;td&gt;R$ 7,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Doces&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Bolo de cenoura&lt;/th&gt;
+        &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+        &lt;td&gt;R$ 8,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Brigadeiro&lt;/th&gt;
+        &lt;td&gt;Unidade&lt;/td&gt;
+        &lt;td&gt;R$ 3,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Bebidas&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Café coado&lt;/th&gt;
+        &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+        &lt;td&gt;R$ 5,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Suco de laranja&lt;/th&gt;
+        &lt;td&gt;Copo de 300 ml&lt;/td&gt;
+        &lt;td&gt;R$ 8,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;tbody&gt; … &lt;/tbody&gt; &lt;tbody&gt;</dt><dd>Um corpo para cada grupo. Na tela não muda nada; para o navegador e o leitor de tela, as linhas ficam agrupadas.</dd>
+  <dt>colspan="3"</dt><dd><em>Column span</em>, "ocupa colunas": a célula ocupa o lugar de três. Por isso essa linha tem uma célula só, e mesmo assim fecha a conta das três colunas.</dd>
+  <dt>scope="rowgroup"</dt><dd>Este cabeçalho é o título do <strong>grupo de linhas</strong> (o <code>tbody</code> em que ele está).</dd>
+  <dt>&lt;th scope="row"&gt;Coxinha&lt;/th&gt;</dt><dd>O nome do item é o cabeçalho da <strong>linha</strong>: ao chegar em "R$ 7,50", o leitor de tela pode dizer "Coxinha, Preço, R$ 7,50".</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>scope</code></th><th>O cabeçalho vale para…</th><th>No cardápio</th></tr>
+<tr><td><code>col</code></td><td>a coluna de baixo</td><td>Item, Descrição, Preço</td></tr>
+<tr><td><code>row</code></td><td>a linha da direita</td><td>Pão de queijo, Coxinha…</td></tr>
+<tr><td><code>rowgroup</code></td><td>o grupo de linhas (o <code>tbody</code>)</td><td>Salgados, Doces, Bebidas</td></tr>
+</table>
+</div>
+
+<div class="cenario">
+<strong><code>colspan</code> com a conta errada</strong>
+<p>No título "Doces", a Ana escreveu <code>colspan="2"</code>. A tabela tem três colunas, então a linha ficou com uma a menos:</p>
+<pre class="term" data-cwd="~/sites/cardapio">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/cardapio/index.html":41.52-42.11: info warning: A table row was 2 columns wide, which is less than the column count established by the first row (3).</pre>
+<p>"A linha tinha 2 colunas, menos que as 3 da primeira linha." Na tela, a faixa "Doces" para antes do fim, e a terceira coluna fica vazia, sem borda. <strong>Como consertar:</strong> some as células de cada linha, contando o <code>colspan</code>: tem de dar o número de colunas da tabela.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:th[colspan]=3,texto:tbody:last-of-type th[colspan]=Bebidas">
+<p class="try-task"><strong>Missão (versão 3):</strong> o último grupo, o das bebidas, está sem título. No começo do último <code>tbody</code>, acrescente uma linha com <code>&lt;th scope="rowgroup" colspan="3"&gt;Bebidas&lt;/th&gt;</code>, igual às dos outros grupos.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;Item&lt;/th&gt;
+        &lt;th scope="col"&gt;Descrição&lt;/th&gt;
+        &lt;th scope="col"&gt;Preço&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Salgados&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Pão de queijo&lt;/th&gt;
+        &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+        &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Coxinha&lt;/th&gt;
+        &lt;td&gt;De frango com requeijão&lt;/td&gt;
+        &lt;td&gt;R$ 7,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Doces&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Bolo de cenoura&lt;/th&gt;
+        &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+        &lt;td&gt;R$ 8,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Brigadeiro&lt;/th&gt;
+        &lt;td&gt;Unidade&lt;/td&gt;
+        &lt;td&gt;R$ 3,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Café coado&lt;/th&gt;
+        &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+        &lt;td&gt;R$ 5,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Suco de laranja&lt;/th&gt;
+        &lt;td&gt;Copo de 300 ml&lt;/td&gt;
+        &lt;td&gt;R$ 8,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;Item&lt;/th&gt;
+        &lt;th scope="col"&gt;Descrição&lt;/th&gt;
+        &lt;th scope="col"&gt;Preço&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Salgados&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Pão de queijo&lt;/th&gt;
+        &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+        &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Coxinha&lt;/th&gt;
+        &lt;td&gt;De frango com requeijão&lt;/td&gt;
+        &lt;td&gt;R$ 7,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Doces&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Bolo de cenoura&lt;/th&gt;
+        &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+        &lt;td&gt;R$ 8,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Brigadeiro&lt;/th&gt;
+        &lt;td&gt;Unidade&lt;/td&gt;
+        &lt;td&gt;R$ 3,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Bebidas&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Café coado&lt;/th&gt;
+        &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+        &lt;td&gt;R$ 5,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Suco de laranja&lt;/th&gt;
+        &lt;td&gt;Copo de 300 ml&lt;/td&gt;
+        &lt;td&gt;R$ 8,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2 id="versao4">Versão 4 · O rodapé</h2>
+<p>Muitas tabelas terminam com uma linha de fechamento: um total, uma observação. No cardápio da Ana, é o combo do dia. Essa linha vai no <code>tfoot</code>, o rodapé da tabela, depois dos grupos.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;Item&lt;/th&gt;
+        &lt;th scope="col"&gt;Descrição&lt;/th&gt;
+        &lt;th scope="col"&gt;Preço&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Salgados&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Pão de queijo&lt;/th&gt;
+        &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+        &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Coxinha&lt;/th&gt;
+        &lt;td&gt;De frango com requeijão&lt;/td&gt;
+        &lt;td&gt;R$ 7,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Doces&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Bolo de cenoura&lt;/th&gt;
+        &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+        &lt;td&gt;R$ 8,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Brigadeiro&lt;/th&gt;
+        &lt;td&gt;Unidade&lt;/td&gt;
+        &lt;td&gt;R$ 3,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Bebidas&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Café coado&lt;/th&gt;
+        &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+        &lt;td&gt;R$ 5,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Suco de laranja&lt;/th&gt;
+        &lt;td&gt;Copo de 300 ml&lt;/td&gt;
+        &lt;td&gt;R$ 8,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tfoot&gt;
+      &lt;tr&gt;
+        &lt;td colspan="3"&gt;Combo do dia: café coado + fatia de bolo por R$ 11,00.&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tfoot&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;tfoot&gt;</dt><dd><em>Table foot</em>, "pé da tabela": as linhas de fechamento. Vem depois do último <code>tbody</code>.</dd>
+  <dt>&lt;td colspan="3"&gt;</dt><dd>Uma célula comum que ocupa a linha inteira. Não é <code>th</code>, porque não é título de nada: é uma informação.</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Parte</th><th>Onde fica</th><th>Quantas</th></tr>
+<tr><td><code>caption</code></td><td>primeiro filho do <code>table</code></td><td>no máximo uma</td></tr>
+<tr><td><code>thead</code></td><td>depois do <code>caption</code></td><td>no máximo um</td></tr>
+<tr><td><code>tbody</code></td><td>depois do <code>thead</code></td><td>quantos quiser</td></tr>
+<tr><td><code>tfoot</code></td><td>no fim</td><td>no máximo um</td></tr>
+</table>
+</div>
+
+<div class="cenario">
+<strong>Esquecer o <code>&lt;tr&gt;</code> de uma linha</strong>
+<p>Na pressa, a Ana escreveu as três células do bolo direto no <code>tbody</code>, sem o <code>&lt;tr&gt;</code> e o <code>&lt;/tr&gt;</code> em volta. A tabela apareceu <strong>perfeita</strong>: ao ver uma célula fora de linha, o navegador abre a linha que faltava. O validador não deixa passar:</p>
+<pre class="term" data-cwd="~/sites/cardapio">$ vnu --verbose index.html
+index.html
+"file:/home/ana/sites/cardapio/index.html":42.12-43.24: error: “th” start tag in table body.</pre>
+<p>"Tag de abertura <code>th</code> no corpo da tabela": a primeira célula da linha do bolo, o <code>&lt;th scope="row"&gt;</code>, apareceu sem um <code>tr</code> em volta. É o caso típico em que o navegador esconde o erro. Corrija mesmo assim: outro navegador, um leitor de tela ou um programa que leia a sua página não precisam adivinhar igual.</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:tfoot td[colspan]=3,texto:tfoot td=Combo do dia,sel:tbody + tfoot">
+<p class="try-task"><strong>Missão (versão 4):</strong> depois do último <code>tbody</code>, acrescente um <code>&lt;tfoot&gt;</code> com uma linha e uma célula que ocupa as três colunas, com o texto <code>Combo do dia: café coado + fatia de bolo por R$ 11,00.</code></p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;Item&lt;/th&gt;
+        &lt;th scope="col"&gt;Descrição&lt;/th&gt;
+        &lt;th scope="col"&gt;Preço&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Salgados&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Pão de queijo&lt;/th&gt;
+        &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+        &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Coxinha&lt;/th&gt;
+        &lt;td&gt;De frango com requeijão&lt;/td&gt;
+        &lt;td&gt;R$ 7,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Doces&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Bolo de cenoura&lt;/th&gt;
+        &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+        &lt;td&gt;R$ 8,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Brigadeiro&lt;/th&gt;
+        &lt;td&gt;Unidade&lt;/td&gt;
+        &lt;td&gt;R$ 3,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Bebidas&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Café coado&lt;/th&gt;
+        &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+        &lt;td&gt;R$ 5,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Suco de laranja&lt;/th&gt;
+        &lt;td&gt;Copo de 300 ml&lt;/td&gt;
+        &lt;td&gt;R$ 8,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;Item&lt;/th&gt;
+        &lt;th scope="col"&gt;Descrição&lt;/th&gt;
+        &lt;th scope="col"&gt;Preço&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Salgados&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Pão de queijo&lt;/th&gt;
+        &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+        &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Coxinha&lt;/th&gt;
+        &lt;td&gt;De frango com requeijão&lt;/td&gt;
+        &lt;td&gt;R$ 7,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Doces&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Bolo de cenoura&lt;/th&gt;
+        &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+        &lt;td&gt;R$ 8,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Brigadeiro&lt;/th&gt;
+        &lt;td&gt;Unidade&lt;/td&gt;
+        &lt;td&gt;R$ 3,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Bebidas&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Café coado&lt;/th&gt;
+        &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+        &lt;td&gt;R$ 5,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Suco de laranja&lt;/th&gt;
+        &lt;td&gt;Copo de 300 ml&lt;/td&gt;
+        &lt;td&gt;R$ 8,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tfoot&gt;
+      &lt;tr&gt;
+        &lt;td colspan="3"&gt;Combo do dia: café coado + fatia de bolo por R$ 11,00.&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tfoot&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>A página completa</h2>
+<p>A versão final é a versão 4. Salve como <code>index.html</code> na pasta <code>sites/cardapio</code>:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cardápio — Café da Ana&lt;/title&gt;
+  &lt;style&gt;
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Café da Ana&lt;/h1&gt;
+  &lt;p&gt;Tudo feito na hora, com receitas da família.&lt;/p&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Cardápio de outubro de 2026&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;Item&lt;/th&gt;
+        &lt;th scope="col"&gt;Descrição&lt;/th&gt;
+        &lt;th scope="col"&gt;Preço&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Salgados&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Pão de queijo&lt;/th&gt;
+        &lt;td&gt;Porção com 6 unidades&lt;/td&gt;
+        &lt;td&gt;R$ 9,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Coxinha&lt;/th&gt;
+        &lt;td&gt;De frango com requeijão&lt;/td&gt;
+        &lt;td&gt;R$ 7,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Doces&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Bolo de cenoura&lt;/th&gt;
+        &lt;td&gt;Fatia com cobertura de chocolate&lt;/td&gt;
+        &lt;td&gt;R$ 8,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Brigadeiro&lt;/th&gt;
+        &lt;td&gt;Unidade&lt;/td&gt;
+        &lt;td&gt;R$ 3,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="rowgroup" colspan="3"&gt;Bebidas&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Café coado&lt;/th&gt;
+        &lt;td&gt;Xícara de 150 ml&lt;/td&gt;
+        &lt;td&gt;R$ 5,00&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;Suco de laranja&lt;/th&gt;
+        &lt;td&gt;Copo de 300 ml&lt;/td&gt;
+        &lt;td&gt;R$ 8,50&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tfoot&gt;
+      &lt;tr&gt;
+        &lt;td colspan="3"&gt;Combo do dia: café coado + fatia de bolo por R$ 11,00.&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tfoot&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O que o projeto juntou: <a href="tabelas.html">tabelas</a>, <a href="tabelas-cabecalho.html">cabeçalhos</a>, <a href="tabelas-mesclar.html">colspan</a>, <a href="tabelas-legenda.html">caption e scope</a>, um pouco de CSS num <code>style</code> (<a href="ligar-css.html">Ligar CSS</a>) e, de novo, o <a href="validar.html">validador</a>.</p>
+
+<h3>Validando no laboratório</h3>
+<pre class="term" data-cwd="~/sites/cardapio">$ ls
+index.html
+$ vnu --verbose index.html
+index.html
+$ echo $?
+0</pre>
+
+<div class="warning">
+<strong>Tabela é para dados, não para montar a página</strong>
+<p>Antigamente, sites inteiros eram montados com tabelas: o menu numa coluna, o texto em outra. Não faça isso. O leitor de tela anuncia "tabela, 2 colunas" e a pessoa acha que vai ouvir dados. Para posicionar as partes da página, use os <a href="semantica.html">elementos semânticos</a> e CSS. Tabela é para o que seria uma planilha: cardápio, horários, notas, medidas.</p>
+</div>
+
+<hr>
+
+<h2>Desafios extras</h2>
+<ol>
+  <li><strong>Mais uma coluna.</strong> Acrescente a coluna "Vegano?" com "sim" ou "não" em cada item. Lembre de aumentar todos os <code>colspan</code> para 4.</li>
+  <li><strong>Preço com valor de máquina.</strong> Troque cada preço por <code>&lt;data value="9.00"&gt;R$ 9,00&lt;/data&gt;</code>: as pessoas leem "R$ 9,00", os programas leem <code>9.00</code> (veja <a href="time.html">time e data</a>).</li>
+  <li><strong>Item esgotado.</strong> Risque o preço de um item com <code>&lt;del&gt;</code> e escreva "esgotado" do lado (veja <a href="formatacao.html">Formatação</a>).</li>
+  <li><strong>Tamanhos.</strong> Para o suco, faça duas linhas (300 ml e 500 ml) com o nome "Suco de laranja" numa célula só, usando <code>rowspan="2"</code> (veja <a href="tabelas-mesclar.html">Mesclar Células</a>).</li>
+</ol>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">1. Numa tabela, o que cada <code>tr</code> representa?</p>
+<label><input type="radio" name="q1"> Uma coluna.</label>
+<label><input type="radio" name="q1"> Uma célula.</label>
+<label><input type="radio" name="q1"> Uma linha.</label>
+<label><input type="radio" name="q1"> O título da tabela.</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">2. A Ana escreveu um texto direto dentro do <code>table</code>, entre duas linhas. Onde o navegador mostra esse texto?</p>
+<label><input type="radio" name="q2"> Entre as duas linhas, como ela escreveu.</label>
+<label><input type="radio" name="q2"> Em cima da tabela.</label>
+<label><input type="radio" name="q2"> Em nenhum lugar: o texto some.</label>
+<label><input type="radio" name="q2"> Dentro da primeira célula.</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">3. Qual <code>scope</code> vai no nome de cada item (Coxinha, Brigadeiro), que fica no começo da linha?</p>
+<label><input type="radio" name="q3"> <code>col</code></label>
+<label><input type="radio" name="q3"> <code>rowgroup</code></label>
+<label><input type="radio" name="q3"> <code>colgroup</code></label>
+<label><input type="radio" name="q3"> <code>row</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">4. Para que serve o <code>caption</code>?</p>
+<label><input type="radio" name="q4"> Dar um nome à tabela, que aparece na tela e é anunciado pelo leitor de tela.</label>
+<label><input type="radio" name="q4"> Fazer a primeira linha ficar em negrito.</label>
+<label><input type="radio" name="q4"> Juntar células.</label>
+<label><input type="radio" name="q4"> Criar o rodapé da tabela.</label>
+</div>
+
+<div class="exercise">
+<p>5. Complete a célula de título de grupo que ocupa as três colunas da tabela:</p>
+<div class="ex-code">&lt;th scope="rowgroup" <input data-answer="colspan=&quot;3&quot;|colspan=3" aria-label="atributo" size="12">&gt;Doces&lt;/th&gt;</div>
+</div>
+
+<div class="exercise">
+<p>6. Complete o nome do elemento do rodapé da tabela:</p>
+<div class="ex-code">&lt;<input data-answer="tfoot" aria-label="elemento" size="6">&gt; &lt;tr&gt;&lt;td colspan="3"&gt;Combo do dia&lt;/td&gt;&lt;/tr&gt; &lt;/tfoot&gt;</div>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Uma tabela é escrita linha por linha: <code>tr</code> para cada linha, <code>td</code> para cada célula. Toda linha com o mesmo número de células.</li>
+  <li><code>th</code> marca cabeçalhos; <code>scope</code> diz se vale para a coluna (<code>col</code>), a linha (<code>row</code>) ou o grupo (<code>rowgroup</code>).</li>
+  <li><code>caption</code> (o nome), <code>thead</code>, um ou mais <code>tbody</code> e <code>tfoot</code>, nessa ordem.</li>
+  <li><code>colspan</code> faz uma célula ocupar várias colunas; a soma de cada linha tem de fechar.</li>
+  <li>O navegador conserta tabelas erradas (cria <code>tbody</code> e <code>tr</code>, tira texto solto para cima); o validador aponta cada conserto.</li>
+  <li>Tabela é para dados, nunca para montar o layout da página.</li>
+</ul>
+<p>Próximo projeto: <a href="projeto-cadastro.html">Formulário de Cadastro</a>.</p>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
