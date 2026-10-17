@@ -92,7 +92,7 @@
 &lt;/ul&gt;
 </pre>
 
-<p>Esse quadro também é o navegador de verdade. Quer mexer no exemplo? Clique em <strong>copiar</strong> e cole numa caixa Experimente.</p>
+<p>Esse quadro também é o navegador de verdade. Se o exemplo tiver um link, você pode clicar nele: o quadro segue o link, e a barra do quadro mostra o endereço. O botão <strong>↻</strong> da barra desenha o exemplo de novo, do começo. Quando o exemplo escreve alguma coisa no console (ou uma imagem não carrega), aparece um console embaixo dele. Quer mexer no exemplo? Clique em <strong>copiar</strong> e cole numa caixa Experimente.</p>
 
 <hr>
 
@@ -235,7 +235,7 @@ document.getElementById("pedir").addEventListener("click", function () {
 <p>Num site publicado, ao clicar em "Enviar", o navegador manda os dados para um <strong>servidor</strong>, um programa que fica num computador da internet (aula <a href="enviar-formulario.html">Enviar</a>). O editor não tem servidor. Então, no envio, ele faz assim:</p>
 <ol class="passo">
   <li>O navegador confere os campos primeiro: <code>required</code>, <code>type="email"</code>, <code>pattern</code> e companhia funcionam de verdade, com os balões de aviso do seu navegador.</li>
-  <li>O console mostra o que seria enviado, por exemplo <code>[editor] Formulário enviado: GET obrigado.html?nome=Ana</code>.</li>
+  <li>O console mostra o que seria enviado, por exemplo <code>[editor] Formulário enviado: GET obrigado.html?nome=Ana</code>. Os dados vão escritos como o navegador os mandaria: o espaço vira <code>+</code>, e cada quebra de linha de um <code>&lt;textarea&gt;</code> vira <code>%0D%0A</code>.</li>
   <li>Se o <code>action</code> é uma <strong>aba</strong> e o método é GET, o quadro abre essa aba com os dados no endereço, depois do <code>?</code>.</li>
   <li>Nos outros casos (um <code>method="post"</code>, ou um <code>action</code> que não é aba, como <code>enviar.php</code>), o quadro mostra a página <strong>"📨 Formulário enviado"</strong>, com o método, o endereço e a tabela de cada <code>name</code> e <code>value</code>.</li>
 </ol>
@@ -324,7 +324,7 @@ $ echo $?
 <thead><tr><th>Situação</th><th>No editor</th><th>Num site publicado</th></tr></thead>
 <tbody>
 <tr><td>Enviar um formulário</td><td>Mostra os dados que seriam enviados</td><td>Os dados vão para o servidor do <code>action</code></td></tr>
-<tr><td>Link para uma página que não existe</td><td>Página "404: página não encontrada" do editor, com a lista das abas</td><td>Página 404 do servidor</td></tr>
+<tr><td>Link para uma página <code>.html</code> que não existe</td><td>Página "404: página não encontrada" do editor, com a lista das abas</td><td>Página 404 do servidor</td></tr>
 <tr><td>Link para outro site (<code>https://…</code>)</td><td>Abre numa aba nova do navegador</td><td>Abre na mesma aba (a não ser com <code>target="_blank"</code>)</td></tr>
 <tr><td><code>mailto:</code> e <code>tel:</code></td><td>O console diz o que abriria</td><td>Abre o programa de e-mail ou o discador</td></tr>
 <tr><td><code>target="_top"</code></td><td>Abre no próprio quadro (com aviso no console)</td><td>Abre na janela inteira</td></tr>
@@ -332,6 +332,17 @@ $ echo $?
 </tbody>
 </table>
 </div>
+
+<h3>Modo completo e modo simples</h3>
+<p>Para que as abas funcionem como arquivos de uma pasta, o editor liga no seu navegador um pequeno "servidor de mentirinha", o <em>service worker</em>. É o <strong>modo completo</strong>, o que você vê no guia publicado na internet (endereço com <code>https://</code>).</p>
+<p>Às vezes o navegador não deixa ligar esse servidor: com o guia aberto direto do disco (<code>file://</code>), num endereço <code>http://</code> que não seja o do próprio computador, numa janela anônima do Firefox ou com o recurso bloqueado. Aí o editor usa o <strong>modo simples</strong>, e quase tudo continua igual: os links entre as abas, as âncoras (<code>#receita</code>), os formulários, o console e as missões. As diferenças:</p>
+<ul>
+  <li>o CSS e o JS das abas entram embutidos na página, então o <code>&lt;link href="estilo.css"&gt;</code> do DOM muda, e uma missão que confere esse <code>href</code> não é cumprida;</li>
+  <li>um link para uma página que não existe só dá um aviso no console, em vez da página 404;</li>
+  <li>um envio GET para outra aba não leva os dados no endereço;</li>
+  <li>uma página sem <code>&lt;!DOCTYPE html&gt;</code> não entra em modo quirks (aula <a href="doctype.html">O DOCTYPE</a>);</li>
+  <li>links com <code>target</code> para as abas abrem dentro do próprio quadro, e não numa aba nova.</li>
+</ul>
 
 <h3>O que não dá para fazer no editor</h3>
 <ul>
