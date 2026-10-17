@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML div e span — caixas genéricas para agrupar | Guia HTML</title>
+<meta name="description" content="div e span em HTML para quem nunca fez um site: agrupar blocos com div, marcar um pedaço do texto com span, usar class para dar nome ao grupo, por que eles não têm significado, quando preferir outro elemento e os erros reais do validador W3C (div dentro de p, div dentro de span, div sem fechar), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">div e span</span></h1>
+
+<p class="intro">Até aqui, cada elemento que você aprendeu tinha um <strong>significado</strong>: <code>h1</code> é título, <code>p</code> é parágrafo, <code>ul</code> é lista. Mas às vezes você só quer <strong>juntar</strong> algumas coisas num grupo, ou <strong>marcar</strong> um pedacinho de uma frase, para dar um estilo ou um nome a ele. Para isso existem dois elementos sem significado nenhum: o <code>div</code>, a caixa para juntar blocos, e o <code>span</code>, a marcação para um trecho do texto. Nesta aula você vai usar os dois no site de receitas da Ana e descobrir por que eles são a <strong>última</strong> opção, e não a primeira.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <code>div</code> e como agrupar um título, um parágrafo e uma lista numa caixa só.</li>
+  <li>O que é o <code>span</code> e como marcar uma palavra ou um trecho dentro de uma frase.</li>
+  <li>Como dar um nome ao grupo com <code>class</code>, para o CSS achá-lo depois.</li>
+  <li>Por que <code>div</code> e <code>span</code> não mudam nada na tela sozinhos.</li>
+  <li>Por que eles são "genéricos" e quando um elemento com significado é melhor.</li>
+  <li>Os erros reais: <code>div</code> dentro de <code>p</code>, <code>div</code> dentro de <code>span</code> e um <code>div</code> sem fechar.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/receitas</code>. Como validar está em <a href="validar.html">Validar o HTML</a>. Os quadros "Resultado" são desenhados pelo <strong>seu</strong> navegador, agora.</p>
+
+<hr>
+
+<h2>A ideia: uma caixa e um marca-texto</h2>
+<p>Pense numa mudança de casa. Você junta as panelas, a frigideira e as colheres numa <strong>caixa</strong> de papelão. A caixa em si não é nada: ela só mantém as coisas juntas, para você carregar tudo de uma vez. Se escrever "COZINHA" do lado de fora, fica ainda mais fácil achar depois.</p>
+
+<p>Agora pense num livro de receitas impresso. Você passa um <strong>marca-texto</strong> amarelo sobre "40 minutos" no meio de uma frase, para não esquecer o tempo de forno. O marca-texto não muda as palavras; só marca aquele trecho.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na vida</th><th>Em HTML</th><th>Exemplo</th></tr>
+<tr><td>A caixa que junta várias coisas</td><td><code>div</code></td><td>Uma caixa com o título, o parágrafo e a lista de uma receita</td></tr>
+<tr><td>O marca-texto num trecho da frase</td><td><code>span</code></td><td>"Tempo de forno: <strong>40 minutos</strong>."</td></tr>
+<tr><td>A etiqueta escrita na caixa</td><td>o atributo <code>class</code></td><td><code>class="receita"</code>, <code>class="tempo"</code></td></tr>
+</table>
+</div>
+
+<p>Os nomes vêm do inglês. <code>div</code> é a abreviação de <em>division</em>, "divisão": uma parte da página. <code>span</code> quer dizer "trecho", "extensão": um pedaço do texto, do começo ao fim da marcação.</p>
+
+<hr>
+
+<h2>1. O <code>div</code>: juntar blocos numa caixa</h2>
+<p>A página da Ana tem uma receita com título, um parágrafo e uma lista de ingredientes. São três elementos soltos. Com um <code>div</code> em volta, eles viram <strong>um grupo</strong>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;div class="receita"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho, fácil e com cobertura de chocolate.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;2 xícaras de farinha&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;div&gt;</dt><dd>A tag de abertura: "a caixa começa aqui". Tudo o que vem depois, até o <code>&lt;/div&gt;</code>, fica <strong>dentro</strong> dela.</dd>
+  <dt>class="receita"</dt><dd>A etiqueta da caixa. O atributo <code>class</code> ("classe", no sentido de "tipo", "categoria") dá um nome ao grupo. O nome é você quem escolhe. Ele não aparece na tela; serve para o CSS (e o JavaScript) acharem esta caixa depois. A aula <a href="class-id.html">class e id</a> mostra os detalhes.</dd>
+  <dt>h2, p, ul</dt><dd>O conteúdo da caixa. Dentro de um <code>div</code> cabe quase tudo: títulos, parágrafos, listas, imagens, tabelas e até outros <code>div</code>.</dd>
+  <dt>&lt;/div&gt;</dt><dd>A tag de fechamento: "a caixa termina aqui". Esquecer essa tag é um erro comum (veja em <a href="#errado">Quando dá errado</a>).</dd>
+</dl>
+
+<p>Olhe o resultado com atenção: ele é <strong>exatamente igual</strong> ao que seria sem o <code>div</code>. Não apareceu borda, nem cor, nem espaço a mais. O <code>div</code> é uma caixa <strong>invisível</strong>. Ele agrupa, mas não enfeita.</p>
+
+<h3>Ver a caixa com um pouco de CSS</h3>
+<p>Para enxergar o <code>div</code>, é preciso pedir uma aparência a ele com CSS. Aqui o atributo <code>style</code> (aula <a href="atributo-style.html">O Atributo style</a>) desenha uma borda tracejada e um espaço por dentro:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;div class="receita" style="border: 2px dashed gray; padding: 8px;"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho, fácil e com cobertura de chocolate.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Este parágrafo está fora da caixa.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>border: 2px dashed gray;</dt><dd>"Borda" de 2 pixels, tracejada (<em>dashed</em>), cinza (<em>gray</em>).</dd>
+  <dt>padding: 8px;</dt><dd>"Enchimento": um espaço de 8 pixels entre a borda e o conteúdo.</dd>
+</dl>
+
+<p>Agora dá para ver: o título e o parágrafo do bolo estão dentro da caixa, e o último parágrafo está fora. Repare também que a caixa ocupa <strong>toda a largura</strong> disponível, mesmo com textos curtos. Esse é o jeito "de bloco", que a próxima aula, <a href="bloco-inline.html">Bloco × Em Linha</a>, explica com calma.</p>
+
+<div class="tip">
+<strong>Para que serve uma caixa invisível?</strong>
+<p>Principalmente para o CSS. Com todas as receitas dentro de <code>&lt;div class="receita"&gt;</code>, uma única regra no arquivo de estilo (por exemplo, "toda <code>.receita</code> tem borda e fundo claro") muda todas de uma vez. Sem o <code>div</code>, não haveria um elemento só para receber esse estilo. O CSS de verdade fica para o futuro Guia CSS; aqui ele aparece só o necessário para você ver o efeito.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:div.receita=2,sel:div.receita h2,nsel:div.receita div.receita=0">
+<p class="try-task"><strong>Missão:</strong> a página tem duas receitas soltas. Coloque <strong>cada</strong> receita (o <code>h2</code> e o <code>p</code> dela) dentro do seu próprio <code>&lt;div class="receita"&gt;</code>. Uma caixa não pode ficar dentro da outra. A borda tracejada já está pronta no <code>style</code> do primeiro <code>div</code>: copie-a para o segundo, se quiser ver as duas caixas.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+
+&lt;div style="border: 2px dashed gray; padding: 8px;"&gt;
+&lt;/div&gt;
+
+&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+
+&lt;h2&gt;Pão de queijo&lt;/h2&gt;
+&lt;p&gt;Crocante por fora, macio por dentro.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+
+&lt;div class="receita" style="border: 2px dashed gray; padding: 8px;"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class="receita" style="border: 2px dashed gray; padding: 8px;"&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Crocante por fora, macio por dentro.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. O <code>span</code>: marcar um trecho da frase</h2>
+<p>O <code>div</code> agrupa blocos inteiros. Quando você quer marcar só <strong>algumas palavras</strong> no meio de um parágrafo, o elemento certo é o <code>span</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Tempo de forno: &lt;span class="tempo"&gt;40 minutos&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Rende &lt;span class="porcoes"&gt;12 fatias&lt;/span&gt;.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;span</dt><dd>Começa a marcação. Fica <strong>dentro</strong> do parágrafo, no meio do texto.</dd>
+  <dt>class="tempo"</dt><dd>O nome desta marcação. "tempo" e "porcoes" são nomes escolhidos pela Ana. Em nomes de classe, evite acentos e espaços: use letras sem acento, números e hífen (<code>tempo-forno</code>).</dd>
+  <dt>&gt;40 minutos&lt;</dt><dd>O trecho marcado.</dd>
+  <dt>&lt;/span&gt;</dt><dd>Termina a marcação. O ponto final da frase ficou <strong>fora</strong> do <code>span</code>, porque ele não faz parte do tempo.</dd>
+</dl>
+
+<p>De novo, o resultado é igual a um parágrafo comum: o <code>span</code> também é invisível. A diferença é que agora o texto "40 minutos" tem um nome e pode receber um estilo só para ele:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Tempo de forno: &lt;span class="tempo" style="background: yellow;"&gt;40 minutos&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Rende &lt;span class="porcoes"&gt;12 fatias&lt;/span&gt;.&lt;/p&gt;
+</pre>
+
+<p>O <code>background: yellow;</code> pinta o fundo de amarelo, como o marca-texto. Repare em duas coisas no resultado:</p>
+<ul>
+  <li>O fundo amarelo cobre <strong>só</strong> o trecho "40 minutos", e não a linha inteira.</li>
+  <li>O texto continua na mesma linha, antes e depois do <code>span</code>. Ele não "quebra" a frase. Esse é o jeito "em linha" (<a href="bloco-inline.html">próxima aula</a>).</li>
+</ul>
+
+<div class="tryhtml" data-goal="sel:p span.destaque,texto:span.destaque=200 g de açúcar">
+<p class="try-task"><strong>Missão:</strong> na lista de ingredientes, a Ana quer destacar a quantidade de açúcar. Marque o trecho <code>200 g de açúcar</code> com um <code>&lt;span class="destaque"&gt;</code>, sem tirar o texto de dentro do <code>p</code>. Para ver a marcação, acrescente <code>style="background: yellow;"</code> ao <code>span</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;p&gt;Bata no liquidificador 3 cenouras, 3 ovos e meia xícara de óleo.&lt;/p&gt;
+&lt;p&gt;Numa tigela, misture 2 xícaras de farinha e 200 g de açúcar.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;p&gt;Bata no liquidificador 3 cenouras, 3 ovos e meia xícara de óleo.&lt;/p&gt;
+&lt;p&gt;Numa tigela, misture 2 xícaras de farinha e &lt;span class="destaque" style="background: yellow;"&gt;200 g de açúcar&lt;/span&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. <code>div</code> × <code>span</code>: qual é qual</h2>
+<p>Os dois são caixas sem significado. A diferença está no <strong>tamanho</strong> do que eles guardam e no que eles fazem com a linha:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th><code>div</code></th><th><code>span</code></th></tr>
+<tr><td>Guarda</td><td>blocos inteiros: títulos, parágrafos, listas, outros <code>div</code></td><td>um trecho de texto: palavras, links, ênfases, outros <code>span</code></td></tr>
+<tr><td>Na tela</td><td>começa numa linha nova e ocupa a largura toda</td><td>fica no meio da linha, do tamanho do texto</td></tr>
+<tr><td>Pode ficar dentro de um <code>p</code>?</td><td><strong>Não</strong> (o navegador fecha o <code>p</code>; veja abaixo)</td><td>Sim</td></tr>
+<tr><td>Pode ter um <code>p</code> dentro?</td><td>Sim</td><td><strong>Não</strong></td></tr>
+<tr><td>Comparação</td><td>a caixa de mudança</td><td>o marca-texto</td></tr>
+</table>
+</div>
+
+<p>Os dois podem andar juntos: um <code>div</code> com parágrafos, e <code>span</code> dentro dos parágrafos.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;div class="receita"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Tempo de forno: &lt;span class="tempo"&gt;40 minutos&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="receita"&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Tempo de forno: &lt;span class="tempo"&gt;25 minutos&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+
+<p>Com essa organização, o CSS pode pedir "toda <code>.receita</code> ganha uma borda" e "todo <code>.tempo</code> fica em negrito", e as duas receitas mudam juntas. Uma caixa dentro de outra também é permitida: um <code>&lt;div class="cardapio"&gt;</code> com várias <code>&lt;div class="receita"&gt;</code> dentro, por exemplo. As regras de quem pode ficar dentro de quem estão em <a href="aninhamento.html">Aninhamento</a>.</p>
+
+<hr>
+
+<h2>4. Genérico: o elemento que não diz nada</h2>
+<p>Para você, <code>class="receita"</code> diz claramente "isto é uma receita". Mas o nome da classe é só uma etiqueta para o CSS. Para o navegador, um <code>div</code> é só "um grupo qualquer" e um <code>span</code> é só "um trecho qualquer". Por isso eles se chamam elementos <strong>genéricos</strong>.</p>
+
+<p>Isso importa porque o HTML não é lido só por olhos. Ele também é lido por:</p>
+<ul>
+  <li><strong>Leitores de tela</strong>, os programas que leem a página em voz alta para quem não enxerga. Num <code>&lt;h2&gt;</code>, eles anunciam "título nível 2". Num <code>&lt;strong&gt;</code>, podem mudar o tom. Num <code>div</code> ou <code>span</code>, não anunciam nada (aula <a href="leitores-tela.html">Leitores de Tela</a>).</li>
+  <li><strong>Buscadores</strong>, como o Google, que tentam entender do que a página fala (aula <a href="seo.html">HTML e SEO</a>).</li>
+  <li><strong>Outras pessoas</strong>, que vão ler e mexer no seu código depois.</li>
+</ul>
+
+<p>Compare dois jeitos de destacar "não abra o forno":</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Nos primeiros 30 minutos, &lt;span class="aviso"&gt;não abra o forno&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Nos primeiros 30 minutos, &lt;strong&gt;não abra o forno&lt;/strong&gt;.&lt;/p&gt;
+</pre>
+
+<p>No primeiro, o aviso parece um texto comum, para os olhos e para o leitor de tela. No segundo, o <code>strong</code> diz que o trecho é <strong>importante</strong>, e o navegador ainda o mostra em negrito sem nenhum CSS (aula <a href="negrito-italico.html">Negrito e Itálico</a>).</p>
+
+<div class="warning">
+<strong>A regra do HTML: div e span são o último recurso</strong>
+<p>O próprio padrão do HTML (o <em>HTML Living Standard</em>) recomenda ver o <code>div</code> como um elemento "de último recurso": use-o só quando <strong>nenhum outro elemento</strong> serve. Antes de escrever um <code>div</code> ou um <code>span</code>, pergunte: "existe um elemento que diz o que isto é?".</p>
+</div>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Se o que você quer marcar é…</th><th>Em vez de <code>div</code>/<code>span</code>, use…</th><th>Aula</th></tr>
+<tr><td>um título</td><td><code>h1</code> a <code>h6</code></td><td><a href="titulos.html">Títulos</a></td></tr>
+<tr><td>um parágrafo</td><td><code>p</code></td><td><a href="paragrafos.html">Parágrafos</a></td></tr>
+<tr><td>um trecho importante</td><td><code>strong</code></td><td><a href="negrito-italico.html">Negrito e Itálico</a></td></tr>
+<tr><td>uma ênfase na fala</td><td><code>em</code></td><td><a href="negrito-italico.html">Negrito e Itálico</a></td></tr>
+<tr><td>o topo ou o rodapé da página</td><td><code>header</code>, <code>footer</code></td><td><a href="header-footer.html">header e footer</a></td></tr>
+<tr><td>um menu de links</td><td><code>nav</code></td><td><a href="nav.html">nav</a></td></tr>
+<tr><td>uma receita completa, um post</td><td><code>article</code></td><td><a href="section-article.html">section e article</a></td></tr>
+<tr><td>uma data ou um horário</td><td><code>time</code></td><td><a href="time.html">time e data</a></td></tr>
+<tr><td>só um grupo para o CSS, sem significado</td><td><strong><code>div</code></strong> (blocos) ou <strong><code>span</code></strong> (trecho)</td><td>esta aula</td></tr>
+</table>
+</div>
+
+<p>Isso não quer dizer que <code>div</code> e <code>span</code> são ruins. Eles são o elemento certo quando o grupo existe <strong>só</strong> por causa da aparência: uma caixa colorida em volta de três elementos, uma palavra pintada de outra cor. O problema é usá-los <strong>no lugar</strong> de um elemento que já tem significado. Uma página feita só de <code>div</code> tem até apelido: "sopa de div". A aula <a href="semantica.html">HTML Semântico</a> mostra a mesma página das duas formas.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>O navegador quase nunca mostra um erro. Ele <strong>conserta</strong> o HTML do jeito dele, e às vezes o conserto muda a página de um jeito que você não esperava. O validador W3C é quem diz o que está errado.</p>
+
+<div class="cenario">
+<strong><code>error: No “p” element in scope but a “p” end tag seen.</code></strong>
+<p>A Ana quis deixar "com cobertura" numa caixa e colocou um <code>div</code> <strong>dentro</strong> de um parágrafo:</p>
+<pre class="file" data-file="div-no-p.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura &lt;div&gt;com cobertura&lt;/div&gt; de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu div-no-p.html
+"file:/home/ana/receitas/div-no-p.html":9.58-9.61: error: No “p” element in scope but a “p” end tag seen.</pre>
+<dl class="anatomy">
+  <dt>9.58-9.61</dt><dd>Linha 9, das colunas 58 a 61: o validador aponta o <code>&lt;/p&gt;</code> do <strong>fim</strong> da linha, e não o <code>div</code>.</dd>
+  <dt>No “p” element in scope</dt><dd>"Não há nenhum elemento <code>p</code> aberto aqui". Mas o <code>&lt;p&gt;</code> foi aberto no começo da linha… O que aconteceu é que, ao ver o <code>&lt;div&gt;</code>, o leitor de HTML <strong>fechou o parágrafo sozinho</strong>, porque um parágrafo não pode ter um bloco dentro.</dd>
+  <dt>but a “p” end tag seen</dt><dd>"mas apareceu uma tag de fechamento <code>&lt;/p&gt;</code>". Ela sobrou, e o navegador a transforma num parágrafo <strong>vazio</strong>.</dd>
+</dl>
+<p>Esta é a página que o navegador montou de verdade (o Chromium, sem janela, com <code>--dump-dom</code>):</p>
+<pre class="file" data-file="o que o navegador montou">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura &lt;/p&gt;&lt;div&gt;com cobertura&lt;/div&gt; de chocolate.&lt;p&gt;&lt;/p&gt;
+</pre>
+<p>Ficaram <strong>dois</strong> parágrafos (o segundo, vazio), e "de chocolate." ficou solto, fora de qualquer parágrafo. Na tela, a frase aparece quebrada em linhas. Você vai consertar isso na missão logo abaixo.</p>
+<p><strong>Como consertar:</strong> dentro de um parágrafo, use <code>span</code> (ou <code>strong</code>, <code>em</code>…), nunca <code>div</code>. Se o trecho precisa mesmo ser um bloco, tire-o do parágrafo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “div” not allowed as child of element “span” in this context.</code></strong>
+<p>Agora o contrário: um <code>div</code> dentro de um <code>span</code>.</p>
+<pre class="file" data-file="div-no-span.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;div class="receita"&gt;
+  &lt;span class="tempo"&gt;Tempo: &lt;div&gt;40 minutos&lt;/div&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu div-no-span.html
+"file:/home/ana/receitas/div-no-span.html":10.30-10.34: error: Element “div” not allowed as child of element “span” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><em>Element “div” not allowed as child of element “span”</em> = "o elemento <code>div</code> não é permitido como filho do elemento <code>span</code>". <em>Suppressing further errors from this subtree</em> = "deixando de mostrar outros erros deste trecho": o validador para de olhar o que está dentro desse <code>div</code>.</p>
+<p>Aqui o navegador <strong>não</strong> conserta nada: o Chromium montou a página com o <code>div</code> dentro do <code>span</code>, exatamente como está escrito. Na tela, "40 minutos" desce para a linha de baixo, e o erro passa despercebido. Só o validador avisa.</p>
+<p><strong>Como consertar:</strong> o que vai dentro de um <code>span</code> é texto e elementos de texto (<code>strong</code>, <code>a</code>, outro <code>span</code>). Troque o <code>div</code> de dentro por <code>span</code>, ou o <code>span</code> de fora por <code>div</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Unclosed element “div”.</code></strong>
+<p>A Ana esqueceu o <code>&lt;/div&gt;</code> da primeira receita (falta uma linha depois da 11):</p>
+<pre class="file" data-file="div-aberto.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;div class="receita"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+
+&lt;div class="receita"&gt;
+  &lt;h2&gt;Pão de queijo&lt;/h2&gt;
+  &lt;p&gt;Crocante por fora.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu div-aberto.html
+"file:/home/ana/receitas/div-aberto.html":17.1-17.7: error: End tag for  “body” seen, but there were unclosed elements.
+"file:/home/ana/receitas/div-aberto.html":9.1-9.21: error: Unclosed element “div”.</pre>
+<dl class="anatomy">
+  <dt>17.1-17.7: End tag for “body” seen, but there were unclosed elements.</dt><dd>"Apareceu o <code>&lt;/body&gt;</code>, mas ainda havia elementos abertos". O validador só percebe o problema no fim da página. (O espaço duplo depois de <code>for</code> é do próprio validador.)</dd>
+  <dt>9.1-9.21: Unclosed element “div”.</dt><dd>"Elemento <code>div</code> não fechado", e ele aponta a linha 9, onde a caixa sem fechamento <strong>começa</strong>. Comece o conserto por esta mensagem.</dd>
+</dl>
+<p>Na tela, a página parece normal. Mas o único <code>&lt;/div&gt;</code> da linha 16 fechou a caixa do pão de queijo, e a caixa do bolo ficou aberta até o fim: o pão de queijo foi parar <strong>dentro</strong> da caixa do bolo. Com CSS, isso aparece na hora: a borda do bolo passa a envolver as duas receitas.</p>
+<p><strong>Como consertar:</strong> feche cada <code>div</code> antes de abrir o próximo grupo. Indentar o conteúdo (os dois espaços antes do <code>&lt;h2&gt;</code>) ajuda a ver onde cada caixa começa e termina. No editor de código, clicar numa tag de abertura costuma destacar a de fechamento correspondente.</p>
+</div>
+
+<div class="cenario">
+<strong>Nenhum erro, mas um problema: <code>div</code> no lugar de um elemento com significado</strong>
+<p>Um <code>&lt;div class="titulo"&gt;Receitas da Ana&lt;/div&gt;</code> no lugar de <code>&lt;h1&gt;</code> passa no validador sem nenhuma mensagem. O mesmo vale para um <code>&lt;div class="botao"&gt;Enviar&lt;/div&gt;</code> no lugar de um botão: o validador fica calado, mas quem usa só o teclado não consegue chegar nele com a tecla Tab, e o leitor de tela não diz que é um botão.</p>
+<p><strong>Como consertar:</strong> o validador confere as regras, não o significado. Quem escolhe o elemento certo é você: título é <code>h1</code>…<code>h6</code>, botão é <code>button</code> (aula <a href="botoes.html">Botões</a>), link é <code>a</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:p=2,nsel:p:empty=0,sel:p span">
+<p class="try-task"><strong>Missão:</strong> este é o erro do primeiro cenário. Olhe o resultado: a frase saiu quebrada, porque o navegador fechou o parágrafo ao ver o <code>div</code>. Troque o <code>div</code> por um <code>span</code>, para a frase voltar a ser <strong>um</strong> parágrafo só, sem nenhum parágrafo vazio sobrando.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura &lt;div&gt;com cobertura&lt;/div&gt; de chocolate.&lt;/p&gt;
+&lt;p&gt;Rende 12 fatias.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Bolo de cenoura &lt;span&gt;com cobertura&lt;/span&gt; de chocolate.&lt;/p&gt;
+&lt;p&gt;Rende 12 fatias.&lt;/p&gt;
+</pre>
+</div>
+
+<p>Repare que a missão confere a página que o navegador <strong>montou</strong>: com o <code>div</code>, existem três parágrafos (um deles vazio); com o <code>span</code>, só os dois que você escreveu.</p>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;div&gt;…&lt;/div&gt;</code></td><td>Agrupa blocos (títulos, parágrafos, listas) numa caixa sem significado</td></tr>
+<tr><td><code>&lt;span&gt;…&lt;/span&gt;</code></td><td>Marca um trecho dentro do texto, sem significado</td></tr>
+<tr><td><code>&lt;div class="receita"&gt;</code></td><td>Dá um nome ao grupo, para o CSS e o JavaScript</td></tr>
+<tr><td><code>&lt;span class="tempo"&gt;</code></td><td>Dá um nome ao trecho</td></tr>
+<tr><td><code>style="border: 2px dashed gray;"</code></td><td>Mostra a caixa com uma borda (só para ver; o certo é CSS num arquivo)</td></tr>
+<tr><td><code>&lt;p&gt;… &lt;span&gt;…&lt;/span&gt; …&lt;/p&gt;</code></td><td>Certo: <code>span</code> dentro de parágrafo</td></tr>
+<tr><td><code>&lt;p&gt;… &lt;div&gt;…&lt;/div&gt; …&lt;/p&gt;</code></td><td>Errado: o navegador fecha o parágrafo antes do <code>div</code></td></tr>
+<tr><td><code>&lt;span&gt;&lt;div&gt;…&lt;/div&gt;&lt;/span&gt;</code></td><td>Errado: bloco dentro de trecho (o validador acusa)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A caixa</h3>
+<p>Complete para agrupar a receita numa caixa genérica:</p>
+<div class="ex-code">&lt;<input data-answer="div" aria-label="tag de abertura"> class="receita"&gt; &lt;h2&gt;Bolo&lt;/h2&gt; &lt;p&gt;Fofinho.&lt;/p&gt; &lt;/<input data-answer="div" aria-label="tag de fechamento">&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O marca-texto</h3>
+<p>Complete para marcar o tempo dentro da frase:</p>
+<div class="ex-code">&lt;p&gt;Asse por &lt;<input data-answer="span" aria-label="tag de abertura"> class="tempo"&gt;40 minutos&lt;/<input data-answer="span" aria-label="tag de fechamento">&gt;.&lt;/p&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. O que muda na tela quando você coloca um parágrafo dentro de <code>&lt;div class="receita"&gt;</code>, sem nenhum CSS?</p>
+<label><input type="radio" name="q3"> Aparece uma borda em volta</label>
+<label><input type="radio" name="q3"> O texto fica em negrito</label>
+<label><input type="radio" name="q3"> Nada: o <code>div</code> é invisível</label>
+<label><input type="radio" name="q3"> Aparece a palavra "receita"</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que o navegador faz com <code>&lt;p&gt;Bolo &lt;div&gt;de cenoura&lt;/div&gt; fofinho&lt;/p&gt;</code>?</p>
+<label><input type="radio" name="q4"> Mostra uma mensagem de erro na página</label>
+<label><input type="radio" name="q4"> Fecha o parágrafo antes do <code>div</code>, e o <code>&lt;/p&gt;</code> do fim vira um parágrafo vazio</label>
+<label><input type="radio" name="q4"> Ignora o <code>div</code></label>
+<label><input type="radio" name="q4"> Não mostra nada da linha</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. A Ana quer que "não abra o forno" seja anunciado como importante pelo leitor de tela. Qual é a melhor escolha?</p>
+<label><input type="radio" name="q5"> <code>&lt;span class="importante"&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;div class="importante"&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;span style="font-weight: bold;"&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;strong&gt;</code></label>
+</div>
+
+<h3>Missão final: o cartão da receita</h3>
+
+<div class="tryhtml" data-goal="sel:div.receita h2,sel:div.receita ul li,sel:div.receita p span.tempo,texto:span.tempo=40 minutos,nsel:div.receita=1,nsrc:&lt;p&gt;[^&lt;]*&lt;div">
+<p class="try-task"><strong>Missão:</strong> monte o cartão do bolo de cenoura. Tudo deve ficar dentro de <strong>um</strong> <code>&lt;div class="receita"&gt;</code>: o título <code>h2</code>, o parágrafo com o tempo e a lista de ingredientes. No parágrafo, marque <code>40 minutos</code> com <code>&lt;span class="tempo"&gt;</code>. Se quiser, dê uma borda ao cartão com <code>style</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+
+&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+&lt;p&gt;Tempo de forno: 40 minutos.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+  &lt;li&gt;2 xícaras de farinha&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+
+&lt;div class="receita" style="border: 2px dashed gray; padding: 8px;"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Tempo de forno: &lt;span class="tempo"&gt;40 minutos&lt;/span&gt;.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;3 cenouras&lt;/li&gt;
+    &lt;li&gt;3 ovos&lt;/li&gt;
+    &lt;li&gt;2 xícaras de farinha&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>div</code> é uma caixa genérica para <strong>blocos</strong>: junta títulos, parágrafos e listas num grupo.</li>
+  <li><code>span</code> é uma marcação genérica para um <strong>trecho</strong> do texto, dentro de um parágrafo.</li>
+  <li>Sozinhos, os dois são <strong>invisíveis</strong>. Eles servem para dar um nome (<code>class</code>) e um lugar para o CSS e o JavaScript agirem.</li>
+  <li>Eles não têm significado: o leitor de tela e o buscador não sabem o que há ali. Use-os só quando <strong>nenhum outro elemento</strong> serve.</li>
+  <li><code>div</code> dentro de <code>p</code>: o navegador fecha o parágrafo sozinho, e o validador diz <code>No “p” element in scope but a “p” end tag seen.</code></li>
+  <li><code>div</code> dentro de <code>span</code>: o navegador aceita, mas o validador diz <code>Element “div” not allowed as child of element “span”</code>. Um <code>div</code> sem fechar dá <code>Unclosed element “div”.</code></li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
