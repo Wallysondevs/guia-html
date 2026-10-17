@@ -113,7 +113,7 @@ $ kill %1</pre>
 
 <div class="note">
 <strong>No editor do guia</strong>
-<p>Nos quadros "Experimente", o que você digita já chega ao navegador como texto, sem passar por bytes de um arquivo. Por isso, lá, tirar o <code>meta charset</code> não muda o resultado. O problema aparece com arquivos de verdade, no seu computador ou num site publicado. A seção 2 mostra o efeito real, com bytes de verdade.</p>
+<p>Nos quadros "Experimente", o editor entrega cada aba ao navegador já com o aviso <code>charset=utf-8</code> no cabeçalho, como um servidor bem configurado (e o cabeçalho ganha do <code>meta</code>). Por isso, lá, tirar o <code>meta charset</code> não muda o resultado. O problema aparece com arquivos de verdade, no seu computador ou num site publicado. A seção 2 mostra o efeito real, com bytes de verdade.</p>
 </div>
 
 <div class="tryhtml" data-goal="sel:head &gt; meta[charset='utf-8' i]:first-child">
