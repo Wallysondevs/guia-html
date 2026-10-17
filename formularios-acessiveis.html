@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Formulários Acessíveis — nomes, grupos, dicas e erros | Guia HTML</title>
+<meta name="description" content="Formulários acessíveis para quem nunca fez um site: label em todo campo, por que placeholder não é rótulo, fieldset e legend para grupos, dicas com aria-describedby, campos obrigatórios, mensagens de erro com aria-invalid, autocomplete e o tipo certo de campo, com as mensagens reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Formulários Acessíveis</span></h1>
+
+<p class="intro">Um formulário é uma conversa: a página pergunta, a pessoa responde. Se a pergunta não chega até a pessoa, a conversa acaba ali, e a encomenda de bolo não acontece. Nesta aula você vai juntar o que aprendeu sobre formulários e sobre acessibilidade para montar o formulário de encomendas da Ana de um jeito que funcione para <strong>todo mundo</strong>: quem usa leitor de tela, quem usa só o teclado, quem enxerga pouco, quem tem pressa no celular.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Por que todo campo precisa de um <strong>nome</strong> e os jeitos de dar esse nome (<code>&lt;label&gt;</code> primeiro).</li>
+  <li>Por que o <code>placeholder</code> não substitui o <code>&lt;label&gt;</code>.</li>
+  <li>Como agrupar perguntas com <code>&lt;fieldset&gt;</code> e <code>&lt;legend&gt;</code>.</li>
+  <li>Como ligar uma dica ao campo com <code>aria-describedby</code>.</li>
+  <li>Como avisar que um campo é obrigatório e mostrar um erro que todos percebam (<code>aria-invalid</code>).</li>
+  <li>Como o <code>autocomplete</code> e o <code>type</code> certo poupam trabalho.</li>
+  <li>As mensagens reais do validador W3C e o que ele deixa passar.</li>
+</ul>
+</div>
+
+<p>Esta aula supõe que você já viu <a href="formularios.html">Formulários</a>, <a href="label.html">label</a> e <a href="fieldset.html">fieldset e legend</a>; aqui o foco é o <strong>porquê</strong> de cada peça para quem usa tecnologia assistiva. Os arquivos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, versão 26.10.12) na máquina fictícia da Ana, na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: uma ficha de papel bem feita</h2>
+<p>Pense numa ficha de papel na recepção de um consultório. Uma ficha boa tem o nome de cada linha ("Nome:", "Telefone:"), agrupa as perguntas ("Endereço: rua, número, bairro"), avisa o que é obrigatório e explica o formato ("data no formato dia/mês/ano"). Se a recepcionista devolve a ficha, ela aponta <strong>qual linha</strong> está errada e <strong>por quê</strong>.</p>
+
+<p>Um formulário acessível é essa ficha, com uma diferença: cada uma dessas informações precisa estar <strong>no HTML</strong>, e não só no desenho, para que o leitor de tela consiga dizer tudo isso a quem não vê a tela.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Na ficha de papel</th><th>No HTML</th></tr>
+<tr><td>O nome de cada linha</td><td><code>&lt;label&gt;</code></td></tr>
+<tr><td>Um grupo de perguntas com título</td><td><code>&lt;fieldset&gt;</code> + <code>&lt;legend&gt;</code></td></tr>
+<tr><td>A explicação do formato, em letra miúda</td><td>um texto ligado com <code>aria-describedby</code></td></tr>
+<tr><td>"Obrigatório"</td><td><code>required</code>, e a palavra escrita</td></tr>
+<tr><td>"Esta linha está errada porque…"</td><td><code>aria-invalid="true"</code> + a mensagem ligada ao campo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. Todo campo precisa de um nome</h2>
+<p>Na aula <a href="leitores-tela.html">Leitores de Tela</a> você viu que cada elemento tem um <strong>nome acessível</strong>. Num campo, o nome é a pergunta. Sem ele, o leitor de tela anuncia só "editar, em branco" (ou algo parecido, conforme o leitor), e a pessoa não sabe o que digitar.</p>
+
+<p>O jeito certo é o <code>&lt;label&gt;</code> ("rótulo") ligado ao campo. Há duas formas, e as duas funcionam:</p>
+
+<pre class="file" data-file="nome.html" data-resultado>&lt;p&gt;
+  &lt;label for="nome"&gt;Seu nome&lt;/label&gt;
+  &lt;input id="nome" type="text"&gt;
+&lt;/p&gt;
+&lt;p&gt;
+  &lt;label&gt;Seu telefone &lt;input type="tel"&gt;&lt;/label&gt;
+&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;label for="nome"&gt;</dt><dd>O <code>for</code> ("para") diz <strong>de qual campo</strong> é este rótulo: o campo com <code>id="nome"</code>. O rótulo e o campo podem estar em qualquer lugar da página.</dd>
+  <dt>&lt;input id="nome"&gt;</dt><dd>O <code>id</code> tem de ser <strong>igual</strong> ao <code>for</code>, letra por letra.</dd>
+  <dt>&lt;label&gt;Seu telefone &lt;input&gt;&lt;/label&gt;</dt><dd>A outra forma: o campo <strong>dentro</strong> do rótulo. Não precisa de <code>for</code> nem de <code>id</code>.</dd>
+</dl>
+
+<p>Clique na palavra "Seu nome" do Resultado: o cursor vai para o campo. Esse é o teste mais rápido de que o rótulo está ligado. E o clique na palavra ajuda muito quem tem pouca firmeza na mão, porque aumenta a área que dá para clicar. Numa caixa de seleção pequena, isso faz toda a diferença.</p>
+
+<div class="tryhtml" data-goal="sel:label[for='nome'],sel:label[for='email'],sel:input#nome,sel:input#email[type='email']">
+<p class="try-task"><strong>Missão:</strong> os textos "Nome" e "E-mail" estão soltos, sem ligação com os campos. Transforme cada um num <code>&lt;label&gt;</code> com <code>for</code>, e dê aos campos <code>id="nome"</code> e <code>id="email"</code>. Depois clique nos rótulos para testar.</p>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;Nome &lt;input type="text"&gt;&lt;/p&gt;
+  &lt;p&gt;E-mail &lt;input type="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;button&gt;Encomendar&lt;/button&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome&lt;/label&gt; &lt;input id="nome" type="text"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail&lt;/label&gt; &lt;input id="email" type="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;button&gt;Encomendar&lt;/button&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<h3>Por que o <code>placeholder</code> não basta</h3>
+<p>O <code>placeholder</code> ("marcador de lugar") é aquele texto cinza dentro do campo. Muita gente o usa no lugar do rótulo para economizar espaço. Os problemas:</p>
+<ul>
+  <li>Ele <strong>some</strong> quando a pessoa começa a digitar. Quem se distrai, ou tem dificuldade de memória, não sabe mais o que era aquele campo.</li>
+  <li>O cinza claro costuma ter <strong>pouco contraste</strong>: quem enxerga pouco não consegue ler.</li>
+  <li>Não dá para clicar nele para chegar ao campo, como no <code>&lt;label&gt;</code>.</li>
+  <li>Alguns leitores de tela e tradutores automáticos tratam o <code>placeholder</code> de um jeito diferente do rótulo, ou o pulam.</li>
+</ul>
+<p>Use o <code>placeholder</code>, se quiser, para um <strong>exemplo</strong> (<code>placeholder="ana@exemplo.com"</code>), sempre junto com um <code>&lt;label&gt;</code>. E repare: o validador aceita um campo só com <code>placeholder</code>, sem nenhuma mensagem. Ele não confere se todo campo tem nome.</p>
+
+<h3>E o <code>aria-label</code>?</h3>
+<p>Quando não há espaço para um rótulo visível, como na busca do topo do site com um botão de lupa ao lado, o <code>aria-label</code> dá um nome que só o leitor de tela ouve: <code>&lt;input type="search" aria-label="Buscar receitas"&gt;</code>. É o último recurso: quem enxerga também precisa saber o que o campo pede, e o rótulo visível ajuda todo mundo.</p>
+
+<hr>
+
+<h2>2. Perguntas em grupo: <code>&lt;fieldset&gt;</code> e <code>&lt;legend&gt;</code></h2>
+<p>Um grupo de botões de rádio tem <strong>dois</strong> níveis de pergunta: a pergunta do grupo ("Tamanho do bolo") e o nome de cada opção ("Pequeno", "Médio", "Grande"). O <code>&lt;label&gt;</code> dá o nome de cada opção. O nome do grupo vem do <code>&lt;legend&gt;</code>, dentro de um <code>&lt;fieldset&gt;</code>.</p>
+
+<p>Sem o grupo, quem usa leitor de tela e chega com o <kbd>Tab</kbd> na primeira opção ouve só "Pequeno, botão de rádio" e não sabe pequeno <em>o quê</em>. Com o <code>&lt;fieldset&gt;</code>, o leitor anuncia também o <code>&lt;legend&gt;</code> ao entrar no grupo.</p>
+
+<div class="tryhtml" data-goal="sel:fieldset > legend,texto:legend=Tamanho do bolo,nsel:fieldset input[type='radio']=3,nsel:p.pergunta=0">
+<p class="try-task"><strong>Missão:</strong> ponha as três opções dentro de um <code>&lt;fieldset&gt;</code> e troque o parágrafo <code>&lt;p class="pergunta"&gt;</code> por um <code>&lt;legend&gt;Tamanho do bolo&lt;/legend&gt;</code>, logo no começo do <code>&lt;fieldset&gt;</code>. Depois ande com <kbd>Tab</kbd> e com as setas: o grupo inteiro é uma parada só, e as setas trocam a opção.</p>
+<pre class="script" data-file="index.html">&lt;p class="pergunta"&gt;Tamanho do bolo&lt;/p&gt;
+&lt;p&gt;&lt;input type="radio" name="tamanho" id="p" value="p"&gt; &lt;label for="p"&gt;Pequeno&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;input type="radio" name="tamanho" id="m" value="m"&gt; &lt;label for="m"&gt;Médio&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;&lt;input type="radio" name="tamanho" id="g" value="g"&gt; &lt;label for="g"&gt;Grande&lt;/label&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;fieldset&gt;
+  &lt;legend&gt;Tamanho do bolo&lt;/legend&gt;
+  &lt;p&gt;&lt;input type="radio" name="tamanho" id="p" value="p"&gt; &lt;label for="p"&gt;Pequeno&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;input type="radio" name="tamanho" id="m" value="m"&gt; &lt;label for="m"&gt;Médio&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;input type="radio" name="tamanho" id="g" value="g"&gt; &lt;label for="g"&gt;Grande&lt;/label&gt;&lt;/p&gt;
+&lt;/fieldset&gt;
+</pre>
+</div>
+
+<p>Use <code>&lt;fieldset&gt;</code> para todo grupo de rádio, para um grupo de caixas de seleção que respondem à mesma pergunta ("Quais coberturas?") e para partes de um formulário grande ("Endereço de entrega"). Não precisa pôr um <code>&lt;fieldset&gt;</code> em volta de cada campo sozinho.</p>
+
+<hr>
+
+<h2>3. Dicas ligadas ao campo: <code>aria-describedby</code></h2>
+<p>Às vezes o campo precisa de uma explicação a mais: o formato da data, o tamanho mínimo da senha. Se a dica for só um parágrafo perto do campo, quem enxerga lê, mas o leitor de tela, que vai direto para o campo com o <kbd>Tab</kbd>, <strong>pula</strong> o parágrafo. O atributo <code>aria-describedby</code> ("descrito por") liga a dica ao campo:</p>
+
+<pre class="file" data-file="senha.html" data-resultado>&lt;p&gt;
+  &lt;label for="senha"&gt;Crie uma senha&lt;/label&gt;
+  &lt;input id="senha" type="password" autocomplete="new-password" aria-describedby="dica-senha"&gt;
+&lt;/p&gt;
+&lt;p id="dica-senha"&gt;Use pelo menos 8 letras ou números.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>aria-describedby="dica-senha"</dt><dd>"Este campo é descrito pelo elemento com <code>id="dica-senha"</code>." O leitor de tela anuncia primeiro o nome (do <code>&lt;label&gt;</code>) e o tipo do campo, e depois a descrição, geralmente após uma pequena pausa.</dd>
+  <dt>&lt;p id="dica-senha"&gt;</dt><dd>A dica continua um texto normal, visível para todos.</dd>
+  <dt>autocomplete="new-password"</dt><dd>Avisa o navegador que é uma senha <strong>nova</strong>: o gerenciador de senhas pode sugerir uma forte (veja a seção 5).</dd>
+</dl>
+
+<div class="tip">
+<strong>Nome × descrição</strong>
+<p>O <strong>nome</strong> (do <code>&lt;label&gt;</code>) é curto e diz <em>o que</em> é o campo. A <strong>descrição</strong> (do <code>aria-describedby</code>) é o detalhe a mais. Um campo pode ter várias descrições, com os <code>id</code>s separados por espaço: <code>aria-describedby="dica-senha erro-senha"</code>.</p>
+</div>
+
+<hr>
+
+<h2>4. Obrigatórios e erros</h2>
+
+<h3>Avisar que é obrigatório</h3>
+<p>O atributo <code>required</code> ("obrigatório") faz duas coisas: o navegador não deixa enviar o formulário com o campo vazio (aula <a href="validacao.html">Validação</a>), e o leitor de tela anuncia que o campo é obrigatório. Mas quem enxerga também precisa saber <strong>antes</strong> de tentar enviar. Escreva a palavra no rótulo:</p>
+
+<pre class="file" data-file="obrigatorio.html" data-resultado>&lt;form&gt;
+  &lt;p&gt;
+    &lt;label for="cliente"&gt;Nome (obrigatório)&lt;/label&gt;
+    &lt;input id="cliente" type="text" autocomplete="name" required&gt;
+  &lt;/p&gt;
+  &lt;p&gt;&lt;button&gt;Encomendar&lt;/button&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+
+<p>No Resultado, aperte "Encomendar" com o campo vazio: o navegador não envia, põe o foco no campo e mostra um balão com uma mensagem na língua do navegador. O leitor de tela também lê essa mensagem.</p>
+
+<div class="warning">
+<strong>Só um asterisco vermelho não basta</strong>
+<p>Muitos sites marcam os obrigatórios só com um <code>*</code> vermelho. Quem não distingue cores não vê o vermelho, e o leitor de tela pode ler "asterisco" ou nada. Se usar o asterisco, explique no topo ("Campos com * são obrigatórios") e mantenha o <code>required</code> no campo. Também não precisa de <code>aria-required="true"</code> junto com o <code>required</code>: o validador avisa que é desnecessário (veja em <a href="#errado">Quando dá errado</a>).</p>
+</div>
+
+<h3>Mostrar um erro que todos percebam</h3>
+<p>Quando o formulário confere os dados por conta própria, com JavaScript, a mensagem de erro precisa de três coisas: estar <strong>escrita</strong> (não só uma borda vermelha), estar <strong>ligada ao campo</strong> e marcar o campo como inválido com <code>aria-invalid="true"</code>, que o leitor de tela anuncia junto com o campo.</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> digite "3" na quantidade e clique em "Encomendar": a mensagem aparece, o campo fica marcado como inválido e o foco volta para ele. O console mostra o valor de <code>aria-invalid</code>. Depois digite "12" e envie de novo.</p>
+<pre class="script" data-file="index.html">&lt;form id="pedido" novalidate&gt;
+  &lt;p&gt;
+    &lt;label for="qtd"&gt;Quantas fatias? (mínimo 10)&lt;/label&gt;
+    &lt;input id="qtd" type="number" aria-describedby="erro-qtd"&gt;
+  &lt;/p&gt;
+  &lt;p id="erro-qtd" hidden&gt;Erro: o pedido mínimo é de 10 fatias.&lt;/p&gt;
+  &lt;p&gt;&lt;button&gt;Encomendar&lt;/button&gt;&lt;/p&gt;
+&lt;/form&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+<pre class="script" data-file="script.js">const qtd = document.getElementById("qtd");
+const erro = document.getElementById("erro-qtd");
+
+document.getElementById("pedido").addEventListener("submit", function (evento) {
+  evento.preventDefault();          // não sai da página
+  if (Number(qtd.value) &lt; 10) {
+    erro.hidden = false;
+    qtd.setAttribute("aria-invalid", "true");
+    qtd.focus();
+  } else {
+    erro.hidden = true;
+    qtd.removeAttribute("aria-invalid");
+  }
+  console.log("aria-invalid:", qtd.getAttribute("aria-invalid"));
+});
+</pre>
+</div>
+
+<dl class="anatomy">
+  <dt>novalidate</dt><dd>Desliga a validação do navegador neste formulário, para o exemplo mostrar a mensagem própria.</dd>
+  <dt>aria-describedby="erro-qtd"</dt><dd>Liga a mensagem de erro ao campo. Enquanto ela tem <code>hidden</code>, não é lida; quando aparece, o leitor a anuncia junto com o campo.</dd>
+  <dt>aria-invalid="true"</dt><dd>Marca o campo como inválido. Os valores aceitos são <code>true</code>, <code>false</code>, <code>grammar</code> e <code>spelling</code>; o validador recusa qualquer outro.</dd>
+  <dt>qtd.focus()</dt><dd>Leva o foco ao campo com problema, para a pessoa não ter de procurá-lo.</dd>
+  <dt>"Erro: …"</dt><dd>A palavra "Erro" no começo deixa claro o que é a mensagem, mesmo sem a cor.</dd>
+</dl>
+
+<hr>
+
+<h2>5. Menos digitação: <code>autocomplete</code> e o <code>type</code> certo</h2>
+<p>Digitar é difícil para muita gente: quem tem tremor, quem usa um teclado na tela, quem dita por voz. Duas ajudas simples:</p>
+
+<ul>
+  <li>O <strong><code>type</code> certo</strong> (aula <a href="tipos-input.html">Tipos de input</a>): <code>type="email"</code> e <code>type="tel"</code> fazem o celular mostrar o teclado com <code>@</code> ou só com números.</li>
+  <li>O <strong><code>autocomplete</code></strong> diz ao navegador <em>que dado</em> o campo pede, com um nome padronizado. Assim ele preenche sozinho com o que a pessoa já guardou.</li>
+</ul>
+
+<pre class="file" data-file="entrega.html" data-resultado>&lt;fieldset&gt;
+  &lt;legend&gt;Seus dados&lt;/legend&gt;
+  &lt;p&gt;&lt;label for="n"&gt;Nome&lt;/label&gt; &lt;input id="n" type="text" autocomplete="name"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="e"&gt;E-mail&lt;/label&gt; &lt;input id="e" type="email" autocomplete="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="t"&gt;Telefone&lt;/label&gt; &lt;input id="t" type="tel" autocomplete="tel"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="cep"&gt;CEP&lt;/label&gt; &lt;input id="cep" type="text" inputmode="numeric" autocomplete="postal-code"&gt;&lt;/p&gt;
+&lt;/fieldset&gt;
+</pre>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Valor do <code>autocomplete</code></th><th>O campo pede</th></tr>
+<tr><td><code>name</code></td><td>nome completo</td></tr>
+<tr><td><code>given-name</code> / <code>family-name</code></td><td>primeiro nome / sobrenome</td></tr>
+<tr><td><code>email</code></td><td>e-mail</td></tr>
+<tr><td><code>tel</code></td><td>telefone</td></tr>
+<tr><td><code>street-address</code></td><td>endereço (rua e número)</td></tr>
+<tr><td><code>postal-code</code></td><td>CEP</td></tr>
+<tr><td><code>current-password</code> / <code>new-password</code></td><td>senha atual (entrar) / senha nova (cadastro)</td></tr>
+<tr><td><code>off</code></td><td>não preencher sozinho</td></tr>
+</table>
+</div>
+
+<p>Os nomes são sempre em inglês e vêm de uma lista fixa do HTML. Um nome inventado, como <code>autocomplete="nome"</code>, o validador recusa. O <code>inputmode="numeric"</code> do CEP pede o teclado de números no celular sem transformar o campo num <code>type="number"</code> (um CEP não é uma quantidade, e o zero do começo não pode sumir).</p>
+
+<hr>
+
+<h2>Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>Dar nome a um campo</td><td><code>&lt;label for&gt;</code> (ou o campo dentro do <code>&lt;label&gt;</code>). <code>aria-label</code> só sem espaço para rótulo visível.</td></tr>
+<tr><td>Mostrar um exemplo do que digitar</td><td><code>placeholder</code>, junto com o rótulo</td></tr>
+<tr><td>Agrupar rádios, caixas ou uma parte do formulário</td><td><code>&lt;fieldset&gt;</code> + <code>&lt;legend&gt;</code></td></tr>
+<tr><td>Explicar o formato</td><td>um texto visível + <code>aria-describedby</code></td></tr>
+<tr><td>Campo obrigatório</td><td><code>required</code> + a palavra "obrigatório" no rótulo</td></tr>
+<tr><td>Erro em um campo</td><td>mensagem escrita + <code>aria-describedby</code> + <code>aria-invalid="true"</code> + foco no campo</td></tr>
+<tr><td>Dados pessoais</td><td><code>autocomplete</code> com o nome padrão e o <code>type</code> certo</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>The value of the “for” attribute of the “label” element must be the ID of a non-hidden form control.</code></strong>
+<p>O <code>for</code> e o <code>id</code> estão escritos de jeitos diferentes, por um hífen:</p>
+<pre class="file" data-file="contato.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Contato&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;label for="email"&gt;E-mail&lt;/label&gt; &lt;input id="e-mail" type="email"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu contato.html
+"file:/home/ana/site/contato.html":8.1-8.19: error: The value of the “for” attribute of the “label” element must be the ID of a non-hidden form control.</pre>
+<p><strong>O que o navegador faz:</strong> mostra o rótulo e o campo lado a lado, como se estivesse tudo certo. Mas o clique em "E-mail" não leva ao campo, e o leitor de tela anuncia o campo sem nome.</p>
+<p><strong>O que o validador diz:</strong> "o valor do <code>for</code> do <code>label</code> tem de ser o <code>id</code> de um controle de formulário que não esteja escondido". Não existe nenhum campo com <code>id="email"</code>.</p>
+<p><strong>Como consertar:</strong> copie o <code>id</code> do campo e cole no <code>for</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Any “input” descendant of a “label” element with a “for” attribute must have an ID value that matches that “for” attribute.</code></strong>
+<p>As duas formas de rótulo misturadas, com nomes diferentes:</p>
+<pre class="file" data-file="misturado.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Misturado&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;label for="nome"&gt;Nome &lt;input id="cliente"&gt;&lt;/label&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu misturado.html
+"file:/home/ana/site/misturado.html":8.24-8.43: error: Any “input” descendant of a “label” element with a “for” attribute must have an ID value that matches that “for” attribute.
+"file:/home/ana/site/misturado.html":8.1-8.18: error: The value of the “for” attribute of the “label” element must be the ID of a non-hidden form control.</pre>
+<p><strong>O que o validador diz:</strong> "todo <code>input</code> dentro de um <code>label</code> com <code>for</code> tem de ter o <code>id</code> igual ao <code>for</code>", e a mesma mensagem do caso anterior. <strong>Como consertar:</strong> ou tire o <code>for</code> (o campo está dentro, já basta), ou deixe o <code>for</code> e o <code>id</code> iguais.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Bad value “nome” for attribute “autocomplete” on element “input”</code> e <code>Bad value “sim” for attribute “aria-invalid”</code></strong>
+<pre class="file" data-file="cadastro.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Cadastro&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;&lt;label for="n"&gt;Nome&lt;/label&gt; &lt;input id="n" autocomplete="nome"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="t"&gt;Telefone&lt;/label&gt; &lt;input id="t" type="tel" aria-invalid="sim"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for="c"&gt;Cidade&lt;/label&gt; &lt;input id="c" required aria-required="true"&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu cadastro.html
+"file:/home/ana/site/cadastro.html":8.32-8.65: error: Bad value “nome” for attribute “autocomplete” on element “input”: The string “nome” is not a valid autofill field name.
+"file:/home/ana/site/cadastro.html":9.36-9.79: error: Bad value “sim” for attribute “aria-invalid” on element “input”.
+"file:/home/ana/site/cadastro.html":10.34-10.77: info warning: Attribute “aria-required” is unnecessary for elements that have attribute “required”.
+$ echo $?
+1</pre>
+<ul>
+  <li><strong>Linha 8:</strong> "a string <code>nome</code> não é um nome válido de preenchimento automático". Use o nome da lista: <code>name</code>.</li>
+  <li><strong>Linha 9:</strong> <code>aria-invalid</code> não entende "sim". Use <code>true</code>.</li>
+  <li><strong>Linha 10:</strong> um <code>info warning</code>: "o atributo <code>aria-required</code> é desnecessário em elementos que têm <code>required</code>". Não é erro, mas apague o repetido.</li>
+</ul>
+</div>
+
+<h3>O que o validador não vê</h3>
+<p>Esta página passa sem nenhuma mensagem, e tem três problemas sérios:</p>
+
+<pre class="file" data-file="silencioso.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Silencioso&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;input type="email" placeholder="E-mail"&gt;
+&lt;p&gt;&lt;label for="s"&gt;Senha&lt;/label&gt; &lt;input id="s" type="password" aria-describedby="dica"&gt;&lt;/p&gt;
+&lt;p style="color: red"&gt;*&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose silencioso.html
+silencioso.html          « nenhuma mensagem
+$ echo $?
+0</pre>
+
+<div class="cenario">
+<strong>Nenhuma mensagem, e o formulário falha</strong>
+<ul>
+  <li>O e-mail só tem <code>placeholder</code>: sem rótulo, o nome some quando a pessoa digita.</li>
+  <li>O <code>aria-describedby="dica"</code> aponta para um <code>id</code> que <strong>não existe</strong>: a descrição simplesmente não é lida, e o validador não percebe.</li>
+  <li>Um asterisco vermelho solto não diz nada a quem não vê a cor, nem ao leitor de tela.</li>
+</ul>
+<p><strong>Como achar:</strong> clique em cada rótulo (o cursor tem de ir para o campo), preencha o formulário só com o teclado, e ouça-o com um leitor de tela (aula <a href="leitores-tela.html">Leitores de Tela</a>).</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;label for="x"&gt;</code> + <code>id="x"</code></td><td>O nome do campo; o clique no rótulo leva ao campo</td></tr>
+<tr><td><code>&lt;label&gt;Texto &lt;input&gt;&lt;/label&gt;</code></td><td>O mesmo, com o campo dentro do rótulo</td></tr>
+<tr><td><code>aria-label="…"</code></td><td>Nome só para o leitor de tela (último recurso)</td></tr>
+<tr><td><code>&lt;fieldset&gt;&lt;legend&gt;…&lt;/legend&gt;</code></td><td>Grupo de campos com uma pergunta comum</td></tr>
+<tr><td><code>aria-describedby="id1 id2"</code></td><td>Liga dicas e erros ao campo</td></tr>
+<tr><td><code>required</code></td><td>Obrigatório: o navegador confere e o leitor anuncia</td></tr>
+<tr><td><code>aria-invalid="true"</code></td><td>Marca o campo como inválido</td></tr>
+<tr><td><code>autocomplete="name"</code>, <code>"email"</code>, <code>"tel"</code>…</td><td>Diz que dado o campo pede, para o preenchimento automático</td></tr>
+<tr><td><code>inputmode="numeric"</code></td><td>Teclado de números no celular</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Ligar o rótulo</h3>
+<p>Complete para ligar o rótulo ao campo:</p>
+<div class="ex-code">&lt;label <input data-answer="for" aria-label="atributo">="cidade"&gt;Cidade&lt;/label&gt; &lt;input id="cidade"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. A dica</h3>
+<p>Complete para ligar a dica <code>&lt;p id="dica-cep"&gt;</code> ao campo:</p>
+<div class="ex-code">&lt;input id="cep" <input data-answer="aria-describedby" aria-label="atributo">="dica-cep"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Preenchimento automático</h3>
+<p>Qual valor de <code>autocomplete</code> pede o e-mail da pessoa?</p>
+<div class="ex-code">&lt;input type="email" autocomplete="<input data-answer="email" aria-label="valor">"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Por que o <code>placeholder</code> não substitui o <code>&lt;label&gt;</code>?</p>
+<label><input type="radio" name="q4"> Porque o validador dá erro</label>
+<label><input type="radio" name="q4"> Porque o <code>placeholder</code> não aparece no celular</label>
+<label><input type="radio" name="q4"> Porque ele some quando a pessoa digita e costuma ter pouco contraste</label>
+<label><input type="radio" name="q4"> Porque ele só aceita números</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Num grupo de botões de rádio "Forma de pagamento", onde fica a pergunta do grupo?</p>
+<label><input type="radio" name="q5"> No <code>placeholder</code> do primeiro rádio</label>
+<label><input type="radio" name="q5"> No <code>&lt;legend&gt;</code>, dentro de um <code>&lt;fieldset&gt;</code></label>
+<label><input type="radio" name="q5"> Num <code>&lt;h1&gt;</code></label>
+<label><input type="radio" name="q5"> No <code>name</code> dos rádios</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. O formulário encontrou um erro na quantidade. O que <strong>não</strong> ajuda quem usa leitor de tela?</p>
+<label><input type="radio" name="q6"> Uma mensagem escrita ligada com <code>aria-describedby</code></label>
+<label><input type="radio" name="q6"> <code>aria-invalid="true"</code> no campo</label>
+<label><input type="radio" name="q6"> Levar o foco ao campo</label>
+<label><input type="radio" name="q6"> Só pintar a borda do campo de vermelho</label>
+</div>
+
+<h3>Missão final: o formulário de encomendas</h3>
+
+<div class="tryhtml" data-goal="sel:label[for='nome'],attr:#nome[autocomplete]=name,sel:#nome[required],sel:label[for='tel'],attr:#tel[type]=tel,attr:#tel[autocomplete]=tel,sel:fieldset > legend,attr:#data[aria-describedby]=dica-data,sel:p#dica-data">
+<p class="try-task"><strong>Missão:</strong> deixe o formulário acessível. (1) Nome: crie o <code>&lt;label for="nome"&gt;Nome (obrigatório)&lt;/label&gt;</code>, dê <code>id="nome"</code>, <code>autocomplete="name"</code> e <code>required</code> ao campo. (2) Telefone: tire o <code>placeholder</code> como rótulo e crie um <code>&lt;label for="tel"&gt;</code>; o campo deve ter <code>id="tel"</code>, <code>type="tel"</code> e <code>autocomplete="tel"</code>. (3) Agrupe as coberturas num <code>&lt;fieldset&gt;</code> com <code>&lt;legend&gt;</code>. (4) Ligue a dica da data (dê a ela <code>id="dica-data"</code>) ao campo <code>#data</code> com <code>aria-describedby</code>.</p>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;Nome* &lt;input type="text"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;input type="text" placeholder="Telefone"&gt;&lt;/p&gt;
+  &lt;p&gt;Cobertura:&lt;/p&gt;
+  &lt;p&gt;&lt;input type="checkbox" id="choc" name="cob" value="choc"&gt; &lt;label for="choc"&gt;Chocolate&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;input type="checkbox" id="coco" name="cob" value="coco"&gt; &lt;label for="coco"&gt;Coco&lt;/label&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="data"&gt;Data da entrega&lt;/label&gt; &lt;input id="data" type="date"&gt;&lt;/p&gt;
+  &lt;p&gt;Entregamos de terça a sábado.&lt;/p&gt;
+  &lt;p&gt;&lt;button&gt;Encomendar&lt;/button&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome (obrigatório)&lt;/label&gt; &lt;input id="nome" type="text" autocomplete="name" required&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Telefone&lt;/label&gt; &lt;input id="tel" type="tel" autocomplete="tel"&gt;&lt;/p&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Cobertura&lt;/legend&gt;
+    &lt;p&gt;&lt;input type="checkbox" id="choc" name="cob" value="choc"&gt; &lt;label for="choc"&gt;Chocolate&lt;/label&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;input type="checkbox" id="coco" name="cob" value="coco"&gt; &lt;label for="coco"&gt;Coco&lt;/label&gt;&lt;/p&gt;
+  &lt;/fieldset&gt;
+  &lt;p&gt;&lt;label for="data"&gt;Data da entrega&lt;/label&gt; &lt;input id="data" type="date" aria-describedby="dica-data"&gt;&lt;/p&gt;
+  &lt;p id="dica-data"&gt;Entregamos de terça a sábado.&lt;/p&gt;
+  &lt;p&gt;&lt;button&gt;Encomendar&lt;/button&gt;&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>Teste o resultado: clique em cada rótulo, ande só com o <kbd>Tab</kbd> e tente encomendar sem nome. Se tiver um leitor de tela, ouça a data: depois do nome do campo, vem a dica dos dias de entrega.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Todo campo precisa de um nome: <code>&lt;label for&gt;</code> com o <code>id</code> igual, ou o campo dentro do <code>&lt;label&gt;</code>. O clique no rótulo é o teste.</li>
+  <li>O <code>placeholder</code> é só um exemplo: some ao digitar e tem pouco contraste. <code>aria-label</code> é o último recurso.</li>
+  <li>Grupos de rádios e caixas vão num <code>&lt;fieldset&gt;</code> com <code>&lt;legend&gt;</code>, a pergunta do grupo.</li>
+  <li>Dicas e erros ficam visíveis e ligados ao campo com <code>aria-describedby</code>.</li>
+  <li>Obrigatório: <code>required</code> e a palavra escrita, não só cor. Erro: mensagem escrita, <code>aria-invalid="true"</code> e foco no campo.</li>
+  <li><code>autocomplete</code> com o nome padrão (<code>name</code>, <code>email</code>, <code>tel</code>…) e o <code>type</code> certo poupam digitação.</li>
+  <li>O validador pega <code>for</code> sem campo, <code>autocomplete</code> e <code>aria-invalid</code> inventados, mas não vê campo sem nome nem <code>aria-describedby</code> quebrado.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
