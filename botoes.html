@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Botões — button e os tipos submit, reset e button | Guia HTML</title>
+<meta name="description" content="O elemento button em HTML para quem nunca fez um site: os tipos submit, reset e button, o tipo padrão que envia o formulário sem querer, name e value do botão, button × input type=submit, disabled e o atributo form, com o resultado real no seu navegador, as mensagens reais do validador W3C e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Botões (button)</span></h1>
+
+<p class="intro">Todo formulário termina num botão: "Enviar pedido", "Cadastrar", "Buscar". Mas nem todo botão envia. Alguns devolvem o formulário ao começo, outros só fazem alguma coisa na própria página, como somar mais um bolo ao pedido. Em HTML, todos eles são o mesmo elemento, o <code>&lt;button&gt;</code>, e quem decide o que cada um faz é o atributo <code>type</code>. Nesta aula você vai conhecer os três tipos, descobrir por que um botão esquecido sem <code>type</code> envia o formulário sem querer e ver o que o validador diz dos botões mal montados.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como criar um botão com <code>&lt;button&gt;</code> e escrever o texto dele.</li>
+  <li>Os três tipos: <code>submit</code> (enviar), <code>reset</code> (voltar ao começo) e <code>button</code> (não fazer nada sozinho).</li>
+  <li>Por que o tipo padrão é <code>submit</code>, e a armadilha que isso cria.</li>
+  <li>Como dois botões de enviar dizem qual foi clicado, com <code>name</code> e <code>value</code>.</li>
+  <li>A diferença entre <code>&lt;button&gt;</code> e <code>&lt;input type="submit"&gt;</code>, e entre um botão e um link.</li>
+  <li>Os erros mais comuns e as mensagens reais do validador W3C.</li>
+</ul>
+</div>
+
+<p>Você vai precisar de <a href="formularios.html">Formulários</a> e <a href="input.html">O Elemento input</a>. Os exemplos com o resultado embaixo são desenhados pelo <strong>seu</strong> navegador. Os comportamentos descritos ("o navegador envia…") foram conferidos no <strong>Chromium 155</strong>, e as validações com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: três botões no balcão</h2>
+<p>Imagine o balcão de encomendas da padaria, com uma fichinha de papel para a cliente preencher e três coisas ao lado:</p>
+<ul>
+  <li>a <strong>caixinha de entregar</strong>: a cliente põe a ficha ali e ela vai para a cozinha. É o <code>submit</code> ("enviar", "submeter");</li>
+  <li>uma <strong>ficha nova</strong>: joga fora o que foi escrito e começa de novo, do jeito que a ficha vinha impressa. É o <code>reset</code> ("redefinir", "voltar ao início");</li>
+  <li>uma <strong>campainha</strong>: não faz nada com a ficha; ela só toca, e alguém decide o que acontece quando ela toca. É o <code>button</code> comum, que só faz algo quando um script (JavaScript) manda.</li>
+</ul>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tipo</th><th>O que faz quando é clicado</th><th>Exemplo de texto</th></tr>
+<tr><td><code>type="submit"</code></td><td>Envia o formulário</td><td>Enviar pedido, Cadastrar, Buscar</td></tr>
+<tr><td><code>type="reset"</code></td><td>Volta todos os campos ao valor inicial</td><td>Recomeçar</td></tr>
+<tr><td><code>type="button"</code></td><td>Nada, a não ser que um script faça algo</td><td>Mais um, Mostrar senha</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O primeiro botão</h2>
+<p>O texto do botão vai entre <code>&lt;button&gt;</code> e <code>&lt;/button&gt;</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form&gt;
+  &lt;label for="nome"&gt;Seu nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome"&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;button</dt><dd>Começa o botão (<em>button</em> = "botão").</dd>
+  <dt>type="submit"</dt><dd>O <strong>tipo</strong>: este botão envia o formulário em que está.</dd>
+  <dt>Enviar pedido</dt><dd>O texto que aparece no botão. Escreva o que vai <strong>acontecer</strong> ("Enviar pedido"), e não só "OK" ou "Clique aqui": quem usa leitor de tela costuma pular de botão em botão e ouve só esse texto.</dd>
+  <dt>&lt;/button&gt;</dt><dd>Fecha o botão. Ao contrário do <code>&lt;input&gt;</code>, o <code>&lt;button&gt;</code> <strong>tem</strong> tag de fechamento, porque tem conteúdo.</dd>
+</dl>
+
+<p>O navegador desenha o botão com a cara de botão do sistema: um retângulo com borda, que muda de cor quando o mouse passa e quando é apertado. Você pode clicar, ou chegar nele com <kbd>Tab</kbd> e apertar <kbd>Enter</kbd> ou <kbd>Espaço</kbd>. Tudo isso vem de graça: é a maior vantagem de usar um <code>&lt;button&gt;</code> de verdade.</p>
+
+<hr>
+
+<h2>2. <code>submit</code>: enviar o formulário</h2>
+<p>Um clique num botão <code>submit</code> faz o navegador juntar os campos do formulário (cada <code>name</code> com o seu valor) e mandar para o endereço do <code>action</code>. Antes de mandar, ele confere as regras de validação, como o <code>required</code> (aula <a href="validacao.html">Validação</a>). Para onde e como vai é a aula <a href="enviar-formulario.html">Enviar (action, method, GET e POST)</a>.</p>
+
+<p>Há um segundo jeito de enviar, que muita gente usa sem perceber: apertar <kbd>Enter</kbd> dentro de um campo de texto. O navegador procura o primeiro botão <code>submit</code> do formulário e age como se ele tivesse sido clicado. É por isso que, numa busca, você digita e aperta <kbd>Enter</kbd>.</p>
+
+<h3>O tipo padrão é <code>submit</code></h3>
+<p>Aqui está o detalhe mais importante da aula. Se você <strong>não escrever</strong> o <code>type</code>, o botão é <code>submit</code>. Testamos no Chromium 155: um <code>&lt;button&gt;Sem tipo&lt;/button&gt;</code> dentro de um formulário tinha o tipo <code>submit</code> e, clicado, enviou o formulário.</p>
+
+<pre class="file" data-file="index.html">&lt;form&gt;
+  &lt;button&gt;Enviar&lt;/button&gt;           &lt;!-- é submit --&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;   &lt;!-- o mesmo, dito com todas as letras --&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Os dois são iguais. Mesmo assim, o guia sempre escreve o <code>type</code>: quem lê o código não precisa lembrar da regra, e você nunca cai na armadilha da seção 4.</p>
+
+<hr>
+
+<h2>3. <code>reset</code>: voltar ao começo</h2>
+<p>O botão <code>reset</code> devolve cada campo ao valor que ele tinha <strong>quando a página abriu</strong>. Experimente no resultado: mude a quantidade e o sabor e clique em <strong>Recomeçar</strong>.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form&gt;
+  &lt;label for="qtd"&gt;Quantidade:&lt;/label&gt;
+  &lt;input type="number" id="qtd" name="qtd" value="1"&gt;
+  &lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+  &lt;select id="sabor" name="sabor"&gt;
+    &lt;option&gt;Cenoura&lt;/option&gt;
+    &lt;option selected&gt;Chocolate&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;button type="reset"&gt;Recomeçar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>A quantidade volta para <strong>1</strong>, e não para vazio, e o sabor volta para <strong>Chocolate</strong>, a opção com <code>selected</code> (aula <a href="select.html">select e option</a>). O <code>reset</code> não "limpa": ele <strong>restaura</strong> o <code>value</code> e o <code>selected</code> escritos no HTML. No Chromium 155, um campo com <code>value="Ana"</code>, mudado para "Bia", voltou a "Ana" com o reset.</p>
+
+<div class="warning">
+<strong>Pense duas vezes antes de pôr um <code>reset</code></strong>
+<p>Quase ninguém precisa recomeçar um formulário do zero, mas muita gente clica em "Recomeçar" sem querer, achando que é o "Enviar", e perde tudo o que digitou. Não há como desfazer. Se usar, deixe o reset bem diferente do botão de enviar e longe dele. A maioria dos formulários de hoje não tem reset nenhum.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:form button[type=reset],texto:form button[type=submit]=Enviar pedido">
+<p class="try-task"><strong>Missão:</strong> o botão de enviar só diz "OK". Troque o texto dele para <code>Enviar pedido</code>. Depois acrescente, no fim do formulário, um botão do tipo <code>reset</code> com o texto <code>Recomeçar</code>. Escreva um nome no campo e teste o reset.</p>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;label for="nome"&gt;Seu nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome"&gt;
+  &lt;button type="submit"&gt;OK&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;label for="nome"&gt;Seu nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome"&gt;
+  &lt;button type="submit"&gt;Enviar pedido&lt;/button&gt;
+  &lt;button type="reset"&gt;Recomeçar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. <code>button</code>: um botão que só faz o que um script manda</h2>
+<p>O <code>type="button"</code> é a campainha: sozinho, ele não envia nem recomeça nada. Ele existe para o <strong>JavaScript</strong>, a linguagem que dá comportamento à página (aula <a href="script.html">O Elemento script</a>). Aqui, um script soma 1 cada vez que o botão é clicado:</p>
+
+<div class="tryhtml">
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;p&gt;Bolos no pedido: &lt;span id="qtd"&gt;1&lt;/span&gt;&lt;/p&gt;
+  &lt;button type="button" id="mais"&gt;Mais um&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+  const qtd = document.querySelector("#qtd");
+  document.querySelector("#mais").addEventListener("click", function () {
+    qtd.textContent = Number(qtd.textContent) + 1;
+  });
+&lt;/script&gt;
+</pre>
+</div>
+
+<p>Clique algumas vezes em <strong>Mais um</strong>: o número sobe e nada mais acontece. Você não precisa entender o script agora; ele só diz "quando clicarem em <code>#mais</code>, some 1 ao número de <code>#qtd</code>".</p>
+
+<h3>A armadilha: o botão sem <code>type</code> dentro do formulário</h3>
+<p>Agora apague o <code>type="button"</code> e deixe só <code>&lt;button id="mais"&gt;</code>. Como o tipo padrão é <code>submit</code> (seção 2), o clique faz <strong>duas</strong> coisas: soma 1 <em>e</em> envia o formulário. Num site de verdade, enviar recarrega a página, e o número volta para 1 logo depois de subir. Parece que o botão "não funciona", e o validador não acusa nada, porque o HTML é válido. É um dos erros mais comuns em formulários.</p>
+
+<div class="tryhtml" data-goal="attr:#mostrar[type]=button,attr:#enviar[type]=submit">
+<p class="try-task"><strong>Missão:</strong> no cadastro da Ana, o botão <strong>Mostrar dicas</strong> é para um script (ele não deve enviar nada), e o <strong>Cadastrar</strong> envia o formulário. Nenhum dos dois tem <code>type</code>. Escreva o tipo certo em cada um.</p>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;label for="email"&gt;E-mail:&lt;/label&gt;
+  &lt;input type="email" id="email" name="email"&gt;
+  &lt;button id="mostrar"&gt;Mostrar dicas&lt;/button&gt;
+  &lt;button id="enviar"&gt;Cadastrar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;label for="email"&gt;E-mail:&lt;/label&gt;
+  &lt;input type="email" id="email" name="email"&gt;
+  &lt;button type="button" id="mostrar"&gt;Mostrar dicas&lt;/button&gt;
+  &lt;button type="submit" id="enviar"&gt;Cadastrar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. Dois botões de enviar: <code>name</code> e <code>value</code></h2>
+<p>A ficha da Ana tem dois botões de enviar: um manda o pedido para a cozinha; o outro só guarda a ficha para a cliente terminar depois. Os dois enviam o mesmo formulário. Como quem recebe sabe qual foi clicado? Dê ao botão um <code>name</code> e um <code>value</code>, como um campo:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form&gt;
+  &lt;label for="nome"&gt;Seu nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome" value="Ana"&gt;
+  &lt;button type="submit" name="acao" value="enviar"&gt;Enviar pedido&lt;/button&gt;
+  &lt;button type="submit" name="acao" value="rascunho"&gt;Salvar rascunho&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Só o botão <strong>clicado</strong> entra no envio. Testamos no Chromium 155: clicando em "Salvar rascunho", os dados enviados foram <code>nome=Ana&amp;acao=rascunho</code>; clicando em "Enviar pedido", seriam <code>nome=Ana&amp;acao=enviar</code>. Um botão sem <code>name</code> não manda nada de si mesmo, só dispara o envio.</p>
+
+<div class="note">
+<strong>E se a pessoa apertar <kbd>Enter</kbd>?</strong>
+<p>O <kbd>Enter</kbd> num campo age como um clique no <strong>primeiro</strong> botão <code>submit</code> do formulário. Por isso, ponha primeiro o botão principal ("Enviar pedido"), e não o secundário.</p>
+</div>
+
+<hr>
+
+<h2>6. <code>&lt;button&gt;</code> ou <code>&lt;input type="submit"&gt;</code>?</h2>
+<p>Antes do <code>&lt;button&gt;</code> existir, os botões eram feitos com o <code>&lt;input&gt;</code>, e você vai encontrá-los em muitos sites. Os três tipos existem lá também:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form&gt;
+  &lt;input type="submit" value="Enviar pedido"&gt;
+  &lt;input type="reset" value="Recomeçar"&gt;
+  &lt;input type="button" value="Mais um"&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Com o <code>&lt;input&gt;</code>, o texto do botão é o atributo <code>value</code>, e não há tag de fechamento. Sem o <code>value</code>, um <code>submit</code> ou <code>reset</code> mostra um texto padrão escolhido pelo navegador, na língua dele (e um <code>type="button"</code> sem <code>value</code> fica vazio).</p>
+
+<p>A grande diferença: o <code>&lt;button&gt;</code> pode ter <strong>outros elementos dentro</strong>, como um negrito ou uma imagem com <code>alt</code>. O <code>&lt;input&gt;</code> só tem o texto do <code>value</code>.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;button type="submit"&gt;Enviar &lt;strong&gt;agora&lt;/strong&gt;&lt;/button&gt;
+&lt;button type="button"&gt;&lt;span aria-hidden="true"&gt;🎂&lt;/span&gt; Mais um bolo&lt;/button&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;strong&gt;agora&lt;/strong&gt;</dt><dd>Dentro do botão pode ir conteúdo "em linha" (o que caberia no meio de uma frase): <code>strong</code>, <code>em</code>, <code>span</code>, <code>img</code>. Não podem ir blocos como <code>div</code> e <code>p</code>, nem outro elemento clicável (outro botão, um link, um campo).</dd>
+  <dt>aria-hidden="true"</dt><dd>"Esconda do leitor de tela". O emoji é só enfeite, e sem isso o leitor de tela leria o nome dele ("bolo de aniversário") antes do texto (aula <a href="aria.html">ARIA</a>).</dd>
+</dl>
+
+<hr>
+
+<h2>7. Botão desligado e botão fora do formulário</h2>
+<p>Com o atributo booleano <code>disabled</code> ("desabilitado"), o botão aparece apagado e não reage a cliques nem ao <kbd>Tab</kbd>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;button type="submit" disabled&gt;Enviar pedido&lt;/button&gt;
+</pre>
+
+<p>Use com cuidado: um botão apagado não explica <strong>por que</strong> está apagado. Muitas vezes é melhor deixar clicar e mostrar o que falta (aula <a href="validacao.html">Validação</a>).</p>
+
+<p>Um botão <code>submit</code> só envia o formulário em que está <strong>dentro</strong>. Fora de qualquer <code>&lt;form&gt;</code>, ele não envia nada: no Chromium 155, um <code>&lt;button&gt;</code> solto tinha o tipo <code>submit</code>, mas nenhum formulário (<code>form</code> nulo). Se o desenho da página obriga o botão a ficar longe, o atributo <code>form</code> liga o botão ao formulário pelo <code>id</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form id="pedido"&gt;
+  &lt;label for="nome"&gt;Seu nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome"&gt;
+&lt;/form&gt;
+
+&lt;p&gt;Confira tudo antes de enviar.&lt;/p&gt;
+&lt;button type="submit" form="pedido"&gt;Enviar pedido&lt;/button&gt;
+</pre>
+
+<hr>
+
+<h2>Formas diferentes: qual usar?</h2>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você quer…</th><th>Use</th></tr>
+<tr><td>enviar um formulário</td><td><code>&lt;button type="submit"&gt;</code></td></tr>
+<tr><td>um botão para um script (somar, abrir, mostrar)</td><td><code>&lt;button type="button"&gt;</code></td></tr>
+<tr><td>recomeçar o formulário (raramente)</td><td><code>&lt;button type="reset"&gt;</code></td></tr>
+<tr><td>mexer num site antigo, que já usa <code>&lt;input type="submit"&gt;</code></td><td>pode manter; funciona igual</td></tr>
+<tr><td><strong>ir para outra página</strong></td><td>um link, <code>&lt;a href="…"&gt;</code> (aula <a href="links.html">Links</a>), e não um botão</td></tr>
+</table>
+</div>
+
+<p>A regra de ouro: <strong>link leva a um lugar, botão faz uma ação</strong>. "Ver o cardápio" é um link; "Enviar pedido" é um botão. Leitores de tela anunciam os dois de jeitos diferentes ("link", "botão"), e o teclado também os trata de forma diferente: um link é seguido com <kbd>Enter</kbd>, um botão é apertado com <kbd>Enter</kbd> ou <kbd>Espaço</kbd>. Se precisa parecer um botão, o link ganha cara de botão pelo CSS (quer aprender mais? futuro Guia CSS).</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos desta seção são páginas completas com o mesmo começo de 7 linhas (<code>&lt;!DOCTYPE html&gt;</code> até <code>&lt;body&gt;</code>, como em <a href="estrutura.html">Estrutura de uma Página</a>). O código mostrado começa na <strong>linha 8</strong>.</p>
+
+<div class="cenario">
+<strong>Tipo escrito errado: <code>type="sumbit"</code></strong>
+<pre class="file" data-file="tipo.html">&lt;form&gt;
+  &lt;button type="sumbit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu tipo.html
+"file:/home/ana/site/tipo.html":9.3-9.24: error: Bad value “sumbit” for attribute “type” on element “button”.</pre>
+<p><strong>O que significa:</strong> "valor ruim, <code>sumbit</code>, para o atributo <code>type</code> do elemento <code>button</code>". Só existem <code>submit</code>, <code>reset</code> e <code>button</code>.</p>
+<p><strong>O que o navegador faz:</strong> trata um tipo que ele não conhece como o padrão, <code>submit</code>. Neste caso deu certo por acaso. Mas um <code>type="buton"</code> (com um <code>t</code> só) também vira <code>submit</code>, e o botão do script passa a enviar o formulário.</p>
+<p><strong>Como consertar:</strong> corrija a palavra. O validador pega todo erro de digitação nos valores de <code>type</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Botão dentro de botão</strong>
+<pre class="file" data-file="dentro.html">&lt;form&gt;
+  &lt;button type="submit"&gt;Pedir &lt;button type="button"&gt;ajuda&lt;/button&gt;&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu dentro.html
+"file:/home/ana/site/dentro.html":9.31-9.52: error: Start tag “button” seen but an element of the same type was already open.
+"file:/home/ana/site/dentro.html":9.67-9.75: error: Stray end tag “button”.</pre>
+<p><strong>O que significa:</strong> o primeiro erro é "tag de abertura <code>button</code> encontrada, mas um elemento do mesmo tipo já estava aberto". O segundo, "tag de fechamento <code>button</code> perdida": sobrou um <code>&lt;/button&gt;</code> que não fecha nada.</p>
+<p><strong>O que o navegador faz:</strong> ao ver o segundo <code>&lt;button&gt;</code>, ele <strong>fecha o primeiro</strong> e começa outro ao lado. No Chromium 155, o resultado foram dois botões irmãos, "Pedir " e "ajuda", e o último <code>&lt;/button&gt;</code> foi jogado fora. É o navegador consertando sozinho, do jeito dele (aula <a href="como-funciona.html">Como o Navegador Lê HTML</a>).</p>
+<p><strong>Como consertar:</strong> dois botões lado a lado, nunca um dentro do outro.</p>
+</div>
+
+<div class="cenario">
+<strong>Botão dentro de um link</strong>
+<pre class="file" data-file="link.html">&lt;a href="carrinho.html"&gt;&lt;button type="button"&gt;Ver carrinho&lt;/button&gt;&lt;/a&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu link.html
+"file:/home/ana/site/link.html":8.25-8.46: error: The element “button” must not appear as a descendant of the “a” element.</pre>
+<p><strong>O que significa:</strong> "o elemento <code>button</code> não pode aparecer dentro do elemento <code>a</code>". São duas coisas clicáveis, uma dentro da outra: o leitor de tela anuncia as duas, o <kbd>Tab</kbd> para duas vezes no mesmo lugar e não fica claro qual delas o clique aciona.</p>
+<p><strong>Como consertar:</strong> "Ver carrinho" leva a outra página, então é só um link: <code>&lt;a href="carrinho.html"&gt;Ver carrinho&lt;/a&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um bloco dentro do botão</strong>
+<pre class="file" data-file="bloco.html">&lt;button type="button"&gt;&lt;div&gt;Comprar&lt;/div&gt;&lt;/button&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu bloco.html
+"file:/home/ana/site/bloco.html":8.23-8.27: error: Element “div” not allowed as child of element “button” in this context. (Suppressing further errors from this subtree.)</pre>
+<p><strong>O que significa:</strong> "o elemento <code>div</code> não é permitido como filho de <code>button</code> neste contexto". Dentro do botão só vai conteúdo em linha.</p>
+<p><strong>Como consertar:</strong> troque o <code>div</code> por <code>span</code>, ou tire-o: <code>&lt;button type="button"&gt;Comprar&lt;/button&gt;</code> (aula <a href="div-span.html">div e span</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>Um botão só com imagem, sem texto</strong>
+<pre class="file" data-file="icone.html">&lt;button type="button"&gt;&lt;img src="lixeira.png"&gt;&lt;/button&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu icone.html
+"file:/home/ana/site/icone.html":8.23-8.45: error: An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.</pre>
+<p><strong>O que significa:</strong> "um elemento <code>img</code> precisa ter o atributo <code>alt</code>". Aqui é mais grave do que numa imagem comum: a imagem é o <strong>único</strong> conteúdo do botão. Sem o <code>alt</code>, o botão não tem nome, e o leitor de tela anuncia só "botão". Botão de quê?</p>
+<p><strong>Como consertar:</strong> o <code>alt</code> diz a <strong>ação</strong>, e não o desenho: <code>&lt;img src="lixeira.png" alt="Apagar pedido"&gt;</code> (aula <a href="imagens-alt.html">Texto Alternativo</a>).</p>
+<p>Um botão <strong>vazio</strong>, <code>&lt;button type="button"&gt;&lt;/button&gt;</code>, passa no validador sem nenhuma mensagem, e tem o mesmo problema. O validador não pega tudo: leia o seu botão como se você não o enxergasse.</p>
+</div>
+
+<div class="cenario">
+<strong>O botão do script envia o formulário</strong>
+<p>Um <code>&lt;button&gt;</code> sem <code>type</code> dentro de um <code>&lt;form&gt;</code>, usado por um script. O HTML é <strong>válido</strong>, o validador fica quieto, mas cada clique também envia o formulário e a página recarrega (seção 4).</p>
+<p><strong>Como consertar:</strong> <code>type="button"</code>. Melhor ainda: escreva o <code>type</code> em <strong>todo</strong> botão, sempre.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;button type="submit"&gt;Texto&lt;/button&gt;</code></td><td>Envia o formulário (é também o tipo padrão)</td></tr>
+<tr><td><code>&lt;button type="reset"&gt;Texto&lt;/button&gt;</code></td><td>Devolve os campos aos valores iniciais do HTML</td></tr>
+<tr><td><code>&lt;button type="button"&gt;Texto&lt;/button&gt;</code></td><td>Não faz nada sozinho; serve para scripts</td></tr>
+<tr><td><code>name="…" value="…"</code></td><td>No botão de enviar clicado, entra no envio como um par <code>name=value</code></td></tr>
+<tr><td><code>disabled</code></td><td>Desliga o botão</td></tr>
+<tr><td><code>form="id-do-form"</code></td><td>Liga um botão de fora ao formulário com esse <code>id</code></td></tr>
+<tr><td><code>&lt;input type="submit" value="Texto"&gt;</code></td><td>A forma antiga; o texto fica no <code>value</code> e não aceita outros elementos</td></tr>
+<tr><td><kbd>Enter</kbd> num campo de texto</td><td>Aciona o primeiro botão <code>submit</code> do formulário</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O tipo do script</h3>
+<p>Complete para criar um botão que não envia o formulário:</p>
+<div class="ex-code">&lt;button type="<input data-answer="button" aria-label="tipo">"&gt;Mostrar dicas&lt;/button&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Recomeçar</h3>
+<p>Complete para criar o botão que devolve o formulário ao começo:</p>
+<div class="ex-code">&lt;button type="<input data-answer="reset" aria-label="tipo">"&gt;Recomeçar&lt;/button&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. Dentro de um <code>&lt;form&gt;</code>, o que faz um clique em <code>&lt;button&gt;Calcular&lt;/button&gt;</code>, sem <code>type</code>?</p>
+<label><input type="radio" name="q3"> Nada: um botão sem <code>type</code> é desligado</label>
+<label><input type="radio" name="q3"> Volta o formulário ao começo</label>
+<label><input type="radio" name="q3"> Envia o formulário, porque o tipo padrão é <code>submit</code></label>
+<label><input type="radio" name="q3"> Dá um erro no navegador</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Um campo tem <code>value="2"</code>. A pessoa muda para 5 e clica num botão <code>reset</code>. O campo fica com:</p>
+<label><input type="radio" name="q4"> vazio</label>
+<label><input type="radio" name="q4"> 2</label>
+<label><input type="radio" name="q4"> 5</label>
+<label><input type="radio" name="q4"> 0</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Qual destes é o jeito certo de criar "Ver cardápio", que abre a página <code>cardapio.html</code>?</p>
+<label><input type="radio" name="q5"> <code>&lt;button type="submit"&gt;Ver cardápio&lt;/button&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;a href="cardapio.html"&gt;&lt;button type="button"&gt;Ver cardápio&lt;/button&gt;&lt;/a&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;input type="button" value="cardapio.html"&gt;</code></label>
+<label><input type="radio" name="q5"> <code>&lt;a href="cardapio.html"&gt;Ver cardápio&lt;/a&gt;</code></label>
+</div>
+
+<h3>Missão final: a ficha de encomenda</h3>
+
+<div class="tryhtml" data-goal="nsel:form button[type=submit][name=acao]=2,sel:form button[type=submit][value=enviar],sel:form button[type=submit][value=rascunho],texto:form button[type=submit][value=enviar]=Enviar pedido,texto:form button[type=reset]=Recomeçar,nsel:button:not([type])=0">
+<p class="try-task"><strong>Missão:</strong> termine a ficha com três botões, todos com <code>type</code>:</p>
+<ul class="try-task">
+  <li><code>Enviar pedido</code>: envia, com <code>name="acao"</code> e <code>value="enviar"</code> (ele vem primeiro, por causa do <kbd>Enter</kbd>);</li>
+  <li><code>Salvar rascunho</code>: envia, com <code>name="acao"</code> e <code>value="rascunho"</code>;</li>
+  <li><code>Recomeçar</code>: volta a ficha ao começo.</li>
+</ul>
+<pre class="script" data-file="index.html">&lt;form&gt;
+  &lt;label for="nome"&gt;Seu nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome"&gt;
+  &lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+  &lt;select id="sabor" name="sabor"&gt;
+    &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+    &lt;option value="chocolate"&gt;Chocolate&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;!-- os três botões aqui --&gt;
+
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form&gt;
+  &lt;label for="nome"&gt;Seu nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome"&gt;
+  &lt;label for="sabor"&gt;Sabor:&lt;/label&gt;
+  &lt;select id="sabor" name="sabor"&gt;
+    &lt;option value="cenoura"&gt;Cenoura&lt;/option&gt;
+    &lt;option value="chocolate"&gt;Chocolate&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;button type="submit" name="acao" value="enviar"&gt;Enviar pedido&lt;/button&gt;
+  &lt;button type="submit" name="acao" value="rascunho"&gt;Salvar rascunho&lt;/button&gt;
+  &lt;button type="reset"&gt;Recomeçar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li><code>&lt;button&gt;</code> cria um botão; o texto vai entre as tags e deve dizer a ação ("Enviar pedido").</li>
+  <li><code>type="submit"</code> envia o formulário, <code>type="reset"</code> restaura os valores do HTML (não "limpa"), <code>type="button"</code> não faz nada sem um script.</li>
+  <li>Sem <code>type</code>, o botão é <code>submit</code>: um botão de script sem <code>type="button"</code> envia o formulário sem querer. Escreva sempre o <code>type</code>.</li>
+  <li><code>name</code> e <code>value</code> no botão dizem qual botão de enviar foi clicado; o <kbd>Enter</kbd> aciona o primeiro <code>submit</code>.</li>
+  <li><code>&lt;button&gt;</code> aceita conteúdo em linha (<code>strong</code>, <code>img</code> com <code>alt</code>); <code>&lt;input type="submit"&gt;</code> só o texto do <code>value</code>.</li>
+  <li>Link leva a um lugar, botão faz uma ação. Nunca um botão dentro de um link, de outro botão ou com um <code>div</code> dentro.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
