@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML nav — o menu de navegação | Guia HTML</title>
+<meta name="description" content="O elemento nav em HTML para quem nunca fez um site: o menu do site com nav, ul, li e a, por que usar uma lista, marcar a página atual com aria-current, dar nome a vários nav com aria-label, a trilha de navegação (breadcrumb), quando não usar nav e os erros reais do validador W3C (a dentro de ul, li dentro de nav, valor errado de aria-current), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">nav</span></h1>
+
+<p class="intro">Todo site precisa de um caminho para as outras páginas: o <strong>menu</strong>. Em HTML, o grupo dos links principais fica num elemento próprio, o <code>nav</code>. Nesta aula você vai montar o menu do site de receitas da Ana do jeito que os sites profissionais montam, com uma lista de links, marcar em qual página a pessoa está, criar uma "trilha" (Início › Doces › Bolo) e descobrir quando um grupo de links <strong>não</strong> precisa de <code>nav</code>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é o <code>nav</code> e o que vai dentro dele.</li>
+  <li>Por que o menu costuma ser uma lista: <code>nav</code> › <code>ul</code> › <code>li</code> › <code>a</code>.</li>
+  <li>Como marcar a página atual com <code>aria-current="page"</code>.</li>
+  <li>Como dar um nome a cada <code>nav</code> com <code>aria-label</code>, quando há mais de um.</li>
+  <li>A trilha de navegação (<em>breadcrumb</em>) com <code>ol</code>.</li>
+  <li>Quando não usar <code>nav</code>, e os erros reais: <code>a</code> dentro de <code>ul</code>, <code>li</code> dentro de <code>nav</code> e um valor errado em <code>aria-current</code>.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/receitas</code>. Antes desta aula, vale ter visto <a href="links.html">Links</a> e <a href="listas.html">Listas com Marcadores</a>.</p>
+
+<hr>
+
+<h2>A ideia: as placas de um shopping</h2>
+<p>Num shopping, perto da entrada, existe um <strong>painel</strong> com as placas principais: "Praça de alimentação", "Cinema", "Estacionamento". Não são todas as lojas, só os caminhos mais importantes. E ao lado do painel tem um adesivo: "<strong>Você está aqui</strong>".</p>
+
+<p>O <code>nav</code> é esse painel. O nome vem de <em>navigation</em>, "navegação": ele guarda os <strong>links principais</strong> para andar pelo site. Cada link é uma placa, e o <code>aria-current</code> (seção 3) é o adesivo "Você está aqui".</p>
+
+<hr>
+
+<h2>1. O primeiro <code>nav</code></h2>
+<p>No começo, o menu da Ana era só um grupo de links. Colocá-los num <code>nav</code> já diz ao navegador: "isto é navegação".</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;nav&gt;
+  &lt;a href="index.html"&gt;Início&lt;/a&gt;
+  &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+  &lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;
+  &lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;
+&lt;/nav&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;nav&gt;</dt><dd>Começa o grupo de navegação. É um bloco invisível: sozinho, não muda nada na tela.</dd>
+  <dt>&lt;a href="doces.html"&gt;Doces&lt;/a&gt;</dt><dd>Cada link leva a uma página do site. O texto do link diz para onde ele vai.</dd>
+  <dt>&lt;/nav&gt;</dt><dd>Termina o grupo.</dd>
+</dl>
+
+<p>No resultado, os quatro links ficaram lado a lado, separados só por um espaço, porque o <code>a</code> é um elemento em linha (aula <a href="bloco-inline.html">Bloco × Em Linha</a>). Para o leitor de tela, porém, o <code>nav</code> já fez diferença: ele vira a região <strong>navegação</strong> (papel <code>navigation</code>), e quem usa leitor de tela pode pular direto para ela, ou pular por cima dela para chegar ao conteúdo (aula <a href="semantica.html">HTML Semântico</a>).</p>
+
+<hr>
+
+<h2>2. O menu como lista</h2>
+<p>Quase todos os sites montam o menu como uma <strong>lista de links</strong>: um <code>ul</code>, um <code>li</code> para cada item e o <code>a</code> dentro do <code>li</code>.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;nav&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="sobre.html"&gt;Sobre&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>nav</dt><dd>A região: "isto é navegação".</dd>
+  <dt>ul</dt><dd>A lista sem ordem (<em>unordered list</em>): os itens do menu não têm uma sequência obrigatória.</dd>
+  <dt>li</dt><dd>Um item da lista (<em>list item</em>). O <code>ul</code> só aceita <code>li</code> como filho.</dd>
+  <dt>a</dt><dd>O link, <strong>dentro</strong> do <code>li</code>.</dd>
+</dl>
+
+<p>Por que o trabalho a mais? Porque a lista diz <strong>quantos</strong> itens o menu tem. Ao entrar nele, o leitor de tela costuma anunciar algo como "navegação, lista, 4 itens", e a pessoa já sabe o tamanho do menu antes de ouvir tudo. Sem a lista, ela só descobre quantos links há ouvindo um por um.</p>
+
+<p>E as bolinhas e o recuo que apareceram no resultado? Isso é aparência, e se resolve com CSS (por exemplo, com o <code>display: inline</code> que você viu na aula Bloco × Em Linha, ou com regras que o futuro Guia CSS mostra). O HTML continua dizendo o que o menu é: uma lista de links.</p>
+
+<div class="tryhtml" data-goal="nsel:nav ul li a=3,nsel:nav ul &gt; a=0,nsel:li=3">
+<p class="try-task"><strong>Missão:</strong> a Ana colocou os links direto no <code>ul</code>, sem <code>li</code>. Isso é um erro (você vai ver a mensagem do validador no fim da aula). Ponha cada link dentro do seu próprio <code>&lt;li&gt;</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;nav&gt;
+  &lt;ul&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+    &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+    &lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;nav&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+</pre>
+</div>
+
+<h3>Onde o <code>nav</code> fica</h3>
+<p>O menu principal costuma ficar dentro do <code>header</code>, junto com o nome do site (aula <a href="header-footer.html">header e footer</a>). Também pode ficar logo depois dele, ou numa barra lateral. Os três jeitos estão certos: o <code>nav</code> é uma região própria em qualquer lugar.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;p&gt;Bem-vindo! Escolha uma categoria no menu.&lt;/p&gt;
+</pre>
+
+<hr>
+
+<h2>3. "Você está aqui": <code>aria-current="page"</code></h2>
+<p>Quando a pessoa está na página de doces, o link "Doces" do menu leva para a própria página em que ela já está. Os sites costumam destacar esse link, para mostrar onde a pessoa está. O jeito certo de marcar isso no HTML é o atributo <code>aria-current</code>:</p>
+
+<pre class="file" data-file="doces.html" data-resultado>&lt;h1&gt;Doces&lt;/h1&gt;
+&lt;nav&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="doces.html" aria-current="page"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>aria-current</dt><dd>"Atual". Os atributos que começam com <code>aria-</code> são do ARIA, o padrão de acessibilidade (aula <a href="aria.html">ARIA</a>). Este diz que o link aponta para o item <strong>atual</strong>.</dd>
+  <dt>="page"</dt><dd>"Página": o item atual é a <strong>página</strong> em que a pessoa está. Outros valores aceitos são <code>step</code> (passo atual de um processo), <code>location</code>, <code>date</code>, <code>time</code>, <code>true</code> e <code>false</code>.</dd>
+</dl>
+
+<p>Na tela, nada mudou: o <code>aria-current</code> não tem aparência. O leitor de tela, porém, anuncia o link como "página atual". Para os olhos, o destaque se faz com CSS, usando o próprio atributo como alvo (algo como "todo <code>a</code> com <code>aria-current</code> fica em negrito"). Assim, o mesmo atributo serve aos dois públicos.</p>
+
+<div class="tryhtml" data-goal="attr:nav li:last-child a[aria-current]=page,texto:nav a[aria-current]=Salgados,nsel:a[aria-current]=1">
+<p class="try-task"><strong>Missão:</strong> esta é a página de salgados. Marque, no menu, o link da página atual com <code>aria-current="page"</code>. Só esse link pode ter o atributo.</p>
+<pre class="script" data-file="salgados.html">&lt;h1&gt;Salgados&lt;/h1&gt;
+&lt;nav&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;p&gt;Pão de queijo, coxinha e esfiha.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="salgados.html">&lt;h1&gt;Salgados&lt;/h1&gt;
+&lt;nav&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="salgados.html" aria-current="page"&gt;Salgados&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;p&gt;Pão de queijo, coxinha e esfiha.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. Mais de um <code>nav</code>: dê um nome a cada um</h2>
+<p>Uma página pode ter vários <code>nav</code>: o menu principal, um menu da categoria na lateral, uma trilha. O validador aceita sem nenhuma mensagem. Mas pense no leitor de tela: na lista de regiões, ele mostra "navegação", "navegação", "navegação". Qual é qual?</p>
+
+<p>A solução é dar um <strong>nome</strong> a cada um com <code>aria-label</code> ("rótulo"):</p>
+
+<pre class="file" data-file="bolo.html" data-resultado>&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav aria-label="Menu principal"&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="doces.html" aria-current="page"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;nav aria-label="Trilha"&gt;
+  &lt;ol&gt;
+    &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="bolo.html" aria-current="page"&gt;Bolo de cenoura&lt;/a&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>aria-label="Menu principal"</dt><dd>O nome do primeiro <code>nav</code>. O leitor de tela passa a dizer algo como "Menu principal, navegação". O texto não aparece na tela.</dd>
+  <dt>aria-label="Trilha"</dt><dd>O nome do segundo. Não escreva a palavra "navegação" no nome: o leitor de tela já a diz, e ficaria "navegação navegação".</dd>
+  <dt>&lt;ol&gt;</dt><dd>A trilha usa uma lista <strong>numerada</strong> (aula <a href="listas-ordenadas.html">Listas Numeradas</a>), porque aqui a ordem importa: Início, depois Doces, depois o Bolo.</dd>
+  <dt>aria-current="page"</dt><dd>Aparece duas vezes, uma em cada <code>nav</code>, e está certo: no menu, a seção atual é "Doces"; na trilha, a página atual é o bolo.</dd>
+</dl>
+
+<h3>A trilha (<em>breadcrumb</em>)</h3>
+<p>A trilha de navegação mostra o caminho do começo do site até a página atual: <strong>Início › Doces › Bolo de cenoura</strong>. Em inglês ela se chama <em>breadcrumb</em>, "migalha de pão", por causa da história de João e Maria, que deixavam migalhas pelo caminho para achar a volta. No resultado acima ela apareceu como lista numerada; o CSS é que a deixa numa linha, com os "›" entre os itens.</p>
+
+<div class="tip">
+<strong>Um nome que aparece na tela: <code>aria-labelledby</code></strong>
+<p>Se o <code>nav</code> já tem um título visível, como <code>&lt;h2 id="titulo-categorias"&gt;Categorias&lt;/h2&gt;</code>, você pode usar esse título como nome: <code>&lt;nav aria-labelledby="titulo-categorias"&gt;</code> ("rotulado por"). O valor é o <code>id</code> do título (aula <a href="class-id.html">class e id</a>). Assim o nome que o leitor de tela diz é o mesmo que os olhos leem.</p>
+</div>
+
+<hr>
+
+<h2>5. Nem todo grupo de links é um <code>nav</code></h2>
+<p>O padrão do HTML diz que o <code>nav</code> é para os blocos de navegação <strong>principais</strong>. Se cada grupo de links virar um <code>nav</code>, a lista de regiões do leitor de tela fica cheia de entradas sem importância, e o atalho deixa de ser atalho.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Grupo de links</th><th>Usar <code>nav</code>?</th></tr>
+<tr><td>O menu principal do site</td><td><strong>Sim</strong></td></tr>
+<tr><td>A trilha (Início › Doces › Bolo)</td><td><strong>Sim</strong></td></tr>
+<tr><td>O índice de uma página longa ("Nesta página: Ingredientes, Modo de preparo")</td><td><strong>Sim</strong></td></tr>
+<tr><td>A paginação de uma lista ("Anterior", "1", "2", "Próxima")</td><td><strong>Sim</strong></td></tr>
+<tr><td>Os links do rodapé ("Privacidade", "Contato")</td><td>Em geral, não: o <code>footer</code> já basta</td></tr>
+<tr><td>Um link no meio de um parágrafo</td><td>Não</td></tr>
+<tr><td>Os links para as redes sociais da Ana</td><td>Em geral, não: uma lista simples resolve</td></tr>
+</table>
+</div>
+
+<p>Uma boa pergunta para decidir: "uma pessoa que usa leitor de tela ia querer <strong>pular direto</strong> para estes links?". Para o menu principal, sim. Para três links do rodapé, provavelmente não.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: Element “a” not allowed as child of element “ul” in this context.</code></strong>
+<p>É o erro da primeira missão: links direto na lista, sem <code>li</code>.</p>
+<pre class="file" data-file="link-na-ul.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;nav&gt;
+  &lt;ul&gt;
+    &lt;a href="index.html"&gt;Início&lt;/a&gt;
+    &lt;a href="doces.html"&gt;Doces&lt;/a&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu link-na-ul.html
+"file:/home/ana/receitas/link-na-ul.html":11.5-11.25: error: Element “a” not allowed as child of element “ul” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/receitas/link-na-ul.html":12.5-12.25: error: Element “a” not allowed as child of element “ul” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>Uma mensagem para cada link: "o elemento <code>a</code> não é permitido como filho do elemento <code>ul</code>". O <code>ul</code> só aceita <code>li</code>. O Chromium monta a página exatamente como está escrita, sem consertar nada, e os links aparecem lado a lado, sem bolinhas. Por isso parece funcionar. Mas, para o navegador, essa lista tem <strong>zero</strong> itens: os links estão nela sem ser itens dela, e o anúncio "lista, 3 itens" deixa de fazer sentido.</p>
+<p><strong>Como consertar:</strong> cada <code>a</code> dentro de um <code>&lt;li&gt;…&lt;/li&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “li” not allowed as child of element “nav” in this context.</code></strong>
+<p>O erro "do meio": os <code>li</code> estão lá, mas falta o <code>ul</code> em volta deles (linhas 10 e 11).</p>
+<pre class="file" data-file="li-na-nav.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;nav&gt;
+  &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+&lt;/nav&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu li-na-nav.html
+"file:/home/ana/receitas/li-na-nav.html":10.3-10.6: error: Element “li” not allowed as child of element “nav” in this context. (Suppressing further errors from this subtree.)
+"file:/home/ana/receitas/li-na-nav.html":11.3-11.6: error: Element “li” not allowed as child of element “nav” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>Um <code>li</code> só existe dentro de uma lista (<code>ul</code>, <code>ol</code> ou <code>menu</code>). O <code>nav</code> não é uma lista; ele é a região que <strong>guarda</strong> a lista. De novo, o navegador não conserta nada.</p>
+<p><strong>Como consertar:</strong> ponha um <code>&lt;ul&gt;</code> entre o <code>nav</code> e os <code>li</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “sim” for attribute “aria-current” on element “a”.</code></strong>
+<p>A Ana traduziu o valor do atributo: <code>&lt;a href="index.html" aria-current="sim"&gt;</code>, na linha 11.</p>
+<pre class="term" data-cwd="~/receitas">$ vnu current-sim.html
+"file:/home/ana/receitas/current-sim.html":11.9-11.48: error: Bad value “sim” for attribute “aria-current” on element “a”.</pre>
+<p>"Valor inválido “sim” para o atributo <code>aria-current</code> no elemento <code>a</code>". Nomes e valores de atributos são palavras fixas, em inglês, definidas pelo padrão; não dá para traduzir. Já o <strong>texto</strong> do <code>aria-label</code> é livre, e deve ser em português, a língua da página.</p>
+<p><strong>Como consertar:</strong> use um dos valores da lista: para a página atual, <code>aria-current="page"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Nenhum erro, mas um problema: <code>role="navigation"</code> e <code>nav</code> sem nome</strong>
+<p>Escrever <code>&lt;nav role="navigation"&gt;</code> dá o aviso informativo <code>The “navigation” role is unnecessary for element “nav”.</code> (veja a aula <a href="semantica.html">HTML Semântico</a>): o <code>nav</code> já tem esse papel. E dois <code>nav</code> sem <code>aria-label</code> passam no validador sem nenhuma mensagem, mas deixam o leitor de tela com duas regiões iguais.</p>
+<p><strong>Como consertar:</strong> tire o <code>role</code>; dê um <code>aria-label</code> diferente a cada <code>nav</code>, quando houver mais de um.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;nav&gt;…&lt;/nav&gt;</code></td><td>Grupo de links de navegação principal (região <code>navigation</code>)</td></tr>
+<tr><td><code>&lt;nav&gt;&lt;ul&gt;&lt;li&gt;&lt;a href="…"&gt;…&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/nav&gt;</code></td><td>O menu como lista: o leitor de tela diz quantos itens há</td></tr>
+<tr><td><code>aria-current="page"</code></td><td>Marca o link da página atual</td></tr>
+<tr><td><code>&lt;nav aria-label="Menu principal"&gt;</code></td><td>Dá um nome ao <code>nav</code> (necessário quando há mais de um)</td></tr>
+<tr><td><code>&lt;nav aria-labelledby="id-do-titulo"&gt;</code></td><td>Usa um título visível como nome</td></tr>
+<tr><td><code>&lt;nav aria-label="Trilha"&gt;&lt;ol&gt;…&lt;/ol&gt;&lt;/nav&gt;</code></td><td>Trilha de navegação (<em>breadcrumb</em>)</td></tr>
+<tr><td>Errado</td><td><code>a</code> direto no <code>ul</code>; <code>li</code> direto no <code>nav</code>; valor traduzido no <code>aria-current</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A ordem das peças</h3>
+<p>Complete o menu com os dois elementos que faltam:</p>
+<div class="ex-code">&lt;nav&gt;&lt;<input data-answer="ul|ol" aria-label="lista">&gt;&lt;<input data-answer="li" aria-label="item">&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;…</div>
+</div>
+
+<div class="exercise">
+<h3>2. Você está aqui</h3>
+<p>Complete o atributo que marca o link da página atual:</p>
+<div class="ex-code">&lt;a href="doces.html" aria-current="<input data-answer="page" aria-label="valor">"&gt;Doces&lt;/a&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. A página tem um menu principal e uma trilha, os dois em <code>nav</code>. O que falta para o leitor de tela distinguir os dois?</p>
+<label><input type="radio" name="q3"> Nada: o validador já aceita</label>
+<label><input type="radio" name="q3"> Um <code>aria-label</code> diferente em cada <code>nav</code></label>
+<label><input type="radio" name="q3"> <code>role="navigation"</code> nos dois</label>
+<label><input type="radio" name="q3"> Trocar um deles por <code>div</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">4. Qual destes grupos de links <strong>menos</strong> precisa de um <code>nav</code>?</p>
+<label><input type="radio" name="q4"> O menu principal do site</label>
+<label><input type="radio" name="q4"> A trilha Início › Doces › Bolo</label>
+<label><input type="radio" name="q4"> O índice "Nesta página" de uma receita longa</label>
+<label><input type="radio" name="q4"> Um link no meio de um parágrafo</label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. O que o validador diz de <code>&lt;nav&gt;&lt;ul&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/ul&gt;&lt;/nav&gt;</code>?</p>
+<label><input type="radio" name="q5"> <code>Element “a” not allowed as child of element “ul”</code></label>
+<label><input type="radio" name="q5"> <code>Element “ul” not allowed as child of element “nav”</code></label>
+<label><input type="radio" name="q5"> Nada: o navegador mostra o link</label>
+<label><input type="radio" name="q5"> <code>Unclosed element “li”</code></label>
+</div>
+
+<h3>Missão final: o menu e a trilha da página do pão de queijo</h3>
+
+<div class="tryhtml" data-goal="sel:header nav ul li a,nsel:nav[aria-label]=2,nsel:nav ol li a=3,texto:nav ol a[aria-current]=Pão de queijo,texto:header nav a[aria-current]=Salgados,nsel:a[aria-current]=2">
+<p class="try-task"><strong>Missão:</strong> monte a navegação da página do pão de queijo. (1) No <code>header</code>, um <code>nav</code> com <code>aria-label="Menu principal"</code> e uma lista <code>ul</code> com os links Início, Doces e Salgados; marque "Salgados" com <code>aria-current="page"</code>. (2) Depois do <code>header</code>, um <code>nav</code> com <code>aria-label="Trilha"</code> e uma lista <code>ol</code> com três links: Início, Salgados e Pão de queijo; marque "Pão de queijo" com <code>aria-current="page"</code>.</p>
+<pre class="script" data-file="pao-de-queijo.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;!-- menu principal aqui --&gt;
+&lt;/header&gt;
+&lt;!-- trilha aqui --&gt;
+&lt;h2&gt;Pão de queijo&lt;/h2&gt;
+&lt;p&gt;Crocante por fora, macio por dentro.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="pao-de-queijo.html">&lt;header&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;nav aria-label="Menu principal"&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="doces.html"&gt;Doces&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="salgados.html" aria-current="page"&gt;Salgados&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;nav aria-label="Trilha"&gt;
+  &lt;ol&gt;
+    &lt;li&gt;&lt;a href="index.html"&gt;Início&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="salgados.html"&gt;Salgados&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="pao-de-queijo.html" aria-current="page"&gt;Pão de queijo&lt;/a&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;
+&lt;h2&gt;Pão de queijo&lt;/h2&gt;
+&lt;p&gt;Crocante por fora, macio por dentro.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <code>nav</code> guarda os blocos de links de navegação <strong>principais</strong> e vira a região "navegação" para o leitor de tela.</li>
+  <li>O padrão dos sites: <code>nav</code> › <code>ul</code> › <code>li</code> › <code>a</code>. A lista diz quantos itens o menu tem; as bolinhas se tiram com CSS.</li>
+  <li><code>aria-current="page"</code> marca o link da página atual ("Você está aqui"). Os valores são fixos, em inglês.</li>
+  <li>Com mais de um <code>nav</code>, dê um nome a cada um com <code>aria-label</code> (ou <code>aria-labelledby</code>). A trilha (<em>breadcrumb</em>) usa <code>ol</code>.</li>
+  <li>Nem todo grupo de links é <code>nav</code>: links do rodapé e links no meio do texto em geral não são.</li>
+  <li>Erros reais: <code>Element “a” not allowed as child of element “ul”</code>, <code>Element “li” not allowed as child of element “nav”</code> e <code>Bad value “sim” for attribute “aria-current”</code>. O navegador não conserta nenhum deles.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
