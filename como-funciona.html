@@ -127,7 +127,7 @@ Content-Length: 460</pre>
 <h2>Etapa 2: ler o texto</h2>
 <p>Com o texto na mão, o navegador começa a ler <strong>do começo ao fim</strong>, um caractere de cada vez, como você lê um livro. Cada vez que encontra um <code>&lt;</code>, ele sabe que começou uma tag; o que está fora das tags é texto. Esse trabalho se chama <strong>análise</strong> (em inglês, <em>parsing</em>; o pedaço do navegador que faz isso é o <em>parser</em>). Para a linha do parágrafo da Ana, a leitura dá esta sequência de peças:</p>
 
-<pre class="file" data-file="trecho" data-resultado>&lt;p&gt;Bolo de &lt;strong&gt;cenoura&lt;/strong&gt;.&lt;/p&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Bolo de &lt;strong&gt;cenoura&lt;/strong&gt;.&lt;/p&gt;
 </pre>
 
 <div class="table-wrap">
@@ -221,7 +221,7 @@ Content-Length: 460</pre>
 
 <p>Então o navegador calcula o tamanho e a posição de cada caixa (essa etapa se chama <em>layout</em>, "diagramação") e pinta os pixels. Quando você aumenta ou diminui a janela, ele refaz o <em>layout</em>: o texto se rearruma sozinho na nova largura. Por isso o guia nunca promete que uma frase vai quebrar num ponto exato: isso depende da sua tela.</p>
 
-<pre class="file" data-file="trecho" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
 &lt;p&gt;Um título, um parágrafo e uma &lt;strong&gt;palavra importante&lt;/strong&gt;: tudo com o estilo padrão do seu navegador.&lt;/p&gt;
 </pre>
 
@@ -235,7 +235,7 @@ Content-Length: 460</pre>
 <p>Isso é ótimo para quem visita (a página sempre abre) e perigoso para quem escreve: o erro some da vista e o navegador nunca avisa. Três exemplos reais:</p>
 
 <h3>Um parágrafo não pode ter uma lista dentro</h3>
-<pre class="file" data-file="compras.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+<pre class="file" data-file="compras.html" data-resultado>&lt;!DOCTYPE html&gt;
 &lt;html lang="pt-BR"&gt;
 &lt;head&gt;
 &lt;meta charset="utf-8"&gt;
@@ -271,7 +271,7 @@ Content-Length: 460</pre>
 <p>"Nenhum elemento <code>p</code> aberto, mas vi uma tag de fechamento <code>p</code>." O conserto é tirar a lista de dentro do parágrafo: <code>&lt;p&gt;Lista de compras:&lt;/p&gt;</code> e, depois, o <code>&lt;ul&gt;</code>.</p>
 
 <h3>Uma tag esquecida aberta "vaza"</h3>
-<pre class="file" data-file="receita.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+<pre class="file" data-file="receita.html" data-resultado>&lt;!DOCTYPE html&gt;
 &lt;html lang="pt-BR"&gt;
 &lt;head&gt;
 &lt;meta charset="utf-8"&gt;
@@ -313,7 +313,7 @@ Content-Length: 460</pre>
 <h3>Um comentário sem fim esconde a página</h3>
 <p>Um <strong>comentário</strong> é um texto que o navegador não mostra, entre <code>&lt;!--</code> e <code>--&gt;</code> (aula <a href="comentarios.html">Comentários</a>). Se o <code>--&gt;</code> for esquecido:</p>
 
-<pre class="file" data-file="receitas.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+<pre class="file" data-file="receitas.html" data-resultado>&lt;!DOCTYPE html&gt;
 &lt;html lang="pt-BR"&gt;
 &lt;head&gt;
 &lt;meta charset="utf-8"&gt;

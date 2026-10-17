@@ -98,7 +98,7 @@ receita.html: HTML document, ASCII text</pre>
 <h2>2. Texto sem marcação: tudo numa linha</h2>
 <p>Para entender por que as marcações existem, veja o que acontece quando a Ana escreve a receita sem nenhuma, uma coisa em cada linha, como num caderno:</p>
 
-<pre class="file" data-file="trecho" data-resultado>Bolo de cenoura
+<pre class="file" data-file="index.html" data-resultado>Bolo de cenoura
 Ingredientes
 2 xícaras de farinha
 3 ovos
@@ -111,7 +111,7 @@ Ingredientes
 
 <p>Agora a mesma receita, com marcações:</p>
 
-<pre class="file" data-file="trecho" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
 &lt;h2&gt;Ingredientes&lt;/h2&gt;
 &lt;ul&gt;
   &lt;li&gt;2 xícaras de farinha&lt;/li&gt;
@@ -161,7 +161,7 @@ Modo de fazer
 
 <p>O "hiper" do hipertexto é o link. Ele é feito com a tag <code>&lt;a&gt;</code> (de <em>anchor</em>, "âncora") e tem aula própria, <a href="links.html">Links</a>. Só para você ver um:</p>
 
-<pre class="file" data-file="trecho" data-resultado>&lt;p&gt;A receita da cobertura está na &lt;a href="https://pt.wikipedia.org/wiki/Ganache"&gt;Wikipédia&lt;/a&gt;.&lt;/p&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;A receita da cobertura está na &lt;a href="https://pt.wikipedia.org/wiki/Ganache"&gt;Wikipédia&lt;/a&gt;.&lt;/p&gt;
 </pre>
 
 <p>A palavra "Wikipédia" virou um link (normalmente azul e sublinhado). O endereço para onde ele leva fica escondido dentro da tag, no <code>href</code> (<em>hypertext reference</em>, "referência de hipertexto"). Isso é um <strong>atributo</strong>, uma informação extra dentro da tag de abertura (aula <a href="atributos.html">Atributos</a>).</p>
@@ -171,7 +171,7 @@ Modo de fazer
 <h2>4. Tags e elementos</h2>
 <p>Duas palavras aparecem o tempo todo em livros, sites e mensagens do validador. Vale a pena separá-las desde já:</p>
 
-<pre class="file" data-file="trecho" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
 </pre>
 
 <dl class="anatomy">
@@ -201,7 +201,7 @@ Modo de fazer
 
 <p>Veja o que o HTML faz com uma conta:</p>
 
-<pre class="file" data-file="trecho" data-resultado>&lt;p&gt;2 + 2&lt;/p&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;2 + 2&lt;/p&gt;
 </pre>
 
 <p>Apareceu <code>2 + 2</code>, e não <code>4</code>. Para o HTML, "2 + 2" é só um texto, como "Bolo de cenoura". Quem faz contas numa página é o <strong>JavaScript</strong>.</p>
@@ -288,7 +288,7 @@ Modo de fazer
 
 <div class="cenario">
 <strong>A tag aparece escrita na página</strong>
-<pre class="file" data-file="receita.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+<pre class="file" data-file="receita.html" data-resultado>&lt;!DOCTYPE html&gt;
 &lt;html lang="pt-BR"&gt;
 &lt;head&gt;
 &lt;meta charset="utf-8"&gt;
@@ -309,7 +309,7 @@ h1&gt;Bolo de cenoura&lt;/h1&gt;
 
 <div class="cenario">
 <strong>Uma tag inventada (ou em português)</strong>
-<pre class="file" data-file="receita.html · erro de propósito" data-resultado>&lt;!DOCTYPE html&gt;
+<pre class="file" data-file="receita.html" data-resultado>&lt;!DOCTYPE html&gt;
 &lt;html lang="pt-BR"&gt;
 &lt;head&gt;
 &lt;meta charset="utf-8"&gt;

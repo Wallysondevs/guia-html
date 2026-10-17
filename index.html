@@ -95,7 +95,7 @@
 <h3>Exemplo: a anatomia de uma linha</h3>
 <p>Veja como as aulas desmontam uma linha de HTML. Primeiro o código, com o resultado embaixo:</p>
 
-<pre class="file" data-file="trecho" data-resultado>&lt;p&gt;Bolo de cenoura com &lt;strong&gt;cobertura de chocolate&lt;/strong&gt;.&lt;/p&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Bolo de cenoura com &lt;strong&gt;cobertura de chocolate&lt;/strong&gt;.&lt;/p&gt;
 </pre>
 
 <p>Agora cada parte:</p>
@@ -140,7 +140,7 @@ $ echo $?
 
 <p>A mensagem sai em inglês: "vi a tag de fechamento <code>h2</code>, mas havia elementos abertos". O <code>8.20-8.24</code> é a posição do problema: linha 8, das colunas 20 a 24, exatamente onde está o <code>&lt;/h2&gt;</code>. O guia traduz e explica cada mensagem assim. E o navegador? Veja o resultado do código errado:</p>
 
-<pre class="file" data-file="index.html · erro de propósito" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h2&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h2&gt;
 &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
 </pre>
 
@@ -234,9 +234,9 @@ $ echo $?
 <div class="table-wrap">
 <table class="ref">
 <tr><th>Elemento</th><th>O que significa</th></tr>
-<tr><td>Caixa com o nome <code>index.html</code> no canto</td><td>O conteúdo de um arquivo. O nome no canto é o nome do arquivo. Quando aparece <code>trecho</code>, é só um pedaço de página, não um arquivo inteiro.</td></tr>
+<tr><td>Caixa com o nome <code>index.html</code> no canto</td><td>O conteúdo de um arquivo. O nome no canto é o nome do arquivo. Nas primeiras aulas, muitos exemplos mostram só o miolo da página (um título, um parágrafo), sem a moldura completa: o navegador completa o resto sozinho, como você vai ver em <a href="como-funciona.html">Como o Navegador Lê HTML</a>.</td></tr>
 <tr><td>Quadro <strong>Resultado</strong> embaixo do código</td><td>O que o seu navegador desenha a partir daquele código, na hora. É o resultado real, não uma imagem.</td></tr>
-<tr><td><code>· erro de propósito</code> no nome do arquivo</td><td>Código com um erro colocado para você ver o que acontece. Não copie para o seu site.</td></tr>
+<tr><td>Caixa <strong>Quando dá errado</strong></td><td>Código com um erro colocado de propósito, para você ver o que o navegador faz e o que o validador diz. Não copie para o seu site.</td></tr>
 <tr><td><code>ana@notebook:~/site$</code></td><td>O prompt do terminal: usuária <code>ana</code>, na máquina <code>notebook</code>, na pasta <code>~/site</code> (a pasta <code>site</code> dentro da pasta pessoal). O que vem depois é o comando digitado.</td></tr>
 <tr><td>Linhas sem prompt</td><td>A resposta do computador: o conteúdo de um arquivo ou a mensagem do validador.</td></tr>
 <tr><td><span class="t-a">← etiqueta</span></td><td>Uma explicação do guia sobre aquela linha. Não aparece no terminal real.</td></tr>
