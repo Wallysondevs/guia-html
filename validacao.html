@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Validação — required, pattern, min, max e minlength | Guia HTML</title>
+<meta name="description" content="Validação de formulários em HTML para quem nunca fez um site: required, a validação pelo type (email, url, number), minlength e maxlength, min, max e step, pattern com title, as mensagens do navegador, novalidate e formnovalidate e por que o servidor também tem de conferir, com o resultado real no seu navegador, as mensagens reais do validador W3C e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Validação</span></h1>
+
+<p class="intro">A Ana recebeu uma encomenda sem telefone, outra com 500 bolos (era para ser 5) e uma com o e-mail <code>ana@</code>. Nenhuma delas dava para atender. Ela poderia ter evitado tudo isso com alguns atributos: o HTML sabe pedir para o <strong>navegador conferir</strong> os campos antes de enviar. Se algo estiver errado, o navegador não envia, aponta o campo e mostra uma mensagem. Nesta aula você vai conhecer essas regras (<code>required</code>, <code>minlength</code>, <code>min</code>, <code>max</code>, <code>pattern</code>…), ver as mensagens que o navegador mostra e entender o limite delas: o navegador ajuda a pessoa, mas não protege o seu site.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Como tornar um campo obrigatório com <code>required</code>.</li>
+  <li>Como o <code>type</code> (<code>email</code>, <code>url</code>, <code>number</code>) já confere o formato.</li>
+  <li>Como limitar o tamanho do texto com <code>minlength</code> e <code>maxlength</code>.</li>
+  <li>Como limitar números e datas com <code>min</code>, <code>max</code> e <code>step</code>.</li>
+  <li>Como exigir um formato próprio com <code>pattern</code> (e explicá-lo com <code>title</code>).</li>
+  <li>De onde vêm as mensagens de erro, e por que elas mudam de navegador para navegador.</li>
+  <li>Como desligar a validação com <code>novalidate</code> e <code>formnovalidate</code>.</li>
+  <li>Por que a validação do navegador nunca basta sozinha.</li>
+</ul>
+</div>
+
+<p>Você vai precisar de <a href="input.html">O Elemento input</a>, <a href="tipos-input.html">Tipos de input</a> e <a href="botoes.html">Botões</a>. Os exemplos com o resultado embaixo são desenhados pelo <strong>seu</strong> navegador, e a validação neles é a de verdade: clique em <strong>Enviar</strong> e veja o seu navegador reclamar. Os comportamentos foram conferidos no <strong>Chromium 155</strong>, e as validações do código com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<div class="warning">
+<strong>Duas "validações" diferentes</strong>
+<p>Esta aula fala da validação dos <strong>dados</strong>: o navegador conferindo o que a pessoa digitou. A outra é a validação do <strong>código</strong>: o validador W3C conferindo se o seu HTML está bem escrito (aula <a href="validar.html">Validar o HTML</a>). Você vai ver as duas aqui, cada uma no seu papel.</p>
+</div>
+
+<hr>
+
+<h2>A ideia: a portaria do prédio</h2>
+<p>Num prédio com portaria, o porteiro confere antes de deixar você subir: "seu nome? para qual apartamento?". Se faltar alguma coisa, ele não deixa passar e diz o que falta. Isso poupa o morador de receber gente errada.</p>
+<p>A validação do navegador é o porteiro do formulário. Ela confere cada campo na hora do envio e devolve o formulário com uma explicação. Mas lembre: o morador lá em cima <strong>também</strong> olha pelo olho mágico antes de abrir a porta. Um porteiro pode ser enganado, e o servidor que recebe os dados também tem de conferir (seção 8).</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>O que confere</th><th>Exemplo</th></tr>
+<tr><td><code>required</code></td><td>o campo não está vazio</td><td>nome obrigatório</td></tr>
+<tr><td><code>type</code></td><td>o formato do tipo</td><td><code>email</code> tem de ter <code>@</code></td></tr>
+<tr><td><code>minlength</code> / <code>maxlength</code></td><td>o tamanho do texto</td><td>nome com 2 a 40 letras</td></tr>
+<tr><td><code>min</code> / <code>max</code> / <code>step</code></td><td>a faixa e o passo de números e datas</td><td>de 1 a 10 bolos</td></tr>
+<tr><td><code>pattern</code></td><td>um formato que você escreve</td><td>CEP <code>12345-678</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. Obrigatório: <code>required</code></h2>
+<p>O atributo booleano <code>required</code> ("obrigatório") diz que o campo não pode ficar vazio:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form action="enviar.php"&gt;
+  &lt;label for="nome"&gt;Seu nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome" required&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Clique em <strong>Enviar</strong> com o campo vazio. O navegador:</p>
+<ol class="passo">
+  <li><strong>não</strong> envia o formulário;</li>
+  <li>põe o cursor no campo que falta (o primeiro, se faltarem vários);</li>
+  <li>mostra um balãozinho com uma mensagem.</li>
+</ol>
+<p>Agora escreva seu nome e envie: passa. (O editor do guia não tem servidor; ele mostra uma página "Formulário enviado" com o que seria enviado.)</p>
+
+<h3>A mensagem é do navegador</h3>
+<p>Você não escreveu nenhuma mensagem: quem escolhe o texto é o <strong>navegador</strong>, na língua dele, e cada navegador tem as suas frases e o seu desenho de balão. Num Chromium 155 configurado em inglês, por exemplo, a mensagem desse campo foi <code>Please fill out this field.</code> ("por favor, preencha este campo"). No seu navegador, em português, aparece uma frase em português, que pode ser diferente da do Firefox ou do Safari. Por isso este guia não promete um texto exato: confira no resultado o que o <strong>seu</strong> navegador diz.</p>
+
+<div class="note">
+<strong>Só espaços contam como preenchido</strong>
+<p>O <code>required</code> só confere se o campo está <strong>vazio</strong>. Três espaços em branco não são "vazio": no Chromium 155, um campo <code>required</code> com <code>"   "</code> passou como válido. Para exigir pelo menos uma letra, junte um <code>pattern</code> (seção 5) ou confira no servidor.</p>
+</div>
+
+<p>O <code>required</code> também vale para <code>&lt;select&gt;</code> (com a opção vazia no começo), <code>&lt;textarea&gt;</code>, caixas de marcar e grupos de rádio: veja <a href="select.html">select e option</a> e <a href="checkbox-radio.html">checkbox e radio</a>.</p>
+
+<hr>
+
+<h2>2. O <code>type</code> já valida</h2>
+<p>Muitos tipos de <code>&lt;input&gt;</code> (aula <a href="tipos-input.html">Tipos de input</a>) já conferem o formato sozinhos, sem nenhum atributo a mais:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form action="enviar.php"&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt; &lt;input type="email" id="email" name="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="site"&gt;Site:&lt;/label&gt; &lt;input type="url" id="site" name="site"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="qtd"&gt;Quantidade:&lt;/label&gt; &lt;input type="number" id="qtd" name="qtd"&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Escreva <code>ana@</code> no e-mail e <code>padaria.com</code> no site, e clique em <strong>Enviar</strong>: o e-mail é recusado (falta a parte depois do <code>@</code>). Corrija para <code>ana@padaria</code> e envie: o e-mail passa, e o navegador reclama do site. Tente escrever letras na quantidade. O que cada tipo confere:</p>
+
+<p>Os valores errados não vêm escritos no código de propósito: o validador W3C também confere o <code>value</code> escrito no HTML. Um <code>value="padaria.com"</code> num campo <code>url</code> deu esta mensagem: <code>Bad value “padaria.com” for attribute “value” on element “input”: The string “padaria.com” is not an absolute URL.</code> ("valor ruim para o atributo <code>value</code>: não é um endereço absoluto", ou seja, completo).</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Tipo</th><th>O navegador confere</th><th>Conferido no Chromium 155</th></tr>
+<tr><td><code>email</code></td><td>um texto, um <code>@</code> e um domínio, sem espaços</td><td><code>ana@</code> e <code>ana padaria@x.com</code>: recusados. <code>ana@padaria</code>: <strong>aceito</strong> (o domínio não precisa ter ponto)</td></tr>
+<tr><td><code>url</code></td><td>um endereço completo, com o esquema</td><td><code>padaria.com</code>: recusado. <code>https://padaria.example</code>: aceito</td></tr>
+<tr><td><code>number</code></td><td>só números</td><td>letras nem chegam a entrar no valor: um número escrito <code>abc</code> virou o valor vazio</td></tr>
+</table>
+</div>
+
+<p>Repare que o <code>email</code> aceita <code>ana@padaria</code>: o navegador confere o <strong>formato</strong>, e não se o e-mail existe. Só mandando uma mensagem para o endereço dá para saber se ele existe.</p>
+
+<div class="tip">
+<strong>Campo vazio não é conferido</strong>
+<p>Um campo <code>type="email"</code> vazio passa, porque não é obrigatório. As regras de formato e tamanho só valem para o que foi escrito. Se o campo tem de ser preenchido <strong>e</strong> ter o formato certo, use o tipo e o <code>required</code> juntos.</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:input#nome[required],attr:input#email[type]=email,sel:input#email[required],sel:input#tel[type=tel]">
+<p class="try-task"><strong>Missão:</strong> a ficha aceita qualquer coisa. Deixe o nome obrigatório; troque o tipo do e-mail para <code>email</code> e deixe-o obrigatório; troque o tipo do telefone para <code>tel</code> (o telefone continua opcional). Depois clique em <strong>Enviar</strong> com tudo vazio e veja as mensagens do seu navegador.</p>
+<pre class="script" data-file="index.html">&lt;form action="enviar.php"&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt; &lt;input type="text" id="email" name="email"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Telefone:&lt;/label&gt; &lt;input type="text" id="tel" name="tel"&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="enviar.php"&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome" required&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="email"&gt;E-mail:&lt;/label&gt; &lt;input type="email" id="email" name="email" required&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Telefone:&lt;/label&gt; &lt;input type="tel" id="tel" name="tel"&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>O <code>type="tel"</code> <strong>não</strong> confere o formato: há jeitos demais de escrever um telefone. A vantagem dele é outra: no celular, abre o teclado de números. Para exigir um formato de telefone, use o <code>pattern</code> (seção 5).</p>
+
+<hr>
+
+<h2>3. Tamanho do texto: <code>minlength</code> e <code>maxlength</code></h2>
+<p>O <code>minlength</code> ("tamanho mínimo") e o <code>maxlength</code> ("tamanho máximo") contam os <strong>caracteres</strong> do texto:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form action="enviar.php"&gt;
+  &lt;label for="nome"&gt;Nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome" minlength="2" maxlength="10" required&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Experimente as duas pontas:</p>
+<ul>
+  <li>Digite <strong>mais de 10</strong> letras: o campo para de aceitar na décima. O <code>maxlength</code> não mostra mensagem nenhuma; ele simplesmente <strong>não deixa digitar</strong> mais.</li>
+  <li>Digite <strong>uma</strong> letra e envie: o navegador recusa e diz quantos caracteres faltam (cada navegador do seu jeito).</li>
+</ul>
+
+<div class="note">
+<strong>O <code>minlength</code> só confere o que a pessoa digitou</strong>
+<p>Se o próprio HTML trouxer um <code>value="a"</code> curto demais, o navegador não reclama: as regras de tamanho só valem depois que a pessoa mexe no campo. No Chromium 155, um campo com <code>value="ab"</code> e <code>minlength="3"</code> era válido ao abrir a página. É a página que errou, e não a pessoa, então o navegador não a culpa.</p>
+</div>
+
+<hr>
+
+<h2>4. Números e datas: <code>min</code>, <code>max</code> e <code>step</code></h2>
+<p>Nos campos de número e de data, <code>min</code> e <code>max</code> marcam a <strong>faixa</strong> permitida, e <code>step</code> ("passo") diz de quanto em quanto o valor pode andar:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form action="enviar.php"&gt;
+  &lt;p&gt;
+    &lt;label for="qtd"&gt;Quantos bolos (1 a 10):&lt;/label&gt;
+    &lt;input type="number" id="qtd" name="qtd" min="1" max="10" value="1" required&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="fatias"&gt;Fatias (de 5 em 5):&lt;/label&gt;
+    &lt;input type="number" id="fatias" name="fatias" min="10" max="30" step="5" value="10"&gt;
+  &lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>min="1" max="10"</dt><dd>Abaixo de 1 ou acima de 10, o navegador recusa o envio. As setinhas do campo também param nesses limites. Escreva <code>500</code> e envie: no Chromium 155 em inglês, a mensagem foi <code>Value must be less than or equal to 10.</code> ("o valor deve ser menor ou igual a 10").</dd>
+  <dt>step="5"</dt><dd>Os valores válidos andam de 5 em 5, <strong>a partir do <code>min</code></strong>: 10, 15, 20, 25, 30. Escreva <code>12</code> e envie: no Chromium 155 em inglês, a mensagem foi <code>Please enter a valid value. The two nearest valid values are 10 and 15.</code>, que sugere os dois valores certos mais próximos. Sem <code>step</code>, o passo de um <code>number</code> é <strong>1</strong>: um <code>2.5</code> é recusado. Para aceitar decimais, use <code>step="0.01"</code> (centavos) ou <code>step="any"</code> (qualquer um).</dd>
+  <dt>value="1"</dt><dd>O valor inicial. É uma boa ideia dar um valor que já está dentro da faixa.</dd>
+</dl>
+
+<p>Nas datas, <code>min</code> e <code>max</code> são escritos no formato <code>ano-mês-dia</code>: <code>&lt;input type="date" min="2026-01-01"&gt;</code>. O seletor de data do navegador costuma deixar os dias fora da faixa apagados. As datas têm aula própria em <a href="tipos-input.html">Tipos de input</a>.</p>
+
+<hr>
+
+<h2>5. Um formato seu: <code>pattern</code></h2>
+<p>E quando o formato não é de nenhum tipo pronto? Um CEP, por exemplo: cinco números, um traço, três números. O atributo <code>pattern</code> ("padrão", "molde") recebe uma <strong>expressão regular</strong>, uma linguagem pequena para descrever formatos de texto:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form action="enviar.php"&gt;
+  &lt;label for="cep"&gt;CEP:&lt;/label&gt;
+  &lt;input type="text" id="cep" name="cep" required
+         pattern="[0-9]{5}-[0-9]{3}" title="Cinco números, um traço e três números. Exemplo: 12345-678"&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>[0-9]</dt><dd>"Um caractere de 0 a 9": um algarismo.</dd>
+  <dt>{5}</dt><dd>"O que vem antes, 5 vezes": <code>[0-9]{5}</code> são cinco algarismos.</dd>
+  <dt>-</dt><dd>Fora dos colchetes, o traço é só um traço.</dd>
+  <dt>[0-9]{3}</dt><dd>Mais três algarismos.</dd>
+  <dt>title="…"</dt><dd>Uma explicação do formato. O navegador costuma mostrá-la junto com a mensagem de erro do <code>pattern</code>, que sozinha só diz algo como "use o formato pedido" (no Chromium 155 em inglês: <code>Please match the requested format.</code>). Sem o <code>title</code>, a pessoa não sabe <strong>qual</strong> é o formato.</dd>
+</dl>
+
+<p>O <code>pattern</code> precisa casar com o valor <strong>inteiro</strong>, do primeiro ao último caractere. No Chromium 155, com esse <code>pattern</code>: <code>12345-678</code> passou; <code>1234-5678</code> e <code>ab12345-678</code> (com letras na frente) foram recusados.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Pedaço</th><th>Significa</th><th>Exemplo</th></tr>
+<tr><td><code>[0-9]</code></td><td>um algarismo</td><td><code>[0-9]{3}</code> casa <code>123</code></td></tr>
+<tr><td><code>[a-z]</code></td><td>uma letra minúscula, sem acento</td><td><code>[a-z]+</code> casa <code>bolo</code></td></tr>
+<tr><td><code>[A-Za-z]</code></td><td>uma letra maiúscula ou minúscula</td><td></td></tr>
+<tr><td><code>{n}</code> / <code>{n,m}</code></td><td>exatamente n vezes / de n a m vezes</td><td><code>[0-9]{10,11}</code>: 10 ou 11 algarismos</td></tr>
+<tr><td><code>+</code></td><td>uma vez ou mais</td><td><code>[0-9]+</code></td></tr>
+<tr><td><code>?</code></td><td>opcional (zero ou uma vez)</td><td><code>[0-9]{5}-?[0-9]{3}</code>: CEP com ou sem traço</td></tr>
+<tr><td><code>\-</code></td><td>um traço <strong>dentro</strong> dos colchetes</td><td><code>[a-z\-]+</code>: letras e traços</td></tr>
+</table>
+</div>
+
+<p>Expressões regulares são um assunto enorme; esta tabela cobre os formatos mais comuns de formulário. O <code>pattern</code> vale para os tipos <code>text</code>, <code>search</code>, <code>tel</code>, <code>url</code>, <code>email</code> e <code>password</code>. Num campo vazio e opcional, ele não é conferido: junte o <code>required</code> se o campo for obrigatório.</p>
+
+<div class="tryhtml" data-goal="sel:#entrega[pattern][title],sel:#cobranca[pattern][title],sel:#entrega:valid,sel:#cobranca:invalid">
+<p class="try-task"><strong>Missão:</strong> ponha nos dois campos o <code>pattern</code> do CEP (cinco algarismos, traço, três algarismos) e um <code>title</code> explicando o formato. Para você testar o seu <code>pattern</code>, os campos já vêm preenchidos: o CEP de entrega está certo e o de cobrança está errado. Quando o <code>pattern</code> estiver certo, só o de cobrança vai ser recusado ao clicar em <strong>Enviar</strong>.</p>
+<pre class="script" data-file="index.html">&lt;form action="enviar.php"&gt;
+  &lt;p&gt;
+    &lt;label for="entrega"&gt;CEP de entrega:&lt;/label&gt;
+    &lt;input type="text" id="entrega" name="entrega" value="12345-678"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="cobranca"&gt;CEP de cobrança:&lt;/label&gt;
+    &lt;input type="text" id="cobranca" name="cobranca" value="1234-5678"&gt;
+  &lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="enviar.php"&gt;
+  &lt;p&gt;
+    &lt;label for="entrega"&gt;CEP de entrega:&lt;/label&gt;
+    &lt;input type="text" id="entrega" name="entrega" value="12345-678"
+           pattern="[0-9]{5}-[0-9]{3}" title="Exemplo: 12345-678"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;label for="cobranca"&gt;CEP de cobrança:&lt;/label&gt;
+    &lt;input type="text" id="cobranca" name="cobranca" value="1234-5678"
+           pattern="[0-9]{5}-[0-9]{3}" title="Exemplo: 12345-678"&gt;
+  &lt;/p&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>6. As mensagens do navegador</h2>
+<p>Cada regra quebrada tem um <strong>nome</strong> no navegador, e cada nome tem a sua mensagem. Os nomes são os mesmos em todo navegador (eles fazem parte do HTML); os textos, não. A tabela mostra o que o Chromium 155, configurado em <strong>inglês</strong>, escreveu em cada caso que testamos. O seu navegador escreve outra coisa, na língua dele.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Regra quebrada (nome no navegador)</th><th>Exemplo</th><th>Mensagem no Chromium 155 em inglês</th></tr>
+<tr><td>vazio (<code>valueMissing</code>)</td><td><code>required</code> num campo de texto</td><td><code>Please fill out this field.</code></td></tr>
+<tr><td>vazio (<code>valueMissing</code>)</td><td><code>required</code> numa caixa de marcar</td><td><code>Please check this box if you want to proceed.</code></td></tr>
+<tr><td>vazio (<code>valueMissing</code>)</td><td><code>required</code> num <code>select</code></td><td><code>Please select an item in the list.</code></td></tr>
+<tr><td>formato do tipo (<code>typeMismatch</code>)</td><td><code>ana@</code> num <code>email</code></td><td><code>Please enter a part following '@'. 'ana@' is incomplete.</code></td></tr>
+<tr><td>formato do tipo (<code>typeMismatch</code>)</td><td><code>padaria.com</code> num <code>url</code></td><td><code>Please enter a URL.</code></td></tr>
+<tr><td>formato do <code>pattern</code> (<code>patternMismatch</code>)</td><td><code>1234-5678</code> no CEP</td><td><code>Please match the requested format.</code></td></tr>
+<tr><td>acima do máximo (<code>rangeOverflow</code>)</td><td><code>12</code> com <code>max="10"</code></td><td><code>Value must be less than or equal to 10.</code></td></tr>
+<tr><td>fora do passo (<code>stepMismatch</code>)</td><td><code>12</code> com <code>step="5"</code></td><td><code>Please enter a valid value. The two nearest valid values are 10 and 15.</code></td></tr>
+</table>
+</div>
+
+<p>Esses textos não podem ser mudados só com HTML, nem o desenho do balão. Dá para trocar a mensagem com JavaScript (com <code>setCustomValidity</code>), e dá para pintar os campos inválidos com CSS (com <code>:invalid</code> e <code>:user-invalid</code>; quer aprender mais? futuro Guia CSS). Para quem está começando, as mensagens do navegador são uma ótima escolha: já vêm traduzidas e o leitor de tela as anuncia.</p>
+
+<hr>
+
+<h2>7. Desligar a validação: <code>novalidate</code> e <code>formnovalidate</code></h2>
+<p>Às vezes você quer enviar <strong>sem</strong> conferir. O caso clássico é o botão "Salvar rascunho": a cliente ainda não terminou, e o formulário incompleto tem de ser aceito. O atributo booleano <code>formnovalidate</code> num botão de enviar desliga a validação <strong>só para aquele botão</strong>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;form action="enviar.php"&gt;
+  &lt;label for="nome"&gt;Nome:&lt;/label&gt;
+  &lt;input type="text" id="nome" name="nome" required&gt;
+  &lt;button type="submit" name="acao" value="enviar"&gt;Enviar pedido&lt;/button&gt;
+  &lt;button type="submit" name="acao" value="rascunho" formnovalidate&gt;Salvar rascunho&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Com o nome vazio, "Enviar pedido" é barrado e "Salvar rascunho" passa. (O <code>name</code> e o <code>value</code> dos botões estão explicados em <a href="botoes.html">Botões</a>.)</p>
+
+<p>Já o <code>novalidate</code> fica no <code>&lt;form&gt;</code> e desliga a validação do formulário inteiro: <code>&lt;form action="enviar.php" novalidate&gt;</code>. Ele é usado quando um script assume a tarefa de conferir e mostrar as mensagens do seu jeito. Os atributos continuam úteis mesmo assim: o <code>type="email"</code> ainda abre o teclado com <code>@</code> no celular, e o <code>maxlength</code> ainda limita a digitação.</p>
+
+<hr>
+
+<h2>8. O navegador ajuda; o servidor protege</h2>
+<p>Tudo o que esta aula mostrou acontece no navegador <strong>da pessoa</strong>, no computador dela. E o computador dela obedece a ela:</p>
+<ul>
+  <li>no F12 (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>), qualquer um apaga o <code>required</code> ou o <code>max</code> do campo e envia o que quiser;</li>
+  <li>um programa como o <code>curl</code> envia dados direto para o servidor, sem abrir a página, sem formulário e sem validação nenhuma (você vai ver isso em <a href="enviar-formulario.html">Enviar</a>).</li>
+</ul>
+<p>Por isso, a validação do HTML serve para <strong>ajudar quem preenche</strong>: avisa o erro na hora, antes de enviar. Quem recebe os dados (o programa no servidor) tem de conferir <strong>tudo de novo</strong>, sempre, como se o HTML não tivesse validação nenhuma. A Ana pode ter certeza de que, um dia, uma encomenda de 500 bolos vai chegar mesmo com o <code>max="10"</code>.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Os arquivos desta seção são páginas completas com o mesmo começo de 7 linhas (<code>&lt;!DOCTYPE html&gt;</code> até <code>&lt;body&gt;</code>, como em <a href="estrutura.html">Estrutura de uma Página</a>). O código mostrado começa na <strong>linha 8</strong>. Repare: nesta aula, vários erros passam <strong>calados</strong> pelo validador W3C.</p>
+
+<div class="cenario">
+<strong><code>required="false"</code> continua obrigatório</strong>
+<pre class="file" data-file="falso.html">&lt;label for="n"&gt;Nome:&lt;/label&gt;
+&lt;input type="text" id="n" name="n" required="false" minlength="10" maxlength="5"&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu falso.html
+"file:/home/ana/site/falso.html":9.1-9.81: error: Bad value “false” for attribute “required” on element “input”.</pre>
+<p><strong>O que significa:</strong> "valor ruim, <code>false</code>, para o atributo <code>required</code>". Um atributo booleano vale pela presença, e não pelo valor (aula <a href="atributos.html">Atributos</a>).</p>
+<p><strong>O que o navegador faz:</strong> vê o atributo e deixa o campo <strong>obrigatório</strong>. No Chromium 155, esse campo vazio foi recusado como qualquer <code>required</code>.</p>
+<p><strong>Como consertar:</strong> para um campo opcional, apague o <code>required</code>.</p>
+<p>E o <code>minlength="10"</code> com <code>maxlength="5"</code>? Ninguém consegue escrever um texto com pelo menos 10 e no máximo 5 caracteres. O validador não pegou esse absurdo: ele confere a escrita de cada atributo, e não se eles fazem sentido juntos.</p>
+</div>
+
+<div class="cenario">
+<strong><code>min</code> maior que <code>max</code></strong>
+<p>Com <code>&lt;input type="number" id="q" name="q" min="10" max="1"&gt;</code>, o <code>vnu</code> não dá nenhuma mensagem. Mas nenhum número cabe nessa faixa. No Chromium 155, com o valor <code>5</code>, a mensagem foi <code>Minimum value (10) must be less than the maximum value (1).</code> ("o valor mínimo, 10, deve ser menor que o máximo, 1"). É uma mensagem para quem fez a página, mostrada para quem está preenchendo.</p>
+<p><strong>Como consertar:</strong> confira a faixa: <code>min="1" max="10"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>pattern</code> e <code>maxlength</code> num campo de número</strong>
+<pre class="file" data-file="numero.html">&lt;label for="q"&gt;Quantidade:&lt;/label&gt;
+&lt;input type="number" id="q" name="q" pattern="[0-9]+" maxlength="2"&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu numero.html
+"file:/home/ana/site/numero.html":9.1-9.68: error: Attribute “pattern” is only allowed when the input type is “email”, “password”, “search”, “tel”, “text”, or “url”.
+"file:/home/ana/site/numero.html":9.1-9.68: error: Attribute “maxlength” is only allowed when the input type is “email”, “password”, “search”, “tel”, “text”, or “url”.</pre>
+<p><strong>O que significa:</strong> "o atributo <code>pattern</code> (e o <code>maxlength</code>) só é permitido quando o tipo é <code>email</code>, <code>password</code>, <code>search</code>, <code>tel</code>, <code>text</code> ou <code>url</code>". Num <code>number</code>, os dois são ignorados pelo navegador.</p>
+<p><strong>Como consertar:</strong> num número, use <code>min</code> e <code>max</code>: para "até 2 algarismos", <code>min="0" max="99"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Um <code>pattern</code> que o navegador ignora</strong>
+<pre class="file" data-file="usuario.html">&lt;label for="u"&gt;Usuário:&lt;/label&gt;
+&lt;input type="text" id="u" name="u" pattern="[a-z-]+"&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu usuario.html          « nenhuma mensagem: para o validador, está tudo certo</pre>
+<p>O validador não deu nenhuma mensagem: ele não confere o que está escrito <strong>dentro</strong> do <code>pattern</code>. Mas o navegador confere. Desde 2023, os navegadores leem o <code>pattern</code> com regras mais rígidas, e uma delas é: dentro dos colchetes, o traço solto no fim (<code>-]</code>) não é mais aceito. No Chromium 155, esse campo aceitou <code>ABC</code>, em maiúsculas, como válido: o <code>pattern</code> inteiro foi <strong>ignorado</strong>. A única pista fica no Console do F12:</p>
+<pre class="file" data-file="Console do F12">Pattern attribute value [a-z-]+ is not a valid regular expression: Uncaught SyntaxError: Invalid regular expression: /[a-z-]+/v: Invalid character class</pre>
+<p><strong>O que significa:</strong> "o valor <code>[a-z-]+</code> do atributo <code>pattern</code> não é uma expressão regular válida: classe de caracteres inválida". O <code>/v</code> no fim é o nome desse modo mais rígido.</p>
+<p><strong>Como consertar:</strong> escape o traço com uma barra invertida: <code>pattern="[a-z\-]+"</code>. Com essa correção, o Chromium 155 recusou o <code>ABC</code>. Depois de escrever um <code>pattern</code>, sempre teste um valor certo e um errado, e olhe o Console.</p>
+</div>
+
+<div class="cenario">
+<strong>Barras em volta do <code>pattern</code></strong>
+<p>Quem já viu expressões regulares em JavaScript escreve <code>pattern="/[0-9]{11}/"</code>, com barras. No <code>pattern</code>, as barras não são enfeite: elas viram <strong>parte do formato</strong>, e o campo passa a exigir uma barra no começo e outra no fim. No Chromium 155, o telefone <code>11987654321</code> foi recusado com esse <code>pattern</code> e aceito com <code>pattern="[0-9]{11}"</code>. O validador não acusa nada, porque <code>/[0-9]{11}/</code> é um formato válido, só que não é o que você queria.</p>
+<p><strong>Como consertar:</strong> escreva o <code>pattern</code> sem as barras.</p>
+</div>
+
+<div class="cenario">
+<strong>O formato é rígido demais</strong>
+<p>Com <code>pattern="[0-9]{10,11}"</code> no telefone, a cliente digita <code>(11) 98765-4321</code>, do jeito que todo mundo escreve, e é recusada (testamos no Chromium 155). O HTML está certo; o problema é exigir que a pessoa adivinhe o formato.</p>
+<p><strong>Como consertar:</strong> diga o formato no <code>&lt;label&gt;</code> ou no <code>title</code> ("só números, com DDD: 11987654321"), ou aceite mais formatos e arrume os dados no servidor. Uma regra boa recusa o que está <strong>errado</strong>, e não o que está só escrito de outro jeito.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Atributo</th><th>Onde</th><th>O que confere</th></tr>
+<tr><td><code>required</code></td><td>campos, <code>select</code>, <code>textarea</code>, caixas, rádios</td><td>não pode ficar vazio (espaços contam como preenchido)</td></tr>
+<tr><td><code>type="email"</code> / <code>"url"</code> / <code>"number"</code></td><td><code>input</code></td><td>o formato do tipo; não confere se existe</td></tr>
+<tr><td><code>minlength="n"</code></td><td>texto, e-mail, senha, <code>textarea</code>…</td><td>pelo menos n caracteres (só depois que a pessoa digita)</td></tr>
+<tr><td><code>maxlength="n"</code></td><td>os mesmos</td><td>não deixa digitar mais que n caracteres</td></tr>
+<tr><td><code>min</code> / <code>max</code></td><td><code>number</code>, <code>range</code>, datas</td><td>a faixa permitida</td></tr>
+<tr><td><code>step</code></td><td>os mesmos</td><td>o passo, a partir do <code>min</code>; padrão 1; <code>any</code> para qualquer</td></tr>
+<tr><td><code>pattern="…"</code></td><td><code>text</code>, <code>search</code>, <code>tel</code>, <code>url</code>, <code>email</code>, <code>password</code></td><td>o valor inteiro casa com a expressão regular</td></tr>
+<tr><td><code>title="…"</code></td><td>junto com o <code>pattern</code></td><td>explica o formato (o navegador costuma mostrar junto da mensagem)</td></tr>
+<tr><td><code>novalidate</code></td><td><code>form</code></td><td>desliga a validação do formulário</td></tr>
+<tr><td><code>formnovalidate</code></td><td>botão de enviar</td><td>desliga a validação só para esse botão</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Obrigatório</h3>
+<p>Complete para o campo não poder ficar vazio:</p>
+<div class="ex-code">&lt;input type="text" name="nome" <input data-answer="required" aria-label="atributo">&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. De 1 a 10</h3>
+<p>Complete a faixa de 1 a 10:</p>
+<div class="ex-code">&lt;input type="number" name="qtd" <input data-answer="min" aria-label="atributo">="1" <input data-answer="max" aria-label="atributo">="10"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. Três letras maiúsculas</h3>
+<p>Complete o <code>pattern</code> para exigir exatamente três letras maiúsculas (como <code>ABC</code>):</p>
+<div class="ex-code">pattern="[A-Z]<input data-answer="{3}" aria-label="quantidade">"</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Um campo <code>type="email"</code>, <strong>sem</strong> <code>required</code>, está vazio. O que acontece no envio?</p>
+<label><input type="radio" name="q4"> O navegador recusa: falta o <code>@</code></label>
+<label><input type="radio" name="q4"> Passa: as regras de formato não valem para um campo vazio e opcional</label>
+<label><input type="radio" name="q4"> O navegador escreve um e-mail de exemplo</label>
+<label><input type="radio" name="q4"> O validador W3C acusa um erro</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. Com <code>min="10" step="5"</code>, qual destes valores é recusado?</p>
+<label><input type="radio" name="q5"> 10</label>
+<label><input type="radio" name="q5"> 25</label>
+<label><input type="radio" name="q5"> 12</label>
+<label><input type="radio" name="q5"> 30</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Por que o servidor tem de conferir os dados, se o HTML já tem <code>required</code> e <code>max</code>?</p>
+<label><input type="radio" name="q6"> Porque o navegador só valida em inglês</label>
+<label><input type="radio" name="q6"> Porque a validação do HTML só funciona no celular</label>
+<label><input type="radio" name="q6"> Não precisa: com <code>required</code>, os dados sempre chegam certos</label>
+<label><input type="radio" name="q6"> Porque qualquer pessoa pode tirar as regras no F12 ou enviar dados sem o formulário</label>
+</div>
+
+<h3>Missão final: a ficha que confere</h3>
+
+<div class="tryhtml" data-goal="sel:#nome[required][minlength='2'][maxlength='40'],sel:#qtd[type=number][min='1'][max='10'][required],sel:#tel[pattern][title],sel:#tel:not([required]),sel:button[formnovalidate][value=rascunho],nsel:button[formnovalidate]=1,sel:#tel-certo:valid,sel:#tel-errado:invalid">
+<p class="try-task"><strong>Missão:</strong> deixe a ficha da Ana conferindo os dados:</p>
+<ul class="try-task">
+  <li>nome: obrigatório, de 2 a 40 caracteres;</li>
+  <li>quantidade: um <code>number</code> obrigatório, de 1 a 10;</li>
+  <li>telefone: opcional, com <code>pattern</code> de 10 ou 11 algarismos e um <code>title</code> explicando. Copie o mesmo <code>pattern</code> nos dois campos de teste, que já vêm preenchidos: um certo, outro errado;</li>
+  <li>o botão "Salvar rascunho" envia <strong>sem</strong> validar.</li>
+</ul>
+<pre class="script" data-file="index.html">&lt;form action="enviar.php"&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="qtd"&gt;Quantos bolos:&lt;/label&gt; &lt;input type="text" id="qtd" name="qtd" value="1"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Telefone com DDD (só números):&lt;/label&gt; &lt;input type="tel" id="tel" name="tel"&gt;&lt;/p&gt;
+
+  &lt;!-- campos de teste do pattern: copie o mesmo pattern nos dois --&gt;
+  &lt;p&gt;&lt;label for="tel-certo"&gt;Teste certo:&lt;/label&gt; &lt;input type="tel" id="tel-certo" value="11987654321"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel-errado"&gt;Teste errado:&lt;/label&gt; &lt;input type="tel" id="tel-errado" value="9876-5432"&gt;&lt;/p&gt;
+
+  &lt;button type="submit" name="acao" value="enviar"&gt;Enviar pedido&lt;/button&gt;
+  &lt;button type="submit" name="acao" value="rascunho"&gt;Salvar rascunho&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;form action="enviar.php"&gt;
+  &lt;p&gt;&lt;label for="nome"&gt;Nome:&lt;/label&gt; &lt;input type="text" id="nome" name="nome" required minlength="2" maxlength="40"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="qtd"&gt;Quantos bolos:&lt;/label&gt; &lt;input type="number" id="qtd" name="qtd" value="1" min="1" max="10" required&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel"&gt;Telefone com DDD (só números):&lt;/label&gt; &lt;input type="tel" id="tel" name="tel" pattern="[0-9]{10,11}" title="Só números, com DDD. Exemplo: 11987654321"&gt;&lt;/p&gt;
+
+  &lt;!-- campos de teste do pattern: copie o mesmo pattern nos dois --&gt;
+  &lt;p&gt;&lt;label for="tel-certo"&gt;Teste certo:&lt;/label&gt; &lt;input type="tel" id="tel-certo" value="11987654321" pattern="[0-9]{10,11}"&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;label for="tel-errado"&gt;Teste errado:&lt;/label&gt; &lt;input type="tel" id="tel-errado" value="9876-5432" pattern="[0-9]{10,11}"&gt;&lt;/p&gt;
+
+  &lt;button type="submit" name="acao" value="enviar"&gt;Enviar pedido&lt;/button&gt;
+  &lt;button type="submit" name="acao" value="rascunho" formnovalidate&gt;Salvar rascunho&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>Os campos de teste não têm <code>name</code>, de propósito: eles não são enviados (aula <a href="enviar-formulario.html">Enviar</a>). Num formulário de verdade, você testaria o <code>pattern</code> digitando no próprio campo e depois apagaria os testes.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O navegador confere os campos antes de enviar; se algo falha, não envia, põe o foco no campo e mostra uma mensagem, que é <strong>dele</strong> (muda de navegador e de língua).</li>
+  <li><code>required</code>: não pode ficar vazio. O <code>type</code> (<code>email</code>, <code>url</code>, <code>number</code>) confere o formato. Campo vazio e opcional não é conferido.</li>
+  <li><code>minlength</code>/<code>maxlength</code>: tamanho do texto (o <code>maxlength</code> trava a digitação). <code>min</code>/<code>max</code>/<code>step</code>: faixa e passo de números e datas.</li>
+  <li><code>pattern</code>: expressão regular que casa com o valor inteiro, sem barras; explique com <code>title</code>; escape o traço dentro dos colchetes (<code>\-</code>) e teste no Console.</li>
+  <li><code>formnovalidate</code> no botão e <code>novalidate</code> no form desligam a validação.</li>
+  <li>O validador W3C pega atributos mal escritos (<code>required="false"</code>, <code>pattern</code> num <code>number</code>), mas não pega regras sem sentido (<code>min</code> &gt; <code>max</code>) nem um <code>pattern</code> quebrado.</li>
+  <li>A validação do HTML ajuda quem preenche; o servidor <strong>sempre</strong> confere de novo.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
