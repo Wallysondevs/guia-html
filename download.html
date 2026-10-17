@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML download — links que baixam arquivos | Guia HTML</title>
+<meta name="description" content="O atributo download do HTML para quem nunca fez um site: um link que salva o arquivo em vez de abrir, o nome sugerido com download=&quot;nome&quot;, por que ele só vale para arquivos do seu próprio site, como avisar o formato e o tamanho e os erros reais do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">download</span></h1>
+
+<p class="intro">A Ana montou um cardápio em PDF para a lojinha de bolos e pôs um link para ele no site. Quem clica vê o PDF abrir dentro do navegador, lê, fecha a aba... e não tem o arquivo guardado no computador. Ela queria outra coisa: que o clique <strong>baixasse</strong> o cardápio, como um anexo de e-mail. Para isso existe o atributo <code>download</code> ("baixar"). Ele é uma palavra só, escrita dentro do <code>&lt;a&gt;</code>, e muda o que o navegador faz com o clique.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que o navegador faz quando você clica num link para um PDF, uma foto ou um texto, e o que muda com <code>download</code>.</li>
+  <li>Como escrever <code>&lt;a href="cardapio.pdf" download&gt;</code>, parte por parte.</li>
+  <li>Como sugerir outro nome para o arquivo salvo: <code>download="cardapio-da-ana.pdf"</code>.</li>
+  <li>Por que o <code>download</code> só vale para arquivos do <strong>seu</strong> site.</li>
+  <li>Como escrever um link de download que todo mundo entende (formato e tamanho no texto).</li>
+  <li>Os erros reais do validador: <code>download</code> no elemento errado, sem <code>href</code>, com espaço no nome do arquivo.</li>
+</ul>
+</div>
+
+<p>Antes desta aula, veja <a href="links.html">Links</a> e <a href="caminhos.html">Caminhos Relativos e Absolutos</a>: o <code>download</code> é um atributo a mais no mesmo <code>&lt;a&gt;</code>. Os arquivos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>, o mesmo do validator.w3.org) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>.</p>
+
+<hr>
+
+<h2>A ideia: ler na loja ou levar para casa</h2>
+<p>Numa livraria, você pode pegar um livro da prateleira e ler ali mesmo, em pé. Ou pode pedir: "embrulha para viagem". O livro é o mesmo; muda o que você faz com ele.</p>
+
+<p>Com um link é igual. O endereço (<code>href</code>) é o mesmo arquivo. Sem nada a mais, o navegador escolhe sozinho o que fazer, olhando o <strong>tipo</strong> do arquivo:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>O link aponta para…</th><th>Sem <code>download</code>, o navegador…</th><th>Com <code>download</code>, o navegador…</th></tr>
+<tr><td>uma página <code>.html</code></td><td>abre a página</td><td>salva o arquivo <code>.html</code></td></tr>
+<tr><td>um PDF</td><td>abre o PDF numa aba, no leitor que vem com ele</td><td>salva o PDF na pasta de downloads</td></tr>
+<tr><td>uma foto (<code>.jpg</code>, <code>.png</code>)</td><td>mostra a foto sozinha na tela</td><td>salva a foto</td></tr>
+<tr><td>um texto (<code>.txt</code>)</td><td>mostra o texto na tela</td><td>salva o texto</td></tr>
+<tr><td>um arquivo que ele não sabe mostrar (<code>.zip</code>, <code>.docx</code>)</td><td>salva o arquivo</td><td>salva o arquivo</td></tr>
+</table>
+</div>
+
+<p>Ou seja: o <code>download</code> é um pedido de "embrulha para viagem". Ele faz diferença nos arquivos que o navegador <strong>sabe mostrar</strong>. Um <code>.zip</code> já é baixado de qualquer jeito.</p>
+
+<h3>Como o navegador sabe o tipo?</h3>
+<p>Quem conta é o <strong>servidor</strong>, o programa que entrega os arquivos do site. Junto com cada arquivo, ele manda um bilhete chamado <code>Content-Type</code> ("tipo do conteúdo"). Dá para ver esse bilhete no laboratório: a Ana liga um servidor local na pasta do site (aula <a href="servidor-local.html">Servidor Local</a>) e pede ao <code>curl</code> só os cabeçalhos (<code>-I</code>) de dois arquivos:</p>
+
+<pre class="term" data-cwd="~/site">$ ls -l
+total 8
+-rw-rw-r-- 1 ana ana 2411520 out 17 15:37 cardapio.pdf
+-rw-rw-r-- 1 ana ana     196 out 17 15:36 certo.html
+-rw-rw-r-- 1 ana ana      34 out 17 15:37 receita.txt
+$ python3 -m http.server &amp;
+[1] 4
+$ curl -sI http://localhost:8000/cardapio.pdf
+127.0.0.1 - - [17/Oct/2026 15:40:30] "HEAD /cardapio.pdf HTTP/1.1" 200 -     « o servidor anota o pedido
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:40:30 GMT
+Content-type: application/pdf                                                « "isto é um PDF"
+Content-Length: 2411520
+Last-Modified: Sat, 17 Oct 2026 18:37:11 GMT
+
+$ curl -sI http://localhost:8000/receita.txt
+127.0.0.1 - - [17/Oct/2026 15:40:30] "HEAD /receita.txt HTTP/1.1" 200 -
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:40:30 GMT
+Content-type: text/plain                                                     « "isto é texto puro"
+Content-Length: 34
+Last-Modified: Sat, 17 Oct 2026 18:37:11 GMT
+
+$ kill %1</pre>
+
+<p><code>application/pdf</code> diz "PDF"; <code>text/plain</code> diz "texto puro". Como o navegador sabe mostrar os dois, ele os <strong>abre</strong>. O <code>download</code> é o jeito de, pelo HTML, pedir que ele salve. (O <code>Content-Length</code> é o tamanho em bytes: 2411520 bytes são uns 2,3 MB.)</p>
+
+<hr>
+
+<h2>1. O primeiro link de download</h2>
+<p>Comece por um link comum e acrescente a palavra <code>download</code> dentro da tag de abertura:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="cardapio.pdf" download&gt;Baixar o cardápio&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;a</dt><dd>O elemento de link, o mesmo da aula <a href="links.html">Links</a>. O <code>a</code> vem de <em>anchor</em>, "âncora".</dd>
+  <dt>href="cardapio.pdf"</dt><dd>O endereço do arquivo (<code>href</code> = <em>hypertext reference</em>, "referência de hipertexto"). Aqui é um caminho relativo: o <code>cardapio.pdf</code> está na mesma pasta da página.</dd>
+  <dt>download</dt><dd>O atributo novo. Sozinho, sem <code>=</code> nem valor, ele quer dizer "salve este arquivo em vez de abrir". Atributos assim, que valem só por estar ali, se chamam <strong>atributos booleanos</strong> (de "sim ou não").</dd>
+  <dt>Baixar o cardápio</dt><dd>O texto do link, que a pessoa vê e clica.</dd>
+  <dt>&lt;/a&gt;</dt><dd>Fecha o link.</dd>
+</dl>
+
+<p>No quadro "Resultado", o link aparece igual a qualquer outro: azul e sublinhado. O <code>download</code> não muda a aparência; muda só o que acontece no clique. Na página publicada, com o <code>cardapio.pdf</code> ao lado, o clique salva o arquivo na pasta de downloads (no computador da Ana, <code>~/Downloads</code>) e o navegador mostra o download na lista dele, em vez de abrir uma aba com o PDF.</p>
+
+<p>E o validador aprova:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose certo.html
+certo.html                « só o nome do arquivo: nenhum erro</pre>
+
+<div class="tip">
+<strong>Teste no servidor local</strong>
+<p>O <code>download</code> foi feito para páginas publicadas na internet. Se você abrir o arquivo <code>.html</code> com dois cliques (o endereço começa com <code>file://</code>), alguns navegadores tratam cada arquivo do seu computador como um "site" diferente e ignoram o <code>download</code> (veja a seção 3). Para ver o comportamento de verdade, rode <code>python3 -m http.server</code> na pasta do site e abra <code>http://localhost:8000</code> (aula <a href="servidor-local.html">Servidor Local</a>).</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:a[download],attr:a[href]=receita.txt">
+<p class="try-task"><strong>Missão:</strong> o link abaixo abre a receita na tela. Acrescente o atributo <code>download</code> para ele <strong>baixar</strong> o arquivo <code>receita.txt</code>. Não mude o <code>href</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;&lt;a href="receita.txt"&gt;Baixar a receita&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p&gt;&lt;a href="receita.txt" download&gt;Baixar a receita&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<p>A ordem dos atributos não importa: <code>&lt;a download href="receita.txt"&gt;</code> é a mesma coisa. O guia escreve o <code>href</code> primeiro porque ele é o mais importante.</p>
+
+<hr>
+
+<h2>2. Sugerir o nome do arquivo</h2>
+<p>Sem valor, o arquivo salvo ganha o nome que está no endereço: <code>cardapio.pdf</code>. Se o arquivo no site tem um nome feio (<code>cardapio-v3-final.pdf</code>, <code>img_0042.jpg</code>), dê ao <code>download</code> um valor: o <strong>nome sugerido</strong>.</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="arquivos/cardapio-v3-final.pdf" download="cardapio-da-ana.pdf"&gt;Baixar o cardápio&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>href="arquivos/cardapio-v3-final.pdf"</dt><dd>Onde o arquivo está: na pasta <code>arquivos</code>, com o nome que a Ana usa para se organizar.</dd>
+  <dt>download="cardapio-da-ana.pdf"</dt><dd>O nome com que o arquivo chega no computador de quem baixou. Só o nome: sem pasta.</dd>
+</dl>
+
+<p>"Sugerido" porque quem decide é o navegador. Ele pode:</p>
+<ul>
+  <li>trocar ou tirar caracteres que não podem ir num nome de arquivo, como a barra <code>/</code> (por isso <code>download="pasta/cardapio.pdf"</code> não cria uma pasta);</li>
+  <li>acrescentar <code>(1)</code>, <code>(2)</code> se já existir um arquivo com esse nome na pasta de downloads;</li>
+  <li>perguntar à pessoa onde salvar e com que nome, se ela configurou o navegador assim.</li>
+</ul>
+
+<div class="tip">
+<strong>Mantenha a extensão</strong>
+<p>A extensão (o <code>.pdf</code>, o <code>.jpg</code> do fim) é o que diz ao computador da pessoa com que programa abrir o arquivo. Se você sugerir <code>download="cardapio"</code>, sem extensão, o arquivo pode chegar sem ela, e a pessoa não consegue abrir com dois cliques. Escreva o nome inteiro, com a extensão certa.</p>
+</div>
+
+<div class="tryhtml" data-goal="attr:a[download]=fotos-do-bolo.zip,attr:a[href]=imagens/album-2026-10.zip">
+<p class="try-task"><strong>Missão:</strong> o álbum de fotos está em <code>imagens/album-2026-10.zip</code>. Faça o link baixar o arquivo com o nome <code>fotos-do-bolo.zip</code>.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;a href="imagens/album-2026-10.zip"&gt;Baixar as fotos do bolo&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;&lt;a href="imagens/album-2026-10.zip" download="fotos-do-bolo.zip"&gt;Baixar as fotos do bolo&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<h3>Nomes de arquivo sem espaço e sem acento</h3>
+<p>No <code>download="…"</code> você pode escrever o nome que quiser, até com acento. Já no <strong><code>href</code></strong>, o nome do arquivo de verdade, espaços são proibidos. A Ana salvou o PDF como <code>Cardápio da Ana.pdf</code> e o validador reclamou:</p>
+
+<pre class="term" data-cwd="~/site">$ vnu espaco.html
+"file:/home/ana/site/espaco.html":8.4-8.42: error: Bad value “Cardápio da Ana.pdf” for attribute “href” on element “a”: Illegal character in path segment. Space is not allowed.</pre>
+
+<p><em>Bad value … for attribute “href”</em> = "valor ruim para o atributo <code>href</code>"; <em>Illegal character in path segment. Space is not allowed.</em> = "caractere proibido num pedaço do caminho: espaço não é permitido". Num endereço, o espaço vira o código <code>%20</code> (e o <code>á</code> vira <code>%C3%A1</code>). <code>href="Card%C3%A1pio%20da%20Ana.pdf"</code> passa no validador, mas ninguém consegue ler isso. O conserto de verdade é <strong>renomear o arquivo</strong>: <code>cardapio-da-ana.pdf</code>, em minúsculas, sem acento, com hífen no lugar do espaço. É a regra de <a href="organizar-arquivos.html">Organizar os Arquivos de um Site</a>.</p>
+
+<hr>
+
+<h2>3. Só vale para arquivos do seu site</h2>
+<p>A Ana achou na internet uma foto bonita de bolo e tentou:</p>
+
+<pre class="file" data-file="index.html">&lt;p&gt;&lt;a href="https://exemplo.com/foto.jpg" download&gt;Baixar a foto&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<p>O validador não reclama: o HTML está certo.</p>
+
+<pre class="term" data-cwd="~/site">$ vnu --verbose outro.html
+outro.html</pre>
+
+<p>Mas, no navegador, o clique <strong>abre</strong> a foto, como um link comum. O <code>download</code> foi ignorado. Os navegadores atuais só respeitam o <code>download</code> quando o arquivo é da <strong>mesma origem</strong> da página: o mesmo endereço de site (o mesmo <code>https://</code>, o mesmo domínio e a mesma porta). É uma regra de segurança: sem ela, qualquer página poderia pôr arquivos de outros sites no seu computador, com o nome que quisesse.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>A página está em…</th><th>O link aponta para…</th><th>O <code>download</code> vale?</th></tr>
+<tr><td><code>https://ana.exemplo.com/index.html</code></td><td><code>cardapio.pdf</code> (mesma pasta)</td><td>vale</td></tr>
+<tr><td><code>https://ana.exemplo.com/index.html</code></td><td><code>https://ana.exemplo.com/arquivos/fotos.zip</code></td><td>vale (mesmo site)</td></tr>
+<tr><td><code>https://ana.exemplo.com/index.html</code></td><td><code>https://exemplo.com/foto.jpg</code></td><td>ignorado: o clique abre a foto</td></tr>
+<tr><td><code>file:///home/ana/site/index.html</code></td><td><code>cardapio.pdf</code></td><td>depende do navegador: teste com o servidor local</td></tr>
+</table>
+</div>
+
+<p>Quer que as pessoas baixem algo de outro site? Coloque uma <strong>cópia</strong> no seu (se você tem permissão para isso) ou faça um link comum e escreva no texto que é para baixar.</p>
+
+<hr>
+
+<h2>4. Um link de download que todo mundo entende</h2>
+<p>O <code>download</code> não aparece na tela. Quem lê a página (ou ouve, com um <a href="leitores-tela.html">leitor de tela</a>) só sabe que o link baixa um arquivo se o <strong>texto</strong> disser. Um clique que, sem aviso, começa a baixar 50 MB no celular de alguém é uma surpresa ruim. Boas práticas:</p>
+
+<ol class="passo">
+  <li>Comece o texto com o verbo: "Baixar…".</li>
+  <li>Diga o que é: "o cardápio de outubro".</li>
+  <li>Diga o formato e o tamanho, entre parênteses: "(PDF, 2,3 MB)". O formato avisa se a pessoa tem programa para abrir; o tamanho avisa quanto da internet dela vai embora.</li>
+</ol>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Cardápio&lt;/h2&gt;
+&lt;p&gt;Veja os bolos e os preços de outubro.&lt;/p&gt;
+&lt;p&gt;&lt;a href="cardapio.pdf" download="cardapio-da-ana.pdf"&gt;Baixar o cardápio de outubro (PDF, 2,3 MB)&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<p>Evite "clique aqui": fora da frase, ele não diz nada. Uma pessoa cega que pede ao leitor de tela a lista dos links da página ouve "clique aqui, clique aqui, clique aqui" (aula <a href="acessibilidade.html">Acessibilidade</a>).</p>
+
+<h3>Abrir ou baixar: qual usar</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Use</th></tr>
+<tr><td>Uma página do site (<code>sobre.html</code>)</td><td>link comum, sem <code>download</code></td></tr>
+<tr><td>Um PDF que a pessoa só vai ler uma vez</td><td>link comum: abre no navegador, sem encher a pasta de downloads</td></tr>
+<tr><td>Um arquivo para guardar ou imprimir depois (cardápio, currículo, boleto)</td><td><code>download</code></td></tr>
+<tr><td>Uma foto em tamanho grande para usar (papel de parede, foto do produto)</td><td><code>download</code></td></tr>
+<tr><td>Um arquivo com nome feio no servidor</td><td><code>download="nome-bonito.ext"</code></td></tr>
+<tr><td>Um arquivo de <strong>outro</strong> site</td><td>link comum (o <code>download</code> seria ignorado)</td></tr>
+</table>
+</div>
+
+<div class="note">
+<strong>O servidor também pode mandar baixar</strong>
+<p>Existe um segundo jeito, que não é HTML: o servidor manda, junto com o arquivo, o cabeçalho <code>Content-Disposition: attachment</code> ("disposição do conteúdo: anexo"). Aí o navegador baixa mesmo sem o <code>download</code> no link, e mesmo de outro site. É assim que bancos entregam boletos. O <code>python3 -m http.server</code> não manda esse cabeçalho (repare que ele não apareceu no <code>curl -sI</code> lá em cima); o GitHub Pages também não deixa você configurar isso. No seu site estático, o <code>download</code> é o caminho.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>error: Attribute “download” not allowed on element “img” at this point.</code></strong>
+<p><strong>O que aconteceu:</strong> a Ana quis que a foto fosse baixada ao clicar e pôs o <code>download</code> na própria imagem:</p>
+<pre class="file" data-file="index.html">&lt;p&gt;&lt;img src="bolo.jpg" alt="Bolo de cenoura" download&gt;&lt;/p&gt;
+</pre>
+<pre class="term" data-cwd="~/site">$ vnu img.html
+"file:/home/ana/site/img.html":8.4-8.54: error: Attribute “download” not allowed on element “img” at this point.</pre>
+<p>"O atributo <code>download</code> não é permitido no elemento <code>img</code> neste ponto." O navegador não dá erro nenhum: mostra a foto e ignora o atributo. O clique na foto não faz nada. O mesmo acontece com <code>&lt;button download&gt;</code>: <code>Attribute “download” not allowed on element “button” at this point.</code></p>
+<p><strong>Como consertar:</strong> o <code>download</code> só existe no <code>&lt;a&gt;</code> (e no <code>&lt;area&gt;</code>, de mapas de imagem). Ponha a imagem <strong>dentro</strong> de um link: <code>&lt;a href="bolo.jpg" download&gt;&lt;img src="bolo.jpg" alt="Baixar a foto do bolo de cenoura"&gt;&lt;/a&gt;</code>. Repare no <code>alt</code>: numa imagem que é o único conteúdo de um link, ele descreve o que o link faz (aula <a href="imagens-alt.html">Texto Alternativo</a>).</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “a” is missing required attribute “href”.</code></strong>
+<p><strong>O que aconteceu:</strong> o link ficou só com o <code>download</code>: <code>&lt;a download&gt;Baixar o cardápio&lt;/a&gt;</code>.</p>
+<pre class="term" data-cwd="~/site">$ vnu sem-href.html; echo "codigo: $?"
+"file:/home/ana/site/sem-href.html":8.4-8.15: error: Element “a” is missing required attribute “href”.
+codigo: 1</pre>
+<p>"Falta ao elemento <code>a</code> o atributo obrigatório <code>href</code>." Um <code>&lt;a&gt;</code> sem <code>href</code> nem é um link: o navegador mostra o texto preto, sem sublinhado, e nada acontece no clique. O <code>download</code> diz <strong>como</strong> tratar o arquivo; quem diz <strong>qual</strong> arquivo é o <code>href</code>.</p>
+<p><strong>Como consertar:</strong> <code>&lt;a href="cardapio.pdf" download&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “…” for attribute “href” on element “a”: Illegal character in path segment. Space is not allowed.</code></strong>
+<p><strong>O que aconteceu:</strong> o nome do arquivo no <code>href</code> tem espaço (seção 2). Um primo desse erro aparece quando o nome tem <code>%</code>, como <code>bolo-100%.pdf</code>:</p>
+<pre class="term" data-cwd="~/site">$ vnu pct.html
+"file:/home/ana/site/pct.html":8.4-8.36: error: Bad value “bolo-100%.pdf” for attribute “href” on element “a”: Percentage ("%") is not followed by two hexadecimal digits.</pre>
+<p>"O sinal de porcentagem não é seguido de dois dígitos hexadecimais." Num endereço, o <code>%</code> é o começo de um código como <code>%20</code>, então um <code>%</code> solto confunde o navegador.</p>
+<p><strong>Como consertar:</strong> renomeie o arquivo (<code>bolo-integral.pdf</code>): só letras minúsculas sem acento, números e hífen.</p>
+</div>
+
+<div class="cenario">
+<strong>O clique abre o arquivo em vez de baixar (sem nenhum erro no validador)</strong>
+<p><strong>O que aconteceu:</strong> uma destas três coisas:</p>
+<ul>
+  <li>o arquivo é de <strong>outro site</strong>, e o navegador ignorou o <code>download</code> (seção 3);</li>
+  <li>você abriu a página com dois cliques (<code>file://</code>) num navegador que trata cada arquivo como um site separado;</li>
+  <li>o atributo está escrito errado. Com <code>dowload</code>, o validador avisa: <code>error: Attribute “dowload” not allowed on element “a” at this point.</code> Para o navegador, um atributo desconhecido é só ignorado.</li>
+</ul>
+<p><strong>Como consertar:</strong> confira a grafia com o validador, coloque o arquivo no seu próprio site e teste com <code>python3 -m http.server</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O download começa e falha</strong>
+<p><strong>O que aconteceu:</strong> o <code>href</code> aponta para um arquivo que não existe. O validador <strong>não</strong> confere se o arquivo existe; ele só olha o HTML. Quem responde é o servidor, com o famoso erro 404:</p>
+<pre class="term" data-cwd="~/site">$ curl -sI http://localhost:8000/cardapia.pdf      « "cardapia", com a no fim
+127.0.0.1 - - [17/Oct/2026 15:40:30] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 15:40:30] "HEAD /cardapia.pdf HTTP/1.1" 404 -
+HTTP/1.0 404 File not found
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:40:30 GMT
+Connection: close
+Content-Type: text/html;charset=utf-8
+Content-Length: 460</pre>
+<p>Com <code>download</code>, o navegador mostra o download como falho na lista de downloads dele, em vez de mostrar a página de erro.</p>
+<p><strong>Como consertar:</strong> confira o nome do arquivo letra por letra (<code>ls</code> na pasta do site) e o caminho (aula <a href="caminhos.html">Caminhos</a>).</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Duplicate attribute “download”.</code></strong>
+<p><strong>O que aconteceu:</strong> <code>&lt;a href="cardapio.pdf" download download&gt;</code>. Acontece muito depois de copiar e colar.</p>
+<p><strong>Como consertar:</strong> cada atributo aparece uma vez só. Se um dos dois tinha um nome (<code>download="cardapio-da-ana.pdf"</code>), fique com ele.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;a href="arq.pdf"&gt;</code></td><td>Link comum: o navegador abre o que sabe mostrar e baixa o resto</td></tr>
+<tr><td><code>&lt;a href="arq.pdf" download&gt;</code></td><td>Baixa o arquivo, com o nome do endereço (<code>arq.pdf</code>)</td></tr>
+<tr><td><code>&lt;a href="arq.pdf" download="nome.pdf"&gt;</code></td><td>Baixa o arquivo e sugere o nome <code>nome.pdf</code></td></tr>
+<tr><td><code>download=""</code></td><td>O mesmo que <code>download</code> sozinho</td></tr>
+<tr><td>Arquivo de outro site</td><td>O <code>download</code> é ignorado: o link abre normalmente</td></tr>
+<tr><td>Onde pode</td><td>Só em <code>&lt;a&gt;</code> e <code>&lt;area&gt;</code>, e sempre junto com <code>href</code></td></tr>
+<tr><td>Texto do link</td><td>"Baixar" + o que é + (formato, tamanho)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Baixar em vez de abrir</h3>
+<p>Complete para o link baixar o currículo da Ana:</p>
+<div class="ex-code">&lt;a href="curriculo.pdf" <input data-answer="download" aria-label="atributo">&gt;Baixar meu currículo (PDF, 120 KB)&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Outro nome</h3>
+<p>O arquivo no site se chama <code>cv-2026-final2.pdf</code>. Complete para ele chegar como <code>curriculo-ana.pdf</code>:</p>
+<div class="ex-code">&lt;a href="cv-2026-final2.pdf" download=<input data-answer="&quot;curriculo-ana.pdf&quot;|curriculo-ana.pdf|'curriculo-ana.pdf'" aria-label="nome sugerido">&gt;Baixar meu currículo&lt;/a&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">3. A página está em <code>https://ana.exemplo.com</code> e tem <code>&lt;a href="https://fotos.exemplo.net/bolo.jpg" download&gt;</code>. O que acontece no clique?</p>
+<label><input type="radio" name="q3"> A foto é baixada com o nome <code>bolo.jpg</code></label>
+<label><input type="radio" name="q3"> O validador mostra um erro e o link não funciona</label>
+<label><input type="radio" name="q3"> O <code>download</code> é ignorado, porque a foto é de outro site, e ela abre como num link comum</label>
+<label><input type="radio" name="q3"> O navegador pergunta se a pessoa confia no outro site</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Onde o atributo <code>download</code> é permitido?</p>
+<label><input type="radio" name="q4"> Em qualquer elemento que mostre um arquivo, como <code>&lt;img&gt;</code></label>
+<label><input type="radio" name="q4"> No <code>&lt;a&gt;</code> (e no <code>&lt;area&gt;</code>), junto com o <code>href</code></label>
+<label><input type="radio" name="q4"> No <code>&lt;button&gt;</code></label>
+<label><input type="radio" name="q4"> Só no <code>&lt;head&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Qual é o melhor texto para um link de download?</p>
+<label><input type="radio" name="q5"> Clique aqui</label>
+<label><input type="radio" name="q5"> cardapio.pdf</label>
+<label><input type="radio" name="q5"> Download</label>
+<label><input type="radio" name="q5"> Baixar o cardápio de outubro (PDF, 2,3 MB)</label>
+</div>
+
+<h3>Missão final: a área de downloads da lojinha</h3>
+
+<div class="tryhtml" data-goal="nsel:a[download]=2,attr:a[href$=pdf][download]=cardapio-da-ana.pdf,attr:a[href$=txt][download],texto:a[href$=pdf]=PDF,sel:a[href=&quot;sobre.html&quot;]:not([download])">
+<p class="try-task"><strong>Missão:</strong> arrume os três links da página. (1) O cardápio (<code>arquivos/cardapio-out.pdf</code>) deve ser <strong>baixado</strong> com o nome <code>cardapio-da-ana.pdf</code>, e o texto do link deve avisar que é um <strong>PDF</strong>. (2) A receita (<code>arquivos/receita.txt</code>) deve ser baixada com o nome que já tem. (3) O link para <code>sobre.html</code> é uma página do site: ele deve <strong>abrir</strong>, sem <code>download</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Bolos da Ana&lt;/h1&gt;
+&lt;h2&gt;Downloads&lt;/h2&gt;
+&lt;p&gt;&lt;a href="arquivos/cardapio-out.pdf"&gt;Baixar o cardápio&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="arquivos/receita.txt"&gt;Baixar a receita do bolo de cenoura (TXT, 1 KB)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="sobre.html" download&gt;Conheça a Ana&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Bolos da Ana&lt;/h1&gt;
+&lt;h2&gt;Downloads&lt;/h2&gt;
+&lt;p&gt;&lt;a href="arquivos/cardapio-out.pdf" download="cardapio-da-ana.pdf"&gt;Baixar o cardápio (PDF, 2,3 MB)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="arquivos/receita.txt" download&gt;Baixar a receita do bolo de cenoura (TXT, 1 KB)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="sobre.html"&gt;Conheça a Ana&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<p>Repare na pegadinha do código inicial: o link do <code>sobre.html</code> tinha <code>download</code>. Numa página publicada, ele baixaria o arquivo <code>sobre.html</code> em vez de abrir a página. É o erro contrário: <code>download</code> onde a pessoa queria navegar.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Sem nada a mais, o navegador <strong>abre</strong> o que sabe mostrar (páginas, PDF, fotos, texto), guiado pelo <code>Content-Type</code> que o servidor manda, e baixa o resto.</li>
+  <li><code>&lt;a href="arquivo" download&gt;</code> pede para <strong>baixar</strong> em vez de abrir. Ele não muda a aparência do link.</li>
+  <li><code>download="nome.ext"</code> sugere o nome do arquivo salvo. Mantenha a extensão; o navegador pode ajustar o nome.</li>
+  <li>Só vale para arquivos do <strong>mesmo site</strong> da página. De outro site, o link abre normalmente. Teste com o servidor local.</li>
+  <li>O texto do link diz que é download, o que é, o formato e o tamanho: "Baixar o cardápio (PDF, 2,3 MB)".</li>
+  <li>O validador pega <code>download</code> fora do <code>&lt;a&gt;</code>, <code>&lt;a&gt;</code> sem <code>href</code>, espaço e <code>%</code> no nome do arquivo e atributo repetido. Arquivo que não existe, só o servidor (404) mostra.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
