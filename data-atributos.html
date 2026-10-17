@@ -116,7 +116,7 @@
 console.log(bolo.dataset.preco);
 console.log(bolo.dataset.categoria);
 console.log(bolo.dataset.precoKg);
-console.log(JSON.stringify(bolo.dataset));
+console.log(bolo.dataset);
 </pre>
 </div>
 
@@ -124,18 +124,18 @@ console.log(JSON.stringify(bolo.dataset));
 <pre class="out">35
 bolo
 80
-{"preco":"35","categoria":"bolo","precoKg":"80"}</pre>
+DOMStringMap {preco: '35', categoria: 'bolo', precoKg: '80'}</pre>
 
 <dl class="anatomy">
   <dt>bolo.dataset.preco</dt><dd>O valor de <code>data-preco</code>: o texto <code>35</code>.</dd>
   <dt>bolo.dataset.categoria</dt><dd>O valor de <code>data-categoria</code>.</dd>
   <dt>bolo.dataset.precoKg</dt><dd>O valor de <code>data-preco-kg</code>. No JavaScript, um hífen no meio de um nome seria lido como "menos". Por isso o navegador <strong>tira o hífen e põe a letra seguinte em maiúscula</strong>: <code>preco-kg</code> vira <code>precoKg</code>. Esse estilo de escrever se chama <em>camelCase</em> ("caixa de camelo"), por causa das "corcovas" das maiúsculas.</dd>
-  <dt>JSON.stringify(bolo.dataset)</dt><dd>Mostra a caixa inteira de uma vez, como texto: cada nome (já em camelCase) e o seu valor, entre aspas. Repare que até o <code>35</code> está entre aspas: é texto.</dd>
+  <dt>bolo.dataset</dt><dd>A caixa inteira de uma vez: cada nome (já em camelCase) e o seu valor. Repare que até o <code>35</code> está entre aspas: é texto. <em>DOMStringMap</em> é o nome técnico da caixa, um "mapa de textos".</dd>
 </dl>
 
 <div class="note">
 <strong>No F12 do navegador</strong>
-<p>Nas <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>, no console, <code>console.log(bolo.dataset)</code> mostra a caixa como um objeto que você pode abrir com um clique, algo como <code>DOMStringMap {preco: '35', …}</code>. <em>DOMStringMap</em> é o nome técnico da caixa: um "mapa de textos". Outros consoles mostram só <code>[object DOMStringMap]</code>, sem os valores; por isso esta aula usa o <code>JSON.stringify</code>, que mostra os valores em qualquer lugar.</p>
+<p>Nas <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>, o console mostra o mesmo <code>DOMStringMap</code>, e você pode abri-lo com um clique para ver cada valor. Outro truque do F12: na aba dos elementos, clique no <code>&lt;li&gt;</code>; depois, no console, <code>$0.dataset</code> mostra os dados do elemento que você clicou (<code>$0</code> é "o elemento selecionado"). Já em lugares que transformam tudo em texto puro, a caixa aparece só como <code>[object DOMStringMap]</code>; aí, use <code>JSON.stringify(bolo.dataset)</code>, que dá <code>{"preco":"35","categoria":"bolo","precoKg":"80"}</code>.</p>
 </div>
 
 <h3>Outro jeito: getAttribute</h3>
@@ -161,14 +161,14 @@ console.log(Number(bolo.dataset.preco) + 1);
 <p>A primeira linha do console mostra <code>351</code>, e não <code>36</code>. Com textos, o <code>+</code> do JavaScript <strong>cola</strong> um no outro: <code>"35"</code> com <code>1</code> dá <code>"351"</code>. Para fazer conta, transforme o texto em número com <code>Number(…)</code>: a segunda linha mostra <code>36</code>.</p>
 
 <div class="tryhtml" data-goal="attr:#bolo[data-fatias]=12,console:Fatias: 12,src:dataset\.fatias">
-<p class="try-task"><strong>Missão:</strong> o bolo tem 12 fatias. Guarde isso no elemento com um atributo <code>data-fatias</code> e troque o <code>???</code> do <code>script.js</code> para que o console mostre <code>Fatias: 12</code>, lendo o valor pelo <code>dataset</code>.</p>
+<p class="try-task"><strong>Missão:</strong> o bolo tem 12 fatias. Guarde isso no elemento com um atributo <code>data-fatias</code> e conserte a última linha do <code>script.js</code> (ela está lendo o preço) para que o console mostre <code>Fatias: 12</code>, lendo o valor pelo <code>dataset</code>.</p>
 <pre class="script" data-file="index.html">&lt;p id="bolo" data-preco="35"&gt;Bolo de cenoura&lt;/p&gt;
 &lt;script src="script.js"&gt;&lt;/script&gt;
 </pre>
 <pre class="script" data-file="script.js">const bolo = document.getElementById("bolo");
 
 console.log("Preço: " + bolo.dataset.preco);
-console.log("Fatias: " + ???);
+console.log("Fatias: " + bolo.dataset.preco);
 </pre>
 <pre class="solucao" data-file="index.html">&lt;p id="bolo" data-preco="35" data-fatias="12"&gt;Bolo de cenoura&lt;/p&gt;
 &lt;script src="script.js"&gt;&lt;/script&gt;
@@ -180,7 +180,7 @@ console.log("Fatias: " + bolo.dataset.fatias);
 </pre>
 </div>
 
-<p>Do jeito que começa, o <code>???</code> não é JavaScript válido, e o console mostra um erro de sintaxe (<code>SyntaxError</code>) em vez das duas linhas. Isso é normal: o erro some quando você troca o <code>???</code>.</p>
+<p>Do jeito que começa, o console mostra <code>Fatias: 35</code>: o texto está certo, mas o valor é o do <code>data-preco</code>. Se você escrever <code>bolo.dataset.fatias</code> antes de criar o atributo, o console mostra <code>Fatias: undefined</code> ("indefinido"): o JavaScript não achou nenhum <code>data-fatias</code>.</p>
 
 <hr>
 
@@ -316,7 +316,7 @@ console.log(bolo.dataset.fatias);
 <tr><td><code>el.dataset.estoque = "0"</code></td><td>Cria ou troca <code>data-estoque</code></td></tr>
 <tr><td><code>delete el.dataset.estoque</code></td><td>Apaga <code>data-estoque</code></td></tr>
 <tr><td><code>Number(el.dataset.preco)</code></td><td>Transforma o texto em número, para fazer conta</td></tr>
-<tr><td><code>JSON.stringify(el.dataset)</code></td><td>Mostra todos os <code>data-*</code> de uma vez, como texto</td></tr>
+<tr><td><code>console.log(el.dataset)</code></td><td>Mostra todos os <code>data-*</code> de uma vez no console</td></tr>
 <tr><td>CSS: <code>[data-estoque="0"] { … }</code></td><td>Estilo para os elementos com esse valor</td></tr>
 </table>
 </div>

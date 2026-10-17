@@ -215,7 +215,7 @@
 <h3><code>hidden="until-found"</code>: escondido até alguém procurar</h3>
 <p>Com o valor <code>until-found</code> ("até ser achado"), o trecho fica escondido, mas a busca da página (<kbd>Ctrl</kbd> + <kbd>F</kbd>) encontra o texto dele. Quando encontra, o navegador tira o <code>hidden</code> e mostra o trecho. Experimente: procure "fermento" nesta página com <kbd>Ctrl</kbd> + <kbd>F</kbd>. (Se a busca não entrar no quadro do resultado, salve o código num arquivo <code>.html</code> e abra-o no navegador.)</p>
 
-<pre class="file" data-file="index.html" data-resultado>&lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Bolo de cenoura&lt;/h1&gt;
 &lt;p&gt;Ingredientes: cenoura, ovos, óleo, açúcar e farinha.&lt;/p&gt;
 &lt;p hidden="until-found"&gt;Dica: não esqueça o fermento, uma colher de sopa.&lt;/p&gt;
 </pre>
@@ -412,7 +412,8 @@
   <li>peça para o tradutor não traduzir o nome da loja (<code>.marca</code>);</li>
   <li>esconda o item que ainda não está pronto (<code>.em-breve</code>).</li>
 </ol>
-<pre class="script" data-file="index.html">&lt;article&gt;
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article&gt;
   &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
   &lt;p&gt;Uma receita da &lt;span class="marca"&gt;Doces da Ana&lt;/span&gt;.&lt;/p&gt;
   &lt;ul&gt;
@@ -423,7 +424,8 @@
   &lt;p&gt;O lema da vovó: &lt;span class="frase"&gt;less is more&lt;/span&gt;.&lt;/p&gt;
 &lt;/article&gt;
 </pre>
-<pre class="solucao" data-file="index.html">&lt;article id="bolo" class="receita"&gt;
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;article id="bolo" class="receita"&gt;
   &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
   &lt;p&gt;Uma receita da &lt;span class="marca" translate="no"&gt;Doces da Ana&lt;/span&gt;.&lt;/p&gt;
   &lt;ul&gt;
