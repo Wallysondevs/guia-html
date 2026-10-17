@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML script — ligar JavaScript: defer, async e module | Guia HTML</title>
+<meta name="description" content="O elemento script do HTML para quem nunca fez um site: script dentro da página e em arquivo separado, o erro real de usar o DOM antes de ele existir (Cannot set properties of null), defer, async, type=module, script no fim do body e noscript, com as mensagens reais do console e do validador W3C.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">O Elemento script</span></h1>
+
+<p class="intro">O HTML diz o que cada coisa é, o CSS diz como ela fica, e o <strong>JavaScript</strong> faz a página <strong>reagir</strong>: um botão que mostra a receita, um cronômetro, um formulário que confere o e-mail antes de enviar. O JavaScript é uma linguagem de programação inteira, com guia próprio; aqui você vai aprender a parte do HTML: o elemento <code>&lt;script&gt;</code>, que liga o programa à página. E vai entender o erro mais comum de quem começa, um script que tenta mexer num elemento que <strong>ainda não existe</strong>, e os três jeitos de evitá-lo: <code>defer</code>, <code>async</code> e <code>type="module"</code>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O mínimo de JavaScript para entender os exemplos: <code>console.log</code>, <code>querySelector</code> e <code>textContent</code>.</li>
+  <li>O script dentro da página e o script num arquivo <code>.js</code> (<code>src</code>).</li>
+  <li>Por que um script no <code>head</code> dá <code>Cannot set properties of null</code>, e o que o navegador faz quando encontra um <code>&lt;script&gt;</code>.</li>
+  <li>O que fazem <code>defer</code>, <code>async</code> e <code>type="module"</code>, e qual usar.</li>
+  <li>O <code>&lt;noscript&gt;</code> e os erros reais do validador W3C.</li>
+</ul>
+</div>
+
+<p>As mensagens de erro desta aula são as que o <strong>Chrome</strong> mostrou no Console, e os arquivos foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/js</code>. No editor do guia, o <strong>console</strong> aparece embaixo do quadro de Resultado, com o que o programa escreve e os erros, no mesmo formato.</p>
+
+<hr>
+
+<h2>A ideia: a receita e o cozinheiro</h2>
+<p>Pense numa receita de bolo lida em voz alta, linha por linha, por um cozinheiro muito obediente. Se a linha 2 diz "bata os ovos" e os ovos só aparecem na linha 8 ("pegue os ovos"), ele para e diz: "não tenho ovos". Ele não lê adiante para procurar.</p>
+<p>O navegador lê o HTML assim, de cima para baixo. Quando encontra um <code>&lt;script&gt;</code>, ele <strong>para de ler</strong> a página, roda o programa e só depois continua. Se o programa pede o <code>&lt;h1&gt;</code>, e o <code>&lt;h1&gt;</code> está mais abaixo, ele ainda não existe. Essa é a história inteira desta aula.</p>
+
+<hr>
+
+<h2>1. O mínimo de JavaScript</h2>
+<p>Três coisas bastam para os exemplos:</p>
+
+<pre class="file" data-file="script.js">const titulo = document.querySelector("h1");
+titulo.textContent = "Receitas da Ana (com JavaScript!)";
+console.log("O script rodou.");
+</pre>
+
+<dl class="anatomy">
+  <dt>document.querySelector("h1")</dt><dd>"Página, me dê o primeiro elemento que casa com o seletor <code>h1</code>." O seletor é o mesmo do CSS: <code>"h1"</code>, <code>".promo"</code>, <code>"#mensagem"</code> (aula <a href="class-id.html">class e id</a>). Se nenhum elemento casar, ele devolve <strong><code>null</code></strong>, que quer dizer "nada".</dd>
+  <dt>const titulo =</dt><dd>Guarda o elemento numa variável chamada <code>titulo</code>, para usar na linha de baixo.</dd>
+  <dt>titulo.textContent = "…"</dt><dd>Troca o texto de dentro do elemento.</dd>
+  <dt>console.log("…")</dt><dd>Escreve uma mensagem no <strong>console</strong>: o painel Console do F12 (<a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>) ou o console do editor do guia. O visitante da página não vê.</dd>
+</dl>
+
+<p>O resto (variáveis, funções, eventos) é assunto do futuro Guia JavaScript.</p>
+
+<hr>
+
+<h2>2. O script dentro da página</h2>
+<p>O jeito mais simples: o programa vai entre <code>&lt;script&gt;</code> e <code>&lt;/script&gt;</code>. Aqui ele está no fim do <code>body</code>, depois do <code>h1</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+  &lt;script&gt;
+    const titulo = document.querySelector("h1");
+    titulo.textContent = "Receitas da Ana (com JavaScript!)";
+    console.log("O script rodou.");
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;script&gt;</dt><dd>Abre o programa. Tudo até o <code>&lt;/script&gt;</code> é JavaScript, e não HTML. Não precisa de <code>type</code>: sem ele, é JavaScript.</dd>
+  <dt>const titulo = …</dt><dd>As três linhas da seção 1.</dd>
+  <dt>&lt;/script&gt;</dt><dd>Fecha o programa. É obrigatório, sempre.</dd>
+</dl>
+
+<p>O título do Resultado mudou para "Receitas da Ana (com JavaScript!)", e o console mostrou <code>O script rodou.</code>. Funcionou porque, quando o navegador chegou no <code>&lt;script&gt;</code>, o <code>h1</code> já tinha sido lido.</p>
+
+<hr>
+
+<h2>3. Um arquivo separado: <code>src</code></h2>
+<p>Como no CSS (aula <a href="ligar-css.html">Ligar CSS</a>), o jeito mais usado é pôr o programa num arquivo <code>.js</code> e ligar com o atributo <code>src</code> (<em>source</em>, "fonte", "origem"):</p>
+
+<pre class="file" data-file="trecho">&lt;script src="script.js"&gt;&lt;/script&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;script</dt><dd>O mesmo elemento.</dd>
+  <dt>src="script.js"</dt><dd>O endereço do arquivo, como o <code>src</code> de uma imagem. É <code>src</code>, e não <code>href</code> (o <code>href</code> é do <code>link</code>).</dd>
+  <dt>&gt;&lt;/script&gt;</dt><dd>O <code>&lt;/script&gt;</code> continua obrigatório, mesmo sem nada dentro. E nada vai dentro: com <code>src</code>, o navegador ignora o que estiver entre as tags.</dd>
+</dl>
+
+<p>As vantagens são as mesmas do <code>.css</code>: um arquivo para o site inteiro, que o navegador guarda e não baixa de novo, e o HTML fica limpo. Agora, o lugar natural para essa linha parece ser o <code>head</code>, junto com o <code>link</code> do CSS. Vamos tentar.</p>
+
+<hr>
+
+<h2>4. O erro: o script que chega cedo demais</h2>
+<p>A Ana pôs o <code>script</code> no <code>head</code>:</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p id="mensagem"&gt;Carregando...&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O validador acha tudo certo (<code>vnu --verbose</code> mostrou só o nome do arquivo). Mas o título não mudou, e o Console do Chrome mostrou, em vermelho:</p>
+
+<pre class="file" data-file="Console do Chrome">Uncaught TypeError: Cannot set properties of null (setting 'textContent')    script.js:2
+</pre>
+
+<dl class="anatomy">
+  <dt>Uncaught</dt><dd>"Não capturado": um erro que o programa não tratou. Ele <strong>parou</strong> ali: a linha 3, o <code>console.log</code>, nunca rodou.</dd>
+  <dt>TypeError</dt><dd>"Erro de tipo": o programa tentou fazer algo com um valor que não aceita aquilo.</dd>
+  <dt>Cannot set properties of null</dt><dd>"Não é possível definir propriedades de <code>null</code>." O <code>titulo</code> é <code>null</code>, "nada": o <code>querySelector("h1")</code> não achou nenhum <code>h1</code>.</dd>
+  <dt>(setting 'textContent')</dt><dd>"(ao definir <code>textContent</code>)": a propriedade que ele tentou mudar.</dd>
+  <dt>script.js:2</dt><dd>O arquivo e a linha do erro: a linha 2, <code>titulo.textContent = …</code>.</dd>
+</dl>
+
+<p>O <code>h1</code> existe no arquivo, mas não <strong>naquele momento</strong>. Veja a ordem em que o navegador trabalhou:</p>
+
+<ol class="passo">
+  <li>Leu o <code>head</code> até a linha do <code>&lt;script src="script.js"&gt;</code>.</li>
+  <li><strong>Parou de ler a página</strong>, baixou o <code>script.js</code> e o rodou.</li>
+  <li>O script pediu o <code>h1</code>. A página até ali só tinha <code>head</code>, <code>meta</code> e <code>title</code>: nenhum <code>h1</code>. O <code>querySelector</code> devolveu <code>null</code>, e a linha 2 deu erro.</li>
+  <li>Só então o navegador voltou a ler e montou o <code>body</code>, com o <code>h1</code>. Tarde demais: o script já tinha terminado.</li>
+</ol>
+
+<p>Os outros navegadores mostram o mesmo erro com outras palavras (o Firefox, por exemplo, fala em <code>null</code> também). No editor do guia, o console embaixo do quadro mostra a mensagem do <strong>seu</strong> navegador, com o arquivo e a linha.</p>
+
+<p>O mesmo acontece com um script <strong>dentro</strong> da página, no <code>head</code>, e com qualquer script que esteja <strong>acima</strong> do elemento que ele procura. Há duas saídas: pôr o script no fim do <code>body</code> (como na seção 2) ou pedir ao navegador que espere, com <code>defer</code>.</p>
+
+<hr>
+
+<h2>5. <code>defer</code>: "rode quando a página estiver pronta"</h2>
+<p>O atributo <code>defer</code> ("adiar") diz ao navegador: "baixe este script, mas só rode depois de ler a página inteira". Uma palavra muda tudo:</p>
+
+<pre class="file" data-file="trecho">&lt;script src="script.js" defer&gt;&lt;/script&gt;
+</pre>
+
+<p>Com a mesma página e o mesmo <code>script.js</code>, o Chrome mudou o título para "Receitas da Ana (com JavaScript!)" e o console mostrou <code>O script rodou.</code>, sem erro nenhum. O <code>defer</code> é um <strong>atributo booleano</strong>: basta escrever o nome (aula <a href="atributos.html">Atributos</a>). E tem uma vantagem a mais: enquanto lê a página, o navegador já vai baixando o arquivo, sem parar a leitura.</p>
+
+<div class="tryhtml" data-goal="console:Título: Receitas da Ana,sel:head script[src='script.js'][defer]">
+<p class="try-task"><strong>Missão:</strong> o console mostra um erro, e a mensagem <code>Título: Receitas da Ana</code> não aparece. Sem tirar o <code>script</code> do <code>head</code>, acrescente o atributo que faz o navegador esperar a página inteira.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="script.js">const titulo = document.querySelector("h1");
+console.log("Título: " + titulo.textContent);
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;script src="script.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p&gt;Bolo de cenoura com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Antes do conserto, a mensagem era outra: <code>Cannot read properties of null (reading 'textContent')</code>. "Ler" (<em>read</em>) em vez de "definir" (<em>set</em>), porque aqui o script só queria <strong>ler</strong> o texto. É o mesmo problema: o <code>h1</code> ainda era <code>null</code>.</p>
+
+<hr>
+
+<h2>6. <code>async</code>: "rode assim que chegar"</h2>
+<p>O <code>async</code> (de <em>asynchronous</em>, "assíncrono", "sem esperar") também baixa o arquivo sem parar a leitura, mas roda o script <strong>assim que ele chega</strong>, esteja a página pronta ou não:</p>
+
+<pre class="file" data-file="trecho">&lt;script src="contador-de-visitas.js" async&gt;&lt;/script&gt;
+</pre>
+
+<p>No teste da Ana, com o arquivo no próprio computador, o <code>script.js</code> com <code>async</code> rodou sem erro. Mas isso foi sorte da velocidade: num site de verdade, o arquivo pode chegar antes de o navegador ler o <code>h1</code>, e o erro volta, às vezes sim, às vezes não. O pior tipo de erro, porque some quando você tenta reproduzi-lo. E com vários scripts <code>async</code>, cada um roda na ordem em que <strong>chega</strong>, não na ordem em que está escrito.</p>
+<p>Use <code>async</code> só para scripts que não mexem na página e não dependem de outros: um contador de visitas, um script de estatísticas.</p>
+
+<hr>
+
+<h2>7. <code>type="module"</code>: o JavaScript moderno</h2>
+<p>O JavaScript moderno divide o programa em vários arquivos, os <strong>módulos</strong>, que pegam coisas uns dos outros com <code>import</code> ("importar") e <code>export</code> ("exportar"). Para isso, o <code>script</code> precisa de <code>type="module"</code>:</p>
+
+<pre class="file" data-file="precos.js">export const precoBolo = 25;
+</pre>
+
+<pre class="file" data-file="loja.js">import { precoBolo } from "./precos.js";
+
+console.log("Bolo de cenoura: R$ " + precoBolo);
+document.querySelector("#mensagem").textContent = "Bolo de cenoura: R$ " + precoBolo;
+</pre>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;script type="module" src="loja.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p id="mensagem"&gt;Carregando...&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>export const precoBolo = 25;</dt><dd>O <code>precos.js</code> "oferece" o preço para outros arquivos.</dd>
+  <dt>import { precoBolo } from "./precos.js";</dt><dd>O <code>loja.js</code> pega o preço. O <code>./</code> quer dizer "nesta mesma pasta".</dd>
+  <dt>type="module"</dt><dd>Diz ao navegador: "este script é um módulo". Sem isso, o <code>import</code> é proibido.</dd>
+</dl>
+
+<p>Pelo servidor local, o Chrome mostrou <code>Bolo de cenoura: R$ 25</code> no console e no parágrafo. Repare: o <code>script</code> está no <code>head</code> e achou o <code>#mensagem</code>, que está no <code>body</code>. Um módulo <strong>já é adiado</strong>, como se tivesse <code>defer</code>. (Tanto que o validador proíbe escrever os dois: <code>A “script” element with “type=module” must not have a “defer” attribute.</code>)</p>
+
+<p>Sem o <code>type="module"</code>, o mesmo <code>loja.js</code> nem começa:</p>
+
+<pre class="file" data-file="Console do Chrome">Uncaught SyntaxError: Cannot use import statement outside a module    loja.js:1
+</pre>
+
+<p>"Erro de sintaxe: não é possível usar <code>import</code> fora de um módulo." Um <code>SyntaxError</code> acontece antes de o programa rodar: nenhuma linha do arquivo foi executada.</p>
+
+<div class="warning">
+<strong>Módulos não funcionam com dois cliques</strong>
+<p>Abrindo o <code>index.html</code> direto do computador (endereço <code>file://</code>), o Chrome <strong>bloqueia</strong> o módulo e mostra:</p>
+<pre class="file" data-file="Console do Chrome">Access to script at 'file:///home/ana/js/script.js' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: chrome, chrome-experimental-site-token-provider, chrome-extension, chrome-untrusted, data, http, https, isolated-app.
+Failed to load resource: net::ERR_FAILED
+</pre>
+<p>(Neste teste, o módulo se chamava <code>script.js</code>.) "O acesso ao script foi bloqueado pela política CORS": por segurança, módulos só são carregados por endereços <code>http</code> ou <code>https</code>. A solução é abrir a página pelo servidor local (aula <a href="servidor-local.html">Servidor Local</a>). O editor do guia funciona como um servidor, então os módulos funcionam nele.</p>
+</div>
+
+<div class="tryhtml" data-goal="console:Bolo de cenoura: R$ 25,texto:#mensagem=Bolo de cenoura: R$ 25,sel:script[type=module]">
+<p class="try-task"><strong>Missão:</strong> o <code>loja.js</code> usa <code>import</code>, e o console mostra um <code>SyntaxError</code>. Mude o <code>script</code> do <code>index.html</code> para que o navegador o trate como módulo.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;script src="loja.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p id="mensagem"&gt;Carregando...&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="loja.js">import { precoBolo } from "./precos.js";
+
+console.log("Bolo de cenoura: R$ " + precoBolo);
+document.querySelector("#mensagem").textContent = "Bolo de cenoura: R$ " + precoBolo;
+</pre>
+<pre class="script" data-file="precos.js">export const precoBolo = 25;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;script type="module" src="loja.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+  &lt;p id="mensagem"&gt;Carregando...&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>8. Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>Para a leitura da página?</th><th>Quando roda</th><th>Ordem entre vários</th><th>Use para</th></tr>
+<tr><td><code>&lt;script src="x.js"&gt;</code> no <code>head</code></td><td><strong>Sim</strong>, até baixar e rodar</td><td>Na hora, antes do <code>body</code> existir</td><td>A do arquivo</td><td>Quase nada hoje</td></tr>
+<tr><td><code>&lt;script src="x.js"&gt;</code> no fim do <code>body</code></td><td>Não (já leu tudo)</td><td>Depois do conteúdo</td><td>A do arquivo</td><td>O jeito antigo; ainda funciona</td></tr>
+<tr><td><code>&lt;script src="x.js" defer&gt;</code></td><td>Não</td><td>Depois de ler a página inteira</td><td><strong>A do arquivo</strong></td><td><strong>A escolha padrão</strong> para scripts clássicos</td></tr>
+<tr><td><code>&lt;script src="x.js" async&gt;</code></td><td>Não (só para rodar)</td><td>Assim que chega</td><td>Qualquer uma</td><td>Scripts independentes (estatísticas)</td></tr>
+<tr><td><code>&lt;script type="module" src="x.js"&gt;</code></td><td>Não</td><td>Como o <code>defer</code></td><td>A do arquivo</td><td>JavaScript moderno, com <code>import</code></td></tr>
+<tr><td><code>&lt;script&gt;…&lt;/script&gt;</code> (dentro da página)</td><td>Sim, enquanto roda</td><td>Na hora</td><td>A do arquivo</td><td>Programas pequenos, só desta página</td></tr>
+</table>
+</div>
+
+<p>Resumindo: para um arquivo <code>.js</code>, ponha no <code>head</code> com <code>defer</code> (ou <code>type="module"</code>). É o que o <a href="head.html">head completo</a> da Ana usa. O <code>defer</code> e o <code>async</code> só valem com <code>src</code>: num script dentro da página, eles não fazem nada (e o validador acusa, veja abaixo).</p>
+
+<h3>Quando o JavaScript está desligado: <code>&lt;noscript&gt;</code></h3>
+<p>Algumas pessoas desligam o JavaScript (por privacidade, ou num navegador de texto). O <code>&lt;noscript&gt;</code> mostra um recado só para elas:</p>
+
+<pre class="file" data-file="trecho" data-resultado>&lt;p&gt;Tempo de forno: 40 minutos.&lt;/p&gt;
+&lt;noscript&gt;
+  &lt;p&gt;Esta página precisa de JavaScript para mostrar o cronômetro da receita.&lt;/p&gt;
+&lt;/noscript&gt;
+</pre>
+
+<p>Com o JavaScript ligado, como no seu navegador agora, o recado não aparece no Resultado. Ponha o <code>noscript</code> no <code>body</code>: no <code>head</code>, ele só aceita <code>link</code>, <code>style</code> e <code>meta</code>, e um <code>&lt;p&gt;</code> lá dentro dá uma cascata de erros (veja abaixo). Melhor ainda é fazer a página funcionar sem JavaScript e usar o script só para melhorar.</p>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong><code>Uncaught TypeError: Cannot set properties of null (setting 'textContent')</code></strong>
+<p><strong>O que significa:</strong> o <code>querySelector</code> devolveu <code>null</code>. Ou o elemento ainda não existia (script no <code>head</code> sem <code>defer</code>, ou acima do elemento), ou o seletor está errado (<code>"#mensagen"</code>, um <code>.</code> no lugar do <code>#</code>). A variante <code>Cannot read properties of null (reading '…')</code> é o mesmo problema, ao ler.</p>
+<p><strong>Como consertar:</strong> acrescente <code>defer</code> ao <code>script</code> (ou mova-o para o fim do <code>body</code>). Se já tem <code>defer</code>, confira o seletor letra por letra com o <code>id</code> ou a <code>class</code> do HTML.</p>
+</div>
+
+<div class="cenario">
+<strong>A página inteira some: <code>&lt;script src="script.js" /&gt;</code></strong>
+<p><strong>O que significa:</strong> a barra no fim não fecha o <code>script</code> (ela só funciona em elementos vazios, como <code>meta</code> e <code>link</code>, e mesmo neles não faz nada). O navegador ficou esperando um <code>&lt;/script&gt;</code>, e tudo o que vinha depois (o resto do <code>head</code>, o <code>body</code>, o <code>h1</code>) foi lido como se fosse o <strong>texto</strong> do script. No Chrome, a página ficou em branco, sem nenhum <code>h1</code>. O validador:</p>
+<pre class="term" data-cwd="~/js">$ vnu auto-fecha.html
+"file:/home/ana/js/auto-fecha.html":6.3-6.28: error: Self-closing syntax (“/&gt;”) used on a non-void HTML element. Ignoring the slash and treating as a start tag.
+"file:/home/ana/js/auto-fecha.html":12.8-12.8: error: End of file seen when expecting text or an end tag.
+"file:/home/ana/js/auto-fecha.html":6.3-6.28: error: Unclosed element “script”.
+"file:/home/ana/js/auto-fecha.html":12.8-12.8: info warning: Found “&lt;/head&gt;” in “script” content. Typo for “&lt;/script&gt;”?</pre>
+<p>"Sintaxe de autofechamento (<code>/&gt;</code>) usada num elemento HTML que não é vazio; ignorando a barra e tratando como tag de abertura", "fim do arquivo encontrado quando se esperava texto ou uma tag de fechamento", "elemento <code>script</code> não fechado" e a pista final: "encontrei <code>&lt;/head&gt;</code> dentro do <code>script</code>; você quis escrever <code>&lt;/script&gt;</code>?"</p>
+<p><strong>Como consertar:</strong> <code>&lt;script src="script.js"&gt;&lt;/script&gt;</code>, sempre com a tag de fechamento.</p>
+</div>
+
+<div class="cenario">
+<strong><code>Uncaught SyntaxError: Cannot use import statement outside a module</code></strong>
+<p><strong>O que significa:</strong> o arquivo usa <code>import</code>, mas o <code>script</code> não tem <code>type="module"</code>.</p>
+<p><strong>Como consertar:</strong> <code>&lt;script type="module" src="…"&gt;&lt;/script&gt;</code>, e abra pelo servidor local.</p>
+</div>
+
+<div class="cenario">
+<strong><code>… has been blocked by CORS policy …</code> e <code>net::ERR_FAILED</code></strong>
+<p><strong>O que significa:</strong> um módulo aberto com dois cliques (endereço <code>file://</code>).</p>
+<p><strong>Como consertar:</strong> <code>python3 -m http.server</code> na pasta e abra <code>http://localhost:8000</code> (aula <a href="servidor-local.html">Servidor Local</a>).</p>
+</div>
+
+<div class="cenario">
+<strong>O código entre as tags não roda: <code>&lt;script src="script.js"&gt;console.log("oi");&lt;/script&gt;</code></strong>
+<p><strong>O que significa:</strong> com <code>src</code>, o navegador roda só o arquivo e ignora o que está entre as tags. O validador avisa de um jeito estranho: <code>error: The text content of element “script” was not in the required format: Expected space, tab, newline, or slash but found “c” instead.</code> ("o conteúdo do <code>script</code> não está no formato exigido: esperava espaço, tabulação, quebra de linha ou barra, mas encontrei um <code>c</code>", o <code>c</code> de <code>console</code>.)</p>
+<p><strong>Como consertar:</strong> use dois <code>script</code>: um com <code>src</code> e vazio, outro sem <code>src</code> com o código.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: An inline “script” element (…) must not have a “defer” attribute.</code></strong>
+<p><strong>O que significa:</strong> <code>&lt;script defer&gt;…código…&lt;/script&gt;</code>, sem <code>src</code>. "Um <code>script</code> dentro da página não pode ter <code>defer</code>": ele seria ignorado, e o código rodaria na hora. Com <code>async</code>, a mensagem é parecida: <code>An inline classic “script” element (…) must not have an “async” attribute.</code></p>
+<p><strong>Como consertar:</strong> passe o código para um arquivo <code>.js</code> e use <code>src</code> + <code>defer</code>, ou mova o <code>script</code> para o fim do <code>body</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: A “script” element with “type=module” must not have a “defer” attribute.</code></strong>
+<p><strong>O que significa:</strong> <code>type="module"</code> e <code>defer</code> juntos. O módulo já é adiado.</p>
+<p><strong>Como consertar:</strong> apague o <code>defer</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Attribute “href” not allowed on element “script” at this point.</code></strong>
+<p><strong>O que significa:</strong> <code>&lt;script href="script.js"&gt;</code>. O validador acusa só o <code>href</code> e não sente falta do <code>src</code>, porque um <code>script</code> sem <code>src</code> é permitido (seria um script dentro da página, vazio). O arquivo nunca é carregado.</p>
+<p><strong>Como consertar:</strong> <code>src="script.js"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad value “false” for attribute “defer” on element “script”.</code></strong>
+<p><strong>O que significa:</strong> <code>defer="false"</code>. Num atributo booleano, o que vale é estar ou não estar lá: <code>defer="false"</code> <strong>ainda</strong> adia o script. Os valores aceitos são nenhum (<code>defer</code>), vazio (<code>defer=""</code>) ou o próprio nome (<code>defer="defer"</code>).</p>
+<p><strong>Como consertar:</strong> para não adiar, apague o atributo.</p>
+</div>
+
+<div class="cenario">
+<strong><code>info warning: The “type” attribute is unnecessary for JavaScript resources.</code> / <code>The “language” attribute on the “script” element is obsolete.</code></strong>
+<p><strong>O que significa:</strong> <code>type="text/javascript"</code> e <code>language="javascript"</code>, costumes antigos. O primeiro "é desnecessário para JavaScript"; o segundo é "obsoleto". Só avisos leves: o script funciona.</p>
+<p><strong>Como consertar:</strong> apague os dois. O único <code>type</code> que você vai usar é <code>type="module"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Bad start tag in “p” in “noscript” in “head”.</code></strong>
+<p><strong>O que significa:</strong> um <code>&lt;noscript&gt;&lt;p&gt;…&lt;/p&gt;&lt;/noscript&gt;</code> no <code>head</code>. O <code>p</code> é conteúdo visível: o navegador fechou o <code>head</code> ali, e vieram junto <code>Stray end tag “noscript”</code>, <code>Stray end tag “head”</code> e <code>Start tag “body” seen but an element of the same type was already open</code>, os erros da aula <a href="head.html">O head</a>.</p>
+<p><strong>Como consertar:</strong> o <code>noscript</code> com texto vai no <code>body</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;script src="script.js" defer&gt;&lt;/script&gt;</code></td><td>Liga um arquivo; roda depois de ler a página. A forma recomendada.</td></tr>
+<tr><td><code>&lt;script type="module" src="app.js"&gt;&lt;/script&gt;</code></td><td>Módulo (com <code>import</code>); adiado automaticamente; precisa de <code>http</code>.</td></tr>
+<tr><td><code>&lt;script src="x.js" async&gt;&lt;/script&gt;</code></td><td>Roda assim que chega, sem ordem garantida.</td></tr>
+<tr><td><code>&lt;script&gt; … &lt;/script&gt;</code></td><td>Código dentro da página; roda na hora em que é lido.</td></tr>
+<tr><td><code>&lt;noscript&gt; … &lt;/noscript&gt;</code></td><td>Conteúdo para quem está sem JavaScript.</td></tr>
+<tr><td><code>console.log("…")</code></td><td>Escreve no console (F12 ou o console do editor).</td></tr>
+<tr><td><code>document.querySelector("seletor")</code></td><td>Acha o primeiro elemento; <code>null</code> se não houver.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O endereço do arquivo</h3>
+<p>Complete com o atributo que liga o arquivo <code>.js</code>:</p>
+<div class="ex-code">&lt;script <input data-answer="src" aria-label="atributo">="script.js" defer&gt;&lt;/script&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. Esperar a página</h3>
+<p>Complete com o atributo que faz o script rodar só depois de a página inteira ser lida, mantendo a ordem:</p>
+<div class="ex-code">&lt;script src="script.js" <input data-answer="defer" aria-label="atributo">&gt;&lt;/script&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. O módulo</h3>
+<p>Complete para o navegador aceitar o <code>import</code>:</p>
+<div class="ex-code">&lt;script type="<input data-answer="module" aria-label="tipo">" src="loja.js"&gt;&lt;/script&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. Um <code>&lt;script src="script.js"&gt;&lt;/script&gt;</code> no <code>head</code> faz <code>document.querySelector("h1").textContent = "Oi";</code>. O que o console mostra?</p>
+<label><input type="radio" name="q4"> Nada: o título vira "Oi"</label>
+<label><input type="radio" name="q4"> <code>Uncaught TypeError: Cannot set properties of null (setting 'textContent')</code>, porque o <code>h1</code> ainda não existe</label>
+<label><input type="radio" name="q4"> <code>SyntaxError</code>, porque falta <code>type="module"</code></label>
+<label><input type="radio" name="q4"> Um erro do validador</label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">5. O que acontece com <code>&lt;script src="script.js" /&gt;</code> no <code>head</code>?</p>
+<label><input type="radio" name="q5"> Funciona igual a <code>&lt;script src="script.js"&gt;&lt;/script&gt;</code></label>
+<label><input type="radio" name="q5"> O script roda duas vezes</label>
+<label><input type="radio" name="q5"> A barra é ignorada, o <code>script</code> não fecha, e o resto da página vira "texto do script": a página fica em branco</label>
+<label><input type="radio" name="q5"> O navegador mostra um aviso na página</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. Qual destes scripts pode rodar <strong>antes</strong> de a página inteira ser lida?</p>
+<label><input type="radio" name="q6"> <code>&lt;script src="a.js" defer&gt;</code></label>
+<label><input type="radio" name="q6"> <code>&lt;script type="module" src="a.js"&gt;</code></label>
+<label><input type="radio" name="q6"> Um <code>&lt;script&gt;</code> no fim do <code>body</code></label>
+<label><input type="radio" name="q6"> <code>&lt;script src="a.js" async&gt;</code></label>
+</div>
+
+<h3>Missão final: o recado da lojinha</h3>
+
+<div class="tryhtml" data-goal="console:Recado trocado.,texto:#recado=Hoje tem bolo de cenoura!,sel:head script[src='recado.js'][defer],nsel:script=1">
+<p class="try-task"><strong>Missão:</strong> a Ana escreveu o <code>recado.js</code>, que troca o texto do parágrafo <code>#recado</code> e avisa no console. Ligue esse arquivo à página com <strong>um</strong> <code>script</code> no <code>head</code>, de um jeito que funcione (o recado tem de aparecer e o console tem de mostrar <code>Recado trocado.</code>).</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Lojinha da Ana&lt;/title&gt;
+  &lt;!-- ligue o recado.js aqui --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+  &lt;p id="recado"&gt;Sem recados hoje.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="script" data-file="recado.js">const recado = document.querySelector("#recado");
+recado.textContent = "Hoje tem bolo de cenoura!";
+console.log("Recado trocado.");
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Lojinha da Ana&lt;/title&gt;
+  &lt;script src="recado.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+  &lt;p id="recado"&gt;Sem recados hoje.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Experimente também a versão errada, sem <code>defer</code>, e leia o erro no console: agora você sabe exatamente o que ele quer dizer.</p>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <code>&lt;script&gt;</code> liga JavaScript à página: o código entre as tags ou um arquivo com <code>src</code>. O <code>&lt;/script&gt;</code> é sempre obrigatório (<code>/&gt;</code> engole a página).</li>
+  <li>Ao encontrar um <code>script</code> comum, o navegador para de ler, roda o programa e só depois continua. Um script no <code>head</code> não acha o que está no <code>body</code>: <code>Cannot set properties of null</code>.</li>
+  <li><code>defer</code>: baixa sem parar e roda depois de ler a página, na ordem. É a escolha padrão.</li>
+  <li><code>async</code>: roda assim que chega, sem ordem garantida; só para scripts independentes.</li>
+  <li><code>type="module"</code>: permite <code>import</code>/<code>export</code>, já é adiado e precisa de <code>http</code> (não funciona com <code>file://</code>).</li>
+  <li><code>defer</code> e <code>async</code> só valem com <code>src</code>; <code>type="text/javascript"</code> sobra. O <code>noscript</code> com texto vai no <code>body</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
