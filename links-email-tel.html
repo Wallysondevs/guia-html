@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Links de E-mail e Telefone — mailto: e tel: | Guia HTML</title>
+<meta name="description" content="Links de e-mail e telefone em HTML para quem nunca fez um site: mailto: com assunto, corpo e cópia, o %20 no lugar dos espaços, tel: com +55 e DDD, sms: e o link do WhatsApp, o que acontece no computador e no celular, o cuidado com o spam e os erros reais do validador W3C (espaço no mailto, no tel e depois dos dois-pontos).">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Links de E-mail e Telefone</span></h1>
+
+<p class="intro">Um link não precisa levar a uma página. Ele pode abrir o <strong>programa de e-mail</strong> do leitor, já com o endereço da Ana preenchido, ou, no celular, abrir o <strong>discador</strong> com o número pronto para ligar. Basta trocar o começo do <code>href</code>: em vez de <code>https:</code>, <code>mailto:</code> ou <code>tel:</code>. Nesta aula você vai criar esses links para o rodapé do site de receitas, preencher o assunto do e-mail e descobrir por que um simples espaço quebra o link.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O link de e-mail: <code>mailto:ana@example.com</code>.</li>
+  <li>Como preencher o assunto, o texto e a cópia: <code>?subject=</code>, <code>&amp;body=</code>, <code>cc</code>.</li>
+  <li>Por que os espaços viram <code>%20</code> e o que são os outros códigos com <code>%</code>.</li>
+  <li>O link de telefone: <code>tel:+5511912345678</code>, com o código do país.</li>
+  <li><code>sms:</code> e o link do WhatsApp.</li>
+  <li>Os cuidados: o spam, o leitor sem programa de e-mail e o computador sem telefone.</li>
+  <li>Os erros reais do validador quando sobra um espaço.</li>
+</ul>
+</div>
+
+<p>Os e-mails usam o domínio reservado <code>example.com</code> e o telefone <code>(11) 91234-5678</code> é inventado: nunca publique o contato de alguém sem permissão. As mensagens de erro são do validador W3C (<code>vnu</code>, a mesma ferramenta do <a href="validar.html">validator.w3.org</a>), rodado na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/site</code>. Antes desta aula, veja <a href="links.html">Links</a> e <a href="endereco.html">Endereço (address)</a>.</p>
+
+<hr>
+
+<h2>A ideia: o endereço diz o meio de transporte</h2>
+<p>No envelope, você escreve o endereço de uma casa; no celular, você disca um número. São jeitos diferentes de chegar a alguém, e cada um tem o seu formato. Num link, o <strong>começo</strong> do <code>href</code>, antes dos dois-pontos, diz o "meio de transporte". Esse começo se chama <strong>esquema</strong>:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Esquema</th><th>Exemplo</th><th>O que o clique faz</th></tr>
+<tr><td><code>https:</code></td><td><code>https://example.com</code></td><td>Abre uma página</td></tr>
+<tr><td><code>mailto:</code></td><td><code>mailto:ana@example.com</code></td><td>Abre o programa de e-mail, com o destinatário preenchido</td></tr>
+<tr><td><code>tel:</code></td><td><code>tel:+5511912345678</code></td><td>Abre o discador (ou um programa de chamadas) com o número</td></tr>
+<tr><td><code>sms:</code></td><td><code>sms:+5511912345678</code></td><td>Abre o aplicativo de mensagens de texto</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O link de e-mail: <code>mailto:</code></h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Dúvidas? Escreva para &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;.&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>mailto:</dt><dd>O esquema: "mande um e-mail para". Vem do inglês <em>mail to</em>. Note que não há <code>//</code> depois dos dois-pontos, como no <code>https://</code>.</dd>
+  <dt>ana@example.com</dt><dd>O endereço de e-mail do destinatário, logo depois dos dois-pontos, <strong>sem espaço</strong>.</dd>
+  <dt>ana@example.com (o texto)</dt><dd>O texto do link. Mostrar o próprio endereço é o mais útil: quem não tem programa de e-mail configurado pode copiá-lo.</dd>
+</dl>
+
+<p>Ao clicar, o navegador entrega o endereço ao programa de e-mail padrão do sistema (o do computador ou o aplicativo do celular), que abre uma mensagem nova para <code>ana@example.com</code>. Se nenhum programa estiver configurado, o que acontece depende do sistema: às vezes ele pergunta qual usar, às vezes nada acontece. Por isso o endereço visível é importante.</p>
+
+<div class="note">
+<strong>No editor do guia</strong>
+<p>Os quadros de resultado não abrem programas do seu computador. Ao clicar num link <code>mailto:</code>, <code>tel:</code> ou <code>sms:</code>, o editor escreve no console do quadro o que o link faria, como "abriria o programa de e-mail, para escrever para ana@example.com".</p>
+</div>
+
+<div class="tryhtml" data-goal="sel:footer a[href='mailto:ana@example.com'],texto:footer a=ana@example.com">
+<p class="try-task"><strong>Missão:</strong> transforme o e-mail do rodapé num link de e-mail. O texto do link deve continuar mostrando o endereço. Clique nele e leia o console.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;footer&gt;
+  &lt;p&gt;Fale comigo: ana@example.com&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;footer&gt;
+  &lt;p&gt;Fale comigo: &lt;a href="mailto:ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>2. Assunto, texto e cópia</h2>
+<p>Depois do endereço, um <code>?</code> abre uma lista de <strong>campos</strong> já preenchidos, cada um no formato <code>nome=valor</code>, separados por <code>&amp;</code>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Receita%20nova&amp;amp;body=Ol%C3%A1%2C%20Ana!"&gt;Mande a sua receita&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>?</dt><dd>Separa o endereço dos campos.</dd>
+  <dt>subject=Receita%20nova</dt><dd>O <strong>assunto</strong> (<em>subject</em>) do e-mail: "Receita nova". O <code>%20</code> é um espaço (seção 3).</dd>
+  <dt>&amp;amp;</dt><dd>Separa um campo do outro. Dentro de um atributo HTML, o <code>&amp;</code> se escreve <code>&amp;amp;</code> (aula <a href="entidades.html">Entidades</a>); o navegador entrega um <code>&amp;</code> normal ao programa de e-mail.</dd>
+  <dt>body=Ol%C3%A1%2C%20Ana!</dt><dd>O <strong>corpo</strong> (<em>body</em>), o texto da mensagem: "Olá, Ana!". O <code>%C3%A1</code> é o <code>á</code> e o <code>%2C</code> é a vírgula.</dd>
+</dl>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Campo</th><th>O que preenche</th><th>Exemplo</th></tr>
+<tr><td><code>subject</code></td><td>Assunto</td><td><code>?subject=Receita%20nova</code></td></tr>
+<tr><td><code>body</code></td><td>Texto da mensagem</td><td><code>&amp;body=Ol%C3%A1!</code></td></tr>
+<tr><td><code>cc</code></td><td>Cópia para outra pessoa (<em>carbon copy</em>, "cópia carbono")</td><td><code>&amp;cc=bia@example.com</code></td></tr>
+<tr><td><code>bcc</code></td><td>Cópia oculta (<em>blind carbon copy</em>): os outros não veem</td><td><code>&amp;bcc=caio@example.com</code></td></tr>
+<tr><td>vários destinatários</td><td>Separados por vírgula, antes do <code>?</code></td><td><code>mailto:ana@example.com,bia@example.com</code></td></tr>
+</table>
+</div>
+
+<p>Esses campos são uma <strong>sugestão</strong>: o leitor vê tudo preenchido e pode mudar antes de enviar. Nada é enviado sozinho.</p>
+
+<hr>
+
+<h2>3. Os códigos com <code>%</code></h2>
+<p>Um endereço (de página, de e-mail ou de telefone) não pode ter espaços, e alguns caracteres, como <code>&amp;</code>, <code>?</code> e <code>#</code>, têm função especial dentro dele. Para escrevê-los como texto, usa-se um código: <code>%</code> seguido do número do byte em hexadecimal. Isso se chama <strong>codificação por porcentagem</strong> (em inglês, <em>percent-encoding</em>):</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Caractere</th><th>Código</th><th>Por quê</th></tr>
+<tr><td>espaço</td><td><code>%20</code></td><td>Espaço não é permitido em endereços</td></tr>
+<tr><td>quebra de linha (no <code>body</code>)</td><td><code>%0D%0A</code></td><td>Os dois caracteres de "nova linha" dos e-mails</td></tr>
+<tr><td><code>,</code></td><td><code>%2C</code></td><td>No <code>mailto:</code>, a vírgula separa destinatários</td></tr>
+<tr><td><code>&amp;</code></td><td><code>%26</code></td><td>Separa os campos; um "&amp;" dentro do assunto precisa de código</td></tr>
+<tr><td><code>?</code> e <code>#</code></td><td><code>%3F</code> e <code>%23</code></td><td>Começam os campos e o fragmento</td></tr>
+<tr><td><code>á</code>, <code>ã</code>, <code>ç</code></td><td><code>%C3%A1</code>, <code>%C3%A3</code>, <code>%C3%A7</code></td><td>São os bytes UTF-8 da letra (aula <a href="acentos-utf8.html">Acentos e UTF-8</a>)</td></tr>
+</table>
+</div>
+
+<p>Os acentos sem código (<code>subject=pão</code>) passam no validador, e o navegador os codifica sozinho. Os <strong>espaços</strong>, não: o validador os recusa (veja <a href="#errado">Quando dá errado</a>).</p>
+
+<div class="tryhtml" data-goal="sel:a[href^='mailto:ana@example.com?subject='],src:subject=Receita%20nova,nsrc:href=[&quot;']mailto:[^&quot;'\s]*\s">
+<p class="try-task"><strong>Missão:</strong> o link abaixo tem espaços no assunto e o validador recusaria. Troque cada espaço do <code>href</code> por <code>%20</code>, para o assunto chegar como "Receita nova para o site". O texto do link, entre as tags, pode continuar com espaços normais.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Receita nova para o site"&gt;Mande a sua receita&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Receita%20nova%20para%20o%20site"&gt;Mande a sua receita&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>4. O link de telefone: <code>tel:</code></h2>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Encomendas: &lt;a href="tel:+5511912345678"&gt;(11) 91234-5678&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>tel:</dt><dd>O esquema do telefone (<em>telephone</em>).</dd>
+  <dt>+55</dt><dd>O código do <strong>país</strong> (Brasil), com o <code>+</code>. Com ele, o número funciona até para quem liga de outro país, ou de um celular com chip estrangeiro.</dd>
+  <dt>11</dt><dd>O <strong>DDD</strong>, sem o zero e sem parênteses.</dd>
+  <dt>912345678</dt><dd>O número, sem traço nem espaço.</dd>
+  <dt>(11) 91234-5678</dt><dd>O <strong>texto</strong> do link pode (e deve) ser escrito do jeito que as pessoas leem, com parênteses, espaço e traço. Só o <code>href</code> precisa ser "limpo".</dd>
+</dl>
+
+<p>No celular, tocar no link abre o discador com o número pronto; a pessoa ainda confirma a ligação. No computador, o sistema pode oferecer um programa de chamadas (ou o celular conectado a ele), ou não fazer nada. Por isso, como no e-mail, o número fica <strong>visível</strong> no texto.</p>
+
+<h3>Mensagem de texto e WhatsApp</h3>
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;&lt;a href="sms:+5511912345678"&gt;Mandar SMS para a Ana&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://wa.me/5511912345678"&gt;Conversar com a Ana no WhatsApp&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<ul>
+  <li><code>sms:</code> abre o aplicativo de mensagens de texto do celular.</li>
+  <li>O link do WhatsApp é um link <code>https:</code> <strong>comum</strong>, para o endereço <code>wa.me</code> seguido do número com o código do país, sem o <code>+</code>. O próprio site do WhatsApp decide se abre o aplicativo ou a versão no navegador. Como é um site de outra empresa, as regras dele podem mudar.</li>
+</ul>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> clique nos links e leia o console do quadro: o editor diz o que cada um abriria. Troque o número do <code>tel:</code> pelo de um lugar público que você conheça (uma biblioteca, uma prefeitura) e teste no celular, abrindo esta página nele.</p>
+<pre class="script" data-file="index.html">&lt;p&gt;&lt;a href="tel:+5511912345678"&gt;Ligar: (11) 91234-5678&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="sms:+5511912345678"&gt;Mandar SMS&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Encomenda"&gt;Encomendar por e-mail&lt;/a&gt;&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>5. Os cuidados</h2>
+
+<div class="warning">
+<strong>E-mail na página atrai spam</strong>
+<p>Existem robôs que passam o dia lendo páginas da web atrás de endereços de e-mail, para mandar propaganda e golpes. Um <code>mailto:</code> é exatamente o que eles procuram. Para o e-mail pessoal, prefira um <strong>formulário de contato</strong> (aula <a href="formularios.html">Formulários</a>), ou use um endereço só para o site, que você possa trocar se o spam crescer. O mesmo vale para o número do seu celular.</p>
+</div>
+
+<ul>
+  <li><strong>Mostre o endereço ou o número no texto</strong>, e não só "Clique para ligar": quem não tem programa de e-mail, ou está num computador sem telefone, ainda consegue copiar.</li>
+  <li><strong>Diga o que o link faz:</strong> "Ligar para a lojinha: (11) 91234-5678", "Escrever para a Ana". O leitor de tela lê o texto do link, e "clique aqui" não diz que vai abrir o discador (aula <a href="links.html">Links</a>).</li>
+  <li><strong>Contato do responsável pelo site?</strong> Coloque esses links dentro do <code>&lt;address&gt;</code> (aula <a href="endereco.html">Endereço</a>).</li>
+</ul>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Espaço no assunto: <code>Illegal character in query. Space is not allowed.</code></strong>
+<pre class="term" data-cwd="~/site">$ grep mailto assunto.html
+&lt;p&gt;&lt;a href="mailto:ana@example.com?subject=Receita de bolo"&gt;Escreva para a Ana&lt;/a&gt;&lt;/p&gt;
+$ vnu assunto.html
+"file:/home/ana/site/assunto.html":8.4-8.60: error: Bad value “mailto:ana@example.com?subject=Receita de bolo” for attribute “href” on element “a”: Illegal character in query. Space is not allowed.</pre>
+<p><strong>O que significa:</strong> "caractere ilegal na <em>query</em>: espaço não é permitido". <em>Query</em> ("consulta") é o nome da parte depois do <code>?</code>, a dos campos. Muitos navegadores trocam o espaço por <code>%20</code> sozinhos e o link funciona, mas não conte com isso.</p>
+<p><strong>Como consertar:</strong> <code>subject=Receita%20de%20bolo</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>Espaço depois dos dois-pontos: <code>Illegal character after “ilto:”</code></strong>
+<pre class="term" data-cwd="~/site">$ grep mailto espaco.html
+&lt;p&gt;&lt;a href="mailto: ana@example.com"&gt;ana@example.com&lt;/a&gt;&lt;/p&gt;
+$ vnu espaco.html
+"file:/home/ana/site/espaco.html":8.4-8.37: error: Bad value “mailto: ana@example.com” for attribute “href” on element “a”: Illegal character after “ilto:”. Space is not allowed.</pre>
+<p><strong>O que significa:</strong> o validador mostra só o fim do que veio antes do problema (<code>ilto:</code>, o final de <code>mailto:</code>) e diz que um espaço ali é ilegal. Por educação de escrita, muita gente põe espaço depois de dois-pontos; no endereço, não pode.</p>
+<p><strong>Como consertar:</strong> <code>mailto:ana@example.com</code>, tudo junto.</p>
+</div>
+
+<div class="cenario">
+<strong>Telefone formatado no <code>href</code>: <code>Illegal character after “tel:”</code></strong>
+<pre class="term" data-cwd="~/site">$ grep tel: tel.html
+&lt;p&gt;&lt;a href="tel:(11) 91234-5678"&gt;(11) 91234-5678&lt;/a&gt;&lt;/p&gt;
+$ vnu tel.html
+"file:/home/ana/site/tel.html":8.4-8.33: error: Bad value “tel:(11) 91234-5678” for attribute “href” on element “a”: Illegal character after “tel:”. Space is not allowed.</pre>
+<p><strong>O que significa:</strong> o espaço entre o DDD e o número não é permitido. E, mesmo sem o espaço, um número sem o <code>+55</code> só funciona para quem liga do Brasil, e o DDD entre parênteses depende do discador entender.</p>
+<p><strong>Como consertar:</strong> no <code>href</code>, o número limpo e internacional (<code>tel:+5511912345678</code>); a formatação bonita fica no texto do link.</p>
+</div>
+
+<div class="cenario">
+<strong>Esqueceu o <code>mailto:</code>: o link vira um arquivo</strong>
+<p><strong>O que acontece:</strong> com <code>&lt;a href="ana@example.com"&gt;</code>, o navegador lê o endereço como o <strong>nome de um arquivo</strong> na pasta do site (aula <a href="caminhos.html">Caminhos</a>), e o clique dá 404. No editor, aparece a página "404: página não encontrada".</p>
+<p><strong>O que o validador diz:</strong> nada: <code>ana@example.com</code> é um nome de arquivo válido.</p>
+<p><strong>Como consertar:</strong> <code>href="mailto:ana@example.com"</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;a href="mailto:ana@example.com"&gt;</code></td><td>Abre um e-mail novo para a Ana</td></tr>
+<tr><td><code>mailto:ana@example.com,bia@example.com</code></td><td>Vários destinatários (vírgula)</td></tr>
+<tr><td><code>?subject=Assunto%20aqui</code></td><td>Preenche o assunto</td></tr>
+<tr><td><code>&amp;amp;body=Texto</code></td><td>Preenche o texto (no HTML, <code>&amp;</code> vira <code>&amp;amp;</code>)</td></tr>
+<tr><td><code>&amp;amp;cc=…</code> / <code>&amp;amp;bcc=…</code></td><td>Cópia / cópia oculta</td></tr>
+<tr><td><code>%20</code>, <code>%0D%0A</code>, <code>%2C</code>, <code>%26</code></td><td>Espaço, quebra de linha, vírgula, <code>&amp;</code></td></tr>
+<tr><td><code>&lt;a href="tel:+5511912345678"&gt;</code></td><td>Abre o discador: <code>+</code>, país, DDD, número, sem espaços</td></tr>
+<tr><td><code>&lt;a href="sms:+5511912345678"&gt;</code></td><td>Abre as mensagens de texto</td></tr>
+<tr><td><code>&lt;a href="https://wa.me/5511912345678"&gt;</code></td><td>Conversa no WhatsApp (um link <code>https:</code> comum)</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. O esquema do e-mail</h3>
+<p>Complete o link de e-mail:</p>
+<div class="ex-code">&lt;a href="<input data-answer="mailto:" aria-label="esquema">ana@example.com"&gt;ana@example.com&lt;/a&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O espaço</h3>
+<p>Complete o código que substitui o espaço no assunto:</p>
+<div class="ex-code">?subject=Bolo<input data-answer="%20" aria-label="código do espaço">de%20fubá</div>
+</div>
+
+<div class="exercise">
+<h3>3. O telefone</h3>
+<p>Complete o <code>href</code> do número (11) 91234-5678, no formato internacional:</p>
+<div class="ex-code">&lt;a href="tel:<input data-answer="+5511912345678" aria-label="número">"&gt;(11) 91234-5678&lt;/a&gt;</div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">4. O que acontece quando o leitor clica em <code>&lt;a href="mailto:ana@example.com?subject=Oi"&gt;</code>?</p>
+<label><input type="radio" name="q4"> O e-mail é enviado automaticamente</label>
+<label><input type="radio" name="q4"> O programa de e-mail abre uma mensagem nova para a Ana, com o assunto "Oi", que o leitor pode mudar antes de enviar</label>
+<label><input type="radio" name="q4"> Abre a página ana@example.com</label>
+<label><input type="radio" name="q4"> O navegador mostra um formulário</label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">5. Qual <code>href</code> passa no validador?</p>
+<label><input type="radio" name="q5"> <code>tel:(11) 91234-5678</code></label>
+<label><input type="radio" name="q5"> <code>mailto: ana@example.com</code></label>
+<label><input type="radio" name="q5"> <code>mailto:ana@example.com?subject=Receita de bolo</code></label>
+<label><input type="radio" name="q5"> <code>tel:+5511912345678</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">6. Por que mostrar o e-mail no texto do link, em vez de "Clique aqui"?</p>
+<label><input type="radio" name="q6"> Porque o validador exige</label>
+<label><input type="radio" name="q6"> Porque o <code>mailto:</code> só funciona assim</label>
+<label><input type="radio" name="q6"> Porque quem não tem programa de e-mail pode copiar o endereço, e o leitor de tela diz aonde o link leva</label>
+<label><input type="radio" name="q6"> Porque evita o spam</label>
+</div>
+
+<h3>Missão final: o contato da lojinha</h3>
+
+<div class="tryhtml" data-goal="sel:footer address a[href^='mailto:loja@example.com?subject='],sel:footer address a[href='tel:+5511912345678'],texto:address=(11) 91234-5678,texto:address=loja@example.com,nsrc:href=[&quot;'](mailto|tel):[^&quot;'\s]*\s">
+<p class="try-task"><strong>Missão:</strong> monte o contato da lojinha da Ana no rodapé, dentro de um <code>&lt;address&gt;</code>. (1) Um link de e-mail para <code>loja@example.com</code> com o assunto "Encomenda" já preenchido; o texto do link mostra o endereço. (2) Um link de telefone para <code>(11) 91234-5678</code>, com o <code>href</code> no formato internacional; o texto mostra o número formatado. Nenhum espaço nos <code>href</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;footer&gt;
+  &lt;address&gt;
+    E-mail: loja@example.com&lt;br&gt;
+    Telefone: (11) 91234-5678
+  &lt;/address&gt;
+&lt;/footer&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Lojinha da Ana&lt;/h1&gt;
+&lt;footer&gt;
+  &lt;address&gt;
+    E-mail: &lt;a href="mailto:loja@example.com?subject=Encomenda"&gt;loja@example.com&lt;/a&gt;&lt;br&gt;
+    Telefone: &lt;a href="tel:+5511912345678"&gt;(11) 91234-5678&lt;/a&gt;
+  &lt;/address&gt;
+&lt;/footer&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O começo do <code>href</code> (o esquema) decide o que o link faz: <code>mailto:</code> abre o e-mail, <code>tel:</code> o discador, <code>sms:</code> as mensagens. O WhatsApp usa um link <code>https://wa.me/…</code> comum.</li>
+  <li><code>mailto:ana@example.com?subject=…&amp;amp;body=…</code>: o <code>?</code> abre os campos, o <code>&amp;</code> (escrito <code>&amp;amp;</code> no HTML) separa um do outro, a vírgula separa destinatários. Os campos são só sugestões.</li>
+  <li>Dentro do endereço, espaço vira <code>%20</code>, quebra de linha <code>%0D%0A</code>; acentos viram os bytes UTF-8 (<code>%C3%A1</code>), e o navegador faz isso sozinho com eles.</li>
+  <li><code>tel:+5511912345678</code>: <code>+</code>, país, DDD e número, sem espaços nem traços. O texto do link mostra o número formatado.</li>
+  <li>Mostre o e-mail e o número no texto, diga o que o link faz e lembre do spam. Validador: <code>Illegal character in query</code> (espaço depois do <code>?</code>) e <code>Illegal character after “…:”</code> (espaço logo no começo); sem o <code>mailto:</code>, o link vira um arquivo, e o validador não avisa.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
