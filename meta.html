@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML title e meta — título, charset, description e author | Guia HTML</title>
+<meta name="description" content="Os elementos title e meta do HTML para quem nunca fez um site: o título da aba, meta charset e os acentos quebrados (PÃ£o), meta description para o Google e meta author, com os erros reais do validador W3C, o que o validador não percebe e missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">title e meta</span></h1>
+
+<p class="intro">Na aula <a href="head.html">O head</a>, você viu que o <code>head</code> guarda informações <em>sobre</em> a página. As duas mais usadas são o <code>&lt;title&gt;</code>, o nome da página, e o <code>&lt;meta&gt;</code>, um elemento coringa que guarda todo tipo de informação em pares "nome = valor". Nesta aula você vai escrever um bom título, garantir que os acentos saiam certos com <code>meta charset</code>, escrever o resumo que o Google mostra com <code>meta description</code> e dizer quem fez a página com <code>meta author</code>.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>Onde o <code>title</code> aparece e como escrever um bom título.</li>
+  <li>Como funciona o <code>&lt;meta&gt;</code>: um elemento vazio com atributos.</li>
+  <li>O que é <code>meta charset="utf-8"</code> e o que acontece sem ele (o famoso "PÃ£o de queijo").</li>
+  <li>Como escrever a <code>meta description</code> e a <code>meta author</code>.</li>
+  <li>Os erros reais do validador W3C e o erro que ele <strong>não</strong> percebe.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/meta</code>. Os textos com acentos quebrados são o que o navegador Chrome realmente mostrou.</p>
+
+<hr>
+
+<h2>A ideia: a etiqueta da roupa</h2>
+<p>Uma camiseta tem duas coisas escritas: o <strong>nome da marca</strong>, bem visível, e uma <strong>etiqueta</strong> costurada por dentro, com o tamanho, o tecido, o país de fabricação e como lavar. Ninguém usa a camiseta pela etiqueta, mas quem precisa (a lavanderia, a loja) lê a etiqueta.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Camiseta</th><th>Página HTML</th><th>Quem lê</th></tr>
+<tr><td>O nome da marca</td><td><code>&lt;title&gt;</code></td><td>Você (na aba), o Google, o leitor de tela</td></tr>
+<tr><td>"Tecido: algodão"</td><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>O navegador, para ler as letras</td></tr>
+<tr><td>"Camiseta básica de algodão"</td><td><code>&lt;meta name="description" …&gt;</code></td><td>O Google e as redes sociais</td></tr>
+<tr><td>"Fabricado por: Ana"</td><td><code>&lt;meta name="author" …&gt;</code></td><td>Ferramentas e pessoas curiosas</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>1. O title: o nome da página</h2>
+<p>O <code>title</code> fica no <code>head</code> e guarda só <strong>texto</strong>:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Bolo de Cenoura | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de Cenoura&lt;/h1&gt;
+  &lt;p&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;title&gt;</dt><dd>Abre o título. Só pode haver <strong>um</strong>, e só no <code>head</code>.</dd>
+  <dt>Bolo de Cenoura</dt><dd>O assunto desta página, primeiro.</dd>
+  <dt>|</dt><dd>Um separador. Pode ser <code>|</code>, <code>-</code>, <code>–</code> ou <code>·</code>: é só texto, escolha um e use em todo o site.</dd>
+  <dt>Receitas da Ana</dt><dd>O nome do site, depois.</dd>
+  <dt>&lt;/title&gt;</dt><dd>Fecha o título. Diferente do <code>meta</code>, o <code>title</code> tem tag de fechamento obrigatória.</dd>
+</dl>
+
+<p>No Resultado, aparece só o <code>body</code>. O título fica nestes lugares:</p>
+<ul>
+  <li><strong>Na aba do navegador</strong>, quando você abre o arquivo. Com várias abas abertas, o título é o que a pessoa lê para achar a sua.</li>
+  <li><strong>Nos favoritos e no histórico</strong>: é o nome que a página recebe quando alguém a salva.</li>
+  <li><strong>Nos resultados do Google</strong>: o título azul, grande, em que a pessoa clica. O Google às vezes reescreve títulos ruins, mas parte do que você escreve.</li>
+  <li><strong>No leitor de tela</strong>: o programa que lê a página em voz alta para quem não enxerga anuncia o título assim que a página abre. É a primeira coisa que a pessoa ouve.</li>
+  <li><strong>Ao compartilhar</strong> o link numa rede social ou num aplicativo de mensagens, quando a página não tem dados próprios para isso (aula <a href="open-graph.html">Open Graph</a>).</li>
+</ul>
+
+<h3>Um bom título</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Regra</th><th>Ruim</th><th>Bom</th></tr>
+<tr><td>Diga o assunto da página, não só o do site</td><td><code>Receitas da Ana</code> (em todas as páginas)</td><td><code>Bolo de Cenoura | Receitas da Ana</code></td></tr>
+<tr><td>O mais importante primeiro (a aba corta o fim)</td><td><code>Receitas da Ana | Bolo de Cenoura</code></td><td><code>Bolo de Cenoura | Receitas da Ana</code></td></tr>
+<tr><td>Curto: o Google corta títulos longos com "…"</td><td><code>Bolo de cenoura fofinho, fácil, rápido e barato com cobertura…</code></td><td><code>Bolo de Cenoura Fofinho | Receitas da Ana</code></td></tr>
+<tr><td>Um título diferente para cada página</td><td><code>Página inicial</code>, <code>Sem título</code>, <code>Documento</code></td><td><code>Contato | Receitas da Ana</code></td></tr>
+</table>
+</div>
+
+<div class="tryhtml" data-goal="texto:title=Bolo de Cenoura | Receitas da Ana">
+<p class="try-task"><strong>Missão:</strong> todas as páginas da Ana se chamam só "Receitas da Ana", e nos favoritos fica impossível saber qual é qual. Mude o título desta para <code>Bolo de Cenoura | Receitas da Ana</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de Cenoura&lt;/h1&gt;
+  &lt;p&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Bolo de Cenoura | Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de Cenoura&lt;/h1&gt;
+  &lt;p&gt;Fofinho, com cobertura de chocolate.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<h3>O title é só texto</h3>
+<p>Dentro do <code>title</code>, o navegador não procura tags. Um <code>&lt;b&gt;</code> lá dentro não deixa nada em negrito: ele aparece na aba <strong>como está escrito</strong>. As entidades (aula <a href="entidades.html">Entidades</a>) funcionam, e os espaços repetidos e as quebras de linha viram um espaço só:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Você escreve</th><th>A aba mostra</th></tr>
+<tr><td><code>&lt;title&gt;Receitas &lt;b&gt;da Ana&lt;/b&gt;&lt;/title&gt;</code></td><td><code>Receitas &lt;b&gt;da Ana&lt;/b&gt;</code></td></tr>
+<tr><td><code>&lt;title&gt;Bolos &amp;amp; Tortas&lt;/title&gt;</code></td><td><code>Bolos &amp; Tortas</code></td></tr>
+<tr><td><code>&lt;title&gt;  Bolos    da Ana  &lt;/title&gt;</code></td><td><code>Bolos da Ana</code></td></tr>
+</table>
+</div>
+
+<p>Curiosamente, o validador aceita o <code>&lt;b&gt;</code> dentro do <code>title</code> sem erro, porque para ele aquilo também é só texto. Não faça isso: ninguém quer ler "&lt;b&gt;" na aba.</p>
+
+<h3>Title vazio e title repetido</h3>
+<pre class="file" data-file="title-vazio.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/meta">$ vnu title-vazio.html
+"file:/home/ana/meta/title-vazio.html":5.10-5.17: error: Element “title” must not be empty.</pre>
+
+<p>"O elemento <code>title</code> não pode ficar vazio." A coluna 10 a 17 da linha 5 é o <code>&lt;/title&gt;</code>, que chegou sem nenhum texto antes. E com <strong>dois</strong> títulos:</p>
+
+<pre class="file" data-file="dois-title.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;title&gt;Bolo de Cenoura&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/meta">$ vnu dois-title.html
+"file:/home/ana/meta/dois-title.html":6.3-6.9: error: Element “title” not allowed as child of element “head” in this context. (Suppressing further errors from this subtree.)</pre>
+
+<p>"O elemento <code>title</code> não é permitido como filho do <code>head</code> neste contexto": o primeiro foi aceito, o segundo (linha 6) não. O navegador usa o <strong>primeiro</strong> e ignora os outros, então a aba mostra "Receitas da Ana", e não "Bolo de Cenoura".</p>
+
+<hr>
+
+<h2>2. O elemento meta</h2>
+<p>O <code>&lt;meta&gt;</code> não tem conteúdo: toda a informação fica nos <strong>atributos</strong>. Ele é um <strong>elemento vazio</strong> (<em>void element</em>), como o <code>&lt;br&gt;</code> e o <code>&lt;img&gt;</code>: não tem tag de fechamento. Quase todo <code>meta</code> tem a forma <code>name</code> + <code>content</code>:</p>
+
+<pre class="file" data-file="trecho">&lt;meta name="author" content="Ana"&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>&lt;meta</dt><dd>Abre o elemento.</dd>
+  <dt>name="author"</dt><dd>O <strong>nome</strong> da informação: qual pergunta esta linha responde ("quem é o autor?"). Os nomes valem só em inglês e são uma lista fixa: <code>author</code>, <code>description</code>, <code>viewport</code>…</dd>
+  <dt>content="Ana"</dt><dd>O <strong>conteúdo</strong>, a resposta. Aqui, sim, vai o seu texto em português.</dd>
+  <dt>&gt;</dt><dd>Fecha a tag. Não existe <code>&lt;/meta&gt;</code>.</dd>
+</dl>
+
+<p>Há uma exceção a essa forma, a mais importante de todas, e ela é o assunto da próxima seção: o <code>&lt;meta charset&gt;</code>, que tem um atributo só.</p>
+
+<div class="note">
+<strong>E o <code>&lt;meta … /&gt;</code> com barra?</strong>
+<p>Você vai ver muito <code>&lt;meta charset="utf-8" /&gt;</code> em sites e tutoriais: é o costume do XHTML, uma versão antiga e mais rígida do HTML (aula <a href="versoes.html">Versões do HTML</a>). No HTML de hoje a barra é permitida e não faz nada. O validador nem chama de erro: só dá uma informação (<code>info:</code>), <em>Trailing slash on void elements has no effect and interacts badly with unquoted attribute values</em> ("a barra no fim de elementos vazios não tem efeito e se dá mal com valores de atributo sem aspas"). Este guia não usa a barra.</p>
+</div>
+
+<hr>
+
+<h2>3. meta charset: os acentos</h2>
+<p>O computador não guarda letras, guarda números. Uma <strong>codificação</strong> (<em>encoding</em>, ou <em>charset</em>, de <em>character set</em>, "conjunto de caracteres") é a tabela que diz qual número é qual letra. A codificação de hoje, usada por quase todos os sites e pelo seu editor de código, é a <strong>UTF-8</strong>. Ela tem aula própria (<a href="acentos-utf8.html">Acentos, UTF-8 e Emoji</a>); aqui interessa a linha que avisa o navegador:</p>
+
+<pre class="file" data-file="trecho">&lt;meta charset="utf-8"&gt;
+</pre>
+
+<p>Essa linha diz: "as letras deste arquivo foram gravadas em UTF-8". Ela vem <strong>sempre primeiro</strong> no <code>head</code>, porque o navegador precisa saber disso antes de ler qualquer letra com acento (inclusive as do <code>title</code>).</p>
+
+<h3>Quando a codificação está errada</h3>
+<p>A Ana copiou o <code>head</code> de um site antigo, que dizia <code>iso-8859-1</code> (uma codificação antiga, também chamada de "latin1"). Mas o editor dela grava em UTF-8:</p>
+
+<pre class="file" data-file="acento-iso.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="iso-8859-1"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Pão de queijo&lt;/h1&gt;
+  &lt;p&gt;Açúcar, polvilho e óleo.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>O navegador obedece à <code>meta</code> e lê cada letra com acento (que em UTF-8 ocupa 2 bytes) como se fossem <strong>duas letras</strong> da tabela antiga. Este é o texto que o Chrome mostrou:</p>
+
+<pre class="file" data-file="o que o navegador mostrou">PÃ£o de queijo
+
+AÃ§Ãºcar, polvilho e Ã³leo.
+</pre>
+
+<p>Esse "Ã£" no lugar de "ã" tem até nome: <strong>mojibake</strong> (palavra japonesa para "letras transformadas"). Quando você vir um "Ã" seguido de outro símbolo num site, é quase sempre isso: um arquivo em UTF-8 lido como se fosse de outra codificação. O validador percebe a contradição:</p>
+
+<pre class="term" data-cwd="~/meta">$ vnu acento-iso.html
+"file:/home/ana/meta/acento-iso.html":4.3-4.29: error: Internal encoding declaration “iso-8859-1” disagrees with the actual encoding of the document (“utf-8”).
+"file:/home/ana/meta/acento-iso.html":4.3-4.29: error: The only allowed value for the “charset” attribute for the “meta” element is “utf-8”.</pre>
+
+<dl class="anatomy">
+  <dt>Internal encoding declaration “iso-8859-1” disagrees with the actual encoding of the document (“utf-8”).</dt><dd>"A declaração de codificação de dentro do arquivo (<code>iso-8859-1</code>) não bate com a codificação real do documento (<code>utf-8</code>)." O validador olhou os bytes do arquivo e viu que eles são UTF-8.</dd>
+  <dt>The only allowed value for the “charset” attribute for the “meta” element is “utf-8”.</dt><dd>"O único valor permitido para o atributo <code>charset</code> do <code>meta</code> é <code>utf-8</code>." O HTML de hoje não aceita outra codificação, nem com o arquivo gravado nela.</dd>
+</dl>
+
+<h3>Quando falta o meta charset</h3>
+<p>Sem a linha, o navegador tem de <strong>adivinhar</strong>. Abrindo o arquivo direto do computador, o Chrome adivinhou certo (UTF-8). Mas, quando a página vem de um servidor que não diz a codificação, o palpite muda. O servidor local do Python (aula <a href="servidor-local.html">Servidor Local</a>) é um desses:</p>
+
+<pre class="term" data-cwd="~/meta">$ python3 -m http.server 8000 &gt; servidor.log 2&gt;&amp;1 &amp;
+[1] 4
+$ curl -sI http://localhost:8000/acento-sem.html
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Sat, 17 Oct 2026 18:44:12 GMT
+Content-type: text/html             « o tipo, mas nenhuma palavra sobre a codificação
+Content-Length: 171
+Last-Modified: Sat, 17 Oct 2026 18:44:11 GMT
+$ kill %1</pre>
+
+<p>O <code>curl -sI</code> mostra só os <strong>cabeçalhos</strong> da resposta do servidor, as informações que chegam antes do arquivo. O <code>Content-type: text/html</code> diz "é uma página HTML", mas não diz "em UTF-8". Aberto por esse endereço, o mesmo arquivo <strong>sem</strong> <code>meta charset</code> apareceu no Chrome exatamente como o da codificação errada: <code>PÃ£o de queijo</code>. E o validador, conferindo o arquivo no disco, não reclamou de nada, porque ali ele consegue ver que os bytes são UTF-8. Ou seja: a página "funciona no meu computador" e quebra no servidor.</p>
+
+<div class="warning">
+<strong>Regra do guia: <code>&lt;meta charset="utf-8"&gt;</code> em toda página, como primeira linha do head</strong>
+<p>E grave o arquivo em UTF-8 (o VS Code e os editores atuais já gravam assim; aula <a href="editores.html">Editores</a>). As duas coisas juntas: o arquivo <strong>é</strong> UTF-8 e <strong>diz</strong> que é UTF-8.</p>
+</div>
+
+<h3>Formas de escrever</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O validador diz</th></tr>
+<tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>Certo. A forma deste guia.</td></tr>
+<tr><td><code>&lt;meta charset="UTF-8"&gt;</code></td><td>Certo: maiúsculas ou minúsculas tanto faz.</td></tr>
+<tr><td><code>&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"&gt;</code></td><td>Certo, mas é a forma antiga e comprida, de antes do HTML5. Faz a mesma coisa.</td></tr>
+<tr><td><code>&lt;meta charset="utf8"&gt;</code></td><td><code>error: The only allowed value for the “charset” attribute for the “meta” element is “utf-8”.</code> Sem o hífen, o nome está errado (o navegador até entende, mas não conte com isso).</td></tr>
+<tr><td>Dois <code>&lt;meta charset&gt;</code></td><td><code>error: A document must not include more than one “meta” element with a “charset” attribute.</code> ("Um documento não pode ter mais de um <code>meta</code> com <code>charset</code>.")</td></tr>
+<tr><td>O <code>meta charset</code> depois de muito texto</td><td><code>error: A “charset” attribute on a “meta” element found after the first 1024 bytes.</code> ("Encontrado depois dos primeiros 1024 bytes.") O navegador só procura a codificação no começo do arquivo.</td></tr>
+</table>
+</div>
+
+<p>O último caso aconteceu porque a Ana pôs um comentário enorme (mais de mil letras) <strong>antes</strong> do <code>meta charset</code>. Um <code>title</code> antes dele passa no validador, mas um comentário comprido, um <code>style</code> ou um <code>script</code> podem empurrá-lo para depois do limite. Por isso a regra é simples: ele é a <strong>primeira</strong> linha do <code>head</code>.</p>
+
+<hr>
+
+<h2>4. meta description: o resumo da página</h2>
+<p>A <code>description</code> é uma ou duas frases que <strong>resumem</strong> a página. Ela não aparece na página, mas o Google costuma mostrá-la nos resultados, embaixo do título azul, e várias redes sociais a usam na prévia de um link.</p>
+
+<pre class="file" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Bolo de Cenoura | Receitas da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Bolo de cenoura fofinho com cobertura de chocolate, pronto em 50 minutos e com ingredientes simples."&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bolo de Cenoura&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Num resultado de busca, a página da Ana ficaria mais ou menos assim (uma ilustração; cada buscador desenha do seu jeito):</p>
+
+<figure>
+<div class="out"><strong>Bolo de Cenoura | Receitas da Ana</strong><br>
+Bolo de cenoura fofinho com cobertura de chocolate, pronto em 50 minutos e com ingredientes simples.</div>
+<figcaption>O título vem do <code>title</code>; o texto de baixo, da <code>meta description</code>.</figcaption>
+</figure>
+
+<ul>
+  <li><strong>Escreva para pessoas</strong>: a descrição é o "anúncio" da página. Diga o que a pessoa vai encontrar.</li>
+  <li><strong>Uma por página, e diferente em cada uma</strong>, como o título.</li>
+  <li><strong>Curta</strong>: uma ou duas frases. Os buscadores cortam textos longos.</li>
+  <li><strong>Não é garantia</strong>: o Google pode preferir um trecho da própria página, se achar que ele responde melhor à busca. Mas sem <code>description</code>, ele sempre escolhe sozinho. Mais em <a href="seo.html">HTML e SEO</a>.</li>
+</ul>
+
+<div class="tryhtml" data-goal="attr:meta[name=description][content]=Pão de queijo mineiro com polvilho azedo e muito queijo.,nsrc:value=">
+<p class="try-task"><strong>Missão:</strong> a Ana escreveu a descrição com o atributo errado. O validador diz <code>Attribute “value” not allowed on element “meta” at this point.</code> e <code>Element “meta” is missing one or more of the following attributes: “content”, “property”.</code> Troque o atributo para que a <code>description</code> funcione.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Pão de Queijo | Receitas da Ana&lt;/title&gt;
+  &lt;meta name="description" value="Pão de queijo mineiro com polvilho azedo e muito queijo."&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Pão de Queijo&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Pão de Queijo | Receitas da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Pão de queijo mineiro com polvilho azedo e muito queijo."&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Pão de Queijo&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<h3>Os erros da description</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O validador diz</th></tr>
+<tr><td><code>&lt;meta name="description"&gt;</code> (sem <code>content</code>)</td><td><code>error: Element “meta” is missing one or more of the following attributes: “content”, “property”.</code></td></tr>
+<tr><td><code>&lt;meta name="description" value="…"&gt;</code></td><td><code>error: Attribute “value” not allowed on element “meta” at this point.</code> e o mesmo erro de cima: o atributo certo é <code>content</code>.</td></tr>
+<tr><td>Duas <code>description</code></td><td><code>error: A document must not include more than one “meta” element with its “name” attribute set to the value “description”.</code> ("Um documento não pode ter mais de um <code>meta</code> com <code>name</code> igual a <code>description</code>.")</td></tr>
+<tr><td><code>&lt;meta name="description" content=""&gt;</code></td><td>Nada: é válido, mas não serve para nada.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>5. meta author: quem fez a página</h2>
+<pre class="file" data-file="trecho">&lt;meta name="author" content="Ana"&gt;
+</pre>
+
+<p>O <code>author</code> ("autor") diz quem escreveu a página. Ninguém vê isso na tela, mas ferramentas que guardam páginas (gerenciadores de referências, arquivos da web) e quem lê o código conseguem saber de quem ela é. Para várias pessoas, a regra é uma <code>meta author</code> para cada uma.</p>
+
+<h3>O erro que o validador não vê</h3>
+<p>A Ana, pensando em português, escreveu:</p>
+
+<pre class="file" data-file="autor.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Receitas da Ana&lt;/title&gt;
+  &lt;meta name="autor" content="Ana"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<pre class="term" data-cwd="~/meta">$ vnu --verbose autor.html
+autor.html                « nenhum erro!</pre>
+
+<p>O validador não reclamou, porque qualquer pessoa pode inventar novos nomes de <code>meta</code> e ele não tem como saber se <code>autor</code> é um nome novo ou um erro de digitação. Mas nenhum programa procura por <code>autor</code>: para todos eles, essa página não tem autor. O mesmo vale para <code>descricao</code>, <code>discription</code>, <code>autora</code>… Valide sempre, mas confira os nomes você mesmo: <code>description</code>, <code>author</code>, <code>viewport</code>, todos em inglês e em minúsculas.</p>
+
+<h3>Outros nomes que você vai encontrar</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th><code>name</code></th><th>Para que serve</th></tr>
+<tr><td><code>description</code></td><td>O resumo da página (seção 4).</td></tr>
+<tr><td><code>author</code></td><td>Quem escreveu a página.</td></tr>
+<tr><td><code>viewport</code></td><td>O ajuste para o celular: aula <a href="meta-viewport.html">Celular (meta viewport)</a>.</td></tr>
+<tr><td><code>keywords</code></td><td>Uma lista de palavras-chave. Válida, mas o Google anunciou em 2009 que <strong>não</strong> a usa, porque era muito abusada. Não perca tempo com ela.</td></tr>
+<tr><td><code>generator</code></td><td>O programa que gerou a página (o WordPress, por exemplo, põe o próprio nome aqui).</td></tr>
+<tr><td><code>robots</code></td><td>Instruções para os robôs dos buscadores: aula <a href="robots-sitemap.html">robots.txt e sitemap</a>.</td></tr>
+<tr><td><code>theme-color</code></td><td>A cor da barra do navegador em alguns celulares.</td></tr>
+</table>
+</div>
+
+<p>A lista completa está na referência <a href="ref-meta.html">Metas do head</a>.</p>
+
+<hr>
+
+<h2>Qual usar</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Em toda página?</th><th>Por quê</th></tr>
+<tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td><strong>Sim</strong>, primeira linha</td><td>Sem ele, os acentos podem quebrar no servidor.</td></tr>
+<tr><td><code>&lt;title&gt;</code></td><td><strong>Sim</strong>, um diferente em cada página</td><td>Obrigatório; é o nome da página na aba, no Google e no leitor de tela.</td></tr>
+<tr><td><code>&lt;meta name="description"&gt;</code></td><td>Sim, nas páginas que você quer que as pessoas achem</td><td>É o "anúncio" da página nos resultados de busca.</td></tr>
+<tr><td><code>&lt;meta name="author"&gt;</code></td><td>Opcional</td><td>Diz quem fez a página.</td></tr>
+<tr><td><code>&lt;meta name="keywords"&gt;</code></td><td>Não</td><td>Os buscadores ignoram.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+
+<div class="cenario">
+<strong>Os acentos aparecem como <code>Ã£</code>, <code>Ã§</code>, <code>Ã©</code></strong>
+<p><strong>O que significa:</strong> o arquivo está em UTF-8, mas o navegador o leu com outra codificação: ou o <code>meta charset</code> diz outra coisa (<code>iso-8859-1</code>, <code>windows-1252</code>), ou ele não existe e o servidor não disse a codificação. O validador mostra <code>Internal encoding declaration “…” disagrees with the actual encoding of the document (“utf-8”).</code> no primeiro caso e nada no segundo.</p>
+<p><strong>Como consertar:</strong> ponha <code>&lt;meta charset="utf-8"&gt;</code> como primeira linha do <code>head</code> e confira se o editor grava em UTF-8.</p>
+</div>
+
+<div class="cenario">
+<strong>Os acentos aparecem como <code>�</code> (um losango com interrogação)</strong>
+<p><strong>O que significa:</strong> o contrário: o arquivo foi gravado numa codificação antiga, e o navegador o leu como UTF-8. Os bytes das letras com acento não formam UTF-8 válido, e o navegador põe o símbolo de "caractere desconhecido" no lugar.</p>
+<p><strong>Como consertar:</strong> no editor, grave o arquivo de novo "com a codificação UTF-8" (no VS Code, pelo indicador de codificação na barra de baixo) e mantenha o <code>meta charset="utf-8"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “title” must not be empty.</code> / <code>Element “title” not allowed as child of element “head” in this context.</code></strong>
+<p><strong>O que significa:</strong> o título está vazio, ou há dois títulos (o segundo é o acusado).</p>
+<p><strong>Como consertar:</strong> deixe um <code>title</code> só, com um texto que descreva a página.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “meta” is missing one or more of the following attributes: “content”, “property”.</code></strong>
+<p><strong>O que significa:</strong> uma <code>meta name="…"</code> sem <code>content</code>. Muitas vezes o texto foi posto em outro atributo (<code>value</code>, <code>text</code>) ou entre as tags, como num parágrafo: <code>&lt;meta name="author"&gt;Ana&lt;/meta&gt;</code>. Nesse último caso, o validador ainda mostra <code>Stray end tag “meta”.</code>, porque o <code>meta</code> não tem tag de fechamento.</p>
+<p><strong>Como consertar:</strong> o texto vai no <code>content</code>: <code>&lt;meta name="author" content="Ana"&gt;</code>.</p>
+</div>
+
+<div class="cenario">
+<strong><code>error: Element “meta” is missing one or more of the following attributes: “http-equiv”, “itemprop”, “name”, “property”.</code></strong>
+<p><strong>O que significa:</strong> um <code>&lt;meta content="Ana"&gt;</code> sem dizer <strong>o que</strong> é aquele conteúdo.</p>
+<p><strong>Como consertar:</strong> acrescente o <code>name</code>: <code>name="author"</code>.</p>
+</div>
+
+<div class="cenario">
+<strong>O validador não diz nada, mas o Google não usa a sua descrição</strong>
+<p><strong>O que significa:</strong> confira o nome: <code>name="descricao"</code>, <code>name="discription"</code> ou <code>name="autor"</code> passam no validador, mas nenhum programa os procura.</p>
+<p><strong>Como consertar:</strong> use os nomes em inglês, em minúsculas: <code>description</code>, <code>author</code>.</p>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Escrita</th><th>O que faz</th></tr>
+<tr><td><code>&lt;title&gt;Assunto | Site&lt;/title&gt;</code></td><td>O título: aba, favoritos, Google, leitor de tela. Obrigatório, um só, só texto.</td></tr>
+<tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>A codificação das letras. Primeira linha do <code>head</code>, nos primeiros 1024 bytes.</td></tr>
+<tr><td><code>&lt;meta name="description" content="…"&gt;</code></td><td>O resumo da página para os buscadores. Um por página.</td></tr>
+<tr><td><code>&lt;meta name="author" content="…"&gt;</code></td><td>Quem escreveu a página.</td></tr>
+<tr><td><code>&lt;meta name="…" content="…"&gt;</code></td><td>A forma geral: <code>name</code> é a pergunta, <code>content</code> é a resposta. Sem tag de fechamento.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. A codificação</h3>
+<p>Complete a primeira linha do <code>head</code>:</p>
+<div class="ex-code">&lt;meta charset="<input data-answer="utf-8|UTF-8" aria-label="codificação">"&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>2. O resumo</h3>
+<p>Complete o nome do atributo que guarda o texto da descrição:</p>
+<div class="ex-code">&lt;meta name="description" <input data-answer="content" aria-label="atributo">="Receitas fáceis da Ana."&gt;</div>
+</div>
+
+<div class="exercise">
+<h3>3. A autora</h3>
+<p>Complete o valor do <code>name</code> para dizer que a Ana é a autora:</p>
+<div class="ex-code">&lt;meta name="<input data-answer="author" aria-label="nome">" content="Ana"&gt;</div>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Um site mostra <code>InformaÃ§Ãµes</code> no lugar de "Informações". O que aconteceu?</p>
+<label><input type="radio" name="q4"> A fonte não tem acentos</label>
+<label><input type="radio" name="q4"> O <code>lang="pt-BR"</code> está faltando</label>
+<label><input type="radio" name="q4"> Um arquivo em UTF-8 foi lido com outra codificação (<code>meta charset</code> errado ou ausente)</label>
+<label><input type="radio" name="q4"> O <code>title</code> está vazio</label>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">5. Qual destes títulos é o melhor para a página de contato do site da Ana?</p>
+<label><input type="radio" name="q5"> <code>Página</code></label>
+<label><input type="radio" name="q5"> <code>Contato | Receitas da Ana</code></label>
+<label><input type="radio" name="q5"> <code>Receitas da Ana | Receitas da Ana | Contato</code></label>
+<label><input type="radio" name="q5"> <code>&lt;b&gt;Contato&lt;/b&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="4">
+<p class="mc-q">6. O que o validador W3C diz de <code>&lt;meta name="autor" content="Ana"&gt;</code>?</p>
+<label><input type="radio" name="q6"> <code>Bad value “autor”</code></label>
+<label><input type="radio" name="q6"> <code>Stray end tag “meta”</code></label>
+<label><input type="radio" name="q6"> <code>Element “meta” is missing … “content”</code></label>
+<label><input type="radio" name="q6"> Nada: passa sem erro, mas nenhum programa entende esse nome</label>
+</div>
+
+<h3>Missão final: o head do pão de queijo</h3>
+
+<div class="tryhtml" data-goal="sel:head &gt; meta[charset]:first-child,texto:head title=Pão de Queijo,sel:head meta[name=description][content],attr:meta[name=author][content]=Ana,nsel:title=1">
+<p class="try-task"><strong>Missão:</strong> monte o <code>head</code> da página do pão de queijo. Na ordem: o <code>meta charset</code> com UTF-8, um <code>title</code> que comece com <code>Pão de Queijo</code> (e termine com o nome do site), uma <code>description</code> com uma frase sua sobre a receita e a <code>meta author</code> com <code>Ana</code>.</p>
+<pre class="script" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;!-- escreva o head aqui --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Pão de Queijo&lt;/h1&gt;
+  &lt;p&gt;Polvilho, queijo, leite, óleo e ovos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Pão de Queijo | Receitas da Ana&lt;/title&gt;
+  &lt;meta name="description" content="Pão de queijo mineiro com polvilho azedo, pronto em 40 minutos."&gt;
+  &lt;meta name="author" content="Ana"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Pão de Queijo&lt;/h1&gt;
+  &lt;p&gt;Polvilho, queijo, leite, óleo e ovos.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>Abra o painel de elementos do F12 em sites que você usa e procure as <code>meta</code> do <code>head</code>: quase todos têm <code>charset</code>, <code>viewport</code> e <code>description</code>. A próxima aula explica a <code>viewport</code>.</p>
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>O <code>title</code> é o nome da página: aparece na aba, nos favoritos, no Google e é a primeira coisa que o leitor de tela lê. Um por página, só texto, com o assunto primeiro: <code>Bolo de Cenoura | Receitas da Ana</code>.</li>
+  <li>O <code>meta</code> é um elemento vazio (sem <code>&lt;/meta&gt;</code>); quase sempre <code>name</code> (a pergunta) + <code>content</code> (a resposta).</li>
+  <li><code>&lt;meta charset="utf-8"&gt;</code> é a primeira linha do <code>head</code>. Codificação errada ou ausente dá <code>PÃ£o</code> no lugar de "Pão", e o único valor válido é <code>utf-8</code>.</li>
+  <li><code>meta description</code> é o resumo que os buscadores costumam mostrar; <code>meta author</code> diz quem fez a página.</li>
+  <li>O validador acusa <code>content</code> faltando, <code>description</code> repetida e <code>charset</code> repetido, mas <strong>não</strong> percebe um nome errado como <code>autor</code>.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
