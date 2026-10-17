@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Bloco × Em Linha — quem começa linha nova e quem fica na frase | Guia HTML</title>
+<meta name="description" content="Elementos de bloco e em linha em HTML para quem nunca fez um site: quem começa numa linha nova e ocupa a largura toda (p, h1, div, ul) e quem fica no meio da frase (span, a, strong, img), conteúdo de fluxo e conteúdo de frase, o link em volta de um cartão, o display do CSS e os erros reais do validador W3C (lista dentro de p, p dentro de h1, link dentro de link), com missões no editor.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem("tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Tópicos"></nav>
+<main class="main">
+<div class="content">
+
+<div class="pager"></div>
+
+<h1>HTML <span class="hl">Bloco × Em Linha</span></h1>
+
+<p class="intro">Você já reparou que um <code>&lt;p&gt;</code> sempre começa numa linha nova, mas um <code>&lt;strong&gt;</code> fica no meio da frase? Isso não é acaso. Os elementos do HTML se dividem em dois jeitos de ocupar a página: os de <strong>bloco</strong>, que se empilham um embaixo do outro, e os <strong>em linha</strong>, que correm dentro do texto, como palavras. Nesta aula você vai ver os dois lado a lado no site de receitas da Ana, aprender a regra de quem pode ficar dentro de quem e entender os consertos estranhos que o navegador faz quando essa regra é quebrada.</p>
+
+<div class="note">
+<strong>Você vai aprender</strong>
+<ul>
+  <li>O que é um elemento de <strong>bloco</strong> (<code>p</code>, <code>h1</code>, <code>div</code>, <code>ul</code>…) e como ele aparece na tela.</li>
+  <li>O que é um elemento <strong>em linha</strong> (<code>span</code>, <code>a</code>, <code>strong</code>, <code>img</code>…) e como ele aparece.</li>
+  <li>A regra de quem cabe dentro de quem, e os nomes que o padrão do HTML usa: <strong>conteúdo de fluxo</strong> e <strong>conteúdo de frase</strong>.</li>
+  <li>Por que um link pode envolver um cartão inteiro, com título e parágrafo.</li>
+  <li>Que o CSS pode mudar a aparência (<code>display</code>), mas não muda a regra do HTML.</li>
+  <li>Os erros reais: lista dentro de parágrafo, parágrafo dentro de título e link dentro de link.</li>
+</ul>
+</div>
+
+<p>Os arquivos desta aula foram validados com o <strong>validador W3C</strong> (<code>vnu</code>) na máquina fictícia da Ana (usuária <code>ana</code>, computador <code>notebook</code>), na pasta <code>~/receitas</code>. O que o navegador "montou" de cada arquivo errado foi tirado do Chromium de verdade, sem janela, com a opção <code>--dump-dom</code>. Os quadros "Resultado" são desenhados pelo seu navegador.</p>
+
+<hr>
+
+<h2>A ideia: tijolos e palavras</h2>
+<p>Pense num caderno de receitas. Cada <strong>parágrafo</strong> começa numa linha nova, e cada <strong>título</strong> também. Um não fica do lado do outro: eles se empilham, de cima para baixo, como <strong>tijolos</strong> numa parede. Cada tijolo ocupa a largura toda da página, mesmo que o texto seja curto.</p>
+
+<p>Agora olhe para dentro de um parágrafo. As <strong>palavras</strong> vêm uma depois da outra, na mesma linha, e quando a linha acaba elas continuam na de baixo. Se você sublinhar uma palavra, ela continua no lugar dela, no meio da frase.</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>No caderno</th><th>Em HTML</th><th>Exemplos</th></tr>
+<tr><td>Os tijolos: parágrafos e títulos empilhados</td><td>elementos de <strong>bloco</strong> (<em>block</em>)</td><td><code>p</code>, <code>h1</code>…<code>h6</code>, <code>div</code>, <code>ul</code>, <code>ol</code>, <code>li</code>, <code>table</code></td></tr>
+<tr><td>As palavras dentro da frase</td><td>elementos <strong>em linha</strong> (<em>inline</em>)</td><td><code>span</code>, <code>a</code>, <code>strong</code>, <code>em</code>, <code>code</code>, <code>img</code>, <code>br</code></td></tr>
+</table>
+</div>
+
+<p><em>Block</em> é "bloco" em inglês, e <em>inline</em> quer dizer "na linha". Você vai ver esses dois nomes em inglês em muitos tutoriais e no CSS.</p>
+
+<hr>
+
+<h2>1. Elementos de bloco: um embaixo do outro</h2>
+<p>Para enxergar o espaço que cada elemento ocupa, este exemplo põe uma borda tracejada em cada um com o atributo <code>style</code> (aula <a href="atributo-style.html">O Atributo style</a>). Sem a borda, você não veria os limites:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1 style="border: 2px dashed gray;"&gt;Bolo de cenoura&lt;/h1&gt;
+&lt;p style="border: 2px dashed gray;"&gt;Fofinho.&lt;/p&gt;
+&lt;p style="border: 2px dashed gray;"&gt;Rende 12 fatias.&lt;/p&gt;
+&lt;div style="border: 2px dashed gray;"&gt;Uma caixa div.&lt;/div&gt;
+</pre>
+
+<p>Olhe o resultado e repare em três coisas:</p>
+<ol class="passo">
+  <li>Cada elemento <strong>começou numa linha nova</strong>, mesmo que caiba do lado do anterior. "Fofinho." é curto, mas o "Rende 12 fatias." não subiu para o lado dele.</li>
+  <li>A borda de cada um vai de uma ponta à outra: um bloco <strong>ocupa a largura toda</strong> disponível, não importa o tamanho do texto.</li>
+  <li>O título e os parágrafos ganharam um espaço em cima e embaixo (a <strong>margem</strong>), que o navegador põe sozinho. O <code>div</code> não tem margem: é uma caixa "pelada".</li>
+</ol>
+
+<p>Os elementos de bloco mais comuns: <code>p</code>, <code>h1</code> a <code>h6</code>, <code>div</code>, <code>ul</code>, <code>ol</code>, <code>li</code>, <code>dl</code>, <code>table</code>, <code>blockquote</code>, <code>pre</code>, <code>hr</code>, <code>form</code> e os elementos de página que você vai ver no grupo Semântica: <code>header</code>, <code>nav</code>, <code>main</code>, <code>section</code>, <code>article</code>, <code>aside</code> e <code>footer</code>.</p>
+
+<hr>
+
+<h2>2. Elementos em linha: no meio da frase</h2>
+<p>Agora as mesmas bordas em elementos em linha, dentro de um parágrafo:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Asse por &lt;span style="border: 2px dashed gray;"&gt;40 minutos&lt;/span&gt;,
+&lt;strong style="border: 2px dashed gray;"&gt;sem abrir o forno&lt;/strong&gt;, e veja
+a &lt;a href="cobertura.html" style="border: 2px dashed gray;"&gt;receita da cobertura&lt;/a&gt;.&lt;/p&gt;
+</pre>
+
+<ol class="passo">
+  <li>Nenhum deles começou linha nova. O texto corre <strong>antes e depois</strong> de cada um, na mesma linha.</li>
+  <li>A borda tem só o <strong>tamanho do conteúdo</strong>: "40 minutos" ganhou uma borda do tamanho de "40 minutos", e não da página toda.</li>
+  <li>Se a janela for estreita (no celular, por exemplo), um elemento em linha pode até ser <strong>partido</strong> no fim da linha, e continuar na linha de baixo, como uma frase comum.</li>
+</ol>
+
+<p>Os elementos em linha mais comuns: <code>span</code>, <code>a</code>, <code>strong</code>, <code>em</code>, <code>b</code>, <code>i</code>, <code>mark</code>, <code>small</code>, <code>code</code>, <code>abbr</code>, <code>time</code>, <code>br</code> e também a imagem, <code>img</code>. Por ser em linha, uma imagem pequena fica no meio do texto, como se fosse uma palavra grande. Para "quebrar" a linha dentro de um parágrafo, existe o <code>br</code> (aula <a href="quebras.html">Quebras</a>).</p>
+
+<div class="tryhtml">
+<p class="try-task"><strong>Experimente:</strong> esta caixa não tem missão. Escreva mais texto no parágrafo e veja que o <code>span</code> continua no meio da frase. Depois troque o <code>span</code> por <code>div</code> (nas duas tags) e veja a borda esticar até a largura toda e o texto ser quebrado. Por último, desfaça e tente pôr um segundo <code>&lt;h2&gt;</code> logo depois do primeiro, sem nada no meio: eles ficam lado a lado?</p>
+<pre class="script" data-file="index.html">&lt;h2 style="border: 2px dashed gray;"&gt;Pão de queijo&lt;/h2&gt;
+&lt;p&gt;Leve ao forno por &lt;span style="border: 2px dashed gray;"&gt;25 minutos&lt;/span&gt; até dourar.&lt;/p&gt;
+</pre>
+</div>
+
+<h3>Lado a lado</h3>
+<div class="table-wrap">
+<table class="ref">
+<tr><th></th><th>Bloco</th><th>Em linha</th></tr>
+<tr><td>Começa linha nova?</td><td>Sim, sempre</td><td>Não: fica no meio do texto</td></tr>
+<tr><td>Largura</td><td>A largura toda disponível</td><td>Só o tamanho do conteúdo</td></tr>
+<tr><td>O que guarda</td><td>Outros blocos e textos</td><td>Texto e outros elementos em linha</td></tr>
+<tr><td>Comparação</td><td>Um tijolo na parede</td><td>Uma palavra na frase</td></tr>
+<tr><td>Exemplos</td><td><code>p</code>, <code>h2</code>, <code>div</code>, <code>ul</code>, <code>li</code></td><td><code>span</code>, <code>a</code>, <code>strong</code>, <code>em</code>, <code>img</code></td></tr>
+</table>
+</div>
+
+<div class="tryhtml" data-goal="nsel:p span=2,texto:p=Categorias: Doce e Salgado.,nsel:p=1">
+<p class="try-task"><strong>Missão:</strong> a Ana queria a frase "Categorias: Doce e Salgado." numa linha só, mas usou um parágrafo e dois <code>div</code>, e cada pedaço foi para uma linha. Junte tudo num <strong>único</strong> parágrafo, com "Doce" e "Salgado" cada um num <code>span</code> (eles podem continuar com a borda).</p>
+<pre class="script" data-file="index.html">&lt;p&gt;Categorias:&lt;/p&gt;
+&lt;div style="border: 2px dashed gray;"&gt;Doce&lt;/div&gt;
+&lt;div style="border: 2px dashed gray;"&gt;Salgado&lt;/div&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;p&gt;Categorias: &lt;span style="border: 2px dashed gray;"&gt;Doce&lt;/span&gt; e &lt;span style="border: 2px dashed gray;"&gt;Salgado&lt;/span&gt;.&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>3. Quem cabe dentro de quem</h2>
+<p>Daqui sai a regra mais importante desta aula, e ela faz sentido com a comparação do caderno: uma <strong>frase</strong> pode ter palavras sublinhadas, mas uma palavra não pode ter um parágrafo inteiro dentro dela.</p>
+
+<ul>
+  <li>Um bloco pode guardar elementos em linha: <code>&lt;p&gt;… &lt;strong&gt;…&lt;/strong&gt; …&lt;/p&gt;</code>. Certo.</li>
+  <li>Muitos blocos podem guardar outros blocos: um <code>div</code> com parágrafos, um <code>li</code> com uma lista dentro. Certo.</li>
+  <li>Um elemento em linha <strong>não</strong> pode guardar um bloco: <code>&lt;span&gt;&lt;p&gt;…&lt;/p&gt;&lt;/span&gt;</code>. Errado.</li>
+  <li>E a pegadinha: <code>p</code> e os títulos <code>h1</code>…<code>h6</code> são blocos, mas só aceitam conteúdo <strong>de frase</strong>. Nada de lista, <code>div</code> ou outro <code>p</code> dentro deles.</li>
+</ul>
+
+<h3>Os nomes do padrão: fluxo e frase</h3>
+<p>O <em>HTML Living Standard</em>, o padrão que define o HTML de hoje, não usa mais as palavras "bloco" e "em linha" para essa regra. Ele separa os elementos em <strong>categorias de conteúdo</strong>. As duas mais importantes são:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Categoria</th><th>Em inglês</th><th>O que é</th><th>Exemplos</th></tr>
+<tr><td><strong>Conteúdo de frase</strong></td><td><em>phrasing content</em></td><td>o texto e o que vai dentro de uma frase</td><td>texto puro, <code>span</code>, <code>a</code>, <code>strong</code>, <code>em</code>, <code>img</code>, <code>br</code>, <code>code</code></td></tr>
+<tr><td><strong>Conteúdo de fluxo</strong></td><td><em>flow content</em></td><td>quase tudo o que pode ir dentro do <code>body</code>: todo o conteúdo de frase <strong>e</strong> os blocos</td><td><code>p</code>, <code>div</code>, <code>ul</code>, <code>h1</code>, <code>table</code> + todo o conteúdo de frase</td></tr>
+</table>
+</div>
+
+<p>Cada elemento diz, na sua "ficha" no padrão, que tipo de conteúdo aceita dentro dele. Algumas fichas, resumidas:</p>
+
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Elemento</th><th>Aceita dentro</th><th>Então…</th></tr>
+<tr><td><code>div</code>, <code>li</code>, <code>blockquote</code></td><td>conteúdo de fluxo</td><td>quase tudo: parágrafos, listas, outros <code>div</code></td></tr>
+<tr><td><code>p</code></td><td>conteúdo de frase</td><td>texto, <code>strong</code>, <code>a</code>, <code>span</code>… <strong>sem</strong> <code>ul</code>, <code>div</code>, outro <code>p</code></td></tr>
+<tr><td><code>h1</code> a <code>h6</code></td><td>conteúdo de frase</td><td>texto e elementos de frase; <strong>sem</strong> <code>p</code> dentro</td></tr>
+<tr><td><code>span</code>, <code>strong</code>, <code>em</code></td><td>conteúdo de frase</td><td><strong>sem</strong> blocos dentro</td></tr>
+<tr><td><code>ul</code>, <code>ol</code></td><td>só <code>li</code> (e alguns elementos de script)</td><td>texto e links vão <strong>dentro</strong> de um <code>li</code></td></tr>
+<tr><td><code>a</code></td><td>"transparente": o mesmo que o elemento de fora aceita</td><td>veja a próxima seção</td></tr>
+</table>
+</div>
+
+<p>Você não precisa decorar a tabela. Basta lembrar da frase e da palavra, e deixar o validador avisar quando escapar alguma coisa (aula <a href="validar.html">Validar o HTML</a>).</p>
+
+<hr>
+
+<h2>4. A exceção do link: um cartão clicável</h2>
+<p>O <code>a</code> é em linha, mas o padrão diz que o conteúdo dele é <strong>transparente</strong>: ele aceita dentro o mesmo que o elemento <strong>de fora</strong> aceitaria. Se o link está solto na página (num lugar que aceita conteúdo de fluxo), ele pode envolver um título e um parágrafo inteiros. Assim o cartão todo da receita vira um link só:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;a href="bolo.html"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil.&lt;/p&gt;
+&lt;/a&gt;
+</pre>
+
+<pre class="term" data-cwd="~/receitas">$ vnu --verbose cartao-link.html
+cartao-link.html                  « só o nome do arquivo: nenhum erro</pre>
+
+<p>No resultado, o título e o parágrafo ficaram com a cor e o sublinhado de link, e clicar em qualquer parte leva à página do bolo. Mas, dentro de um <code>p</code>, o mesmo link só pode ter conteúdo de frase, porque um <code>p</code> só aceita isso. O <a href="#errado">Quando dá errado</a> mostra a bagunça que dá colocar um <code>div</code> num link que está dentro de um parágrafo.</p>
+
+<div class="warning">
+<strong>Um link dentro de outro link: nunca</strong>
+<p>Transparente não quer dizer "aceita tudo". Um <code>a</code> nunca pode ter outro <code>a</code> dentro (nem botões e campos de formulário): quem clicasse não saberia para onde ia. O navegador separa os dois links sozinho, como você vai ver no fim da aula.</p>
+</div>
+
+<hr>
+
+<h2>5. O CSS muda a aparência, não a regra</h2>
+<p>Ser "de bloco" ou "em linha" na tela é uma questão de <strong>aparência</strong>, e quem cuida da aparência é o CSS. Cada elemento vem com um valor da propriedade <code>display</code> ("exibição"): o <code>p</code> vem com <code>display: block</code>, o <code>span</code> com <code>display: inline</code>. O CSS pode trocar:</p>
+
+<pre class="file" data-file="index.html" data-resultado>&lt;p&gt;Tempo: &lt;span style="display: block; border: 2px dashed gray;"&gt;40 minutos&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li style="display: inline;"&gt;Doces&lt;/li&gt;
+  &lt;li style="display: inline;"&gt;Salgados&lt;/li&gt;
+  &lt;li style="display: inline;"&gt;Bebidas&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
+<dl class="anatomy">
+  <dt>display: block;</dt><dd>Faz o <code>span</code> se comportar como bloco: ele desceu para uma linha só dele, e a borda ocupa a largura toda.</dd>
+  <dt>display: inline;</dt><dd>Faz cada <code>li</code> se comportar como em linha: os três itens ficaram lado a lado, sem as bolinhas da lista. É assim que muitos sites fazem menus horizontais.</dd>
+</dl>
+
+<p>Mas a regra do HTML continua a mesma. O <code>span</code> com <code>display: block</code> ainda é conteúdo de frase, e um <code>&lt;p&gt;</code> dentro dele continua errado no validador. O HTML diz <strong>o que</strong> cada coisa é; o CSS diz <strong>como</strong> ela aparece. Os detalhes do <code>display</code> ficam para o futuro Guia CSS.</p>
+
+<div class="tip">
+<strong>Ver o <code>display</code> no F12</strong>
+<p>Nas Ferramentas do Desenvolvedor (aula <a href="ferramentas-dev.html">Ferramentas do Desenvolvedor</a>), selecione um elemento na árvore da página e procure a parte de estilos <strong>calculados</strong> ("Computed", em inglês): lá aparece o <code>display</code> dele. Num <code>p</code>, você vai ver <code>block</code>; num <code>span</code>, <code>inline</code>.</p>
+</div>
+
+<hr>
+
+<h2 id="errado">Quando dá errado</h2>
+<p>Quebrar a regra de "quem cabe dentro de quem" quase nunca faz o navegador mostrar um erro. Às vezes ele aceita como está; às vezes ele <strong>reorganiza</strong> a página sozinho. O validador mostra o problema nos dois casos.</p>
+
+<div class="cenario">
+<strong>Lista dentro de parágrafo: <code>No “p” element in scope but a “p” end tag seen.</code></strong>
+<pre class="file" data-file="lista-no-p.html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Receitas da Ana&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Ingredientes:
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<pre class="term" data-cwd="~/receitas">$ vnu lista-no-p.html
+"file:/home/ana/receitas/lista-no-p.html":14.1-14.4: error: No “p” element in scope but a “p” end tag seen.</pre>
+<p>A mensagem aponta a linha 14, o <code>&lt;/p&gt;</code>: "não há nenhum <code>p</code> aberto, mas apareceu um <code>&lt;/p&gt;</code>". O motivo está no que o navegador montou:</p>
+<pre class="file" data-file="o que o navegador montou">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Ingredientes:
+&lt;/p&gt;&lt;ul&gt;
+  &lt;li&gt;3 cenouras&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;/p&gt;
+</pre>
+<p>Ao ver o <code>&lt;ul&gt;</code>, o navegador <strong>fechou</strong> o parágrafo, porque um <code>p</code> não pode ter uma lista. A lista ficou do lado de fora, e o <code>&lt;/p&gt;</code> que sobrou virou um parágrafo <strong>vazio</strong>. Na tela, quase não se nota: só um espaço a mais embaixo da lista.</p>
+<p><strong>Como consertar:</strong> feche o parágrafo antes da lista: <code>&lt;p&gt;Ingredientes:&lt;/p&gt;</code> e, depois, a <code>ul</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:p:empty=0,nsel:li=3,nsel:p=1,texto:p=Ingredientes:">
+<p class="try-task"><strong>Missão:</strong> conserte a página do cenário acima. A frase "Ingredientes:" deve ficar no seu próprio parágrafo, a lista logo depois, e não pode sobrar nenhum parágrafo vazio na página que o navegador monta.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Ingredientes:
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+  &lt;li&gt;2 xícaras de farinha&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;Ingredientes:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;3 cenouras&lt;/li&gt;
+  &lt;li&gt;3 ovos&lt;/li&gt;
+  &lt;li&gt;2 xícaras de farinha&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+<div class="cenario">
+<strong>Parágrafo dentro de título: <code>Element “p” not allowed as child of element “h1” in this context.</code></strong>
+<p>A Ana quis pôr uma frase embaixo do nome do site e escreveu <code>&lt;h1&gt;Receitas da Ana &lt;p&gt;Doces e salgados&lt;/p&gt;&lt;/h1&gt;</code> na linha 8:</p>
+<pre class="term" data-cwd="~/receitas">$ vnu p-no-h1.html
+"file:/home/ana/receitas/p-no-h1.html":8.21-8.23: error: Element “p” not allowed as child of element “h1” in this context. (Suppressing further errors from this subtree.)</pre>
+<p>"O elemento <code>p</code> não é permitido como filho do elemento <code>h1</code> neste contexto": um título só aceita conteúdo de frase. Aqui o navegador <strong>não</strong> reorganiza nada: o Chromium montou a página com o <code>p</code> dentro do <code>h1</code>, e "Doces e salgados" aparece numa linha própria, enorme, com a letra do título. Ou seja: a tela parece "quase certa", e o leitor de tela anuncia as duas frases como um título só.</p>
+<p><strong>Como consertar:</strong> o título termina antes do parágrafo: <code>&lt;h1&gt;Receitas da Ana&lt;/h1&gt;</code> e <code>&lt;p&gt;Doces e salgados&lt;/p&gt;</code>, um embaixo do outro. O mesmo erro aparece com <code>&lt;strong&gt;&lt;p&gt;…&lt;/p&gt;&lt;/strong&gt;</code> (<code>Element “p” not allowed as child of element “strong”</code>) e com <code>&lt;span&gt;&lt;h2&gt;…&lt;/h2&gt;&lt;/span&gt;</code> (<code>Element “h2” not allowed as child of element “span”</code>): um bloco dentro de algo que só aceita frase.</p>
+</div>
+
+<div class="cenario">
+<strong>Link dentro de link: <code>Start tag “a” seen but an element of the same type was already open.</code></strong>
+<p>Na linha 9, a Ana pôs um link para a página da cenoura dentro do link do bolo: <code>&lt;p&gt;&lt;a href="bolo.html"&gt;Bolo de &lt;a href="cenoura.html"&gt;cenoura&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;</code>.</p>
+<pre class="term" data-cwd="~/receitas">$ vnu link-no-link.html
+"file:/home/ana/receitas/link-no-link.html":9.32-9.54: error: Start tag “a” seen but an element of the same type was already open.
+"file:/home/ana/receitas/link-no-link.html":9.66-9.69: error: Stray end tag “a”.</pre>
+<dl class="anatomy">
+  <dt>Start tag “a” seen but an element of the same type was already open.</dt><dd>"Apareceu uma tag de abertura <code>&lt;a&gt;</code>, mas já havia um elemento do mesmo tipo aberto".</dd>
+  <dt>Stray end tag “a”.</dt><dd>"Tag de fechamento <code>&lt;/a&gt;</code> perdida": sobrou um <code>&lt;/a&gt;</code> sem ninguém para fechar.</dd>
+</dl>
+<p>O navegador resolve sozinho, <strong>fechando</strong> o primeiro link antes de abrir o segundo:</p>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;&lt;a href="bolo.html"&gt;Bolo de &lt;/a&gt;&lt;a href="cenoura.html"&gt;cenoura&lt;/a&gt;&lt;/p&gt;
+</pre>
+<p>Agora são dois links lado a lado: "Bolo de " leva ao bolo, e "cenoura" leva à cenoura. Quem clica em "cenoura" esperando o bolo vai parar na página errada.</p>
+<p><strong>Como consertar:</strong> escreva dois links separados, cada um com o seu texto completo.</p>
+</div>
+
+<div class="cenario">
+<strong>Bloco num link dentro de parágrafo: cinco erros de uma vez</strong>
+<p>Lembra que o link é transparente? Dentro de um <code>p</code>, ele só aceita conteúdo de frase. Veja o que acontece com <code>&lt;p&gt;Veja o &lt;a href="bolo.html"&gt;&lt;div&gt;bolo&lt;/div&gt;&lt;/a&gt;.&lt;/p&gt;</code> na linha 9:</p>
+<pre class="term" data-cwd="~/receitas">$ vnu div-no-a-no-p.html
+"file:/home/ana/receitas/div-no-a-no-p.html":9.31-9.35: error: End tag “p” implied, but there were open elements.
+"file:/home/ana/receitas/div-no-a-no-p.html":9.11-9.30: error: Unclosed element “a”.
+"file:/home/ana/receitas/div-no-a-no-p.html":9.40-9.45: error: End tag “div” seen, but there were open elements.
+"file:/home/ana/receitas/div-no-a-no-p.html":9.46-9.49: error: No “a” element in scope but a “a” end tag seen.
+"file:/home/ana/receitas/div-no-a-no-p.html":9.51-9.54: error: No “p” element in scope but a “p” end tag seen.</pre>
+<pre class="file" data-file="o que o navegador montou">&lt;p&gt;Veja o &lt;a href="bolo.html"&gt;&lt;/a&gt;&lt;/p&gt;&lt;div&gt;&lt;a href="bolo.html"&gt;bolo&lt;/a&gt;&lt;/div&gt;.&lt;p&gt;&lt;/p&gt;
+</pre>
+<p>Um erro só no código virou cinco mensagens, e o navegador montou uma página estranha: o parágrafo foi fechado antes do <code>div</code> (<em>End tag “p” implied</em> = "o <code>&lt;/p&gt;</code> ficou subentendido"), o link foi <strong>copiado</strong> (um vazio no parágrafo e outro dentro do <code>div</code>), o ponto final ficou solto e sobrou um parágrafo vazio. Quando o validador mostra muitas mensagens na mesma linha, comece pela <strong>primeira</strong>: muitas vezes as outras são consequência dela.</p>
+<p><strong>Como consertar:</strong> dentro de um parágrafo, o link guarda só texto: <code>&lt;p&gt;Veja o &lt;a href="bolo.html"&gt;bolo&lt;/a&gt;.&lt;/p&gt;</code>.</p>
+</div>
+
+<div class="tryhtml" data-goal="nsel:a=2,texto:p a=Bolo de cenoura,texto:p a:last-of-type=como ralar cenoura">
+<p class="try-task"><strong>Missão:</strong> desfaça o link dentro de link. O primeiro link deve ter o texto completo "Bolo de cenoura" e levar a <code>bolo.html</code>. Depois dele, escreva "(veja também: como ralar cenoura)", e só "como ralar cenoura" vira um link para <code>cenoura.html</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="bolo.html"&gt;Bolo de &lt;a href="cenoura.html"&gt;cenoura&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;p&gt;&lt;a href="bolo.html"&gt;Bolo de cenoura&lt;/a&gt; (veja também: &lt;a href="cenoura.html"&gt;como ralar cenoura&lt;/a&gt;)&lt;/p&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Referência rápida</h2>
+<div class="table-wrap">
+<table class="ref">
+<tr><th>Situação</th><th>Certo ou errado</th></tr>
+<tr><td><code>&lt;p&gt;… &lt;strong&gt;…&lt;/strong&gt; …&lt;/p&gt;</code></td><td>Certo: em linha dentro de bloco</td></tr>
+<tr><td><code>&lt;div&gt;&lt;p&gt;…&lt;/p&gt;&lt;ul&gt;…&lt;/ul&gt;&lt;/div&gt;</code></td><td>Certo: blocos dentro de <code>div</code></td></tr>
+<tr><td><code>&lt;li&gt;&lt;p&gt;…&lt;/p&gt;&lt;/li&gt;</code></td><td>Certo: <code>li</code> aceita conteúdo de fluxo</td></tr>
+<tr><td><code>&lt;a href="…"&gt;&lt;h2&gt;…&lt;/h2&gt;&lt;p&gt;…&lt;/p&gt;&lt;/a&gt;</code></td><td>Certo, se o link não estiver dentro de um <code>p</code> (ou de outro elemento que só aceita frase)</td></tr>
+<tr><td><code>&lt;p&gt;…&lt;ul&gt;…&lt;/ul&gt;&lt;/p&gt;</code></td><td>Errado: o navegador fecha o <code>p</code> antes da lista</td></tr>
+<tr><td><code>&lt;p&gt;…&lt;p&gt;…&lt;/p&gt;&lt;/p&gt;</code></td><td>Errado: o segundo <code>&lt;p&gt;</code> fecha o primeiro</td></tr>
+<tr><td><code>&lt;h1&gt;…&lt;p&gt;…&lt;/p&gt;&lt;/h1&gt;</code></td><td>Errado: título só aceita frase</td></tr>
+<tr><td><code>&lt;span&gt;&lt;div&gt;…&lt;/div&gt;&lt;/span&gt;</code></td><td>Errado: bloco dentro de em linha</td></tr>
+<tr><td><code>&lt;a&gt;…&lt;a&gt;…&lt;/a&gt;&lt;/a&gt;</code></td><td>Errado: o navegador separa os links</td></tr>
+<tr><td><code>style="display: block;"</code> / <code>style="display: inline;"</code></td><td>Muda só a aparência; a regra do HTML continua</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Exercícios</h2>
+
+<div class="exercise">
+<h3>1. Bloco ou em linha?</h3>
+<p>Complete: o <code>&lt;p&gt;</code> é um elemento de… e o <code>&lt;strong&gt;</code> é um elemento em…</p>
+<div class="ex-code">p = <input data-answer="bloco|block" aria-label="p é"> · strong = em <input data-answer="linha|inline" aria-label="strong é"></div>
+</div>
+
+<div class="exercise">
+<h3>2. O nome do padrão</h3>
+<p>O que vai dentro de um <code>p</code> (texto, <code>a</code>, <code>strong</code>…) o padrão chama de conteúdo de…</p>
+<div class="ex-code">conteúdo de <input data-answer="frase|phrasing" aria-label="categoria"></div>
+</div>
+
+<div class="mc" data-answer="2">
+<p class="mc-q">3. Quais destes elementos começam numa linha nova e ocupam a largura toda?</p>
+<label><input type="radio" name="q3"> <code>span</code>, <code>a</code>, <code>strong</code></label>
+<label><input type="radio" name="q3"> <code>p</code>, <code>h2</code>, <code>ul</code></label>
+<label><input type="radio" name="q3"> <code>img</code>, <code>em</code>, <code>br</code></label>
+<label><input type="radio" name="q3"> <code>code</code>, <code>mark</code>, <code>small</code></label>
+</div>
+
+<div class="mc" data-answer="3">
+<p class="mc-q">4. Qual destes é HTML válido?</p>
+<label><input type="radio" name="q4"> <code>&lt;p&gt;Ingredientes: &lt;ul&gt;&lt;li&gt;ovos&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;h2&gt;&lt;p&gt;Bolo&lt;/p&gt;&lt;/h2&gt;</code></label>
+<label><input type="radio" name="q4"> <code>&lt;a href="bolo.html"&gt;&lt;h2&gt;Bolo&lt;/h2&gt;&lt;p&gt;Fofinho.&lt;/p&gt;&lt;/a&gt;</code>, solto no <code>body</code></label>
+<label><input type="radio" name="q4"> <code>&lt;strong&gt;&lt;p&gt;Atenção&lt;/p&gt;&lt;/strong&gt;</code></label>
+</div>
+
+<div class="mc" data-answer="1">
+<p class="mc-q">5. A Ana pôs <code>style="display: block;"</code> num <code>span</code> e colocou um <code>&lt;p&gt;</code> dentro dele. O que o validador diz?</p>
+<label><input type="radio" name="q5"> Continua sendo erro: o CSS muda a aparência, não a regra do HTML</label>
+<label><input type="radio" name="q5"> Nada: com <code>display: block</code> o <code>span</code> virou bloco</label>
+<label><input type="radio" name="q5"> Que o atributo <code>style</code> não existe</label>
+<label><input type="radio" name="q5"> Que o <code>span</code> precisa de <code>class</code></label>
+</div>
+
+<h3>Missão final: o cartão clicável</h3>
+
+<div class="tryhtml" data-goal="sel:a[href='bolo.html'] h2,sel:a[href='bolo.html'] p,nsel:a=1,nsel:p:empty=0,texto:a p=Fofinho">
+<p class="try-task"><strong>Missão:</strong> transforme o cartão do bolo num link só para <code>bolo.html</code>: o <code>&lt;a&gt;</code> deve envolver o título <code>h2</code> e o parágrafo. Repare que hoje o link está <strong>dentro</strong> do <code>h2</code>; tire-o de lá. Lembre: o link pode envolver blocos porque está solto na página, e não dentro de um <code>p</code>.</p>
+<pre class="script" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;h2&gt;&lt;a href="bolo.html"&gt;Bolo de cenoura&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+</pre>
+<pre class="solucao" data-file="index.html">&lt;h1&gt;Receitas da Ana&lt;/h1&gt;
+&lt;a href="bolo.html"&gt;
+  &lt;h2&gt;Bolo de cenoura&lt;/h2&gt;
+  &lt;p&gt;Fofinho e fácil, com cobertura de chocolate.&lt;/p&gt;
+&lt;/a&gt;
+</pre>
+</div>
+
+<hr>
+
+<h2>Resumo</h2>
+<ul>
+  <li>Elementos de <strong>bloco</strong> (<code>p</code>, <code>h1</code>, <code>div</code>, <code>ul</code>, <code>li</code>…) começam numa linha nova e ocupam a largura toda, como tijolos empilhados.</li>
+  <li>Elementos <strong>em linha</strong> (<code>span</code>, <code>a</code>, <code>strong</code>, <code>em</code>, <code>img</code>…) ficam no meio da frase e têm só o tamanho do conteúdo, como palavras.</li>
+  <li>A regra: em linha não guarda bloco. E <code>p</code> e <code>h1</code>…<code>h6</code>, mesmo sendo blocos, só aceitam <strong>conteúdo de frase</strong>. O padrão chama o resto de <strong>conteúdo de fluxo</strong>.</li>
+  <li>O <code>a</code> é transparente: solto na página, ele pode envolver um cartão inteiro; dentro de um <code>p</code>, só texto. Link dentro de link, nunca.</li>
+  <li>O <code>display</code> do CSS muda a aparência (bloco ↔ em linha), mas não muda o que o HTML permite.</li>
+  <li>Quando a regra é quebrada, o navegador às vezes aceita (<code>p</code> dentro de <code>h1</code>) e às vezes reorganiza (fecha o <code>p</code> antes de uma lista, separa links). O validador avisa nos dois casos.</li>
+</ul>
+
+<div class="pager"></div>
+
+</div>
+</main>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>
