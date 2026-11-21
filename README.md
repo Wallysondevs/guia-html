@@ -41,6 +41,7 @@ O testador usa um Chromium sem janela. Instale a dependência uma vez com `cd to
 node tools/testar-missoes.js                 # todas as missões e quadros "Resultado"
 node tools/testar-missoes.js pagina.html     # só estas páginas (-v mostra cada meta)
 node tools/testar-missoes.js --nativo pagina.html   # também valida no validador W3C (precisa do laboratório)
+bash tools/checar-privacidade.sh             # páginas e histórico; lista extra: PROIBIDO=lista.txt
 ```
 
 Para testar o editor à mão, sirva a raiz do site e abra `/tools/demo.html`.
